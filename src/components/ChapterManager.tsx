@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { motion } from 'motion/react';
 import { Chapter, QuizQuestion, EDUCATION_LEVELS, SCHOOL_TYPES, GRADES } from '../types';
 import { Upload, Plus, Trash2, BookOpen, Save, FileText, Sparkles, AlertCircle, HelpCircle, Eye, Edit3, Check } from 'lucide-react';
 
@@ -222,8 +223,21 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
   };
 
   return (
-    <div id="chapter-manager-overlay" className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-[#FAF9F5] dark:bg-slate-900 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-[#EDEAE2] dark:border-slate-800 transition-all duration-300">
+    <motion.div
+      id="chapter-manager-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22 }}
+      className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 240 }}
+        className="bg-[#FAF9F5] dark:bg-slate-900 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-[#EDEAE2] dark:border-slate-800"
+      >
         
         {/* Header */}
         <div className="p-5 border-b border-[#EDEAE2] dark:border-slate-800 flex items-center justify-between">
@@ -804,7 +818,7 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
           )}
 
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

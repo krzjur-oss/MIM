@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   BookOpen, 
   Plus, 
@@ -1089,13 +1090,20 @@ export default function App() {
         </aside>
 
         {/* MOBILE SIDEBAR DRAW OUTS OVERLAY */}
-        {isMobileSidebarOpen && (
-          <div 
-            id="mobile-sidebar-blur-overlay"
-            className="fixed inset-0 bg-black/30 backdrop-blur-xs z-40 lg:hidden"
-            onClick={() => setIsMobileSidebarOpen(false)}
-          />
-        )}
+        <AnimatePresence>
+          {isMobileSidebarOpen && (
+            <motion.div 
+              key="mobile-sidebar-blur-overlay"
+              id="mobile-sidebar-blur-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/30 backdrop-blur-xs z-40 lg:hidden"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            />
+          )}
+        </AnimatePresence>
 
         {/* MASTER VIEWPORT (MAIN MULTIBOOK CONTENT PAGE) */}
         <main 
@@ -1256,8 +1264,16 @@ export default function App() {
 
             {/* Scrolling Viewport wrapper for MD Content */}
             <div className="flex-1 overflow-y-auto px-4 py-6 md:p-8 space-y-8 select-text">
-              {activeChapter ? (
-                <article className="max-w-3xl mx-auto space-y-6">
+              <AnimatePresence mode="wait">
+                {activeChapter ? (
+                  <motion.article
+                    key={activeChapter.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.28, ease: 'easeInOut' }}
+                    className="max-w-3xl mx-auto space-y-6"
+                  >
                   
                   {/* Title and Top interactive bar */}
                   <div className={`pb-4 border-b flex items-start justify-between gap-4 transition-all duration-300 ${activeThemeConfig.border}`}>
@@ -1590,22 +1606,36 @@ export default function App() {
                     </div>
                   </div>
 
-                </article>
-              ) : (
-                <div className="text-center py-20">
-                  <p className="text-sm text-slate-500">Kliknij na jeden z tematów po lewej, aby rozpocząć naukę.</p>
-                </div>
-              )}
+                  </motion.article>
+                ) : (
+                  <motion.div
+                    key="empty-state"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-center py-20"
+                  >
+                    <p className="text-sm text-slate-500">Kliknij na jeden z tematów po lewej, aby rozpocząć naukę.</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </main>
 
         {/* DZIENNIK I NOTATNIK NAUCZYCIELA & UCZNIA (DRAWER ON RIGHT SIDE) */}
-        {isNotesOpen && activeChapter && (
-          <aside
-            id="student-notes-aside-drawer"
-            className={`w-85 border-l p-4 shrink-0 flex flex-col gap-3.5 animate-in slide-in-from-right duration-250 z-30 transition-all duration-300 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} overflow-y-auto`}
-          >
+        <AnimatePresence>
+          {isNotesOpen && activeChapter && (
+            <motion.aside
+              key="student-notes-aside-drawer"
+              id="student-notes-aside-drawer"
+              initial={{ x: '100%', opacity: 1 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 1 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 220 }}
+              className={`w-85 border-l p-4 shrink-0 flex flex-col gap-3.5 z-30 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} overflow-y-auto`}
+            >
             {/* Drawer Header */}
             <div className="flex items-center justify-between shrink-0 pb-1.5 border-b border-stone-150/60 dark:border-slate-800">
               <div>
@@ -2246,62 +2276,79 @@ export default function App() {
 
               </div>
             )}
-          </aside>
-        )}
+            </motion.aside>
+          )}
+        </AnimatePresence>
 
       </div>
 
       {/* Visual Lightbox Modal for Images */}
-      {selectedLightboxImage && (
-        <div 
-          id="image-lightbox-modal"
-          className="fixed inset-0 bg-[#000000ee]/90 backdrop-blur-md flex flex-col items-center justify-center z-[1000] p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedLightboxImage(null)}
-        >
-          <div className="absolute top-4 right-4 flex items-center gap-2">
-            <button
-              type="button"
-              className="px-3 py-1.5 bg-slate-900 border border-slate-700/60 text-white rounded-lg hover:bg-slate-800 text-xs font-bold cursor-pointer transition-all animate-none"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (navigator && navigator.clipboard) {
-                  navigator.clipboard.writeText(selectedLightboxImage);
-                }
-              }}
+      <AnimatePresence>
+        {selectedLightboxImage && (
+          <motion.div 
+            key="image-lightbox-modal"
+            id="image-lightbox-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 bg-[#000000ee]/90 backdrop-blur-md flex flex-col items-center justify-center z-[1000] p-4"
+            onClick={() => setSelectedLightboxImage(null)}
+          >
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <button
+                type="button"
+                className="px-3 py-1.5 bg-slate-900 border border-slate-700/60 text-white rounded-lg hover:bg-slate-800 text-xs font-bold cursor-pointer transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (navigator && navigator.clipboard) {
+                    navigator.clipboard.writeText(selectedLightboxImage);
+                  }
+                }}
+              >
+                Kopiuj link 🔗
+              </button>
+              <button
+                type="button"
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg cursor-pointer transition-all"
+                onClick={() => setSelectedLightboxImage(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 240 }}
+              className="max-w-4xl max-h-[80vh] relative group" 
+              onClick={(e) => e.stopPropagation()}
             >
-              Kopiuj link 🔗
-            </button>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg cursor-pointer transition-all animate-none"
-              onClick={() => setSelectedLightboxImage(null)}
-            >
-              ✕
-            </button>
-          </div>
-          <div className="max-w-4xl max-h-[80vh] relative group" onClick={(e) => e.stopPropagation()}>
-            <img 
-              src={selectedLightboxImage} 
-              alt="Lightbox Podgląd" 
-              referrerPolicy="no-referrer"
-              className="max-w-full max-h-[80vh] rounded-xl border border-slate-700/50 object-contain shadow-2xl select-all" 
-            />
-          </div>
-          <p className="text-slate-400 text-xs mt-3 text-center pointer-events-none max-w-lg">
-            Kliknij poza obrazem lub naciśnij ✕, aby zamknąć podgląd.
-          </p>
-        </div>
-      )}
+              <img 
+                src={selectedLightboxImage} 
+                alt="Lightbox Podgląd" 
+                referrerPolicy="no-referrer"
+                className="max-w-full max-h-[80vh] rounded-xl border border-slate-700/50 object-contain shadow-2xl select-all" 
+              />
+            </motion.div>
+            <p className="text-slate-400 text-xs mt-3 text-center pointer-events-none max-w-lg">
+              Kliknij poza obrazem lub naciśnij ✕, aby zamknąć podgląd.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* CHAPTER CREATOR MODAL LAYER */}
-      {isCreatorOpen && (
-        <ChapterManager
-          allChapters={chapters}
-          onAddChapter={handleAddNewChapter}
-          onImportAll={handleImportAllChapters}
-          onClose={() => setIsCreatorOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isCreatorOpen && (
+          <ChapterManager
+            allChapters={chapters}
+            onAddChapter={handleAddNewChapter}
+            onImportAll={handleImportAllChapters}
+            onClose={() => setIsCreatorOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
     </div>
   );
