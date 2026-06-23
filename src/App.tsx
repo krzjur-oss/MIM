@@ -29,7 +29,9 @@ import {
   HelpCircle,
   Image,
   Link,
-  Copy
+  Copy,
+  Download,
+  Upload
 } from 'lucide-react';
 import { Chapter, QuizQuestion, ThemeType, StudentProgress } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
@@ -430,6 +432,101 @@ export default function App() {
       setTeacherClasses((prev) => prev.filter((c) => c !== name));
       setRealizations((prev) => prev.filter((r) => r.className !== name));
     }
+  };
+
+  // Export database backup (chapters, progress, realizations, classes, galleries, settings) to a JSON file
+  const handleExportDatabase = () => {
+    const backupData = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      chapters,
+      progress,
+      theme,
+      fontSize,
+      lineHeight,
+      teacherClasses,
+      realizations,
+      chapterGalleryImages,
+    };
+    
+    try {
+      const dataStr = JSON.stringify(backupData, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `multibook_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    } catch (e) {
+      alert('Wystąpił błąd podczas generowania pliku kopii zapasowej.');
+      console.error(e);
+    }
+  };
+
+  // Import database backup from a JSON file and dynamically restore properties
+  const handleImportDatabase = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    fileReader.onload = (e) => {
+      try {
+        const parsedData = JSON.parse(e.target?.result as string);
+        
+        if (parsedData && typeof parsedData === 'object') {
+          let restoredCount = 0;
+          
+          if (Array.isArray(parsedData.chapters)) {
+            setChapters(parsedData.chapters);
+            restoredCount++;
+          }
+          if (parsedData.progress && typeof parsedData.progress === 'object') {
+            setProgress(parsedData.progress);
+            restoredCount++;
+          }
+          if (parsedData.theme) {
+            setTheme(parsedData.theme || 'light');
+            restoredCount++;
+          }
+          if (typeof parsedData.fontSize === 'number') {
+            setFontSize(parsedData.fontSize);
+            restoredCount++;
+          }
+          if (parsedData.lineHeight) {
+            setLineHeight(parsedData.lineHeight);
+            restoredCount++;
+          }
+          if (Array.isArray(parsedData.teacherClasses)) {
+            setTeacherClasses(parsedData.teacherClasses);
+            restoredCount++;
+          }
+          if (Array.isArray(parsedData.realizations)) {
+            setRealizations(parsedData.realizations);
+            restoredCount++;
+          }
+          if (parsedData.chapterGalleryImages && typeof parsedData.chapterGalleryImages === 'object') {
+            setChapterGalleryImages(parsedData.chapterGalleryImages);
+            restoredCount++;
+          }
+
+          if (restoredCount > 0) {
+            alert('Kopia zapasowa została pomyślnie zaimportowana i przywrócona!');
+            // Reset files target input
+            event.target.value = '';
+          } else {
+            alert('Niepoprawny format pliku kopii zapasowej.');
+          }
+        } else {
+          alert('Plik nie zawiera poprawnego obiektu JSON.');
+        }
+      } catch (err) {
+        alert('Błąd podczas odczytu pliku kopii zapasowej. Upewnij się, że plik jest poprawny.');
+        console.error(err);
+      }
+    };
+    fileReader.readAsText(file);
   };
 
   const handleAddNewChapter = (newChap: Chapter) => {
@@ -951,10 +1048,43 @@ export default function App() {
             )}
           </div>
 
-          {/* Quick info about book bottom pane */}
-          <div className="text-[10px] text-slate-500 mt-auto pt-3 border-t border-slate-150 dark:border-slate-800">
-            <p className="font-semibold text-slate-600 dark:text-slate-400">Interaktywny Multibook v1.2</p>
-            <p className="mt-0.5 leading-relaxed">Możesz swobodnie przygotować materiały dla całej klasy.</p>
+          {/* Quick info about book bottom pane with Backup Export / Import */}
+          <div className="text-[10px] text-slate-500 mt-auto pt-3 border-t border-slate-150 dark:border-slate-800/80 space-y-2.5 shrink-0 select-none animate-in fade-in duration-305">
+            <div className="p-2.5 bg-slate-100/70 dark:bg-slate-900/55 rounded-xl border border-slate-205/65 dark:border-slate-800/60">
+              <span className="font-extrabold text-[#5A5450] dark:text-slate-400 block uppercase text-[8.5px] tracking-wider mb-2">
+                💾 Kopia bezpieczeństwa:
+              </span>
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  id="export-db-backup-btn"
+                  onClick={handleExportDatabase}
+                  className="flex-1 py-1.5 px-2 bg-emerald-750 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-550 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs"
+                  title="Pobierz backup wszystkich danych (postępy, notatki, rozdziały) do pliku JSON"
+                >
+                  <Download className="w-3 h-3 shrink-0" />
+                  <span>Eksport</span>
+                </button>
+                <label
+                  id="import-db-backup-label"
+                  className="flex-1 py-1.5 px-2 bg-slate-200/80 hover:bg-slate-305 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 border border-slate-300/10 dark:border-slate-700/30"
+                  title="Wczytaj backup wszystkich danych z pliku JSON"
+                >
+                  <Upload className="w-3 h-3 shrink-0 text-emerald-600 dark:text-emerald-500" />
+                  <span>Import</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImportDatabase}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="flex justify-between items-center px-1">
+              <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.3</p>
+              <p className="text-[8px] text-slate-400 dark:text-slate-550">Wydanie offline</p>
+            </div>
           </div>
         </aside>
 
