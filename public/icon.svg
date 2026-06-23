@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <!-- Smooth Dark Slate/Emerald background matching the app's branding -->
+  <rect width="512" height="512" rx="100" fill="#042F1A"/>
+  
+  <!-- Subtle inner glowing ring -->
+  <rect x="24" y="24" width="464" height="464" rx="76" stroke="#10B981" stroke-width="4" stroke-opacity="0.3"/>
+  <rect x="36" y="36" width="440" height="440" rx="64" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.15"/>
+
+  <!-- Glowing background behind the book -->
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#042F1A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <circle cx="256" cy="256" r="180" fill="url(#glow)"/>
+
+  <!-- Styled Open Book Symbol with clean modern paths and shadow -->
+  <g filter="url(#shadow)">
+    <!-- Right side page base (White/Cream page layers) -->
+    <path d="M256,150 C290,135 340,135 380,148 L380,348 C340,335 290,335 256,350 Z" fill="#ECE7DE"/>
+    
+    <!-- Left side page base (White/Cream page layers) -->
+    <path d="M256,150 C222,135 172,135 132,148 L132,348 C172,335 222,335 256,350 Z" fill="#FDFBF7"/>
+
+    <!-- Subtle line highlights on book pages (giving it structural depth) -->
+    <path d="M152,190 H226 M152,230 H226 M152,270 H226 M152,310 H226" stroke="#D1C7BD" stroke-width="3" stroke-linecap="round"/>
+    <path d="M286,190 H360 M286,230 H360 M286,270 H360 M286,310 H360" stroke="#C5B9AE" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Cover backing (thick beautiful book spine frame) -->
+    <path d="M128,148 L128,352 C172,338 222,338 256,354 C290,338 340,338 384,352 L384,148" stroke="#10B981" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+    
+    <!-- Central Divider (Book spine) -->
+    <path d="M256,150 L256,354" stroke="#059669" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Interactive/Tech representation overlay (sparkles/stars/nodes) -->
+  <!-- Main sparkling star of knowledge rising from the book -->
+  <path d="M256,70 L262,96 L288,102 L262,108 L256,134 L250,108 L224,102 L250,96 Z" fill="#34D399"/>
+  <!-- Mini sparks/electrons of interactivity -->
+  <circle cx="160" cy="110" r="8" fill="#10B981"/>
+  <circle cx="352" cy="110" r="8" fill="#34D399"/>
+  <circle cx="210" cy="84" r="5" fill="#6EE7B7"/>
+  <circle cx="302" cy="84" r="5" fill="#6EE7B7"/>
+</svg>
