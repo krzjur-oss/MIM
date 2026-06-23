@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Chapter, QuizQuestion, EDUCATION_LEVELS, SCHOOL_TYPES, GRADES } from '../types';
 import { Upload, Plus, Trash2, BookOpen, Save, FileText, Sparkles, AlertCircle, HelpCircle, Eye, Edit3, Check } from 'lucide-react';
 

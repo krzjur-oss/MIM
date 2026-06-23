@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, 
   Plus, 
@@ -581,26 +581,31 @@ export default function App() {
         return {
           h1: 'text-slate-50',
           h2: 'text-emerald-400',
-          h3: 'text-slate-350',
+          h3: 'text-slate-300',
           p: 'text-slate-300',
           blockquote: 'border-emerald-500 bg-slate-900/60 text-slate-400',
           tableBorder: 'border-slate-800',
           thead: 'bg-slate-900/40',
           th: 'text-slate-400',
-          td: 'text-slate-350',
+          td: 'text-slate-300',
           strong: 'text-emerald-400 bg-emerald-400/10',
-          border: 'border-slate-850',
+          border: 'border-slate-800',
           headerBg: 'bg-slate-900 text-slate-100 border-slate-800',
           sidebarBg: 'bg-slate-900/95 border-slate-800',
-          sidebarProgressBg: 'bg-slate-950/40 border-slate-850',
+          sidebarProgressBg: 'bg-slate-950/40 border-slate-800',
           sidebarProgressText: 'text-slate-300',
-          searchBg: 'bg-slate-950 border-slate-850 text-white',
+          searchBg: 'bg-slate-950 border-slate-800 text-white',
           subjectPillActive: 'bg-white text-slate-950',
-          subjectPillInactive: 'bg-slate-900 text-slate-400 hover:bg-slate-850',
+          subjectPillInactive: 'bg-slate-900 text-slate-400 hover:bg-slate-800',
           chapterCardActive: 'bg-emerald-950/40 border-emerald-900/60 text-white',
-          chapterCardInactive: 'bg-slate-900 hover:bg-slate-850 border-slate-800 text-slate-300',
+          chapterCardInactive: 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300',
           studentNotesLabel: 'text-slate-400',
-          studentNotesTextarea: 'border-slate-800 bg-slate-950 text-white focus:ring-emerald-700/35',
+          studentNotesTextarea: 'border-slate-800 bg-slate-950 text-white focus:ring-emerald-700/35 placeholder-slate-600',
+          tabGroupBg: 'bg-slate-950/80 border-slate-800',
+          tabActive: 'bg-slate-800 text-slate-100 shadow-xs border border-slate-700/50',
+          tabInactive: 'text-slate-500 hover:text-slate-300 hover:bg-slate-900/40',
+          secondaryCardBg: 'bg-slate-900/50 border border-slate-800 text-slate-300',
+          galleryPresetBtn: 'bg-slate-950 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-emerald-400',
         };
       case 'sepia':
         return {
@@ -622,10 +627,15 @@ export default function App() {
           searchBg: 'bg-[#fbf6ec] border-[#ebdcb3] text-[#433422]',
           subjectPillActive: 'bg-[#433422] text-[#fbf6ec]',
           subjectPillInactive: 'bg-[#ebdcb3]/40 text-[#5C4533] hover:bg-[#ebdcb3]/60',
-          chapterCardActive: 'bg-emerald-800/10 border-emerald-800/30 text-emerald-950',
+          chapterCardActive: 'bg-emerald-800/12 border border-emerald-800/25 text-[#4D2306]',
           chapterCardInactive: 'bg-[#fbf6ec] hover:bg-[#f4ebd0] border-[#ebdcb3] text-[#433422]',
           studentNotesLabel: 'text-[#5C4533]',
-          studentNotesTextarea: 'border-[#ebdcb3] bg-[#fbf6ec] text-[#433422] focus:ring-emerald-800/35',
+          studentNotesTextarea: 'border-[#ebdcb3] bg-[#fbf6ec] text-[#433422] focus:ring-emerald-800/35 placeholder-[#a28a6f]',
+          tabGroupBg: 'bg-[#ebdcb3]/30 border border-[#ebdcb3]/50',
+          tabActive: 'bg-[#433422] text-[#fbf6ec] shadow-xs',
+          tabInactive: 'text-[#5C4533] hover:text-[#433422] hover:bg-[#ebdcb3]/15',
+          secondaryCardBg: 'bg-[#ebdcb3]/20 border border-[#ebdcb3] text-[#433422]',
+          galleryPresetBtn: 'bg-[#fbf6ec] border border-[#ebdcb3] text-[#5C4533] hover:bg-[#ebdcb3]/30 hover:text-emerald-900',
         };
       case 'blue':
         return {
@@ -647,10 +657,15 @@ export default function App() {
           searchBg: 'bg-white border-blue-100 text-[#2c3e50]',
           subjectPillActive: 'bg-[#2c3e50] text-[#eef2f6]',
           subjectPillInactive: 'bg-white text-[#475569] border border-blue-100 hover:bg-slate-50',
-          chapterCardActive: 'bg-emerald-50 border-emerald-200 text-emerald-900',
-          chapterCardInactive: 'bg-white hover:bg-[#edf3f8] border-blue-100 text-[#2c3e50]',
+          chapterCardActive: 'bg-emerald-50 border border-emerald-200 text-emerald-900',
+          chapterCardInactive: 'bg-white hover:bg-[#edf3f8] border border-blue-100 text-[#2c3e50]',
           studentNotesLabel: 'text-[#334155]',
-          studentNotesTextarea: 'border-blue-150 bg-white text-[#2c3e50] focus:ring-blue-500/35',
+          studentNotesTextarea: 'border-blue-200 bg-white text-[#2c3e50] focus:ring-blue-500/35 placeholder-slate-400',
+          tabGroupBg: 'bg-[#ebf2f7] border border-blue-200/50',
+          tabActive: 'bg-[#2c3e50] text-[#eef2f6] shadow-xs',
+          tabInactive: 'text-[#475569] hover:text-[#2c3e50] hover:bg-white/50',
+          secondaryCardBg: 'bg-[#ebf2f7]/65 border border-blue-100 text-[#2c3e50]',
+          galleryPresetBtn: 'bg-white border border-blue-100 text-slate-600 hover:bg-[#edf3f8] hover:text-[#025680]',
         };
       case 'dyslexic':
         return {
@@ -669,13 +684,18 @@ export default function App() {
           sidebarBg: 'bg-white border-amber-200',
           sidebarProgressBg: 'bg-[#fef8f0]/40 border-amber-100',
           sidebarProgressText: 'text-[#1b1c1b]',
-          searchBg: 'bg-white border-amber-150 text-[#1b1c1b]',
+          searchBg: 'bg-white border-amber-200 text-[#1b1c1b]',
           subjectPillActive: 'bg-[#1b1c1b] text-white',
-          subjectPillInactive: 'bg-[#fef8f0] text-[#555] hover:bg-amber-100/50',
-          chapterCardActive: 'bg-emerald-50 border-emerald-300 text-emerald-950',
-          chapterCardInactive: 'bg-white hover:bg-[#fef8f0] border-amber-150 text-[#1b1c1b]',
+          subjectPillInactive: 'bg-[#fef8f0] text-[#555] hover:bg-amber-100/50 border border-amber-200/50',
+          chapterCardActive: 'bg-emerald-50 border border-emerald-300 text-emerald-950',
+          chapterCardInactive: 'bg-white hover:bg-[#fef8f0] border border-amber-200 text-[#1b1c1b]',
           studentNotesLabel: 'text-[#1b1c1b]',
-          studentNotesTextarea: 'border-amber-150 bg-[#fef8f0]/40 text-[#1b1c1b] focus:ring-amber-500/35',
+          studentNotesTextarea: 'border-amber-200 bg-[#fef8f0]/40 text-[#1b1c1b] focus:ring-amber-500/35 placeholder-stone-400',
+          tabGroupBg: 'bg-[#fef8f0] border border-amber-200',
+          tabActive: 'bg-[#1b1c1b] text-white shadow-xs',
+          tabInactive: 'text-[#555] hover:text-[#1b1c1b] hover:bg-[#ebdcb3]/15',
+          secondaryCardBg: 'bg-[#fef8f0]/80 border border-amber-200 text-[#1b1c1b]',
+          galleryPresetBtn: 'bg-white border border-amber-200 text-[#555] hover:bg-[#fef8f0] hover:text-[#1b1c1b]',
         };
       default: // light
         return {
@@ -692,15 +712,20 @@ export default function App() {
           border: 'border-[#EDEAE2]',
           headerBg: 'bg-white text-[#433D3C] border-[#EBEAE4]',
           sidebarBg: 'bg-[#FBFBFA]/90 border-[#EBEAE4]',
-          sidebarProgressBg: 'bg-slate-50/70 border-slate-150/40',
+          sidebarProgressBg: 'bg-slate-50/70 border-[#EDEAE2]/60',
           sidebarProgressText: 'text-slate-600',
           searchBg: 'bg-white border-slate-200 text-slate-800',
-          subjectPillActive: 'bg-slate-850 text-white',
-          subjectPillInactive: 'bg-slate-100 text-slate-600 hover:bg-slate-150',
-          chapterCardActive: 'bg-emerald-50/75 border-emerald-200 text-emerald-900',
-          chapterCardInactive: 'bg-white hover:bg-stone-50 border-slate-150/60 text-[#433D3C]',
+          subjectPillActive: 'bg-slate-800 text-white',
+          subjectPillInactive: 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200/30',
+          chapterCardActive: 'bg-emerald-50/75 border border-emerald-200 text-emerald-900',
+          chapterCardInactive: 'bg-white hover:bg-[#FBFBFA] border border-slate-200 text-[#433D3C]',
           studentNotesLabel: 'text-[#5A5450]',
-          studentNotesTextarea: 'border-[#EDEAE2] bg-slate-50/50 text-slate-800 focus:ring-emerald-700/10',
+          studentNotesTextarea: 'border-[#EDEAE2] bg-slate-50/50 text-slate-800 focus:ring-emerald-700/10 placeholder-slate-400',
+          tabGroupBg: 'bg-slate-100 border border-slate-200/50',
+          tabActive: 'bg-white text-slate-800 shadow-xs border border-slate-200/20',
+          tabInactive: 'text-slate-500 hover:text-[#2A3F33] hover:bg-slate-50',
+          secondaryCardBg: 'bg-slate-50/50 border border-slate-200 text-slate-700',
+          galleryPresetBtn: 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800',
         };
     }
   };
@@ -792,7 +817,7 @@ export default function App() {
             className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
               isNotesOpen
                 ? 'bg-emerald-700 text-white shadow-xs'
-                : 'bg-stone-150 hover:bg-stone-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-stone-700 dark:text-slate-355'
+                : activeThemeConfig.galleryPresetBtn
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -945,7 +970,7 @@ export default function App() {
               Object.entries(groupedChapters).map(([sType, sGrades]) => (
                 <div key={sType} className="space-y-2 border-b border-slate-100 dark:border-slate-800/30 pb-3 last:border-0 last:pb-0">
                   {/* School Type Header Banner */}
-                  <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-150/40 dark:bg-slate-800/40 text-[#5A5450] dark:text-slate-400 rounded-lg">
+                  <div className={`flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg ${activeThemeConfig.tabGroupBg} ${activeThemeConfig.studentNotesLabel}`}>
                     <span>🏫</span>
                     <span className="truncate">{sType}</span>
                   </div>
@@ -992,7 +1017,7 @@ export default function App() {
                                       }`}
                                     >
                                       <div className="flex items-start justify-between gap-1.5">
-                                        <span className="text-xs font-semibold leading-snug text-slate-800 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400 transition-colors">
+                                        <span className="text-xs font-semibold leading-snug text-current transition-colors">
                                           {ch.title}
                                         </span>
                                         <div className="flex items-center gap-1 shrink-0">
@@ -1050,9 +1075,9 @@ export default function App() {
           </div>
 
           {/* Quick info about book bottom pane with Backup Export / Import */}
-          <div className="text-[10px] text-slate-500 mt-auto pt-3 border-t border-slate-150 dark:border-slate-800/80 space-y-2.5 shrink-0 select-none animate-in fade-in duration-305">
-            <div className="p-2.5 bg-slate-100/70 dark:bg-slate-900/55 rounded-xl border border-slate-205/65 dark:border-slate-800/60">
-              <span className="font-extrabold text-[#5A5450] dark:text-slate-400 block uppercase text-[8.5px] tracking-wider mb-2">
+          <div className={`text-[10px] text-slate-500 mt-auto pt-3 border-t ${activeThemeConfig.border} space-y-2.5 shrink-0 select-none animate-in fade-in duration-305`}>
+            <div className={`p-2.5 rounded-xl ${activeThemeConfig.secondaryCardBg}`}>
+              <span className={`font-extrabold block uppercase text-[8.5px] tracking-wider mb-2 transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
                 💾 Kopia bezpieczeństwa:
               </span>
               <div className="flex gap-1.5">
@@ -1068,7 +1093,7 @@ export default function App() {
                 </button>
                 <label
                   id="import-db-backup-label"
-                  className="flex-1 py-1.5 px-2 bg-slate-200/80 hover:bg-slate-305 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 border border-slate-300/10 dark:border-slate-700/30"
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 ${activeThemeConfig.galleryPresetBtn}`}
                   title="Wczytaj backup wszystkich danych z pliku JSON"
                 >
                   <Upload className="w-3 h-3 shrink-0 text-emerald-600 dark:text-emerald-500" />
@@ -1200,9 +1225,9 @@ export default function App() {
                   const labelMap: Record<ThemeType, string> = {
                     light: 'Jasny',
                     sepia: 'Sepia',
-                    blue: 'Zasnąć',
+                    blue: 'Niebieski',
                     dark: 'Ciemny',
-                    dyslexic: 'Dyslektyk Czcionka'
+                    dyslexic: 'Dla dyslektyków'
                   };
                   const colorMap: Record<ThemeType, string> = {
                     light: 'bg-white border-slate-300',
@@ -1225,7 +1250,7 @@ export default function App() {
                 })}
               </div>
 
-              <div className="w-[1px] h-5 bg-slate-250 dark:bg-slate-800" />
+              <div className={`w-[1px] h-5 border-l ${activeThemeConfig.border}`} />
 
               {/* Fullscreen focus mode toggle */}
               <button
@@ -1234,7 +1259,7 @@ export default function App() {
                 className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   isContentFullscreen
                     ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'bg-stone-150 hover:bg-stone-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    : activeThemeConfig.galleryPresetBtn
                 }`}
                 title={isContentFullscreen ? 'Wyjdź z trybu pełnoekranowego' : 'Włącz tryb pełnoekranowego skupienia'}
               >
@@ -1286,7 +1311,7 @@ export default function App() {
                         {activeChapter.title}
                       </h2>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500 opacity-95">
-                        <span className="p-0.5 px-2 bg-slate-100 dark:bg-slate-800 text-slate-805 dark:text-slate-200 rounded-md font-medium text-[10px]">
+                        <span className={`p-0.5 px-2 rounded-md font-medium text-[10px] ${activeThemeConfig.subjectPillInactive}`}>
                           {activeChapter.subject}
                         </span>
                         <span className="p-0.5 px-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 rounded-md font-semibold text-[10px]">
@@ -1370,11 +1395,11 @@ export default function App() {
                   {/* INTERACTIVE QUIZ BLOCK (Renders if chapter contains quizzes defined with it) */}
                   {activeChapter.quizzes && activeChapter.quizzes.length > 0 && (
                     <div id="chapter-quizzes-card-block" className={`mt-12 p-6 md:p-8 rounded-2xl border ${getPageCardClasses()} space-y-6 shadow-xs`}>
-                      <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-850">
+                      <div className={`flex items-center gap-2 pb-3 border-b ${activeThemeConfig.border}`}>
                         <span className="p-1 px-2.5 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400 rounded-lg text-xs font-bold">Quiz</span>
                         <div>
                           <h3 className="font-serif font-bold text-emerald-950 dark:text-white">Interaktywne Ćwiczenia Sprawdzające</h3>
-                          <p className="text-[10px] text-slate-505">Sprawdź swoją wiedzę po zapoznaniu się z tym tematem</p>
+                          <p className={`text-[10px] transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>Sprawdź swoją wiedzę po zapoznaniu się z tym tematem</p>
                         </div>
                       </div>
 
@@ -1405,11 +1430,11 @@ export default function App() {
                                     theme === 'sepia' 
                                       ? 'bg-[#f4ebd0] border-[#c0b080] text-[#433422] hover:bg-[#ebdcb3]/60' 
                                       : theme === 'blue'
-                                      ? 'bg-[#edf3f8] border-blue-150 text-[#2c3e50] hover:bg-white'
+                                      ? 'bg-[#edf3f8] border-blue-200 text-[#2c3e50] hover:bg-white'
                                       : theme === 'dyslexic'
                                       ? 'bg-white border-amber-200 text-[#1b1c1b] hover:bg-amber-100/30'
                                       : theme === 'dark'
-                                      ? 'bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-850'
+                                      ? 'bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800'
                                       : 'bg-white border-slate-200 text-[#433D3C] hover:bg-slate-50'
                                   }`;
                                   if (hasAnswered) {
@@ -1637,7 +1662,7 @@ export default function App() {
               className={`w-85 border-l p-4 shrink-0 flex flex-col gap-3.5 z-30 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} overflow-y-auto`}
             >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between shrink-0 pb-1.5 border-b border-stone-150/60 dark:border-slate-800">
+            <div className={`flex items-center justify-between shrink-0 pb-1.5 border-b ${activeThemeConfig.border}`}>
               <div>
                 <h3 className={`font-serif font-bold text-sm flex items-center gap-1.5 transition-colors duration-300 ${activeThemeConfig.h1}`}>
                   <FileText className="w-4 h-4 text-emerald-700" />
@@ -1648,21 +1673,21 @@ export default function App() {
               <button
                 id="close-notes-drawer-btn"
                 onClick={() => setIsNotesOpen(false)}
-                className="text-xs font-bold text-slate-500 hover:text-slate-705 dark:hover:text-slate-300 cursor-pointer p-1 bg-slate-105/50 dark:bg-slate-800 rounded-md"
+                className={`text-[10px] font-extrabold p-1 px-2.5 rounded-lg cursor-pointer transition-all ${activeThemeConfig.galleryPresetBtn}`}
               >
                 Ukryj
               </button>
             </div>
 
             {/* Tab Selection buttons */}
-            <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl shrink-0">
+            <div className={`flex p-1 rounded-xl shrink-0 transition-all duration-300 ${activeThemeConfig.tabGroupBg}`}>
               <button
                 id="drawer-tab-notes-btn"
                 onClick={() => setRightDrawerTab('notes')}
                 className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
                   rightDrawerTab === 'notes'
-                    ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs'
-                    : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
+                    ? activeThemeConfig.tabActive
+                    : activeThemeConfig.tabInactive
                 }`}
               >
                 Notatnik & Realizacja
@@ -1672,8 +1697,8 @@ export default function App() {
                 onClick={() => setRightDrawerTab('classes')}
                 className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
                   rightDrawerTab === 'classes'
-                    ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs'
-                    : 'text-slate-500 hover:text-slate-705 dark:hover:text-slate-355'
+                    ? activeThemeConfig.tabActive
+                    : activeThemeConfig.tabInactive
                 }`}
               >
                 Klasy & Statystyki
@@ -1698,9 +1723,9 @@ export default function App() {
                 </div>
 
                 {/* 🖼️ INTERAKTYWNA GALERIA I WKLEJANIE LINKÓW OBRAZÓW */}
-                <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-150 dark:border-slate-800/80 space-y-2.5">
+                <div className={`p-3 rounded-xl space-y-2.5 transition-colors duration-300 ${activeThemeConfig.secondaryCardBg}`}>
                   <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-extrabold text-slate-700 dark:text-slate-350 flex items-center gap-1.5 uppercase tracking-wide">
+                    <label className={`text-[11px] font-extrabold flex items-center gap-1.5 uppercase tracking-wide transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
                       <Image className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
                       <span>Obrazy i Galeria lekcji</span>
                     </label>
@@ -1723,7 +1748,7 @@ export default function App() {
                         placeholder="Wklej link URL do obrazka (http...)"
                         value={newImageUrlInput}
                         onChange={(e) => setNewImageUrlInput(e.target.value)}
-                        className="w-full text-[10px] pl-6 pr-2 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-755 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600 font-mono transition-all"
+                        className={`w-full text-[10px] pl-6 pr-2 py-1 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-emerald-600 font-mono transition-all border ${activeThemeConfig.studentNotesTextarea}`}
                       />
                       <span className="absolute left-2 top-1.5 text-slate-400">
                         <Link className="w-2.5 h-2.5" />
@@ -1748,7 +1773,7 @@ export default function App() {
                           key={pIdx}
                           type="button"
                           onClick={() => handleAddImageToGallery(preset.url)}
-                          className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 text-[8.5px] font-medium rounded-md transition-colors cursor-pointer border border-slate-200/40 dark:border-slate-700/40 truncate max-w-[130px]"
+                          className={`px-1.5 py-0.5 text-[8.5px] font-medium rounded-md transition-all cursor-pointer truncate max-w-[130px] ${activeThemeConfig.galleryPresetBtn}`}
                           title={preset.label}
                         >
                           + {preset.label.split(' ').slice(1).join(' ') || preset.label}
@@ -1767,7 +1792,7 @@ export default function App() {
                         {(chapterGalleryImages[activeChapter.id] || []).map((imgUrl, imgIdx) => (
                           <div 
                             key={imgIdx} 
-                            className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 relative group shadow-3xs"
+                            className={`aspect-square rounded-lg overflow-hidden relative group border shadow-3xs ${activeThemeConfig.studentNotesTextarea}`}
                           >
                             <img 
                               src={imgUrl} 
@@ -1872,7 +1897,7 @@ export default function App() {
                 </div>
 
                 {/* Realization checklist for active chapter */}
-                <div className="pt-3 border-t border-stone-150/60 dark:border-slate-800">
+                <div className={`pt-3 border-t ${activeThemeConfig.border}`}>
                   <label className={`text-[11.5px] font-bold block mb-2 transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
                     🏫 Oznacz jako zrealizowany w klasie:
                   </label>
@@ -1885,14 +1910,14 @@ export default function App() {
                             key={cls}
                             id={`toggle-realize-class-${cls}`}
                             onClick={() => handleToggleRealizationInClass(cls, activeChapter.id)}
-                            className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition-all text-xs cursor-pointer ${
+                            className={`flex items-center gap-1.5 p-2 rounded-xl text-left transition-all text-xs cursor-pointer border ${
                               isRealized 
                                 ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-400 font-semibold'
-                                : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 border-slate-200 dark:border-slate-755 text-slate-600 dark:text-slate-400'
+                                : activeThemeConfig.chapterCardInactive
                             }`}
                           >
                             <span className={`w-3.5 h-3.5 flex items-center justify-center rounded border text-[10px] ${
-                              isRealized ? 'bg-emerald-600 border-emerald-650 text-white' : 'border-slate-300 bg-white dark:bg-slate-700'
+                              isRealized ? 'bg-emerald-600 border-emerald-650 text-white' : activeThemeConfig.studentNotesTextarea
                             }`}>
                               {isRealized && '✓'}
                             </span>
@@ -1933,7 +1958,7 @@ export default function App() {
                       placeholder="np. Klasa 1A, Grupa B..."
                       value={newClassNameInput}
                       onChange={(e) => setNewClassNameInput(e.target.value)}
-                      className={`flex-grow p-2 border rounded-xl text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-white transition-all focus:outline-hidden ${activeThemeConfig.border} focus:ring-1 focus:ring-emerald-700`}
+                      className={`flex-grow p-2 rounded-xl text-xs transition-all focus:outline-hidden border ${activeThemeConfig.studentNotesTextarea}`}
                     />
                     <button
                       type="submit"
@@ -1945,11 +1970,11 @@ export default function App() {
                   </form>
 
                   {/* List of active custom teacher classes with deletes */}
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <div className="flex flex-wrap gap-1 mt-1 font-mono">
                     {teacherClasses.map((cls) => (
                       <div 
                         key={cls} 
-                        className="flex items-center gap-1 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 text-[10px] font-semibold rounded-lg border border-slate-200/50 dark:border-slate-700"
+                        className={`flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold rounded-lg border transition-all ${activeThemeConfig.secondaryCardBg}`}
                       >
                         <span className="truncate max-w-[100px]">{cls}</span>
                         <button
@@ -1967,7 +1992,7 @@ export default function App() {
                 </div>
 
                 {/* Statistics of realization */}
-                <div className="space-y-2.5 pt-3 border-t border-stone-150/60 dark:border-slate-800">
+                <div className={`space-y-2.5 pt-3 border-t ${activeThemeConfig.border}`}>
                   <label className={`text-[11.5px] font-bold block transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
                     📊 Statystyki realizacji tematów:
                   </label>
@@ -2033,7 +2058,7 @@ export default function App() {
                           });
 
                           return (
-                            <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-200/40 dark:border-slate-800/85 space-y-1.5 mt-2 animate-in fade-in duration-200">
+                            <div className={`p-2 rounded-xl space-y-1.5 mt-2 animate-in fade-in duration-200 ${activeThemeConfig.secondaryCardBg}`}>
                               <div className="flex items-center justify-between">
                                 <button
                                   type="button"
@@ -2041,12 +2066,12 @@ export default function App() {
                                     e.stopPropagation();
                                     setCurrentCalendarDate(new Date(year, month - 1, 1));
                                   }}
-                                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer"
+                                  className={`p-1 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
                                   title="Poprzedni miesiąc"
                                 >
                                   ◀
                                 </button>
-                                <span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
                                   {monthNamesPL[month]} {year}
                                 </span>
                                 <button
@@ -2055,7 +2080,7 @@ export default function App() {
                                     e.stopPropagation();
                                     setCurrentCalendarDate(new Date(year, month + 1, 1));
                                   }}
-                                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer"
+                                  className={`p-1 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
                                   title="Następny miesiąc"
                                 >
                                   ▶
@@ -2096,7 +2121,7 @@ export default function App() {
                                               ? 'bg-emerald-600 text-white cursor-pointer hover:bg-emerald-700 shadow-xs'
                                               : isToday
                                               ? 'bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-500/50'
-                                              : 'bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 hover:bg-slate-150/50 dark:hover:bg-slate-800/80 border border-slate-100 dark:border-transparent'
+                                              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-100 dark:border-transparent'
                                           }`}
                                           title={isRealized ? `${dayRealizations.length} lekcja(e)` : undefined}
                                         >
@@ -2107,7 +2132,7 @@ export default function App() {
                                           
                                           {/* Rich Micro Tooltip on hover */}
                                           {isRealized && (
-                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/cell:block bg-slate-900 border border-slate-850 dark:border-slate-800 text-white text-[8px] leading-tight p-1.5 rounded-lg w-36 shadow-md z-50 pointer-events-none text-left">
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/cell:block bg-slate-900 border border-slate-800 text-white text-[8px] leading-tight p-1.5 rounded-lg w-36 shadow-md z-50 pointer-events-none text-left">
                                               <div className="font-extrabold text-[#ECE7DE] border-b border-slate-800 pb-0.5 mb-1 flex items-center justify-between">
                                                 <span>{day} {monthNamesPL[month]}</span>
                                                 <span className="bg-emerald-700 px-1 rounded">✓ {dayRealizations.length}</span>
@@ -2137,14 +2162,14 @@ export default function App() {
                         return (
                           <div 
                             key={cls} 
-                            className="p-3 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-150 dark:border-slate-850 shadow-2xs space-y-2.5 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
+                            className={`p-3 rounded-xl border shadow-2xs space-y-2.5 transition-all duration-300 ${activeThemeConfig.chapterCardInactive}`}
                           >
                             {/* Class name & Counter */}
                             <div className="flex items-center justify-between gap-1.5">
-                              <span className="font-bold text-xs text-slate-850 dark:text-slate-200 flex items-center gap-1 shrink-0">
+                              <span className="font-bold text-xs text-current flex items-center gap-1 shrink-0">
                                 <span className="text-emerald-700">🏫</span> {cls}
                               </span>
-                              <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-400 font-bold bg-slate-100 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded-lg shrink-0">
+                              <span className={`text-[10px] font-mono text-emerald-800 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-lg shrink-0 border ${activeThemeConfig.tabGroupBg}`}>
                                 {uniqueRealizedCount} z {totalChapters} tematów ({completionPercent}%)
                               </span>
                             </div>
@@ -2158,13 +2183,13 @@ export default function App() {
                             </div>
 
                             {/* Last realized lesson block */}
-                            <div className="text-[10.5px] leading-relaxed pt-2 border-t border-slate-105/60 dark:border-slate-850">
+                            <div className={`text-[10.5px] leading-relaxed pt-2 border-t ${activeThemeConfig.border}`}>
                               {lastChapter ? (
                                 <div className="space-y-0.5">
                                   <div className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold">
                                     Ostatni zrealizovaný temat:
                                   </div>
-                                  <div className="font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
+                                  <div className="font-semibold text-current line-clamp-1">
                                     {lastChapter.title}
                                   </div>
                                   <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono flex justify-between gap-1 mt-0.5">
@@ -2203,7 +2228,7 @@ export default function App() {
 
                             {/* Expanded Calendar and History list */}
                             {isExpanded && (
-                              <div className="space-y-3.5 pt-2 border-t border-slate-105/50 dark:border-slate-800/60">
+                              <div className={`space-y-3.5 pt-2 border-t ${activeThemeConfig.border}`}>
                                 <div>
                                   <div className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold mb-1">
                                     📅 Kalendarz lekcji:
@@ -2225,9 +2250,9 @@ export default function App() {
                                           <div key={`${r.chapterId}-${r.timestamp}-${rIdx}`} className="relative text-[10.5px]">
                                             <span className="absolute -left-[16px] top-1.5 w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-500 border border-white dark:border-slate-800" />
                                             
-                                            <div className="flex items-start justify-between gap-1 group/item p-1 hover:bg-slate-50 dark:hover:bg-slate-850/40 rounded-lg transition-colors">
+                                            <div className="flex items-start justify-between gap-1 group/item p-1 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-colors">
                                               <div className="space-y-0.5 flex-1 min-w-0 pr-1">
-                                                <div className="font-semibold text-slate-800 dark:text-slate-205 truncate" title={chap ? chap.title : 'Nieznany temat'}>
+                                                <div className="font-semibold text-slate-800 dark:text-slate-200 truncate" title={chap ? chap.title : 'Nieznany temat'}>
                                                   {chap ? chap.title : 'Nieznany temat'}
                                                 </div>
                                                 <div className="text-[8.5px] font-mono text-slate-400 dark:text-slate-500 flex items-center justify-between">
