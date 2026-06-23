@@ -1,0 +1,6 @@
+{
+  "name": "Interaktywny Multibook",
+  "description": "Multibook edukacyjny offline dla nauczycieli i uczniów wspierający import plików Markdown (.md) oraz wspólne rysowanie po ekranie.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

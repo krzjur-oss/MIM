@@ -1,0 +1,2178 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { 
+  BookOpen, 
+  Plus, 
+  Search, 
+  Trash2, 
+  RotateCcw, 
+  Bookmark, 
+  Volume2, 
+  Tv, 
+  Edit, 
+  ChevronRight, 
+  ChevronLeft, 
+  CheckSquare, 
+  Square, 
+  FileText, 
+  Sun, 
+  Moon, 
+  Sparkles, 
+  Compass, 
+  Sliders, 
+  Maximize, 
+  Minimize,
+  Award,
+  BookMarked,
+  Info,
+  Layers,
+  HelpCircle,
+  Image,
+  Link,
+  Copy
+} from 'lucide-react';
+import { Chapter, QuizQuestion, ThemeType, StudentProgress } from './types';
+import { DEFAULT_CHAPTERS } from './defaultChapters';
+import DrawingOverlay from './components/DrawingOverlay';
+import ChapterManager from './components/ChapterManager';
+
+// Preset lists of high-quality educational illustrations from Unsplash for our interactive photo galleries
+const PRESET_SUBJECT_GALLERIES: Record<string, { label: string; url: string }[]> = {
+  'Biologia': [
+    { label: '🧬 Mikroskop i komórka', url: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=600&auto=format&fit=crop&q=60' },
+    { label: '🧬 Helisa DNA / Genetyka', url: 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63?w=600&auto=format&fit=crop&q=60' },
+    { label: '🩻 Lekcja anatomii', url: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=600&auto=format&fit=crop&q=60' },
+    { label: '🍃 Fotosynteza i liść', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Przyroda': [
+    { label: '🍃 Fotosynteza i liść', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&auto=format&fit=crop&q=60' },
+    { label: '🦌 Leśna fauna', url: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=600&auto=format&fit=crop&q=60' },
+    { label: '🏔️ Hydrologia / Rzeka', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Chemia': [
+    { label: '🧪 Probówki i reakcje', url: 'https://images.unsplash.com/photo-1532187863486-abf9d39d66e8?w=600&auto=format&fit=crop&q=60' },
+    { label: '🧪 Kolorowe roztwory', url: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=600&auto=format&fit=crop&q=60' },
+    { label: '⚛️ Struktura atomu', url: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=600&auto=format&fit=crop&q=60' },
+    { label: '🧪 Sprzęt laboratoryjny', url: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Fizyka': [
+    { label: '🌌 Kosmos i planety', url: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&auto=format&fit=crop&q=60' },
+    { label: '🔌 Elektronika / Płytka', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60' },
+    { label: '🌈 Pryzmat i światło', url: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&auto=format&fit=crop&q=60' },
+    { label: '🌌 Gwiazdy i mgławica', url: 'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Geografia': [
+    { label: '🌍 Globus ziemski', url: 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=600&auto=format&fit=crop&q=60' },
+    { label: '🛰️ Ziemia z kosmosu', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=60' },
+    { label: '🗺️ Mapa fizyczna świata', url: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&auto=format&fit=crop&q=60' },
+    { label: '🏔️ Rzeźba gór i szczyty', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Informatyka': [
+    { label: '💻 Kod źródłowy / Program', url: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=60' },
+    { label: '💻 Komputer i technologia', url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=60' },
+    { label: '☁️ Chmura obliczeniowa', url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Historia': [
+    { label: '🏛️ Koloseum i Rzym', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&auto=format&fit=crop&q=60' },
+    { label: '📑 Stare księgi i zwoje', url: 'https://images.unsplash.com/photo-1474366521946-c3d4b507abf2?w=600&auto=format&fit=crop&q=60' },
+    { label: '🏺 Archeologia i wazy', url: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=60' },
+    { label: '🏰 Średniowieczny zamek', url: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&auto=format&fit=crop&q=60' },
+  ],
+  'Matematyka': [
+    { label: '📐 Tablica z równaniami', url: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=60' },
+    { label: '📐 Geometria i cyrkiel', url: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=60' },
+    { label: '📐 Liczby i wykresy', url: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=600&auto=format&fit=crop&q=60' },
+  ],
+};
+
+const DEFAULT_SUBJECT_GALLERY = [
+  { label: '🖍️ Przybory i kredki', url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=60' },
+  { label: '📓 Biurko i książki', url: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60' },
+  { label: '📚 Szkolna biblioteka', url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=60' },
+  { label: '📝 Notatnik i długopis', url: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=60' },
+];
+
+export default function App() {
+  // 1. Chapters database state
+  const [chapters, setChapters] = useState<Chapter[]>(() => {
+    const saved = localStorage.getItem('multibook_chapters');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error("Błąd wczytywania rozdziałów z localStorage", e);
+      }
+    }
+    return DEFAULT_CHAPTERS;
+  });
+
+  // Save chapters to LocalStorage when changed
+  useEffect(() => {
+    localStorage.setItem('multibook_chapters', JSON.stringify(chapters));
+  }, [chapters]);
+
+  // 2. Active Chapter Selection State
+  const [currentChapterId, setCurrentChapterId] = useState<string>(() => {
+    return chapters[0]?.id || 'intro-multibook';
+  });
+
+  const activeChapter = useMemo(() => {
+    return chapters.find((c) => c.id === currentChapterId) || chapters[0];
+  }, [chapters, currentChapterId]);
+
+  // 3. User Progress: Bookmarks, Notes, Completed
+  const [progress, setProgress] = useState<StudentProgress>(() => {
+    const saved = localStorage.getItem('multibook_progress');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Błąd wczytywania postępu z localStorage", e);
+      }
+    }
+    return {
+      completedChapters: [],
+      bookmarkedChapters: [],
+      chapterNotes: {}
+    };
+  });
+
+  // Save progress to LocalStorage when changed
+  useEffect(() => {
+    localStorage.setItem('multibook_progress', JSON.stringify(progress));
+  }, [progress]);
+
+  // 4. Customizing layout text, line-height, dyslexic fonts, themes
+  const [theme, setTheme] = useState<ThemeType>(() => {
+    return (localStorage.getItem('multibook_theme') as ThemeType) || 'light';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_theme', theme);
+  }, [theme]);
+
+  const [fontSize, setFontSize] = useState<number>(() => {
+    return Number(localStorage.getItem('multibook_fontsize')) || 105; // base percentage %
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_fontsize', fontSize.toString());
+  }, [fontSize]);
+
+  const [lineHeight, setLineHeight] = useState<'normal' | 'relaxed' | 'loose'>(() => {
+    return (localStorage.getItem('multibook_lineheight') as 'normal' | 'relaxed' | 'loose') || 'relaxed';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_lineheight', lineHeight);
+  }, [lineHeight]);
+
+  // 5. Open/close manager modal
+  const [isCreatorOpen, setIsCreatorOpen] = useState(false);
+
+  // 5a. Teacher Classes & Realization Tracker States
+  const [teacherClasses, setTeacherClasses] = useState<string[]>(() => {
+    const saved = localStorage.getItem('multibook_teacher_classes');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+    }
+    return ['Klasa 4A', 'Klasa 4B', 'Klasa 7A', 'Klasa 8B'];
+  });
+
+  const [realizations, setRealizations] = useState<{ className: string; chapterId: string; timestamp: number }[]>(() => {
+    const saved = localStorage.getItem('multibook_realizations');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+    }
+    return [];
+  });
+
+  const [rightDrawerTab, setRightDrawerTab] = useState<'notes' | 'classes'>('notes');
+  const [newClassNameInput, setNewClassNameInput] = useState('');
+  const [expandedClassDetails, setExpandedClassDetails] = useState<Record<string, boolean>>({});
+  const [currentCalendarDate, setCurrentCalendarDate] = useState(() => new Date(2026, 5, 21)); // June 21, 2026
+
+  // State variables for our custom chapter notes photo gallery & link pasting
+  const [chapterGalleryImages, setChapterGalleryImages] = useState<Record<string, string[]>>(() => {
+    const saved = localStorage.getItem('multibook_chapter_gallery_images');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === 'object' && parsed !== null) return parsed;
+      } catch (e) {}
+    }
+    return {};
+  });
+
+  const [newImageUrlInput, setNewImageUrlInput] = useState('');
+  const [selectedLightboxImage, setSelectedLightboxImage] = useState<string | null>(null);
+
+  // Save custom gallery images to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('multibook_chapter_gallery_images', JSON.stringify(chapterGalleryImages));
+  }, [chapterGalleryImages]);
+
+  // Save teacher classes and realizations to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('multibook_teacher_classes', JSON.stringify(teacherClasses));
+  }, [teacherClasses]);
+
+  useEffect(() => {
+    localStorage.setItem('multibook_realizations', JSON.stringify(realizations));
+  }, [realizations]);
+
+  // 6. Sidebar search and filter by category
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState<string>('Wszystkie');
+  const [selectedSchoolType, setSelectedSchoolType] = useState<string>('Wszystkie');
+  const [selectedGrade, setSelectedGrade] = useState<string>('Wszystkie');
+
+  // List of all unique subjects available
+  const subjects = useMemo(() => {
+    const set = new Set(chapters.map((c) => c.subject));
+    return ['Wszystkie', ...Array.from(set)];
+  }, [chapters]);
+
+  // List of all unique school types available
+  const schoolTypesList = useMemo(() => {
+    const set = new Set(chapters.map((c) => c.schoolType || 'Ogólny / Pozostałe'));
+    return ['Wszystkie', ...Array.from(set)];
+  }, [chapters]);
+
+  // List of all unique grades available
+  const gradesList = useMemo(() => {
+    const set = new Set(chapters.map((c) => c.grade || 'Ogólny'));
+    return ['Wszystkie', ...Array.from(set)];
+  }, [chapters]);
+
+  // Filtered chapters for current display
+  const filteredChapters = useMemo(() => {
+    return chapters.filter((c) => {
+      const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            (c.chapterGroup || '').toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSubject = selectedSubject === 'Wszystkie' || c.subject === selectedSubject;
+      const matchesSchoolType = selectedSchoolType === 'Wszystkie' || (c.schoolType || 'Ogólny / Pozostałe') === selectedSchoolType;
+      const matchesGrade = selectedGrade === 'Wszystkie' || (c.grade || 'Ogólny') === selectedGrade;
+      return matchesSearch && matchesSubject && matchesSchoolType && matchesGrade;
+    });
+  }, [chapters, searchQuery, selectedSubject, selectedSchoolType, selectedGrade]);
+
+  // Group chapters hierarchically for structured navigation
+  const groupedChapters = useMemo(() => {
+    const groups: Record<string, Record<string, Record<string, Chapter[]>>> = {};
+
+    filteredChapters.forEach((ch) => {
+      const sType = ch.schoolType || 'Ogólny / Pozostałe';
+      const sGrade = ch.grade || 'Ogólny';
+      const sGroup = ch.chapterGroup || 'Inne działy';
+
+      if (!groups[sType]) groups[sType] = {};
+      if (!groups[sType][sGrade]) groups[sType][sGrade] = {};
+      if (!groups[sType][sGrade][sGroup]) groups[sType][sGrade][sGroup] = [];
+
+      groups[sType][sGrade][sGroup].push(ch);
+    });
+
+    return groups;
+  }, [filteredChapters]);
+
+  // 7. Interactive Board / Whiteboard Overlay State
+  const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
+
+  // 8. Quiz Interaction States
+  // Map of chapterId -> QuizAnswersState (which question was solved and what index was chosen)
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>>({});
+
+  // 9. Personal Notes Drawer collapse state (on right side)
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+
+  // 10. Mobile sidebar trigger
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // 11. Fullscreen Focus Mode State (Dynamic toggle for reader only)
+  const [isContentFullscreen, setIsContentFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    const elem = document.getElementById("multibook-content-viewport");
+    if (!elem) return;
+
+    try {
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) {
+          (elem as any).webkitRequestFullscreen();
+        } else if ((elem as any).msRequestFullscreen) {
+          (elem as any).msRequestFullscreen();
+        }
+        setIsContentFullscreen(true);
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          (document as any).webkitExitFullscreen();
+        } else if ((document as any).msExitFullscreen) {
+          (document as any).msExitFullscreen();
+        }
+        setIsContentFullscreen(false);
+      }
+    } catch (err) {
+      console.warn("Natywny pełny ekran zablokowany lub nieobsługiwany - aktywacja symulowanego trybu skupienia:", err);
+      setIsContentFullscreen(!isContentFullscreen);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsContentFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  // Helper actions
+  const handleToggleBookmark = (id: string) => {
+    setProgress((prev) => {
+      const isBookmarked = prev.bookmarkedChapters.includes(id);
+      const updated = isBookmarked
+        ? prev.bookmarkedChapters.filter((cId) => cId !== id)
+        : [...prev.bookmarkedChapters, id];
+      return { ...prev, bookmarkedChapters: updated };
+    });
+  };
+
+  const handleToggleCompleted = (id: string) => {
+    setProgress((prev) => {
+      const isDone = prev.completedChapters.includes(id);
+      const updated = isDone
+        ? prev.completedChapters.filter((cId) => cId !== id)
+        : [...prev.completedChapters, id];
+      return { ...prev, completedChapters: updated };
+    });
+  };
+
+  const handleSaveNote = (text: string) => {
+    if (!activeChapter) return;
+    setProgress((prev) => {
+      const updatedNotes = { ...prev.chapterNotes, [activeChapter.id]: text };
+      return { ...prev, chapterNotes: updatedNotes };
+    });
+  };
+
+  const handleAddImageToGallery = (url: string) => {
+    if (!activeChapter || !url.trim()) return;
+    setChapterGalleryImages((prev) => {
+      const currentList = prev[activeChapter.id] || [];
+      if (currentList.includes(url.trim())) return prev;
+      return {
+        ...prev,
+        [activeChapter.id]: [...currentList, url.trim()],
+      };
+    });
+    setNewImageUrlInput('');
+  };
+
+  const handleRemoveImageFromGallery = (url: string) => {
+    if (!activeChapter) return;
+    setChapterGalleryImages((prev) => {
+      const currentList = prev[activeChapter.id] || [];
+      return {
+        ...prev,
+        [activeChapter.id]: currentList.filter((item) => item !== url),
+      };
+    });
+  };
+
+  const handleInsertImageIntoNotes = (url: string) => {
+    if (!activeChapter) return;
+    const currentNoteText = progress.chapterNotes[activeChapter.id] || '';
+    const markdownImage = `![Odhaczona grafika](${url})`;
+    const updatedNotesText = currentNoteText + (currentNoteText ? '\n\n' : '') + markdownImage;
+    handleSaveNote(updatedNotesText);
+  };
+
+  const handleToggleRealizationInClass = (className: string, chapterId: string) => {
+    setRealizations((prev) => {
+      const exists = prev.some((r) => r.className === className && r.chapterId === chapterId);
+      if (exists) {
+        return prev.filter((r) => !(r.className === className && r.chapterId === chapterId));
+      } else {
+        return [...prev, { className, chapterId, timestamp: Date.now() }];
+      }
+    });
+  };
+
+  const handleAddTeacherClass = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    if (teacherClasses.includes(trimmed)) {
+      alert('Ta klasa już istnieje!');
+      return;
+    }
+    setTeacherClasses((prev) => [...prev, trimmed]);
+    setNewClassNameInput('');
+  };
+
+  const handleDeleteTeacherClass = (name: string) => {
+    if (confirm(`Czy napewno chcesz usunąć klasę "${name}"? Usunie to również całą historię realizacji tematów w tej klasie.`)) {
+      setTeacherClasses((prev) => prev.filter((c) => c !== name));
+      setRealizations((prev) => prev.filter((r) => r.className !== name));
+    }
+  };
+
+  const handleAddNewChapter = (newChap: Chapter) => {
+    setChapters((prev) => [...prev, newChap]);
+    setCurrentChapterId(newChap.id);
+  };
+
+  const handleImportAllChapters = (imported: Chapter[]) => {
+    setChapters(imported);
+    if (imported.length > 0) {
+      setCurrentChapterId(imported[0].id);
+    }
+  };
+
+  const handleDeleteChapter = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm('Czy na pewno chcesz bezpowrotnie usunąć ten rozdział z Twojego multibooka?')) {
+      const afterDelete = chapters.filter((c) => c.id !== id);
+      setChapters(afterDelete);
+      
+      // If current is deleted, re-route
+      if (currentChapterId === id && afterDelete.length > 0) {
+        setCurrentChapterId(afterDelete[0].id);
+      }
+    }
+  };
+
+  const handleResetToDefault = () => {
+    if (confirm('Czy chcesz przywrócić domyślne działy podręcznika? Wszystkie Twoje ręcznie dodane lekcje zostaną wyczyszczone.')) {
+      setChapters(DEFAULT_CHAPTERS);
+      setProgress({
+        completedChapters: [],
+        bookmarkedChapters: [],
+        chapterNotes: {}
+      });
+      setQuizAnswers({});
+      setCurrentChapterId(DEFAULT_CHAPTERS[0].id);
+    }
+  };
+
+  // Compute stats
+  const totalChaptersCount = chapters.length;
+  const completedChaptersCount = progress.completedChapters.filter(id => chapters.some(c => c.id === id)).length;
+  const completionPercentage = totalChaptersCount > 0 
+    ? Math.round((completedChaptersCount / totalChaptersCount) * 100) 
+    : 0;
+
+  const getThemeConfig = () => {
+    switch (theme) {
+      case 'dark':
+        return {
+          h1: 'text-slate-50',
+          h2: 'text-emerald-400',
+          h3: 'text-slate-350',
+          p: 'text-slate-300',
+          blockquote: 'border-emerald-500 bg-slate-900/60 text-slate-400',
+          tableBorder: 'border-slate-800',
+          thead: 'bg-slate-900/40',
+          th: 'text-slate-400',
+          td: 'text-slate-350',
+          strong: 'text-emerald-400 bg-emerald-400/10',
+          border: 'border-slate-850',
+          headerBg: 'bg-slate-900 text-slate-100 border-slate-800',
+          sidebarBg: 'bg-slate-900/95 border-slate-800',
+          sidebarProgressBg: 'bg-slate-950/40 border-slate-850',
+          sidebarProgressText: 'text-slate-300',
+          searchBg: 'bg-slate-950 border-slate-850 text-white',
+          subjectPillActive: 'bg-white text-slate-950',
+          subjectPillInactive: 'bg-slate-900 text-slate-400 hover:bg-slate-850',
+          chapterCardActive: 'bg-emerald-950/40 border-emerald-900/60 text-white',
+          chapterCardInactive: 'bg-slate-900 hover:bg-slate-850 border-slate-800 text-slate-300',
+          studentNotesLabel: 'text-slate-400',
+          studentNotesTextarea: 'border-slate-800 bg-slate-950 text-white focus:ring-emerald-700/35',
+        };
+      case 'sepia':
+        return {
+          h1: 'text-[#4A2D19]',
+          h2: 'text-emerald-900',
+          h3: 'text-[#5C4533]',
+          p: 'text-[#433422]',
+          blockquote: 'border-emerald-800 bg-[#fbf6ec]/30 text-[#5C4533]',
+          tableBorder: 'border-[#ebdcb3]',
+          thead: 'bg-[#ebdcb3]/30',
+          th: 'text-[#5C4533]',
+          td: 'text-[#433422]',
+          strong: 'text-[#4A2D19] bg-emerald-800/10',
+          border: 'border-[#ebdcb3]',
+          headerBg: 'bg-[#f4ebd0] text-[#433422] border-[#ebdcb3]',
+          sidebarBg: 'bg-[#f4ebd0]/95 border-[#ebdcb3]',
+          sidebarProgressBg: 'bg-[#fbf6ec]/60 border-[#ebdcb3]',
+          sidebarProgressText: 'text-[#5C4533]',
+          searchBg: 'bg-[#fbf6ec] border-[#ebdcb3] text-[#433422]',
+          subjectPillActive: 'bg-[#433422] text-[#fbf6ec]',
+          subjectPillInactive: 'bg-[#ebdcb3]/40 text-[#5C4533] hover:bg-[#ebdcb3]/60',
+          chapterCardActive: 'bg-emerald-800/10 border-emerald-800/30 text-emerald-950',
+          chapterCardInactive: 'bg-[#fbf6ec] hover:bg-[#f4ebd0] border-[#ebdcb3] text-[#433422]',
+          studentNotesLabel: 'text-[#5C4533]',
+          studentNotesTextarea: 'border-[#ebdcb3] bg-[#fbf6ec] text-[#433422] focus:ring-emerald-800/35',
+        };
+      case 'blue':
+        return {
+          h1: 'text-[#0f172a]',
+          h2: 'text-[#025680]',
+          h3: 'text-[#1e293b]',
+          p: 'text-[#334155]',
+          blockquote: 'border-[#025680] bg-[#eef2f6]/50 text-[#1e293b]',
+          tableBorder: 'border-blue-100',
+          thead: 'bg-blue-100/40',
+          th: 'text-[#334155]',
+          td: 'text-[#2c3e50]',
+          strong: 'text-sky-800 bg-sky-100',
+          border: 'border-blue-100',
+          headerBg: 'bg-[#ebf2f7] text-[#2c3e50] border-blue-200',
+          sidebarBg: 'bg-[#ebf2f7]/95 border-blue-200',
+          sidebarProgressBg: 'bg-white/70 border-blue-100',
+          sidebarProgressText: 'text-slate-600',
+          searchBg: 'bg-white border-blue-100 text-[#2c3e50]',
+          subjectPillActive: 'bg-[#2c3e50] text-[#eef2f6]',
+          subjectPillInactive: 'bg-white text-[#475569] border border-blue-100 hover:bg-slate-50',
+          chapterCardActive: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+          chapterCardInactive: 'bg-white hover:bg-[#edf3f8] border-blue-100 text-[#2c3e50]',
+          studentNotesLabel: 'text-[#334155]',
+          studentNotesTextarea: 'border-blue-150 bg-white text-[#2c3e50] focus:ring-blue-500/35',
+        };
+      case 'dyslexic':
+        return {
+          h1: 'text-[#111c12]',
+          h2: 'text-[#14421b]',
+          h3: 'text-[#1b1c1b]',
+          p: 'text-[#1b1c1b]',
+          blockquote: 'border-amber-700 bg-amber-50/20 text-[#1b1c1b]',
+          tableBorder: 'border-amber-200',
+          thead: 'bg-amber-100/30',
+          th: 'text-[#1b1c1b]',
+          td: 'text-[#1b1c1b]',
+          strong: 'text-emerald-950 bg-emerald-100',
+          border: 'border-amber-200',
+          headerBg: 'bg-white text-[#1b1c1b] border-amber-200',
+          sidebarBg: 'bg-white border-amber-200',
+          sidebarProgressBg: 'bg-[#fef8f0]/40 border-amber-100',
+          sidebarProgressText: 'text-[#1b1c1b]',
+          searchBg: 'bg-white border-amber-150 text-[#1b1c1b]',
+          subjectPillActive: 'bg-[#1b1c1b] text-white',
+          subjectPillInactive: 'bg-[#fef8f0] text-[#555] hover:bg-amber-100/50',
+          chapterCardActive: 'bg-emerald-50 border-emerald-300 text-emerald-950',
+          chapterCardInactive: 'bg-white hover:bg-[#fef8f0] border-amber-150 text-[#1b1c1b]',
+          studentNotesLabel: 'text-[#1b1c1b]',
+          studentNotesTextarea: 'border-amber-150 bg-[#fef8f0]/40 text-[#1b1c1b] focus:ring-amber-500/35',
+        };
+      default: // light
+        return {
+          h1: 'text-[#2A3F33]',
+          h2: 'text-emerald-800',
+          h3: 'text-[#5A5450]',
+          p: 'text-[#433D3C]',
+          blockquote: 'border-emerald-700 bg-emerald-50/20 text-[#5A5450]',
+          tableBorder: 'border-[#EDEAE2]',
+          thead: 'bg-[#EDEAE2]/30',
+          th: 'text-[#5A5450]',
+          td: 'text-[#433D3C]',
+          strong: 'text-emerald-900 bg-emerald-700/10',
+          border: 'border-[#EDEAE2]',
+          headerBg: 'bg-white text-[#433D3C] border-[#EBEAE4]',
+          sidebarBg: 'bg-[#FBFBFA]/90 border-[#EBEAE4]',
+          sidebarProgressBg: 'bg-slate-50/70 border-slate-150/40',
+          sidebarProgressText: 'text-slate-600',
+          searchBg: 'bg-white border-slate-200 text-slate-800',
+          subjectPillActive: 'bg-slate-850 text-white',
+          subjectPillInactive: 'bg-slate-100 text-slate-600 hover:bg-slate-150',
+          chapterCardActive: 'bg-emerald-50/75 border-emerald-200 text-emerald-900',
+          chapterCardInactive: 'bg-white hover:bg-stone-50 border-slate-150/60 text-[#433D3C]',
+          studentNotesLabel: 'text-[#5A5450]',
+          studentNotesTextarea: 'border-[#EDEAE2] bg-slate-50/50 text-slate-800 focus:ring-emerald-700/10',
+        };
+    }
+  };
+
+  const activeThemeConfig = getThemeConfig();
+
+  // Render Theme classes
+  const getThemeClasses = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-slate-950 text-slate-100 dark';
+      case 'sepia':
+        return 'bg-[#fbf6ec] text-[#433422]';
+      case 'blue':
+        return 'bg-[#eef2f6] text-[#2c3e50]';
+      case 'dyslexic':
+        return 'bg-[#fef8f0] text-[#1b1c1b]';
+      default: // light (Natural Tones main palette)
+        return 'bg-[#F7F6F2] text-[#433D3C]';
+    }
+  };
+
+  const getPageCardClasses = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-slate-900 border-slate-800 text-slate-200';
+      case 'sepia':
+        return 'bg-[#f4ebd0] border-[#e7daaf] text-[#433422]';
+      case 'blue':
+        return 'bg-white border-blue-100 text-slate-800';
+      case 'dyslexic':
+        return 'bg-[#fff] border-amber-100 text-[#1b1c1b]';
+      default: // light
+        return 'bg-white border-[#EBEAE4] text-[#433D3C] shadow-[0_10px_30px_rgba(0,0,0,0.02)]';
+    }
+  };
+
+  const textStyle = {
+    fontSize: `${fontSize}%`,
+    lineHeight: lineHeight === 'normal' ? '1.5' : lineHeight === 'relaxed' ? '1.8' : '2.1',
+    fontFamily: theme === 'dyslexic' 
+      ? '"Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif' 
+      : 'system-ui, -apple-system, sans-serif'
+  };
+
+  return (
+    <div id="multibook-app-root" className={`min-h-screen flex flex-col font-sans transition-all duration-300 ${getThemeClasses()}`}>
+      
+      {/* Top Humble Header */}
+      <header className={`border-b px-5 py-3 flex items-center justify-between shrink-0 z-30 shadow-xs transition-all duration-300 ${activeThemeConfig.headerBg}`}>
+        <div className="flex items-center gap-3">
+          <button
+            id="mobile-sidebar-toggle-btn"
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            className="p-1 px-2.5 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-white rounded-lg text-sm lg:hidden cursor-pointer font-semibold transition-all"
+          >
+            Spis treści
+          </button>
+          
+          <div className="hidden sm:flex items-center gap-2 font-serif">
+            <span className="p-2 bg-emerald-700 dark:bg-emerald-650 rounded-xl text-white">
+              <BookOpen className="w-5 h-5" />
+            </span>
+            <div>
+              <h1 id="brand-title" className={`text-base font-bold tracking-tight leading-4 transition-colors ${activeThemeConfig.h1}`}>Interaktywny Multibook</h1>
+              <p className="text-[10px] text-slate-500 font-medium font-sans opacity-85">Baza lekcji i ćwiczeń offline</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Global settings widget */}
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <button
+            id="global-whiteboard-toggle-btn"
+            onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+              isDrawingModeActive
+                ? 'bg-rose-500 text-white shadow-sm'
+                : 'bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
+            }`}
+          >
+            <Tv className="w-4 h-4" />
+            <span>Tablica-Szkicownik {isDrawingModeActive ? '(WŁ.)' : ''}</span>
+          </button>
+
+          <button
+            id="student-notes-toggle-btn"
+            onClick={() => setIsNotesOpen(!isNotesOpen)}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
+              isNotesOpen
+                ? 'bg-emerald-700 text-white shadow-xs'
+                : 'bg-stone-150 hover:bg-stone-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-stone-700 dark:text-slate-355'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Dziennik & Notatki 🏫</span>
+          </button>
+
+          <button
+            id="clean-reset-db-btn"
+            onClick={handleResetToDefault}
+            className="p-1 px-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer transition-colors"
+            title="Przywróć domyślne działy"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </header>
+
+      {/* Main Container */}
+      <div className="flex-1 flex relative overflow-hidden">
+
+        {/* SIDEBAR: Table of Contents (collapsible / responsive drawer) */}
+        <aside
+          id="multibook-sidebar"
+          className={`shrink-0 border-r w-80 p-4 flex flex-col gap-4 absolute lg:static top-0 bottom-0 left-0 z-45 transition-all duration-300 lg:translate-x-0 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} ${
+            isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Top of Sidebar Info & Actions */}
+          <div className="space-y-3 shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tematy lekcji</span>
+              <button
+                id="add-chapter-sidebar-btn"
+                onClick={() => {
+                  setIsCreatorOpen(true);
+                  setIsMobileSidebarOpen(false);
+                }}
+                className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 font-bold text-xs rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Dodaj lekcję</span>
+              </button>
+            </div>
+
+            {/* General progress stats */}
+            <div className={`p-3 rounded-xl border transition-all duration-300 ${activeThemeConfig.sidebarProgressBg}`}>
+              <div className={`flex items-center justify-between text-xs mb-1.5 transition-colors duration-300 ${activeThemeConfig.sidebarProgressText}`}>
+                <span className="font-semibold flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Twój postęp:</span>
+                </span>
+                <span className="font-mono font-bold">
+                  {completedChaptersCount} / {totalChaptersCount} ({completionPercentage}%)
+                </span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div 
+                  className="bg-emerald-700 dark:bg-emerald-600 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${completionPercentage}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Deep searching input */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <input
+                id="sidebar-search-input"
+                type="text"
+                placeholder="Szukaj lekcji lub frazy..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-9 pr-4 py-2 text-xs border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-emerald-700/10 transition-all duration-300 ${activeThemeConfig.searchBg}`}
+              />
+            </div>
+
+            {/* School Types pills selector */}
+            <div className="space-y-1.5 pb-1.5 border-b border-stone-200/50 dark:border-slate-800/80">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                Typ szkoły:
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {schoolTypesList.map((st) => (
+                  <button
+                    key={st}
+                    id={`school-pill-${st}`}
+                    onClick={() => setSelectedSchoolType(st)}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded-md cursor-pointer transition-all ${
+                      selectedSchoolType === st
+                        ? activeThemeConfig.subjectPillActive
+                        : activeThemeConfig.subjectPillInactive
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Grades/Classes pills selector */}
+            <div className="space-y-1.5 pb-1.5 border-b border-stone-200/50 dark:border-slate-800/80">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                Klasa / Poziom:
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {gradesList.map((gr) => (
+                  <button
+                    key={gr}
+                    id={`grade-pill-${gr}`}
+                    onClick={() => setSelectedGrade(gr)}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded-md cursor-pointer transition-all ${
+                      selectedGrade === gr
+                        ? activeThemeConfig.subjectPillActive
+                        : activeThemeConfig.subjectPillInactive
+                    }`}
+                  >
+                    {gr}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Subject horizontal pills selector */}
+            <div className="space-y-1.5 pb-1">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                Przedmiot:
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {subjects.map((sub) => (
+                  <button
+                    key={sub}
+                    id={`subject-pill-${sub}`}
+                    onClick={() => setSelectedSubject(sub)}
+                    className={`px-2 py-1 text-[10px] font-bold rounded-md cursor-pointer transition-all ${
+                      selectedSubject === sub
+                        ? activeThemeConfig.subjectPillActive
+                        : activeThemeConfig.subjectPillInactive
+                    }`}
+                  >
+                    {sub}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Chapters listing list block (Hierarchical Tree View) */}
+          <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+            {filteredChapters.length > 0 ? (
+              Object.entries(groupedChapters).map(([sType, sGrades]) => (
+                <div key={sType} className="space-y-2 border-b border-slate-100 dark:border-slate-800/30 pb-3 last:border-0 last:pb-0">
+                  {/* School Type Header Banner */}
+                  <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-150/40 dark:bg-slate-800/40 text-[#5A5450] dark:text-slate-400 rounded-lg">
+                    <span>🏫</span>
+                    <span className="truncate">{sType}</span>
+                  </div>
+
+                  <div className="space-y-3 pl-1">
+                    {Object.entries(sGrades).map(([sGrade, sGroups]) => (
+                      <div key={sGrade} className="space-y-2 PL_GRADE pl-1.5">
+                        {/* Class/Grade Label Pill */}
+                        <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-850 dark:text-emerald-350 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full w-max">
+                          <span>🎓</span>
+                          <span>{sGrade}</span>
+                        </div>
+
+                        <div className="space-y-2.5 pl-2">
+                          {Object.entries(sGroups).map(([sGroup, chaptersListInGroup]) => (
+                            <div key={sGroup} className="space-y-1">
+                              {/* Chapter Group Section header (Dział nadrzędny) */}
+                              <div className="flex items-center gap-1 text-[9px] font-semibold text-slate-500 dark:text-slate-400 py-0.5 uppercase tracking-wide">
+                                <span className="text-emerald-600">📂 Rozdział:</span>
+                                <span className="truncate">{sGroup}</span>
+                              </div>
+
+                              {/* Lesson list under this group */}
+                              <div className="space-y-1 pl-1 ml-1 border-l border-emerald-600/10 dark:border-emerald-500/10">
+                                {chaptersListInGroup.map((ch) => {
+                                  const isCurrent = ch.id === activeChapter?.id;
+                                  const isCompleted = progress.completedChapters.includes(ch.id);
+                                  const isBookmarked = progress.bookmarkedChapters.includes(ch.id);
+                                  const hasNotes = !!progress.chapterNotes[ch.id];
+
+                                  return (
+                                    <div
+                                      key={ch.id}
+                                      id={`chapter-card-${ch.id}`}
+                                      onClick={() => {
+                                        setCurrentChapterId(ch.id);
+                                        setIsMobileSidebarOpen(false);
+                                        setIsDrawingModeActive(false); // clear drawing overlays for fresh chapters
+                                      }}
+                                      className={`p-2.5 rounded-xl border transition-all cursor-pointer group flex flex-col gap-1 ${
+                                        isCurrent
+                                          ? `${activeThemeConfig.chapterCardActive} font-semibold ring-1 ring-emerald-500/10`
+                                          : `${activeThemeConfig.chapterCardInactive}`
+                                      }`}
+                                    >
+                                      <div className="flex items-start justify-between gap-1.5">
+                                        <span className="text-xs font-semibold leading-snug text-slate-800 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400 transition-colors">
+                                          {ch.title}
+                                        </span>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                          {isBookmarked && (
+                                            <span className="text-amber-500 text-[10px]" title="Zakładka">
+                                              ★
+                                            </span>
+                                          )}
+                                          {isCompleted ? (
+                                            <span className="text-emerald-500 font-bold text-[11px]" title="Ukończona lekcja">✓</span>
+                                          ) : (
+                                            <span className="text-slate-300 dark:text-slate-700 text-[10px]">○</span>
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      <div className="flex flex-wrap items-center justify-between gap-1 mt-0.5 text-[9px] text-slate-400 dark:text-slate-500 font-sans">
+                                        <span className="p-0.5 px-1 bg-slate-100/75 dark:bg-slate-800/75 rounded text-[8px] font-medium text-slate-500 dark:text-slate-400">
+                                          {ch.subject}
+                                        </span>
+                                        <div className="flex items-center gap-1.5">
+                                          <span>⏱️ {ch.estimatedReadTime} min</span>
+                                          {hasNotes && <span title="Posiada notatki">📝</span>}
+                                          
+                                          {/* Option to delete own custom chapters */}
+                                          {!ch.isDefault && (
+                                            <button
+                                              id={`delete-chapter-btn-${ch.id}`}
+                                              onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                              className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-0.5"
+                                              title="Usuń lekcję"
+                                            >
+                                              <Trash2 className="w-2.5 h-2.5" />
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 px-4">
+                <p className="text-xs text-slate-500 dark:text-slate-400">Brak rozdziałów spełniających kryteria.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Quick info about book bottom pane */}
+          <div className="text-[10px] text-slate-500 mt-auto pt-3 border-t border-slate-150 dark:border-slate-800">
+            <p className="font-semibold text-slate-600 dark:text-slate-400">Interaktywny Multibook v1.2</p>
+            <p className="mt-0.5 leading-relaxed">Możesz swobodnie przygotować materiały dla całej klasy.</p>
+          </div>
+        </aside>
+
+        {/* MOBILE SIDEBAR DRAW OUTS OVERLAY */}
+        {isMobileSidebarOpen && (
+          <div 
+            id="mobile-sidebar-blur-overlay"
+            className="fixed inset-0 bg-black/30 backdrop-blur-xs z-40 lg:hidden"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+
+        {/* MASTER VIEWPORT (MAIN MULTIBOOK CONTENT PAGE) */}
+        <main 
+          id="multibook-content-viewport" 
+          className={isContentFullscreen 
+            ? "fixed inset-0 z-50 flex flex-col transition-all duration-300 overflow-hidden" 
+            : "flex-1 flex flex-col overflow-hidden relative"
+          }
+          style={isContentFullscreen ? {
+            backgroundColor: theme === 'sepia' ? '#fbf6ec' : theme === 'blue' ? '#eef2f6' : theme === 'dyslexic' ? '#fef8f0' : theme === 'dark' ? '#020617' : '#F7F6F2',
+            color: theme === 'sepia' ? '#433422' : theme === 'blue' ? '#2c3e50' : theme === 'dyslexic' ? '#1b1c1b' : theme === 'dark' ? '#f1f5f9' : '#433D3C'
+          } : undefined}
+        >
+
+          {/* View Config Settings row over chapter content */}
+          <div className={`border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 backdrop-blur-md transition-all duration-300 ${activeThemeConfig.headerBg}`}>
+            
+            {/* Subject name of active class */}
+            <div className="flex items-center gap-2">
+              <span className="p-1 px-2.5 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 text-[10px] font-bold rounded-lg uppercase tracking-wider">
+                {activeChapter?.subject || 'Brak'}
+              </span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400">• Czas nauki: {activeChapter?.estimatedReadTime || 0} min.</span>
+            </div>
+
+            {/* Custom display adjustments widgets */}
+            <div className="flex items-center gap-2 flex-wrap">
+              
+              {/* Dynamic Font selection picker dropdown */}
+              <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                <span className="text-[10px] font-bold text-slate-500 px-1 hidden md:inline">Styl tekstu:</span>
+                
+                {/* Font-size buttons */}
+                <button
+                  id="font-size-dec-btn"
+                  onClick={() => setFontSize(Math.max(80, fontSize - 5))}
+                  className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md text-xs font-bold leading-none cursor-pointer hover:bg-slate-50"
+                  title="Zmniejsz tekst"
+                >
+                  A-
+                </button>
+                <span className="text-[10px] font-mono font-bold w-9 text-center text-slate-700 dark:text-slate-300">
+                  {fontSize}%
+                </span>
+                <button
+                  id="font-size-inc-btn"
+                  onClick={() => setFontSize(Math.min(145, fontSize + 5))}
+                  className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md text-xs font-bold leading-none cursor-pointer hover:bg-slate-50"
+                  title="Powiększ tekst"
+                >
+                  A+
+                </button>
+              </div>
+
+              {/* Interline/Line height picker */}
+              <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[10px] font-bold">
+                <button
+                  id="lineheight-norm-btn"
+                  onClick={() => setLineHeight('normal')}
+                  className={`px-1.5 py-1 rounded-md cursor pointer transition-all ${
+                    lineHeight === 'normal' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
+                  }`}
+                  title="Interlinia: wąska"
+                >
+                  Wąska
+                </button>
+                <button
+                  id="lineheight-relax-btn"
+                  onClick={() => setLineHeight('relaxed')}
+                  className={`px-1.5 py-1 rounded-md cursor pointer transition-all ${
+                    lineHeight === 'relaxed' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
+                  }`}
+                  title="Interlinia: normalna"
+                >
+                  Normalna
+                </button>
+                <button
+                  id="lineheight-loose-btn"
+                  onClick={() => setLineHeight('loose')}
+                  className={`px-1.5 py-1 rounded-md cursor-pointer transition-all ${
+                    lineHeight === 'loose' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
+                  }`}
+                  title="Interlinia: szeroka"
+                >
+                  Szeroka
+                </button>
+              </div>
+
+              <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-800" />
+
+              {/* Theme selection buttons */}
+              <div className="flex items-center gap-1">
+                {(['light', 'sepia', 'blue', 'dark', 'dyslexic'] as ThemeType[]).map((thm) => {
+                  const labelMap: Record<ThemeType, string> = {
+                    light: 'Jasny',
+                    sepia: 'Sepia',
+                    blue: 'Zasnąć',
+                    dark: 'Ciemny',
+                    dyslexic: 'Dyslektyk Czcionka'
+                  };
+                  const colorMap: Record<ThemeType, string> = {
+                    light: 'bg-white border-slate-300',
+                    sepia: 'bg-[#f4ebd0] border-[#c0b080]',
+                    blue: 'bg-blue-100 border-blue-400',
+                    dark: 'bg-slate-800 border-slate-700',
+                    dyslexic: 'bg-[#fff5e6] border-orange-200'
+                  };
+                  return (
+                    <button
+                      key={thm}
+                      id={`theme-btn-${thm}`}
+                      onClick={() => setTheme(thm)}
+                      className={`w-5 h-5 rounded-full border transition-all cursor-pointer ${colorMap[thm]} ${
+                        theme === thm ? 'scale-115 ring-2 ring-emerald-700 ring-offset-2' : 'opacity-70 hover:opacity-100'
+                      }`}
+                      title={`${labelMap[thm]} motyw`}
+                    />
+                  );
+                })}
+              </div>
+
+              <div className="w-[1px] h-5 bg-slate-250 dark:bg-slate-800" />
+
+              {/* Fullscreen focus mode toggle */}
+              <button
+                id="toggle-fullscreen-focus-btn"
+                onClick={toggleFullscreen}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isContentFullscreen
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'bg-stone-150 hover:bg-stone-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+                }`}
+                title={isContentFullscreen ? 'Wyjdź z trybu pełnoekranowego' : 'Włącz tryb pełnoekranowego skupienia'}
+              >
+                {isContentFullscreen ? (
+                  <>
+                    <Minimize className="w-3.5 h-3.5" />
+                    <span>Zamknij pełny ekran</span>
+                  </>
+                ) : (
+                  <>
+                    <Maximize className="w-3.5 h-3.5" />
+                    <span>Pełny ekran</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Active Work Area Wrapper (Contains Drawing canvas overlay + Markdown viewer scrolling space) */}
+          <div className="flex-1 overflow-hidden relative flex flex-col">
+
+            {/* Drawing Layer overlay container */}
+            <DrawingOverlay 
+              isActive={isDrawingModeActive} 
+              onClose={() => setIsDrawingModeActive(false)} 
+            />
+
+            {/* Scrolling Viewport wrapper for MD Content */}
+            <div className="flex-1 overflow-y-auto px-4 py-6 md:p-8 space-y-8 select-text">
+              {activeChapter ? (
+                <article className="max-w-3xl mx-auto space-y-6">
+                  
+                  {/* Title and Top interactive bar */}
+                  <div className={`pb-4 border-b flex items-start justify-between gap-4 transition-all duration-300 ${activeThemeConfig.border}`}>
+                    <div>
+                      <h2 
+                        id="active-chapter-title"
+                        className={`text-2xl md:text-3.5xl font-extrabold tracking-tight transition-colors duration-300 ${activeThemeConfig.h1}`}
+                        style={{ fontFamily: textStyle.fontFamily }}
+                      >
+                        {activeChapter.title}
+                      </h2>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500 opacity-95">
+                        <span className="p-0.5 px-2 bg-slate-100 dark:bg-slate-800 text-slate-805 dark:text-slate-200 rounded-md font-medium text-[10px]">
+                          {activeChapter.subject}
+                        </span>
+                        <span className="p-0.5 px-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 rounded-md font-semibold text-[10px]">
+                          🎓 {activeChapter.educationLevel || 'Ogólny'}
+                        </span>
+                        <span className="mx-1 text-slate-300 dark:text-slate-700">|</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">Utworzono: {new Date(activeChapter.createdAt).toLocaleDateString('pl-PL')}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* Bookmark chapter toggler */}
+                      <button
+                        id="chapter-bookmark-toggle-btn"
+                        onClick={() => handleToggleBookmark(activeChapter.id)}
+                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                          progress.bookmarkedChapters.includes(activeChapter.id)
+                            ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-100 dark:shadow-none'
+                            : 'bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-600 border-slate-200 dark:border-slate-800'
+                        }`}
+                        title="Zapisz do zakładek"
+                      >
+                        <Bookmark className="w-4 h-4" />
+                      </button>
+
+                      {/* Completed/Mark-as-done chapter */}
+                      <button
+                        id="chapter-complete-toggle-btn"
+                        onClick={() => handleToggleCompleted(activeChapter.id)}
+                        className={`px-3 py-2 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                          progress.completedChapters.includes(activeChapter.id)
+                            ? 'bg-emerald-500 text-white border-emerald-500 hover:bg-emerald-600'
+                            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
+                        }`}
+                      >
+                        {progress.completedChapters.includes(activeChapter.id) ? (
+                          <>
+                            <span className="font-bold">✓</span>
+                            <span>Ukończone</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
+                            <span>Oznacz jako przeczytane</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* HIGH-RES RENDERED MARKDOWN ENGINE CONTAINER */}
+                  <div 
+                    id="multibook-rendered-markdown-content"
+                    className="prose dark:prose-invert max-w-none transition-all"
+                    style={textStyle}
+                  >
+                    <ReactMarkdown
+                      components={{
+                        h1: ({node, ...props}) => <h1 className={`text-2xl md:text-3.5xl font-serif font-bold mt-8 mb-4 leading-tight tracking-tight border-b pb-2.5 transition-all duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`} {...props} />,
+                        h2: ({node, ...props}) => <h2 className={`text-xl md:text-2.5xl font-serif font-bold mt-7 mb-4 leading-snug transition-colors duration-300 ${activeThemeConfig.h2}`} {...props} />,
+                        h3: ({node, ...props}) => <h3 className={`text-lg md:text-xl font-serif font-bold mt-6 mb-3 transition-colors duration-300 ${activeThemeConfig.h3}`} {...props} />,
+                        p: ({node, ...props}) => <p className={`mb-4 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                        ul: ({node, ...props}) => <ul className={`list-disc list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                        ol: ({node, ...props}) => <ol className={`list-decimal list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                        blockquote: ({node, ...props}) => <blockquote className={`border-l-4 pl-4 italic my-6 py-3 pr-3 text-sm rounded-r-xl font-serif transition-colors duration-300 ${activeThemeConfig.blockquote}`} {...props} />,
+                        table: ({node, ...props}) => <div className={`overflow-x-auto my-6 border rounded-xl transition-all duration-300 ${activeThemeConfig.border}`}><table className={`min-w-full divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} /></div>,
+                        thead: ({node, ...props}) => <thead className={`${activeThemeConfig.thead}`} {...props} />,
+                        tbody: ({node, ...props}) => <tbody className={`divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
+                        tr: ({node, ...props}) => <tr className="hover:bg-slate-50/10" {...props} />,
+                        th: ({node, ...props}) => <th className={`px-4 py-3 text-left text-xs font-bold uppercase tracking-wider border-b transition-all duration-300 ${activeThemeConfig.border} ${activeThemeConfig.th}`} {...props} />,
+                        td: ({node, ...props}) => <td className={`px-4 py-3 text-sm transition-colors duration-300 ${activeThemeConfig.td}`} {...props} />,
+                        hr: ({node, ...props}) => <hr className={`my-8 transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
+                        strong: ({node, ...props}) => <strong className={`font-bold px-1 py-0.5 rounded-sm transition-colors duration-300 ${activeThemeConfig.strong}`} {...props} />,
+                      }}
+                    >
+                      {activeChapter.content}
+                    </ReactMarkdown>
+                  </div>
+
+                  {/* INTERACTIVE QUIZ BLOCK (Renders if chapter contains quizzes defined with it) */}
+                  {activeChapter.quizzes && activeChapter.quizzes.length > 0 && (
+                    <div id="chapter-quizzes-card-block" className={`mt-12 p-6 md:p-8 rounded-2xl border ${getPageCardClasses()} space-y-6 shadow-xs`}>
+                      <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-850">
+                        <span className="p-1 px-2.5 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400 rounded-lg text-xs font-bold">Quiz</span>
+                        <div>
+                          <h3 className="font-serif font-bold text-emerald-950 dark:text-white">Interaktywne Ćwiczenia Sprawdzające</h3>
+                          <p className="text-[10px] text-slate-505">Sprawdź swoją wiedzę po zapoznaniu się z tym tematem</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-8">
+                        {activeChapter.quizzes.map((q, qIndex) => {
+                          const chapAnswers = quizAnswers[activeChapter.id] || {};
+                          const savedAnswerObj = chapAnswers[q.id];
+                          const hasAnswered = !!savedAnswerObj;
+
+                          return (
+                            <div key={q.id} className="space-y-3">
+                              <div className="flex items-start gap-2.5">
+                                <span className="font-mono text-xs font-extrabold text-emerald-800 dark:text-[#a7f3d0] bg-emerald-50 dark:bg-emerald-950/50 p-1.5 px-2.5 rounded-lg shrink-0 mt-0.5">
+                                  {qIndex + 1}
+                                </span>
+                                <h4 className={`text-sm font-bold pt-0.5 leading-relaxed transition-colors duration-300 ${activeThemeConfig.h3}`}>
+                                  {q.question}
+                                </h4>
+                              </div>
+
+                              {/* Choices listing */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pl-0 sm:pl-10">
+                                {q.options.map((opt, oIndex) => {
+                                  const isChosen = savedAnswerObj?.chosenIdx === oIndex;
+                                  const isCorrectOne = q.correctAnswer === oIndex;
+
+                                  let optionCardClasses = `transition-all duration-300 ${
+                                    theme === 'sepia' 
+                                      ? 'bg-[#f4ebd0] border-[#c0b080] text-[#433422] hover:bg-[#ebdcb3]/60' 
+                                      : theme === 'blue'
+                                      ? 'bg-[#edf3f8] border-blue-150 text-[#2c3e50] hover:bg-white'
+                                      : theme === 'dyslexic'
+                                      ? 'bg-white border-amber-200 text-[#1b1c1b] hover:bg-amber-100/30'
+                                      : theme === 'dark'
+                                      ? 'bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-850'
+                                      : 'bg-white border-slate-200 text-[#433D3C] hover:bg-slate-50'
+                                  }`;
+                                  if (hasAnswered) {
+                                    if (isChosen && isCorrectOne) {
+                                      optionCardClasses = "bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-300 dark:border-green-800/80";
+                                    } else if (isChosen && !isCorrectOne) {
+                                      optionCardClasses = "bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-800/80";
+                                    } else if (isCorrectOne) {
+                                      optionCardClasses = "bg-green-50/60 dark:bg-green-950/10 text-green-700 dark:text-green-400 border-green-200 dark:border-green-900/50";
+                                    } else {
+                                      optionCardClasses = theme === 'sepia' 
+                                        ? 'opacity-50 bg-[#fbf6ec] border-[#e7daaf] text-[#433422]'
+                                        : theme === 'blue'
+                                        ? 'opacity-50 bg-slate-100 border-blue-105 text-[#2c3e50]'
+                                        : theme === 'dyslexic'
+                                        ? 'opacity-50 bg-white border-amber-100 text-[#1b1c1b]'
+                                        : 'opacity-55 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800';
+                                    }
+                                  }
+
+                                  return (
+                                    <button
+                                      key={oIndex}
+                                      id={`quiz-q-${qIndex}-opt-${oIndex}`}
+                                      disabled={hasAnswered}
+                                      onClick={() => {
+                                        const isCorr = q.correctAnswer === oIndex;
+                                        setQuizAnswers((prev) => {
+                                          const prevChap = prev[activeChapter.id] || {};
+                                          return {
+                                            ...prev,
+                                            [activeChapter.id]: {
+                                              ...prevChap,
+                                              [q.id]: {
+                                                chosenIdx: oIndex,
+                                                isCorrect: isCorr,
+                                                showFeedback: true
+                                              }
+                                            }
+                                          };
+                                        });
+                                      }}
+                                      className={`p-3 text-left border rounded-xl font-medium text-xs transition-colors transition-transform cursor-pointer focus:outline-hidden ${optionCardClasses}`}
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <span className="w-5 h-5 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-500 font-bold shrink-0">
+                                          {['A', 'B', 'C', 'D'][oIndex] || oIndex + 1}
+                                        </span>
+                                        <span>{opt}</span>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              {/* Interactive success or corrective explanation box */}
+                              {hasAnswered && (
+                                <div className="mt-3.5 pl-0 sm:pl-10">
+                                  <div className={`p-4 rounded-xl text-xs border ${
+                                    savedAnswerObj.isCorrect 
+                                      ? 'bg-green-500/10 border-green-200 text-green-800 dark:text-green-400' 
+                                      : 'bg-amber-500/10 border-amber-200 text-amber-800 dark:text-amber-400'
+                                  }`}>
+                                    <div className="flex items-center gap-1.5 font-bold mb-1">
+                                      {savedAnswerObj.isCorrect ? (
+                                        <>
+                                          <span>🎉 Bardzo dobrze!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span>💡 Blisko! Przemyśl to jeszcze raz...</span>
+                                        </>
+                                      )}
+                                    </div>
+                                    {q.explanation && (
+                                      <p className="leading-relaxed text-slate-600 dark:text-slate-300 font-medium">
+                                        <strong>Wyjaśnienie:</strong> {q.explanation}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Display total quiz score if completed */}
+                      {Object.keys(quizAnswers[activeChapter.id] || {}).length === activeChapter.quizzes.length && (
+                        <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between text-white gap-4 mt-6 animate-in zoom-in duration-200">
+                          <div>
+                            <h4 className="font-bold text-sm">Gratulacje! Zadania ukończone! 🏆</h4>
+                            <p className="text-[11px] text-emerald-100 mt-0.5">Odpowiedziałeś na wszystkie pytania z tej lekcji.</p>
+                          </div>
+                          <button
+                            id="reset-active-chapter-quiz"
+                            onClick={() => {
+                              setQuizAnswers((prev) => {
+                                const copied = { ...prev };
+                                delete copied[activeChapter.id];
+                                return copied;
+                              });
+                            }}
+                            className="bg-white text-emerald-800 hover:bg-slate-50 font-bold text-xs p-2 px-3.5 rounded-xl shrink-0 cursor-pointer transition-colors"
+                          >
+                            Rozwiąż ponownie
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Bookmark suggestion panel for bottom */}
+                  <div className="pt-6 border-t border-slate-100 dark:border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <BookMarked className="w-4 h-4 text-slate-400" />
+                      <span>Uważasz tę lekcję za skończoną? Zaznacz u góry jako ukończoną!</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {/* Navigating chapters sequentially with circular progress indicators (dots) */}
+                      {chapters.findIndex((c) => c.id === activeChapter.id) > 0 ? (
+                        <button
+                          id="prev-chapter-btn-bottom"
+                          type="button"
+                          onClick={() => {
+                            const idx = chapters.findIndex((c) => c.id === activeChapter.id);
+                            setCurrentChapterId(chapters[idx - 1].id);
+                            setIsDrawingModeActive(false);
+                          }}
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                          <span className="hidden xs:inline">Wstecz</span>
+                        </button>
+                      ) : (
+                        <div className="w-[50px] xs:w-[70px] shrink-0" />
+                      )}
+
+                      {/* Visual Dots Indicators */}
+                      <div className="flex items-center gap-2 justify-center flex-wrap max-w-[220px] xs:max-w-[280px] md:max-w-[340px]">
+                        {chapters.map((chap, idx) => {
+                          const isActive = chap.id === activeChapter.id;
+                          const isCompleted = progress.completedChapters.includes(chap.id);
+                          
+                          return (
+                            <button
+                              key={chap.id}
+                              id={`progress-dot-${chap.id}`}
+                              type="button"
+                              onClick={() => {
+                                setCurrentChapterId(chap.id);
+                                setIsDrawingModeActive(false);
+                              }}
+                              className={`w-2.5 h-2.5 rounded-full relative group/dot transition-all duration-300 cursor-pointer ${
+                                isActive 
+                                  ? 'bg-emerald-700 dark:bg-emerald-500 scale-125 ring-3 ring-emerald-500/20' 
+                                  : isCompleted 
+                                  ? 'bg-emerald-500/50 dark:bg-emerald-400/40 hover:bg-emerald-600 dark:hover:bg-emerald-500' 
+                                  : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'
+                              }`}
+                              title={chap.title}
+                            >
+                              {/* Rich Hover Tooltip with detail info */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2.5 hidden group-hover/dot:block bg-slate-900 text-[#ECE7DE] text-[10px] leading-relaxed py-1.5 px-3 rounded-lg whitespace-nowrap shadow-xl border border-slate-800 z-50 pointer-events-none transition-all">
+                                <span className="font-extrabold text-emerald-400 mr-1">{idx + 1}.</span>
+                                <span className="font-semibold">{chap.title}</span>
+                                {isCompleted && (
+                                  <span className="text-emerald-400 ml-1.5 font-extrabold" title="Lekcja ukończona">✓</span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {chapters.findIndex((c) => c.id === activeChapter.id) < chapters.length - 1 ? (
+                        <button
+                          id="next-chapter-btn-bottom"
+                          type="button"
+                          onClick={() => {
+                            const idx = chapters.findIndex((c) => c.id === activeChapter.id);
+                            setCurrentChapterId(chapters[idx + 1].id);
+                            setIsDrawingModeActive(false);
+                          }}
+                          className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                        >
+                          <span className="hidden xs:inline">Dalej</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      ) : (
+                        <div className="w-[50px] xs:w-[68px] shrink-0" />
+                      )}
+                    </div>
+                  </div>
+
+                </article>
+              ) : (
+                <div className="text-center py-20">
+                  <p className="text-sm text-slate-500">Kliknij na jeden z tematów po lewej, aby rozpocząć naukę.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+
+        {/* DZIENNIK I NOTATNIK NAUCZYCIELA & UCZNIA (DRAWER ON RIGHT SIDE) */}
+        {isNotesOpen && activeChapter && (
+          <aside
+            id="student-notes-aside-drawer"
+            className={`w-85 border-l p-4 shrink-0 flex flex-col gap-3.5 animate-in slide-in-from-right duration-250 z-30 transition-all duration-300 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} overflow-y-auto`}
+          >
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between shrink-0 pb-1.5 border-b border-stone-150/60 dark:border-slate-800">
+              <div>
+                <h3 className={`font-serif font-bold text-sm flex items-center gap-1.5 transition-colors duration-300 ${activeThemeConfig.h1}`}>
+                  <FileText className="w-4 h-4 text-emerald-700" />
+                  <span>Dziennik & Notatki 🏫</span>
+                </h3>
+                <p className="text-[10px] text-slate-500">Zarządzanie lekcjami i klasami</p>
+              </div>
+              <button
+                id="close-notes-drawer-btn"
+                onClick={() => setIsNotesOpen(false)}
+                className="text-xs font-bold text-slate-500 hover:text-slate-705 dark:hover:text-slate-300 cursor-pointer p-1 bg-slate-105/50 dark:bg-slate-800 rounded-md"
+              >
+                Ukryj
+              </button>
+            </div>
+
+            {/* Tab Selection buttons */}
+            <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl shrink-0">
+              <button
+                id="drawer-tab-notes-btn"
+                onClick={() => setRightDrawerTab('notes')}
+                className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
+                  rightDrawerTab === 'notes'
+                    ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
+                }`}
+              >
+                Notatnik & Realizacja
+              </button>
+              <button
+                id="drawer-tab-classes-btn"
+                onClick={() => setRightDrawerTab('classes')}
+                className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
+                  rightDrawerTab === 'classes'
+                    ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-705 dark:hover:text-slate-355'
+                }`}
+              >
+                Klasy & Statystyki
+              </button>
+            </div>
+
+            {/* TAB CONTENTS */}
+            {rightDrawerTab === 'notes' ? (
+              <div className="flex-1 flex flex-col gap-3.5 min-h-0">
+                {/* Notes Textarea block */}
+                <div className="flex-1 flex flex-col gap-2 min-h-[120px]">
+                  <label className={`text-[11.5px] font-bold transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                    📝 Brudnopis do lekcji:
+                  </label>
+                  <textarea
+                    id="student-chapter-notes-textarea"
+                    className={`flex-1 p-3 text-xs leading-relaxed border rounded-xl focus:outline-hidden focus:ring-2 font-mono resize-none transition-all duration-300 ${activeThemeConfig.studentNotesTextarea}`}
+                    placeholder="np. Moje podsumowanie lekcji: Budowa komórki...\n- Jądro = centrum sterowania\n- Mitochondrium = elektrownia tlenowa"
+                    value={progress.chapterNotes[activeChapter.id] || ''}
+                    onChange={(e) => handleSaveNote(e.target.value)}
+                  />
+                </div>
+
+                {/* 🖼️ INTERAKTYWNA GALERIA I WKLEJANIE LINKÓW OBRAZÓW */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-150 dark:border-slate-800/80 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-extrabold text-slate-700 dark:text-slate-350 flex items-center gap-1.5 uppercase tracking-wide">
+                      <Image className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
+                      <span>Obrazy i Galeria lekcji</span>
+                    </label>
+                    <span className="text-[9px] font-bold text-slate-400 font-mono">
+                      {(chapterGalleryImages[activeChapter.id] || []).length} szt.
+                    </span>
+                  </div>
+
+                  {/* Dodawanie linku do obrazu */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleAddImageToGallery(newImageUrlInput);
+                    }}
+                    className="flex gap-1"
+                  >
+                    <div className="relative flex-1">
+                      <input
+                        type="url"
+                        placeholder="Wklej link URL do obrazka (http...)"
+                        value={newImageUrlInput}
+                        onChange={(e) => setNewImageUrlInput(e.target.value)}
+                        className="w-full text-[10px] pl-6 pr-2 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-755 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600 font-mono transition-all"
+                      />
+                      <span className="absolute left-2 top-1.5 text-slate-400">
+                        <Link className="w-2.5 h-2.5" />
+                      </span>
+                    </div>
+                    <button
+                      type="submit"
+                      className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold text-[10px] rounded-lg cursor-pointer transition-colors shrink-0"
+                    >
+                      Dodaj
+                    </button>
+                  </form>
+
+                  {/* Propozycja grafik z galerii opartej na przedmiocie */}
+                  <div className="space-y-1">
+                    <span className="text-[8.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-tight block">
+                      💡 Szybka galeria ({activeChapter.subject || 'Inne'}):
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {(PRESET_SUBJECT_GALLERIES[activeChapter.subject || ''] || DEFAULT_SUBJECT_GALLERY).map((preset, pIdx) => (
+                        <button
+                          key={pIdx}
+                          type="button"
+                          onClick={() => handleAddImageToGallery(preset.url)}
+                          className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 text-[8.5px] font-medium rounded-md transition-colors cursor-pointer border border-slate-200/40 dark:border-slate-700/40 truncate max-w-[130px]"
+                          title={preset.label}
+                        >
+                          + {preset.label.split(' ').slice(1).join(' ') || preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Wklejone lub wybrane zdjęcia (Galeria lekcji) */}
+                  {((chapterGalleryImages[activeChapter.id] || []).length > 0) && (
+                    <div className="space-y-1 pt-1">
+                      <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight block">
+                        📂 Twoja galeria do lekcji (kliknij podgląd):
+                      </span>
+                      <div className="grid grid-cols-4 gap-1 max-h-24 overflow-y-auto pr-0.5">
+                        {(chapterGalleryImages[activeChapter.id] || []).map((imgUrl, imgIdx) => (
+                          <div 
+                            key={imgIdx} 
+                            className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 relative group shadow-3xs"
+                          >
+                            <img 
+                              src={imgUrl} 
+                              alt="Lekcja" 
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover transition-transform group-hover:scale-105" 
+                            />
+                            {/* Hover overlay with action buttons */}
+                            <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-0.5 transition-opacity duration-150 p-0.5">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedLightboxImage(imgUrl)}
+                                className="text-[7.5px] font-bold bg-slate-800 hover:bg-slate-700 text-white w-full py-0.5 rounded text-center cursor-pointer"
+                                title="Powiększ zdjęcie"
+                              >
+                                Podgląd
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleInsertImageIntoNotes(imgUrl)}
+                                className="text-[7.5px] font-bold bg-emerald-700 hover:bg-emerald-600 text-white w-full py-0.5 rounded text-center cursor-pointer"
+                                title="Wstaw znacznik do notatek"
+                              >
+                                Wstaw
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImageFromGallery(imgUrl)}
+                                className="text-[7.5px] font-bold bg-red-800 hover:bg-red-700 text-white w-full py-0.5 rounded text-center cursor-pointer"
+                                title="Usuń z galerii"
+                              >
+                                Usuń
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Skaner obrazów: Automatyczne wykrywanie linków/obrazków wewnątrz samego brudnopisu */}
+                  {(() => {
+                    const noteText = progress.chapterNotes[activeChapter.id] || '';
+                    const urlRegex = /(https?:\/\/[^\s"'()]+?\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^\s"'()]*)?)/gi;
+                    const unsplashRegex = /(https?:\/\/images\.unsplash\.com\/[^\s"'()]+)/gi;
+                    const extractedUrls: string[] = [];
+                    
+                    const markdownImageRegex = /!\[.*?\]\((https?:\/\/.*?)\)/g;
+                    let match;
+                    while ((match = markdownImageRegex.exec(noteText)) !== null) {
+                      if (match[1]) {
+                        try {
+                          const url = match[1].split(')')[0].trim();
+                          if (!extractedUrls.includes(url)) extractedUrls.push(url);
+                        } catch (e) {}
+                      }
+                    }
+
+                    const allMatches = [...noteText.matchAll(urlRegex), ...noteText.matchAll(unsplashRegex)];
+                    allMatches.forEach(m => {
+                      const u = m[0].trim();
+                      if (!extractedUrls.includes(u)) {
+                        extractedUrls.push(u);
+                      }
+                    });
+
+                    if (extractedUrls.length === 0) return null;
+
+                    return (
+                      <div className="space-y-1 pt-1.5 border-t border-slate-200 dark:border-slate-800/80 animate-in fade-in duration-200">
+                        <span className="text-[8.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-tight block">
+                          🔗 Wykryte obrazy w tekście notatek:
+                        </span>
+                        <div className="grid grid-cols-4 gap-1 max-h-24 overflow-y-auto pr-0.5">
+                          {extractedUrls.map((url, idx) => (
+                            <div 
+                              key={idx} 
+                              className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 relative group shadow-3xs"
+                            >
+                              <img 
+                                src={url} 
+                                alt="Detected" 
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover" 
+                              />
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-150">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedLightboxImage(url)}
+                                  className="text-[8px] font-bold bg-slate-800 hover:bg-slate-700 text-white py-0.5 px-1.5 rounded cursor-pointer"
+                                  title="Pokaż w pełnym rozmiarze"
+                                >
+                                  Podgląd
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Realization checklist for active chapter */}
+                <div className="pt-3 border-t border-stone-150/60 dark:border-slate-800">
+                  <label className={`text-[11.5px] font-bold block mb-2 transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                    🏫 Oznacz jako zrealizowany w klasie:
+                  </label>
+                  {teacherClasses.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {teacherClasses.map((cls) => {
+                        const isRealized = realizations.some((r) => r.className === cls && r.chapterId === activeChapter.id);
+                        return (
+                          <button
+                            key={cls}
+                            id={`toggle-realize-class-${cls}`}
+                            onClick={() => handleToggleRealizationInClass(cls, activeChapter.id)}
+                            className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition-all text-xs cursor-pointer ${
+                              isRealized 
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-400 font-semibold'
+                                : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 border-slate-200 dark:border-slate-755 text-slate-600 dark:text-slate-400'
+                            }`}
+                          >
+                            <span className={`w-3.5 h-3.5 flex items-center justify-center rounded border text-[10px] ${
+                              isRealized ? 'bg-emerald-600 border-emerald-650 text-white' : 'border-slate-300 bg-white dark:bg-slate-700'
+                            }`}>
+                              {isRealized && '✓'}
+                            </span>
+                            <span className="truncate">{cls}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-[10px] text-slate-500 italic">Brak zdefiniowanych klas. Przejdź do zakładki "Klasy & Statystyki", aby dodać swoje klasy.</p>
+                  )}
+                </div>
+
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-100 dark:border-slate-900 shrink-0 mt-auto">
+                  <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed font-sans">
+                    💡 <strong>Szybka zmiana:</strong> Po kliknięciu na wybraną klasę temat zostanie oznaczony jako przeprowadzony, co wygeneruje odpowiednie statystyki.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-grow space-y-4 overflow-y-auto pr-0.5">
+                
+                {/* Section to manage customized classes list */}
+                <div className="space-y-2">
+                  <label className={`text-[11.5px] font-bold block transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                    ➕ Dodaj nową klasę / grupę:
+                  </label>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleAddTeacherClass(newClassNameInput);
+                    }}
+                    className="flex gap-1.5"
+                  >
+                    <input
+                      id="add-class-drawer-input"
+                      type="text"
+                      placeholder="np. Klasa 1A, Grupa B..."
+                      value={newClassNameInput}
+                      onChange={(e) => setNewClassNameInput(e.target.value)}
+                      className={`flex-grow p-2 border rounded-xl text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-white transition-all focus:outline-hidden ${activeThemeConfig.border} focus:ring-1 focus:ring-emerald-700`}
+                    />
+                    <button
+                      type="submit"
+                      id="add-class-submit-btn"
+                      className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs p-2 px-3 rounded-xl cursor-pointer shrink-0 transition-colors"
+                    >
+                      Dodaj
+                    </button>
+                  </form>
+
+                  {/* List of active custom teacher classes with deletes */}
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {teacherClasses.map((cls) => (
+                      <div 
+                        key={cls} 
+                        className="flex items-center gap-1 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 text-[10px] font-semibold rounded-lg border border-slate-200/50 dark:border-slate-700"
+                      >
+                        <span className="truncate max-w-[100px]">{cls}</span>
+                        <button
+                          type="button"
+                          id={`delete-class-btn-${cls}`}
+                          onClick={() => handleDeleteTeacherClass(cls)}
+                          className="text-red-400 hover:text-red-650 transition-colors cursor-pointer ml-1 font-bold text-xs p-0.5"
+                          title={`Usuń klasę ${cls}`}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Statistics of realization */}
+                <div className="space-y-2.5 pt-3 border-t border-stone-150/60 dark:border-slate-800">
+                  <label className={`text-[11.5px] font-bold block transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                    📊 Statystyki realizacji tematów:
+                  </label>
+                  
+                  {teacherClasses.length > 0 ? (
+                    <div className="space-y-2.5">
+                      {teacherClasses.map((cls) => {
+                        const classRealizations = [...realizations]
+                          .filter((r) => r.className === cls)
+                          .sort((a, b) => b.timestamp - a.timestamp);
+                        
+                        const uniqueRealizedCount = new Set(classRealizations.map((r) => r.chapterId)).size;
+                        const totalChapters = chapters.length;
+                        const completionPercent = totalChapters > 0 ? Math.round((uniqueRealizedCount / totalChapters) * 100) : 0;
+                        
+                        const lastRealization = classRealizations[0];
+                        const lastChapter = lastRealization ? chapters.find((c) => c.id === lastRealization.chapterId) : null;
+                        
+                        const formatTimestamp = (ts: number) => {
+                          const date = new Date(ts);
+                          const day = date.getDate().toString().padStart(2, '0');
+                          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                          const hrs = date.getHours().toString().padStart(2, '0');
+                          const mins = date.getMinutes().toString().padStart(2, '0');
+                          return `${day}.${month}, g. ${hrs}:${mins}`;
+                        };
+
+                        const isExpanded = expandedClassDetails[cls];
+
+                        const renderCalendar = () => {
+                          const year = currentCalendarDate.getFullYear();
+                          const month = currentCalendarDate.getMonth();
+                          
+                          const monthNamesPL = [
+                            "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                            "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+                          ];
+                          
+                          const weekDaysPL = ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"];
+                          const firstDay = new Date(year, month, 1).getDay();
+                          const firstDayIndex = (firstDay + 6) % 7; 
+                          const daysInMonth = new Date(year, month + 1, 0).getDate();
+                          
+                          const cells: (number | null)[] = [];
+                          for (let i = 0; i < firstDayIndex; i++) {
+                            cells.push(null);
+                          }
+                          for (let d = 1; d <= daysInMonth; d++) {
+                            cells.push(d);
+                          }
+                          
+                          const rows: (number | null)[][] = [];
+                          let currentRow: (number | null)[] = [];
+                          cells.forEach((cell, idx) => {
+                            currentRow.push(cell);
+                            if (currentRow.length === 7 || idx === cells.length - 1) {
+                              while (currentRow.length < 7) {
+                                currentRow.push(null);
+                              }
+                              rows.push(currentRow);
+                              currentRow = [];
+                            }
+                          });
+
+                          return (
+                            <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-200/40 dark:border-slate-800/85 space-y-1.5 mt-2 animate-in fade-in duration-200">
+                              <div className="flex items-center justify-between">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentCalendarDate(new Date(year, month - 1, 1));
+                                  }}
+                                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer"
+                                  title="Poprzedni miesiąc"
+                                >
+                                  ◀
+                                </button>
+                                <span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                  {monthNamesPL[month]} {year}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentCalendarDate(new Date(year, month + 1, 1));
+                                  }}
+                                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 font-bold transition-all text-[9px] cursor-pointer"
+                                  title="Następny miesiąc"
+                                >
+                                  ▶
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-7 gap-1 text-[8px] font-bold text-center text-slate-400 uppercase">
+                                {weekDaysPL.map((wd) => (
+                                  <div key={wd}>{wd}</div>
+                                ))}
+                              </div>
+
+                              <div className="space-y-1">
+                                {rows.map((row, rIdx) => (
+                                  <div key={rIdx} className="grid grid-cols-7 gap-1">
+                                    {row.map((day, dIdx) => {
+                                      if (day === null) {
+                                        return <div key={dIdx} className="aspect-square bg-transparent" />;
+                                      }
+
+                                      const dayRealizations = classRealizations.filter((r) => {
+                                        const rDate = new Date(r.timestamp);
+                                        return rDate.getFullYear() === year && rDate.getMonth() === month && rDate.getDate() === day;
+                                      });
+
+                                      const isToday = 
+                                        new Date().getFullYear() === year && 
+                                        new Date().getMonth() === month && 
+                                        new Date().getDate() === day;
+
+                                      const isRealized = dayRealizations.length > 0;
+
+                                      return (
+                                        <div
+                                          key={dIdx}
+                                          className={`aspect-square flex flex-col items-center justify-center text-[9px] font-bold rounded-md transition-all relative group/cell ${
+                                            isRealized
+                                              ? 'bg-emerald-600 text-white cursor-pointer hover:bg-emerald-700 shadow-xs'
+                                              : isToday
+                                              ? 'bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-500/50'
+                                              : 'bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 hover:bg-slate-150/50 dark:hover:bg-slate-800/80 border border-slate-100 dark:border-transparent'
+                                          }`}
+                                          title={isRealized ? `${dayRealizations.length} lekcja(e)` : undefined}
+                                        >
+                                          <span>{day}</span>
+                                          {isRealized && (
+                                            <span className="w-1 h-1 bg-white rounded-full absolute bottom-0.5" />
+                                          )}
+                                          
+                                          {/* Rich Micro Tooltip on hover */}
+                                          {isRealized && (
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/cell:block bg-slate-900 border border-slate-850 dark:border-slate-800 text-white text-[8px] leading-tight p-1.5 rounded-lg w-36 shadow-md z-50 pointer-events-none text-left">
+                                              <div className="font-extrabold text-[#ECE7DE] border-b border-slate-800 pb-0.5 mb-1 flex items-center justify-between">
+                                                <span>{day} {monthNamesPL[month]}</span>
+                                                <span className="bg-emerald-700 px-1 rounded">✓ {dayRealizations.length}</span>
+                                              </div>
+                                              <div className="space-y-1 max-h-20 overflow-y-auto">
+                                                {dayRealizations.map((r, rIdx) => {
+                                                  const chap = chapters.find((ch) => ch.id === r.chapterId);
+                                                  return (
+                                                    <div key={rIdx} className="truncate text-slate-200">
+                                                      • {chap ? chap.title : 'Temat'}
+                                                    </div>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        };
+
+                        return (
+                          <div 
+                            key={cls} 
+                            className="p-3 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-150 dark:border-slate-850 shadow-2xs space-y-2.5 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
+                          >
+                            {/* Class name & Counter */}
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="font-bold text-xs text-slate-850 dark:text-slate-200 flex items-center gap-1 shrink-0">
+                                <span className="text-emerald-700">🏫</span> {cls}
+                              </span>
+                              <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-400 font-bold bg-slate-100 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded-lg shrink-0">
+                                {uniqueRealizedCount} z {totalChapters} tematów ({completionPercent}%)
+                              </span>
+                            </div>
+
+                            {/* Progress bar */}
+                            <div className="w-full bg-slate-100 dark:bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                              <div 
+                                className="bg-emerald-700 dark:bg-emerald-500 h-full rounded-full transition-all duration-300"
+                                style={{ width: `${completionPercent}%` }}
+                              />
+                            </div>
+
+                            {/* Last realized lesson block */}
+                            <div className="text-[10.5px] leading-relaxed pt-2 border-t border-slate-105/60 dark:border-slate-850">
+                              {lastChapter ? (
+                                <div className="space-y-0.5">
+                                  <div className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold">
+                                    Ostatni zrealizovaný temat:
+                                  </div>
+                                  <div className="font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
+                                    {lastChapter.title}
+                                  </div>
+                                  <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono flex justify-between gap-1 mt-0.5">
+                                    <span className="truncate">📂 {lastChapter.chapterGroup || 'Główny'}</span>
+                                    <span className="shrink-0 text-emerald-700 dark:text-emerald-400 font-semibold">📅 {formatTimestamp(lastRealization.timestamp)}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-slate-400 dark:text-slate-500 text-center italic text-[9.5px] py-1 bg-slate-100/55 dark:bg-slate-900/40 rounded-lg">
+                                  Brak zrealizowanych tematów
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Toggle for Expandable Calendar & Actions Timeline */}
+                            <div className="pt-1 select-none">
+                              <button
+                                type="button"
+                                id={`toggle-expand-class-${cls}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedClassDetails((prev) => ({
+                                    ...prev,
+                                    [cls]: !prev[cls],
+                                  }));
+                                }}
+                                className="w-full text-center text-[10px] font-bold text-emerald-700 hover:text-emerald-850 dark:text-emerald-400 dark:hover:text-emerald-300 flex items-center justify-center gap-1 cursor-pointer py-1 bg-slate-50 dark:bg-slate-900/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors"
+                              >
+                                {isExpanded ? (
+                                  <><span>▲ Ukryj szczegóły, kalendarz i historię</span></>
+                                ) : (
+                                  <><span>▼ Pokaż kalendarz i historię ({classRealizations.length})</span></>
+                                )}
+                              </button>
+                            </div>
+
+                            {/* Expanded Calendar and History list */}
+                            {isExpanded && (
+                              <div className="space-y-3.5 pt-2 border-t border-slate-105/50 dark:border-slate-800/60">
+                                <div>
+                                  <div className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold mb-1">
+                                    📅 Kalendarz lekcji:
+                                  </div>
+                                  {renderCalendar()}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                  <div className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold flex items-center justify-between">
+                                    <span>📜 Ostatnie działania / Historia lekcji:</span>
+                                    <span className="text-[8px] font-mono bg-slate-100 dark:bg-slate-900 px-1 py-0.5 rounded text-slate-500">{classRealizations.length} wpisów</span>
+                                  </div>
+                                  
+                                  {classRealizations.length > 0 ? (
+                                    <div className="relative pl-3 border-l border-emerald-600/20 dark:border-emerald-500/20 space-y-2.5 mt-1.5 max-h-56 overflow-y-auto pr-0.5">
+                                      {classRealizations.map((r, rIdx) => {
+                                        const chap = chapters.find((c) => c.id === r.chapterId);
+                                        return (
+                                          <div key={`${r.chapterId}-${r.timestamp}-${rIdx}`} className="relative text-[10.5px]">
+                                            <span className="absolute -left-[16px] top-1.5 w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-500 border border-white dark:border-slate-800" />
+                                            
+                                            <div className="flex items-start justify-between gap-1 group/item p-1 hover:bg-slate-50 dark:hover:bg-slate-850/40 rounded-lg transition-colors">
+                                              <div className="space-y-0.5 flex-1 min-w-0 pr-1">
+                                                <div className="font-semibold text-slate-800 dark:text-slate-205 truncate" title={chap ? chap.title : 'Nieznany temat'}>
+                                                  {chap ? chap.title : 'Nieznany temat'}
+                                                </div>
+                                                <div className="text-[8.5px] font-mono text-slate-400 dark:text-slate-500 flex items-center justify-between">
+                                                  <span className="truncate max-w-[90px]">📂 {chap ? chap.chapterGroup || 'Główny' : 'Puste'}</span>
+                                                  <span className="text-emerald-700/80 dark:text-emerald-450/80">📅 {formatTimestamp(r.timestamp)}</span>
+                                                </div>
+                                              </div>
+                                              
+                                              <button
+                                                type="button"
+                                                id={`undo-realize-${cls}-${r.chapterId}-${rIdx}`}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setRealizations((prev) => 
+                                                    prev.filter((item) => !(item.className === cls && item.chapterId === r.chapterId && item.timestamp === r.timestamp))
+                                                  );
+                                                }}
+                                                className="text-[9px] font-bold text-red-500 hover:text-red-700 transition-colors opacity-80 hover:opacity-100 bg-red-50 dark:bg-red-950/20 px-1 py-0.5 rounded cursor-pointer self-center"
+                                                title="Usuń to zrealizowanie lekcji"
+                                              >
+                                                Cofnij
+                                              </button>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center italic text-slate-400 dark:text-slate-500 py-2.5 bg-slate-50/50 dark:bg-slate-900/20 rounded-lg text-[9.5px]">
+                                      Brak zrealizowanych lekcji w tej klasie.
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 border border-dashed rounded-xl border-slate-200 dark:border-slate-800">
+                      <p className="text-[10px] text-slate-500">Definiuj klasy powyżej, aby zobaczyć statystyki realizowania tematów!</p>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            )}
+          </aside>
+        )}
+
+      </div>
+
+      {/* Visual Lightbox Modal for Images */}
+      {selectedLightboxImage && (
+        <div 
+          id="image-lightbox-modal"
+          className="fixed inset-0 bg-[#000000ee]/90 backdrop-blur-md flex flex-col items-center justify-center z-[1000] p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedLightboxImage(null)}
+        >
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <button
+              type="button"
+              className="px-3 py-1.5 bg-slate-900 border border-slate-700/60 text-white rounded-lg hover:bg-slate-800 text-xs font-bold cursor-pointer transition-all animate-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (navigator && navigator.clipboard) {
+                  navigator.clipboard.writeText(selectedLightboxImage);
+                }
+              }}
+            >
+              Kopiuj link 🔗
+            </button>
+            <button
+              type="button"
+              className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg cursor-pointer transition-all animate-none"
+              onClick={() => setSelectedLightboxImage(null)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="max-w-4xl max-h-[80vh] relative group" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={selectedLightboxImage} 
+              alt="Lightbox Podgląd" 
+              referrerPolicy="no-referrer"
+              className="max-w-full max-h-[80vh] rounded-xl border border-slate-700/50 object-contain shadow-2xl select-all" 
+            />
+          </div>
+          <p className="text-slate-400 text-xs mt-3 text-center pointer-events-none max-w-lg">
+            Kliknij poza obrazem lub naciśnij ✕, aby zamknąć podgląd.
+          </p>
+        </div>
+      )}
+
+      {/* CHAPTER CREATOR MODAL LAYER */}
+      {isCreatorOpen && (
+        <ChapterManager
+          allChapters={chapters}
+          onAddChapter={handleAddNewChapter}
+          onImportAll={handleImportAllChapters}
+          onClose={() => setIsCreatorOpen(false)}
+        />
+      )}
+
+    </div>
+  );
+}
