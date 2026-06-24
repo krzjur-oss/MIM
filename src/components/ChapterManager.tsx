@@ -8,9 +8,26 @@ interface ChapterManagerProps {
   onImportAll: (chapters: Chapter[]) => void;
   allChapters: Chapter[];
   onClose: () => void;
+  showToast?: (message: string, type?: 'success' | 'error' | 'info') => void;
+  showConfirm?: (message: string, onConfirm: () => void, title?: string) => void;
 }
 
-export default function ChapterManager({ onAddChapter, onImportAll, allChapters, onClose }: ChapterManagerProps) {
+export default function ChapterManager({ onAddChapter, onImportAll, allChapters, onClose, showToast, showConfirm }: ChapterManagerProps) {
+  const notify = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
+    if (showToast) {
+      showToast(msg, type);
+    } else {
+      alert(msg);
+    }
+  };
+
+  const ask = (msg: string, onConfirm: () => void, title = 'Potwierdzenie') => {
+    if (showConfirm) {
+      showConfirm(msg, onConfirm, title);
+    } else if (confirm(msg)) {
+      onConfirm();
+    }
+  };
   // Mode: 'create' | 'import_files' | 'export_import'
   const [activeTab, setActiveTab] = useState<'create' | 'import_files'>('create');
   
@@ -116,7 +133,7 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
     if (!quizQuestion.trim()) return;
     const nonEmptyOpts = quizOpts.map((o) => o.trim()).filter(Boolean);
     if (nonEmptyOpts.length < 2) {
-      alert('Pytanie musi zawierać co najmniej 2 poprawne odpowiedzi!');
+      notify('Pytanie musi zawierać co najmniej 2 poprawne odpowiedzi!', 'error');
       return;
     }
 
@@ -142,7 +159,7 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
 
   const handleSaveCreatedChapter = () => {
     if (!title.trim() || !content.trim()) {
-      alert('Tytuł (temat lekcji) oraz treść rozdziału są wymagane!');
+      notify('Tytuł (temat lekcji) oraz treść rozdziału są wymagane!', 'error');
       return;
     }
 
@@ -209,13 +226,13 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
           const parsed = JSON.parse(event.target?.result as string);
           if (Array.isArray(parsed) && parsed.every((itm) => itm.title && itm.content)) {
             onImportAll(parsed);
-            alert(`Pomyślnie zaimportowano multibook z ${parsed.length} rozdziałami!`);
+            notify(`Pomyślnie zaimportowano multibook z ${parsed.length} rozdziałami!`, 'success');
             onClose();
           } else {
-            alert('Niepoprawny format pliku JSON. Plik musi zawierać tablicę rozdziałów.');
+            notify('Niepoprawny format pliku JSON. Plik musi zawierać tablicę rozdziałów.', 'error');
           }
         } catch (err) {
-          alert('Błąd odczytu pliku JSON.');
+          notify('Błąd odczytu pliku JSON.', 'error');
         }
       };
       fileReader.readAsText(e.target.files[0]);

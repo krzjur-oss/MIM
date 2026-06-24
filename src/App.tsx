@@ -32,7 +32,10 @@ import {
   Link,
   Copy,
   Download,
-  Upload
+  Upload,
+  AlertCircle,
+  X,
+  Check
 } from 'lucide-react';
 import { Chapter, QuizQuestion, ThemeType, StudentProgress } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
@@ -96,6 +99,27 @@ const DEFAULT_SUBJECT_GALLERY = [
 ];
 
 export default function App() {
+  // Custom Elegant Notifications & Confirm Modal
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{ message: string; title: string; onConfirm: () => void } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ message, type });
+  };
+
+  const showConfirm = (message: string, onConfirm: () => void, title = 'Potwierdzenie') => {
+    setConfirmModal({ message, title, onConfirm });
+  };
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => {
+        setToast(null);
+      }, 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   // 1. Chapters database state
   const [chapters, setChapters] = useState<Chapter[]>(() => {
     const saved = localStorage.getItem('multibook_chapters');
@@ -421,18 +445,24 @@ export default function App() {
     const trimmed = name.trim();
     if (!trimmed) return;
     if (teacherClasses.includes(trimmed)) {
-      alert('Ta klasa już istnieje!');
+      showToast('Ta klasa już istnieje!', 'error');
       return;
     }
     setTeacherClasses((prev) => [...prev, trimmed]);
     setNewClassNameInput('');
+    showToast(`Dodano klasę: ${trimmed}`, 'success');
   };
 
   const handleDeleteTeacherClass = (name: string) => {
-    if (confirm(`Czy napewno chcesz usunąć klasę "${name}"? Usunie to również całą historię realizacji tematów w tej klasie.`)) {
-      setTeacherClasses((prev) => prev.filter((c) => c !== name));
-      setRealizations((prev) => prev.filter((r) => r.className !== name));
-    }
+    showConfirm(
+      `Czy napewno chcesz usunąć klasę "${name}"? Usunie to również całą historię realizacji tematów w tej klasie.`,
+      () => {
+        setTeacherClasses((prev) => prev.filter((c) => c !== name));
+        setRealizations((prev) => prev.filter((r) => r.className !== name));
+        showToast(`Usunięto klasę: ${name}`, 'success');
+      },
+      'Usuwanie klasy'
+    );
   };
 
   // Export database backup (chapters, progress, realizations, classes, galleries, settings) to a JSON file
@@ -460,8 +490,9 @@ export default function App() {
       linkElement.setAttribute('href', dataUri);
       linkElement.setAttribute('download', exportFileDefaultName);
       linkElement.click();
+      showToast('Kopia bezpieczeństwa została pobrana!', 'success');
     } catch (e) {
-      alert('Wystąpił błąd podczas generowania pliku kopii zapasowej.');
+      showToast('Wystąpił błąd podczas generowania pliku kopii zapasowej.', 'error');
       console.error(e);
     }
   };
@@ -513,17 +544,17 @@ export default function App() {
           }
 
           if (restoredCount > 0) {
-            alert('Kopia zapasowa została pomyślnie zaimportowana i przywrócona!');
+            showToast('Kopia zapasowa została pomyślnie zaimportowana i przywrócona!', 'success');
             // Reset files target input
             event.target.value = '';
           } else {
-            alert('Niepoprawny format pliku kopii zapasowej.');
+            showToast('Niepoprawny format pliku kopii zapasowej.', 'error');
           }
         } else {
-          alert('Plik nie zawiera poprawnego obiektu JSON.');
+          showToast('Plik nie zawiera poprawnego obiektu JSON.', 'error');
         }
       } catch (err) {
-        alert('Błąd podczas odczytu pliku kopii zapasowej. Upewnij się, że plik jest poprawny.');
+        showToast('Błąd podczas odczytu pliku kopii zapasowej. Upewnij się, że plik jest poprawny.', 'error');
         console.error(err);
       }
     };
@@ -533,6 +564,7 @@ export default function App() {
   const handleAddNewChapter = (newChap: Chapter) => {
     setChapters((prev) => [...prev, newChap]);
     setCurrentChapterId(newChap.id);
+    showToast(`Utworzono lekcję: ${newChap.title}`, 'success');
   };
 
   const handleImportAllChapters = (imported: Chapter[]) => {
@@ -540,32 +572,43 @@ export default function App() {
     if (imported.length > 0) {
       setCurrentChapterId(imported[0].id);
     }
+    showToast(`Zaimportowano ${imported.length} lekcji!`, 'success');
   };
 
   const handleDeleteChapter = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm('Czy na pewno chcesz bezpowrotnie usunąć ten rozdział z Twojego multibooka?')) {
-      const afterDelete = chapters.filter((c) => c.id !== id);
-      setChapters(afterDelete);
-      
-      // If current is deleted, re-route
-      if (currentChapterId === id && afterDelete.length > 0) {
-        setCurrentChapterId(afterDelete[0].id);
-      }
-    }
+    showConfirm(
+      'Czy na pewno chcesz bezpowrotnie usunąć ten rozdział z Twojego multibooka?',
+      () => {
+        const afterDelete = chapters.filter((c) => c.id !== id);
+        setChapters(afterDelete);
+        
+        // If current is deleted, re-route
+        if (currentChapterId === id && afterDelete.length > 0) {
+          setCurrentChapterId(afterDelete[0].id);
+        }
+        showToast('Rozdział został usunięty.', 'success');
+      },
+      'Usuwanie rozdziału'
+    );
   };
 
   const handleResetToDefault = () => {
-    if (confirm('Czy chcesz przywrócić domyślne działy podręcznika? Wszystkie Twoje ręcznie dodane lekcje zostaną wyczyszczone.')) {
-      setChapters(DEFAULT_CHAPTERS);
-      setProgress({
-        completedChapters: [],
-        bookmarkedChapters: [],
-        chapterNotes: {}
-      });
-      setQuizAnswers({});
-      setCurrentChapterId(DEFAULT_CHAPTERS[0].id);
-    }
+    showConfirm(
+      'Czy chcesz przywrócić domyślne działy podręcznika? Wszystkie Twoje ręcznie dodane lekcje zostaną wyczyszczone.',
+      () => {
+        setChapters(DEFAULT_CHAPTERS);
+        setProgress({
+          completedChapters: [],
+          bookmarkedChapters: [],
+          chapterNotes: {}
+        });
+        setQuizAnswers({});
+        setCurrentChapterId(DEFAULT_CHAPTERS[0].id);
+        showToast('Przywrócono domyślne działy podręcznika.', 'success');
+      },
+      'Przywracanie domyślnych'
+    );
   };
 
   // Compute stats
@@ -574,6 +617,70 @@ export default function App() {
   const completionPercentage = totalChaptersCount > 0 
     ? Math.round((completedChaptersCount / totalChaptersCount) * 100) 
     : 0;
+
+  // Dynamically map subject names to gorgeous, themed color configurations
+  const getSubjectThemeColors = (subjectName: string, themeMode: ThemeType) => {
+    const sub = (subjectName || '').toLowerCase().trim();
+    const isDark = themeMode === 'dark';
+
+    if (sub.includes('biologia')) {
+      return {
+        text: 'text-emerald-700 dark:text-emerald-400',
+        bgLight: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/40',
+        activeChapterCard: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500/40 text-emerald-900 dark:text-emerald-250 ring-2 ring-emerald-500/10',
+        accentBg: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 text-white border-emerald-650',
+        subPillActive: 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm font-extrabold',
+        subPillHover: 'hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400',
+        dotColorActive: 'bg-emerald-600 dark:bg-emerald-400 ring-4 ring-emerald-550/20 scale-125',
+        dotColorCompleted: 'bg-emerald-500/50 dark:bg-emerald-400/30 hover:bg-emerald-600',
+      };
+    } else if (sub.includes('religia')) {
+      return {
+        text: 'text-amber-700 dark:text-amber-400',
+        bgLight: 'bg-amber-55 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/40',
+        activeChapterCard: 'bg-amber-50 dark:bg-amber-950/40 border-amber-500/40 text-amber-900 dark:text-amber-250 ring-2 ring-amber-500/10',
+        accentBg: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-500 text-white border-amber-550',
+        subPillActive: 'bg-amber-550 dark:bg-amber-500 text-slate-900 dark:text-white shadow-sm font-extrabold',
+        subPillHover: 'hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400',
+        dotColorActive: 'bg-amber-500 dark:bg-amber-400 ring-4 ring-amber-550/20 scale-125',
+        dotColorCompleted: 'bg-amber-500/50 dark:bg-amber-400/35 hover:bg-amber-600',
+      };
+    } else if (sub.includes('geografia') || sub.includes('astronomia') || sub.includes('kosmos')) {
+      return {
+        text: 'text-indigo-700 dark:text-indigo-400',
+        bgLight: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/40',
+        activeChapterCard: 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500/40 text-indigo-900 dark:text-indigo-250 ring-2 ring-indigo-500/10',
+        accentBg: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white border-indigo-650',
+        subPillActive: 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-sm font-extrabold',
+        subPillHover: 'hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
+        dotColorActive: 'bg-indigo-600 dark:bg-indigo-400 ring-4 ring-indigo-550/20 scale-125',
+        dotColorCompleted: 'bg-indigo-505/50 dark:bg-indigo-400/30 hover:bg-indigo-600',
+      };
+    } else if (sub.includes('matematyka') || sub.includes('fizyka') || sub.includes('chemia')) {
+      return {
+        text: 'text-rose-700 dark:text-rose-400',
+        bgLight: 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200/50 dark:border-rose-800/40',
+        activeChapterCard: 'bg-rose-50 dark:bg-rose-950/40 border-rose-500/40 text-rose-900 dark:text-rose-250 ring-2 ring-rose-500/10',
+        accentBg: 'bg-rose-600 hover:bg-rose-700 focus:ring-rose-500 text-white border-rose-650',
+        subPillActive: 'bg-rose-600 dark:bg-rose-500 text-white shadow-sm font-extrabold',
+        subPillHover: 'hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400',
+        dotColorActive: 'bg-rose-600 dark:bg-rose-400 ring-4 ring-rose-550/20 scale-125',
+        dotColorCompleted: 'bg-rose-500/50 dark:bg-rose-400/30 hover:bg-rose-600',
+      };
+    } else {
+      // Default: Slate / Neutral
+      return {
+        text: 'text-slate-700 dark:text-slate-300',
+        bgLight: 'bg-slate-100 dark:bg-slate-800/70 text-slate-800 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50',
+        activeChapterCard: 'bg-slate-100 dark:bg-slate-800 border-slate-400 text-slate-900 dark:text-slate-100 ring-2 ring-slate-400/10',
+        accentBg: 'bg-slate-700 hover:bg-slate-800 focus:ring-slate-500 text-white border-slate-750',
+        subPillActive: 'bg-slate-850 dark:bg-slate-650 text-white shadow-sm font-extrabold',
+        subPillHover: 'hover:bg-slate-500/10 hover:text-slate-600 dark:hover:text-slate-400',
+        dotColorActive: 'bg-slate-700 dark:bg-slate-400 ring-4 ring-slate-550/20 scale-125',
+        dotColorCompleted: 'bg-slate-400/50 dark:bg-slate-500/30 hover:bg-slate-550',
+      };
+    }
+  };
 
   const getThemeConfig = () => {
     switch (theme) {
@@ -946,20 +1053,24 @@ export default function App() {
                 Przedmiot:
               </span>
               <div className="flex flex-wrap gap-1">
-                {subjects.map((sub) => (
-                  <button
-                    key={sub}
-                    id={`subject-pill-${sub}`}
-                    onClick={() => setSelectedSubject(sub)}
-                    className={`px-2 py-1 text-[10px] font-bold rounded-md cursor-pointer transition-all ${
-                      selectedSubject === sub
-                        ? activeThemeConfig.subjectPillActive
-                        : activeThemeConfig.subjectPillInactive
-                    }`}
-                  >
-                    {sub}
-                  </button>
-                ))}
+                {subjects.map((sub) => {
+                  const isActive = selectedSubject === sub;
+                  const colors = getSubjectThemeColors(sub, theme);
+                  return (
+                    <button
+                      key={sub}
+                      id={`subject-pill-${sub}`}
+                      onClick={() => setSelectedSubject(sub)}
+                      className={`px-2.5 py-1 text-[10px] font-extrabold rounded-md cursor-pointer transition-all ${
+                        isActive
+                          ? colors.subPillActive
+                          : `${activeThemeConfig.subjectPillInactive} ${colors.subPillHover}`
+                      }`}
+                    >
+                      {sub}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1012,7 +1123,7 @@ export default function App() {
                                       }}
                                       className={`p-2.5 rounded-xl border transition-all cursor-pointer group flex flex-col gap-1 ${
                                         isCurrent
-                                          ? `${activeThemeConfig.chapterCardActive} font-semibold ring-1 ring-emerald-500/10`
+                                          ? `${getSubjectThemeColors(ch.subject, theme).activeChapterCard} font-bold`
                                           : `${activeThemeConfig.chapterCardInactive}`
                                       }`}
                                     >
@@ -1035,24 +1146,22 @@ export default function App() {
                                       </div>
 
                                       <div className="flex flex-wrap items-center justify-between gap-1 mt-0.5 text-[9px] text-slate-400 dark:text-slate-500 font-sans">
-                                        <span className="p-0.5 px-1 bg-slate-100/75 dark:bg-slate-800/75 rounded text-[8px] font-medium text-slate-500 dark:text-slate-400">
+                                        <span className={`p-0.5 px-1.5 rounded text-[8px] font-extrabold ${getSubjectThemeColors(ch.subject, theme).bgLight}`}>
                                           {ch.subject}
                                         </span>
                                         <div className="flex items-center gap-1.5">
                                           <span>⏱️ {ch.estimatedReadTime} min</span>
                                           {hasNotes && <span title="Posiada notatki">📝</span>}
                                           
-                                          {/* Option to delete own custom chapters */}
-                                          {!ch.isDefault && (
-                                            <button
-                                              id={`delete-chapter-btn-${ch.id}`}
-                                              onClick={(e) => handleDeleteChapter(ch.id, e)}
-                                              className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-0.5"
-                                              title="Usuń lekcję"
-                                            >
-                                              <Trash2 className="w-2.5 h-2.5" />
-                                            </button>
-                                          )}
+                                          {/* Option to delete any chapter */}
+                                          <button
+                                            id={`delete-chapter-btn-${ch.id}`}
+                                            onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                            className="text-rose-400 hover:text-rose-600 dark:text-rose-500 dark:hover:text-rose-400 opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
+                                            title="Usuń tę lekcję"
+                                          >
+                                            <Trash2 className="w-3 h-3" />
+                                          </button>
                                         </div>
                                       </div>
                                     </div>
@@ -1148,7 +1257,7 @@ export default function App() {
             
             {/* Subject name of active class */}
             <div className="flex items-center gap-2">
-              <span className="p-1 px-2.5 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 text-[10px] font-bold rounded-lg uppercase tracking-wider">
+              <span className={`p-1 px-2.5 text-[10px] font-extrabold rounded-lg uppercase tracking-wider ${getSubjectThemeColors(activeChapter?.subject || '', theme).bgLight}`}>
                 {activeChapter?.subject || 'Brak'}
               </span>
               <span className="text-[11px] text-slate-600 dark:text-slate-400">• Czas nauki: {activeChapter?.estimatedReadTime || 0} min.</span>
@@ -1311,10 +1420,10 @@ export default function App() {
                         {activeChapter.title}
                       </h2>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500 opacity-95">
-                        <span className={`p-0.5 px-2 rounded-md font-medium text-[10px] ${activeThemeConfig.subjectPillInactive}`}>
+                        <span className={`p-0.5 px-2 rounded-md font-extrabold text-[10px] ${getSubjectThemeColors(activeChapter.subject, theme).bgLight}`}>
                           {activeChapter.subject}
                         </span>
-                        <span className="p-0.5 px-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 rounded-md font-semibold text-[10px]">
+                        <span className={`p-0.5 px-2 rounded-md font-extrabold text-[10px] ${getSubjectThemeColors(activeChapter.subject, theme).bgLight}`}>
                           🎓 {activeChapter.educationLevel || 'Ogólny'}
                         </span>
                         <span className="mx-1 text-slate-300 dark:text-slate-700">|</span>
@@ -1343,7 +1452,7 @@ export default function App() {
                         onClick={() => handleToggleCompleted(activeChapter.id)}
                         className={`px-3 py-2 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                           progress.completedChapters.includes(activeChapter.id)
-                            ? 'bg-emerald-500 text-white border-emerald-500 hover:bg-emerald-600'
+                            ? `${getSubjectThemeColors(activeChapter.subject, theme).accentBg} shadow-md`
                             : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
                         }`}
                       >
@@ -1358,6 +1467,16 @@ export default function App() {
                             <span>Oznacz jako przeczytane</span>
                           </>
                         )}
+                      </button>
+
+                      {/* Delete current chapter */}
+                      <button
+                        id="chapter-delete-active-btn"
+                        onClick={(e) => handleDeleteChapter(activeChapter.id, e)}
+                        className="p-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-500 hover:text-white hover:bg-rose-500 dark:hover:bg-rose-600 transition-all cursor-pointer"
+                        title="Usuń tę lekcję"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -1579,6 +1698,7 @@ export default function App() {
                         {chapters.map((chap, idx) => {
                           const isActive = chap.id === activeChapter.id;
                           const isCompleted = progress.completedChapters.includes(chap.id);
+                          const sc = getSubjectThemeColors(chap.subject, theme);
                           
                           return (
                             <button
@@ -1591,16 +1711,16 @@ export default function App() {
                               }}
                               className={`w-2.5 h-2.5 rounded-full relative group/dot transition-all duration-300 cursor-pointer ${
                                 isActive 
-                                  ? 'bg-emerald-700 dark:bg-emerald-500 scale-125 ring-3 ring-emerald-500/20' 
+                                  ? `${sc.dotColorActive}` 
                                   : isCompleted 
-                                  ? 'bg-emerald-500/50 dark:bg-emerald-400/40 hover:bg-emerald-600 dark:hover:bg-emerald-500' 
+                                  ? `${sc.dotColorCompleted}` 
                                   : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'
                               }`}
                               title={chap.title}
                             >
                               {/* Rich Hover Tooltip with detail info */}
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2.5 hidden group-hover/dot:block bg-slate-900 text-[#ECE7DE] text-[10px] leading-relaxed py-1.5 px-3 rounded-lg whitespace-nowrap shadow-xl border border-slate-800 z-50 pointer-events-none transition-all">
-                                <span className="font-extrabold text-emerald-400 mr-1">{idx + 1}.</span>
+                                <span className={`font-extrabold mr-1 ${getSubjectThemeColors(chap.subject, theme).text}`}>{idx + 1}.</span>
                                 <span className="font-semibold">{chap.title}</span>
                                 {isCompleted && (
                                   <span className="text-emerald-400 ml-1.5 font-extrabold" title="Lekcja ukończona">✓</span>
@@ -1620,7 +1740,7 @@ export default function App() {
                             setCurrentChapterId(chapters[idx + 1].id);
                             setIsDrawingModeActive(false);
                           }}
-                          className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                          className={`px-3 py-1.5 text-xs font-extrabold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0 ${getSubjectThemeColors(activeChapter.subject, theme).accentBg}`}
                         >
                           <span className="hidden xs:inline">Dalej</span>
                           <ChevronRight className="w-3.5 h-3.5" />
@@ -2371,7 +2491,98 @@ export default function App() {
             onAddChapter={handleAddNewChapter}
             onImportAll={handleImportAllChapters}
             onClose={() => setIsCreatorOpen(false)}
+            showToast={showToast}
+            showConfirm={showConfirm}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Dynamic Custom Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-6 right-6 max-w-sm w-full bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 flex items-start gap-3 pointer-events-auto select-none"
+            style={{ zIndex: 9999 }}
+          >
+            <div className={`p-1.5 rounded-lg shrink-0 ${
+              toast.type === 'success' 
+                ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400' 
+                : toast.type === 'error'
+                ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400'
+                : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400'
+            }`}>
+              {toast.type === 'success' ? (
+                <Check className="w-4 h-4" />
+              ) : toast.type === 'error' ? (
+                <AlertCircle className="w-4 h-4" />
+              ) : (
+                <Info className="w-4 h-4" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0 pt-0.5">
+              <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                {toast.type === 'success' ? 'Sukces' : toast.type === 'error' ? 'Błąd' : 'Informacja'}
+              </p>
+              <p className="text-[11px] leading-normal text-slate-500 dark:text-slate-400 mt-0.5">
+                {toast.message}
+              </p>
+            </div>
+            <button
+              onClick={() => setToast(null)}
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-0.5 hover:bg-slate-50 dark:hover:bg-slate-800/80 rounded-lg cursor-pointer transition-colors shrink-0"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Dynamic Custom Confirm Modal Dialog */}
+      <AnimatePresence>
+        {confirmModal && (
+          <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs" style={{ zIndex: 9998 }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className={`max-w-md w-full rounded-3xl border p-6 shadow-2xl ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} flex flex-col gap-4 text-left pointer-events-auto`}
+            >
+              <div className="flex items-start gap-3.5">
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-2xl shrink-0">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className={`font-serif font-bold text-base transition-colors duration-300 ${activeThemeConfig.h1}`}>
+                    {confirmModal.title}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 pr-1">
+                    {confirmModal.message}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2.5 pt-2">
+                <button
+                  onClick={() => setConfirmModal(null)}
+                  className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all ${activeThemeConfig.galleryPresetBtn}`}
+                >
+                  Anuluj
+                </button>
+                <button
+                  onClick={() => {
+                    confirmModal.onConfirm();
+                    setConfirmModal(null);
+                  }}
+                  className="px-5 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:scale-95 transition-all rounded-xl cursor-pointer"
+                >
+                  Potwierdź
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
