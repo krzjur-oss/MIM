@@ -58,3 +58,15 @@ export const EDUCATION_LEVELS = [
   'Studia / Wyższe'
 ];
 
+export interface Student {
+  id: string;
+  name: string;
+  className: string;
+  completedChapters: string[];
+  bookmarkedChapters: string[];
+  chapterNotes: Record<string, string>;
+  quizAttempts: Record<string, { correct: number; total: number }>;
+  teacherRemarks?: string;
+}
+
+

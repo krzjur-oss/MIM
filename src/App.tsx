@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -9,6 +9,9 @@ import {
   RotateCcw, 
   Bookmark, 
   Volume2, 
+  VolumeX,
+  Play,
+  Pause,
   Tv, 
   Edit, 
   ChevronRight, 
@@ -35,9 +38,24 @@ import {
   Upload,
   AlertCircle,
   X,
-  Check
+  Check,
+  Bold,
+  Italic,
+  List,
+  Heading,
+  Users,
+  GraduationCap
 } from 'lucide-react';
-import { Chapter, QuizQuestion, ThemeType, StudentProgress } from './types';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  Cell
+} from 'recharts';
+import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
 import DrawingOverlay from './components/DrawingOverlay';
 import ChapterManager from './components/ChapterManager';
@@ -148,6 +166,21 @@ export default function App() {
     return chapters.find((c) => c.id === currentChapterId) || chapters[0];
   }, [chapters, currentChapterId]);
 
+  // 9. Personal Notes Drawer collapse state (on right side)
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isNotesFullscreen, setIsNotesFullscreen] = useState(false);
+
+  // Handle escape key to close fullscreen notes
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isNotesFullscreen) {
+        setIsNotesFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isNotesFullscreen]);
+
   // 3. User Progress: Bookmarks, Notes, Completed
   const [progress, setProgress] = useState<StudentProgress>(() => {
     const saved = localStorage.getItem('multibook_progress');
@@ -169,6 +202,261 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('multibook_progress', JSON.stringify(progress));
   }, [progress]);
+
+  // 3.2 Debounced Personal Notes State and Handlers
+  const [localNoteText, setLocalNoteText] = useState('');
+  const [isNotesSaving, setIsNotesSaving] = useState(false);
+  const prevActiveChapterIdRef = useRef(activeChapter.id);
+
+  // Synchronize localNoteText when active chapter changes or underlying note is loaded/updated (e.g. from file import)
+  useEffect(() => {
+    // If we are changing chapters, save the old chapter's note first!
+    if (prevActiveChapterIdRef.current !== activeChapter.id) {
+      const prevId = prevActiveChapterIdRef.current;
+      const savedNote = progress.chapterNotes[prevId] || '';
+      if (localNoteText !== savedNote) {
+        setProgress((prev) => {
+          if (prev.chapterNotes[prevId] === localNoteText) return prev;
+          return {
+            ...prev,
+            chapterNotes: { ...prev.chapterNotes, [prevId]: localNoteText }
+          };
+        });
+      }
+      prevActiveChapterIdRef.current = activeChapter.id;
+    }
+    setLocalNoteText(progress.chapterNotes[activeChapter.id] || '');
+  }, [activeChapter.id, progress.chapterNotes[activeChapter.id]]);
+
+  // Helper function to save directly
+  const saveNoteToProgress = (text: string) => {
+    setProgress((prev) => {
+      if (prev.chapterNotes[activeChapter.id] === text) return prev;
+      return {
+        ...prev,
+        chapterNotes: { ...prev.chapterNotes, [activeChapter.id]: text }
+      };
+    });
+  };
+
+  // Debounce effect to autosave notes
+  useEffect(() => {
+    const savedNote = progress.chapterNotes[activeChapter.id] || '';
+    if (localNoteText === savedNote) {
+      setIsNotesSaving(false);
+      return;
+    }
+
+    setIsNotesSaving(true);
+    const timer = setTimeout(() => {
+      saveNoteToProgress(localNoteText);
+      setIsNotesSaving(false);
+    }, 800); // 800ms debounce
+
+    return () => clearTimeout(timer);
+  }, [localNoteText, activeChapter.id]);
+
+  // Flush notes on drawer close
+  useEffect(() => {
+    if (!isNotesOpen) {
+      const savedNote = progress.chapterNotes[activeChapter.id] || '';
+      if (localNoteText !== savedNote) {
+        saveNoteToProgress(localNoteText);
+      }
+    }
+  }, [isNotesOpen]);
+
+  // Before unload handler to flush notes to localStorage immediately
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const savedNote = progress.chapterNotes[activeChapter.id] || '';
+      if (localNoteText !== savedNote) {
+        const updatedNotes = { ...progress.chapterNotes, [activeChapter.id]: localNoteText };
+        localStorage.setItem('multibook_progress', JSON.stringify({ ...progress, chapterNotes: updatedNotes }));
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [localNoteText, activeChapter.id, progress]);
+
+  // Insert markdown helper for editor formatting
+  const insertMarkdown = (syntax: 'bold' | 'italic' | 'list' | 'link' | 'heading') => {
+    const textarea = document.getElementById('fullscreen-notes-textarea') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+
+    let replacement = '';
+    let cursorOffset = 0;
+
+    switch (syntax) {
+      case 'bold':
+        replacement = `**${selectedText || 'tekst'}**`;
+        cursorOffset = selectedText ? replacement.length : 2;
+        break;
+      case 'italic':
+        replacement = `*${selectedText || 'tekst'}*`;
+        cursorOffset = selectedText ? replacement.length : 1;
+        break;
+      case 'list':
+        replacement = `\n- ${selectedText || 'element'}`;
+        cursorOffset = replacement.length;
+        break;
+      case 'link':
+        replacement = `[${selectedText || 'tekst'}](https://example.com)`;
+        cursorOffset = selectedText ? replacement.length : 1;
+        break;
+      case 'heading':
+        replacement = `\n### ${selectedText || 'Nagłówek'}`;
+        cursorOffset = replacement.length;
+        break;
+    }
+
+    const newValue = text.substring(0, start) + replacement + text.substring(end);
+    setLocalNoteText(newValue);
+
+    // Keep focus and selection range
+    setTimeout(() => {
+      textarea.focus();
+      if (!selectedText) {
+        textarea.setSelectionRange(start + cursorOffset, start + cursorOffset);
+      } else {
+        textarea.setSelectionRange(start, start + replacement.length);
+      }
+    }, 0);
+  };
+
+  // Download notes helper function (.md file generation)
+  const handleDownloadNotes = () => {
+    if (!localNoteText.trim()) {
+      showToast("Twoje notatki są puste! Napisz coś najpierw.", "error");
+      return;
+    }
+
+    const headerContent = `# Notatki z lekcji: ${activeChapter.title}\n` +
+      `Przedmiot: ${activeChapter.subject}\n` +
+      `Wygenerowano: ${new Date().toLocaleDateString('pl-PL')} o ${new Date().toLocaleTimeString('pl-PL')}\n` +
+      `=========================================\n\n`;
+
+    const fullContent = headerContent + localNoteText;
+    const blob = new Blob([fullContent], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    // Clean filename: lowercase, replace Polish characters, replace spaces with dashes
+    const safeTitle = activeChapter.title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // remove diacritics
+      .replace(/ł/g, 'l')
+      .replace(/Ł/g, 'l')
+      .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with dashes
+      .replace(/^-+|-+$/g, ''); // trim dashes
+
+    link.href = url;
+    link.setAttribute('download', `notatki-${safeTitle || 'lekcja'}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast("Notatki zostały pobrane jako plik .md!", "success");
+  };
+
+  // 3.5 Text-To-Speech (TTS) State and handlers
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isSpeakingPaused, setIsSpeakingPaused] = useState(false);
+
+  // Stop speaking on chapter change or unmount
+  useEffect(() => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+    setIsSpeakingPaused(false);
+  }, [currentChapterId]);
+
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // Clean markdown to readable plain text
+  const cleanMarkdownForSpeech = (markdown: string): string => {
+    return markdown
+      .replace(/#+\s+/g, '') // remove headings hashes
+      .replace(/[*_`~]/g, '') // remove markdown characters
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace links with anchor text
+      .replace(/-\s+/g, '') // remove bullet points dashes
+      .replace(/^\s*[\d+]\.\s+/gm, '') // remove numbered lists digits
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // remove image tags
+      .replace(/\s+/g, ' ') // collapse extra whitespace
+      .trim();
+  };
+
+  const handleToggleSpeech = () => {
+    if (!window.speechSynthesis) {
+      showToast("Twoja przeglądarka nie obsługuje syntezy mowy.", "error");
+      return;
+    }
+
+    if (isSpeaking) {
+      if (isSpeakingPaused) {
+        window.speechSynthesis.resume();
+        setIsSpeakingPaused(false);
+        showToast("Wznowiono czytanie lekcji na głos", "success");
+      } else {
+        window.speechSynthesis.pause();
+        setIsSpeakingPaused(true);
+        showToast("Wstrzymano czytanie", "info");
+      }
+    } else {
+      window.speechSynthesis.cancel(); // Stop any pending speech
+
+      const textToSpeak = `${activeChapter.title}. ${cleanMarkdownForSpeech(activeChapter.content)}`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      
+      // Find a Polish voice
+      const voices = window.speechSynthesis.getVoices();
+      const plVoice = voices.find(voice => voice.lang.startsWith('pl') || voice.lang.includes('PL'));
+      if (plVoice) {
+        utterance.voice = plVoice;
+      }
+      utterance.lang = 'pl-PL';
+      utterance.rate = 0.95; // Slightly slower for better educational focus
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setIsSpeakingPaused(false);
+      };
+
+      utterance.onerror = (e) => {
+        console.error("TTS speech error", e);
+        setIsSpeaking(false);
+        setIsSpeakingPaused(false);
+      };
+
+      window.speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
+      setIsSpeakingPaused(false);
+      showToast("Rozpoczęto czytanie lekcji na głos", "success");
+    }
+  };
+
+  const handleStopSpeech = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+    setIsSpeakingPaused(false);
+    showToast("Zatrzymano czytanie", "info");
+  };
 
   // 4. Customizing layout text, line-height, dyslexic fonts, themes
   const [theme, setTheme] = useState<ThemeType>(() => {
@@ -246,6 +534,88 @@ export default function App() {
     localStorage.setItem('multibook_chapter_gallery_images', JSON.stringify(chapterGalleryImages));
   }, [chapterGalleryImages]);
 
+  // Teacher Panel State & Default Students list
+  const DEFAULT_STUDENTS: Student[] = [
+    {
+      id: 'stud-1',
+      name: 'Anna Nowak',
+      className: 'Klasa 4A',
+      completedChapters: ['intro-multibook', 'biology-cell'],
+      bookmarkedChapters: ['biology-cell'],
+      chapterNotes: {
+        'intro-multibook': 'Mój pierwszy dzień z Multibookiem. Bardzo podoba mi się rysowanie po ekranie!',
+        'biology-cell': 'Notatki z biologii: Komórka ma jądro komórkowe, mitochondrium (daje energię!) i błonę.'
+      },
+      quizAttempts: {
+        'intro-multibook': { correct: 2, total: 2 }
+      }
+    },
+    {
+      id: 'stud-2',
+      name: 'Jan Kowalski',
+      className: 'Klasa 4A',
+      completedChapters: ['intro-multibook'],
+      bookmarkedChapters: [],
+      chapterNotes: {
+        'intro-multibook': 'Podręcznik offline działa szybko. Przetestowałem quizy.'
+      },
+      quizAttempts: {
+        'intro-multibook': { correct: 1, total: 2 }
+      }
+    },
+    {
+      id: 'stud-3',
+      name: 'Marek Wiśniewski',
+      className: 'Klasa 4B',
+      completedChapters: ['biology-cell'],
+      bookmarkedChapters: ['biology-cell'],
+      chapterNotes: {
+        'biology-cell': 'Komórka roślinna różni się od zwierzęcej obecnością ściany komórkowej i chloroplastów.'
+      },
+      quizAttempts: {}
+    },
+    {
+      id: 'stud-4',
+      name: 'Zofia Kamińska',
+      className: 'Klasa 7A',
+      completedChapters: ['intro-multibook', 'biology-cell', 'space-mars'],
+      bookmarkedChapters: [],
+      chapterNotes: {
+        'space-mars': 'Mars to czwarta planeta od Słońca. Nazywa się ją Czerwoną Planetą z powodu tlenku żelaza.'
+      },
+      quizAttempts: {
+        'intro-multibook': { correct: 2, total: 2 },
+        'space-mars': { correct: 2, total: 2 }
+      }
+    },
+    {
+      id: 'stud-5',
+      name: 'Kacper Zieliński',
+      className: 'Klasa 4B',
+      completedChapters: [],
+      bookmarkedChapters: [],
+      chapterNotes: {},
+      quizAttempts: {}
+    }
+  ];
+
+  const [activeMainTab, setActiveMainTab] = useState<'lessons' | 'teacher-panel'>('lessons');
+
+  const [students, setStudents] = useState<Student[]>(() => {
+    const saved = localStorage.getItem('multibook_students');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+    }
+    return DEFAULT_STUDENTS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_students', JSON.stringify(students));
+  }, [students]);
+
   // Save teacher classes and realizations to LocalStorage
   useEffect(() => {
     localStorage.setItem('multibook_teacher_classes', JSON.stringify(teacherClasses));
@@ -255,7 +625,727 @@ export default function App() {
     localStorage.setItem('multibook_realizations', JSON.stringify(realizations));
   }, [realizations]);
 
-  // 6. Sidebar search and filter by category
+  // Teacher Panel State variables
+  const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
+  const [teacherClassFilter, setTeacherClassFilter] = useState('Wszystkie');
+  const [teacherSortOption, setTeacherSortOption] = useState<'name-asc' | 'progress-desc' | 'progress-asc'>('name-asc');
+  const [selectedStudentDetailId, setSelectedStudentDetailId] = useState<string | null>(null);
+  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
+  const [studentNameInput, setStudentNameInput] = useState('');
+  const [studentClassInput, setStudentClassInput] = useState('');
+  const [bulkClassSelect, setBulkClassSelect] = useState('');
+  const [bulkChapterSelect, setBulkChapterSelect] = useState('');
+  const [tempTeacherRemarks, setTempTeacherRemarks] = useState<Record<string, string>>({});
+
+  // Teacher Panel Helper Functions
+  const handleSaveStudent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentNameInput.trim() || !studentClassInput.trim()) {
+      showToast("Wpisz imię i nazwisko oraz wybierz lub wpisz klasę!", "error");
+      return;
+    }
+
+    const targetClass = studentClassInput.trim();
+    if (!teacherClasses.includes(targetClass)) {
+      setTeacherClasses(prev => [...prev, targetClass]);
+    }
+
+    if (editingStudentId) {
+      setStudents(prev => prev.map(s => s.id === editingStudentId ? {
+        ...s,
+        name: studentNameInput.trim(),
+        className: targetClass
+      } : s));
+      showToast("Zaktualizowano dane ucznia!", "success");
+    } else {
+      const newStud: Student = {
+        id: `stud-${Date.now()}`,
+        name: studentNameInput.trim(),
+        className: targetClass,
+        completedChapters: [],
+        bookmarkedChapters: [],
+        chapterNotes: {},
+        quizAttempts: {}
+      };
+      setStudents(prev => [...prev, newStud]);
+      showToast("Dodano nowego ucznia!", "success");
+    }
+
+    setEditingStudentId(null);
+    setStudentNameInput('');
+    setStudentClassInput('');
+  };
+
+  const handleStartEditStudent = (student: Student) => {
+    setEditingStudentId(student.id);
+    setStudentNameInput(student.name);
+    setStudentClassInput(student.className);
+    // Scroll to form or focus
+    const formEl = document.getElementById('student-edit-form');
+    if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleDeleteStudent = (id: string) => {
+    const student = students.find(s => s.id === id);
+    if (!student) return;
+
+    showConfirm(
+      `Czy na pewno chcesz usunąć ucznia ${student.name}? Wszystkie jego indywidualne postępy, odpowiedzi z quizów oraz notatki zostaną bezpowrotnie skasowane.`,
+      () => {
+        setStudents(prev => prev.filter(s => s.id !== id));
+        if (selectedStudentDetailId === id) setSelectedStudentDetailId(null);
+        showToast(`Usunięto ucznia ${student.name}.`, "info");
+      },
+      "Usuń ucznia"
+    );
+  };
+
+  const handleGenerateMockStudents = () => {
+    showConfirm(
+      "Czy na pewno chcesz wygenerować 5 przykładowych uczniów z realistycznymi postępami, ocenami i notatkami? Uczniowie zostaną dodani do Twojej obecnej listy.",
+      () => {
+        setStudents(prev => {
+          const existingIds = new Set(prev.map(s => s.id));
+          const mockToAdd = DEFAULT_STUDENTS.filter(s => !existingIds.has(s.id));
+          if (mockToAdd.length === 0) {
+            const newMocks = DEFAULT_STUDENTS.map(s => ({
+              ...s,
+              id: `stud-mock-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+              name: `${s.name} (Przykładowy)`
+            }));
+            return [...prev, ...newMocks];
+          }
+          return [...prev, ...mockToAdd];
+        });
+        showToast("Wygenerowano przykładowych uczniów z postępami!", "success");
+      },
+      "Generuj przykładowe dane"
+    );
+  };
+
+  const handleToggleStudentChapterCompletion = (studentId: string, chapterId: string) => {
+    setStudents(prev => prev.map(s => {
+      if (s.id === studentId) {
+        const isCompleted = s.completedChapters.includes(chapterId);
+        const completedChapters = isCompleted
+          ? s.completedChapters.filter(id => id !== chapterId)
+          : [...s.completedChapters, chapterId];
+        return { ...s, completedChapters };
+      }
+      return s;
+    }));
+    showToast("Zaktualizowano postęp lekcji u ucznia!", "success");
+  };
+
+  const handleUpdateStudentRemarks = (studentId: string, remarks: string) => {
+    setStudents(prev => prev.map(s => {
+      if (s.id === studentId) {
+        return { ...s, teacherRemarks: remarks };
+      }
+      return s;
+    }));
+    showToast("Zapisano notatkę nauczyciela!", "success");
+  };
+
+  const handleBulkMarkChapter = () => {
+    if (!bulkClassSelect || !bulkChapterSelect) {
+      showToast("Wybierz klasę oraz temat lekcji!", "error");
+      return;
+    }
+
+    setStudents(prev => prev.map(s => {
+      if (s.className === bulkClassSelect) {
+        if (!s.completedChapters.includes(bulkChapterSelect)) {
+          return { ...s, completedChapters: [...s.completedChapters, bulkChapterSelect] };
+        }
+      }
+      return s;
+    }));
+
+    const alreadyRealized = realizations.some(r => r.className === bulkClassSelect && r.chapterId === bulkChapterSelect);
+    if (!alreadyRealized) {
+      setRealizations(prev => [...prev, {
+        className: bulkClassSelect,
+        chapterId: bulkChapterSelect,
+        timestamp: Date.now()
+      }]);
+    }
+
+    showToast(`Pomyślnie zrealizowano temat dla całej klasy ${bulkClassSelect}!`, "success");
+    setBulkChapterSelect('');
+  };
+
+  const handleBulkResetProgress = () => {
+    if (!bulkClassSelect) {
+      showToast("Wybierz klasę, dla której chcesz zresetować dane!", "error");
+      return;
+    }
+
+    showConfirm(
+      `Czy na pewno chcesz wyczyścić postępy, notatki oraz wyniki quizów WSZYSTKICH uczniów w klasie ${bulkClassSelect}? Tej operacji nie można cofnąć.`,
+      () => {
+        setStudents(prev => prev.map(s => {
+          if (s.className === bulkClassSelect) {
+            return {
+              ...s,
+              completedChapters: [],
+              bookmarkedChapters: [],
+              chapterNotes: {},
+              quizAttempts: {}
+            };
+          }
+          return s;
+        }));
+
+        setRealizations(prev => prev.filter(r => r.className !== bulkClassSelect));
+        showToast(`Wyczyszczono dane klasy ${bulkClassSelect}!`, "info");
+      },
+      "Resetuj postępy klasy"
+    );
+  };
+
+  // Computed lists for teacher panel
+  const uniqueStudentClasses = useMemo(() => {
+    const set = new Set(students.map(s => s.className));
+    teacherClasses.forEach(c => set.add(c));
+    return Array.from(set);
+  }, [students, teacherClasses]);
+
+  const filteredStudents = useMemo(() => {
+    const list = students.filter(s => {
+      const matchesSearch = s.name.toLowerCase().includes(teacherSearchQuery.toLowerCase());
+      const matchesClass = teacherClassFilter === 'Wszystkie' || s.className === teacherClassFilter;
+      return matchesSearch && matchesClass;
+    });
+
+    return [...list].sort((a, b) => {
+      if (teacherSortOption === 'name-asc') {
+        return a.name.localeCompare(b.name, 'pl');
+      } else if (teacherSortOption === 'progress-desc') {
+        const pctA = chapters.length > 0 ? a.completedChapters.length / chapters.length : 0;
+        const pctB = chapters.length > 0 ? b.completedChapters.length / chapters.length : 0;
+        if (pctA !== pctB) return pctB - pctA;
+        return a.name.localeCompare(b.name, 'pl');
+      } else if (teacherSortOption === 'progress-asc') {
+        const pctA = chapters.length > 0 ? a.completedChapters.length / chapters.length : 0;
+        const pctB = chapters.length > 0 ? b.completedChapters.length / chapters.length : 0;
+        if (pctA !== pctB) return pctA - pctB;
+        return a.name.localeCompare(b.name, 'pl');
+      }
+      return 0;
+    });
+  }, [students, teacherSearchQuery, teacherClassFilter, teacherSortOption, chapters]);
+
+  const selectedDetailedStudent = useMemo(() => {
+    return students.find(s => s.id === selectedStudentDetailId) || null;
+  }, [students, selectedStudentDetailId]);
+
+  // Helper classes for theme-compliant and legible buttons
+  const getPrimaryBtnClass = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-amber-600 hover:bg-amber-500 text-white shadow-2xs';
+      case 'sepia':
+        return 'bg-[#433422] hover:bg-[#5C4533] text-[#fbf6ec] shadow-2xs border border-[#302418]';
+      case 'blue':
+        return 'bg-[#2c3e50] hover:bg-[#1e293b] text-white shadow-2xs';
+      case 'dyslexic':
+        return 'bg-[#1b1c1b] hover:bg-black text-white shadow-2xs';
+      default: // light
+        return 'bg-amber-600 hover:bg-amber-700 text-white shadow-2xs';
+    }
+  };
+
+  const getEmeraldBtnClass = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-emerald-600 hover:bg-emerald-500 text-white';
+      case 'sepia':
+        return 'bg-emerald-800 hover:bg-emerald-900 text-[#fbf6ec] border border-emerald-900';
+      case 'blue':
+        return 'bg-emerald-600 hover:bg-emerald-700 text-white';
+      case 'dyslexic':
+        return 'bg-[#14421b] hover:bg-[#0c2e12] text-white';
+      default: // light
+        return 'bg-emerald-700 hover:bg-emerald-800 text-white';
+    }
+  };
+
+  const getDangerBtnClass = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-rose-950/40 hover:bg-rose-950/60 text-rose-400 border border-rose-900/40';
+      case 'sepia':
+        return 'bg-[#ebdcb3]/20 hover:bg-[#ebdcb3]/40 text-red-800 border border-[#ebdcb3]';
+      case 'blue':
+        return 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100';
+      case 'dyslexic':
+        return 'bg-white hover:bg-red-50 text-red-700 border border-red-200';
+      default: // light
+        return 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/60';
+    }
+  };
+
+  // Main Teacher Panel Dashboard UI builder
+  const renderTeacherPanelDashboard = () => {
+    const isDark = theme === 'dark';
+
+    return (
+      <div id="teacher-dashboard-container" className="flex-1 overflow-y-auto px-5 py-6 space-y-6">
+        {/* Dashboard Top Row / Banner */}
+        <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${
+          isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-amber-50/40 border-amber-100'
+        }`}>
+          <div>
+            <h2 className={`text-xl md:text-2xl font-black tracking-tight flex items-center gap-2 ${activeThemeConfig.h1}`}>
+              <GraduationCap className="w-6 h-6 text-amber-600 shrink-0" />
+              <span>Dedykowany Panel Nauczyciela 🏫</span>
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+              Zbiorcze zarządzanie uczniami, postępami, realizacją tematów oraz podgląd notatek z jednego miejsca.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              id="generate-mock-students-btn"
+              onClick={handleGenerateMockStudents}
+              className={`px-3 py-1.5 font-extrabold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all ${getPrimaryBtnClass()}`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Generuj przykładowych uczniów 👥</span>
+            </button>
+            <button
+              id="lessons-view-back-btn"
+              onClick={() => setActiveMainTab('lessons')}
+              className={`px-3 py-1.5 font-extrabold text-xs rounded-xl flex items-center gap-1 cursor-pointer transition-all ${activeThemeConfig.galleryPresetBtn}`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Powrót do lekcji</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Overview Key Indicators */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Liczba uczniów</span>
+            <div className="text-2xl font-black text-amber-600 mt-1">{students.length}</div>
+            <p className="text-[10px] text-slate-400 mt-0.5">Zarejestrowanych w systemie offline</p>
+          </div>
+          <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Obsługiwane klasy</span>
+            <div className="text-2xl font-black text-emerald-600 mt-1">{uniqueStudentClasses.length}</div>
+            <p className="text-[10px] text-slate-400 mt-0.5">Klasy skonfigurowane w Multibooku</p>
+          </div>
+          <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Średni postęp</span>
+            <div className="text-2xl font-black text-blue-600 mt-1">
+              {students.length > 0 
+                ? Math.round((students.reduce((acc, s) => acc + s.completedChapters.length, 0) / (students.length * chapters.length || 1)) * 100)
+                : 0}%
+            </div>
+            <p className="text-[10px] text-slate-400 mt-0.5">Zrealizowanych lekcji na jednego ucznia</p>
+          </div>
+        </div>
+
+        {/* Bento Grid: Tools vs Search */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+          
+          {/* LEFT SIDEBAR: Add Student & Bulk Actions (col-span-4) */}
+          <div className="xl:col-span-4 space-y-5">
+            
+            {/* Form: Add/Edit Student */}
+            <div id="student-edit-form" className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs`}>
+              <h3 className="text-sm font-black text-slate-800 dark:text-slate-200 border-b pb-2 mb-4 flex items-center gap-2">
+                <span className="p-1.5 bg-amber-500/10 text-amber-600 rounded-lg">✍️</span>
+                <span>{editingStudentId ? 'Edytuj dane ucznia' : 'Dodaj nowego ucznia'}</span>
+              </h3>
+              <form onSubmit={handleSaveStudent} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Imię i nazwisko</label>
+                  <input
+                    type="text"
+                    value={studentNameInput}
+                    onChange={(e) => setStudentNameInput(e.target.value)}
+                    placeholder="np. Jan Kowalski"
+                    className={`w-full p-2.5 rounded-lg border text-sm font-medium focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                      isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Klasa</label>
+                  <input
+                    type="text"
+                    value={studentClassInput}
+                    onChange={(e) => setStudentClassInput(e.target.value)}
+                    placeholder="np. Klasa 4A"
+                    list="available-classes-list"
+                    className={`w-full p-2.5 rounded-lg border text-sm font-medium focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                      isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                  <datalist id="available-classes-list">
+                    {uniqueStudentClasses.map(c => (
+                      <option key={c} value={c} />
+                    ))}
+                  </datalist>
+                </div>
+                
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="submit"
+                    className={`flex-1 py-2.5 font-extrabold text-xs rounded-lg cursor-pointer transition-colors ${getPrimaryBtnClass()}`}
+                  >
+                    {editingStudentId ? 'Zapisz zmiany' : 'Utwórz konto ucznia'}
+                  </button>
+                  {editingStudentId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingStudentId(null);
+                        setStudentNameInput('');
+                        setStudentClassInput('');
+                      }}
+                      className={`px-3 py-2.5 font-extrabold text-xs rounded-lg cursor-pointer transition-colors ${activeThemeConfig.galleryPresetBtn}`}
+                    >
+                      Anuluj
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Bulk Actions Panel */}
+            <div className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs`}>
+              <h3 className="text-sm font-black text-slate-800 dark:text-slate-200 border-b pb-2 mb-4 flex items-center gap-2">
+                <span className="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg">⚡</span>
+                <span>Grupowa realizacja tematów</span>
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Wybierz klasę</label>
+                  <select
+                    value={bulkClassSelect}
+                    onChange={(e) => setBulkClassSelect(e.target.value)}
+                    className={`w-full p-2.5 rounded-lg border text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 focus:outline-none ${
+                      isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <option value="">-- Wybierz klasę --</option>
+                    {uniqueStudentClasses.map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Temat lekcji do zrealizowania</label>
+                  <select
+                    value={bulkChapterSelect}
+                    onChange={(e) => setBulkChapterSelect(e.target.value)}
+                    className={`w-full p-2.5 rounded-lg border text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 focus:outline-none ${
+                      isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <option value="">-- Wybierz temat --</option>
+                    {chapters.map(ch => (
+                      <option key={ch.id} value={ch.id}>[{ch.subject}] {ch.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <button
+                    onClick={handleBulkMarkChapter}
+                    disabled={!bulkClassSelect || !bulkChapterSelect}
+                    className={`w-full py-2 font-extrabold text-xs rounded-lg cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed transition-colors ${getEmeraldBtnClass()}`}
+                  >
+                    Zrealizuj temat dla całej klasy 📚
+                  </button>
+                  <button
+                    onClick={handleBulkResetProgress}
+                    disabled={!bulkClassSelect}
+                    className={`w-full py-2 font-extrabold text-xs rounded-lg cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed transition-colors ${getDangerBtnClass()}`}
+                  >
+                    Wyczyść wszystkie dane klasy 🗑️
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT MIDDLE CONTAINER: Student list & search (col-span-8) */}
+          <div className="xl:col-span-8 space-y-5">
+            
+            {/* Search, Filter Bar */}
+            <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} flex flex-col sm:flex-row gap-3 shadow-3xs`}>
+              <div className="flex-1 relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                <input
+                  type="text"
+                  value={teacherSearchQuery}
+                  onChange={(e) => setTeacherSearchQuery(e.target.value)}
+                  placeholder="Szukaj ucznia po imieniu..."
+                  className={`w-full pl-9 pr-4 py-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+              <div className="w-full sm:w-48">
+                <select
+                  value={teacherClassFilter}
+                  onChange={(e) => setTeacherClassFilter(e.target.value)}
+                  className={`w-full p-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <option value="Wszystkie">Wszystkie klasy</option>
+                  {uniqueStudentClasses.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="w-full sm:w-56">
+                <select
+                  value={teacherSortOption}
+                  onChange={(e) => setTeacherSortOption(e.target.value as any)}
+                  className={`w-full p-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <option value="name-asc">Sortuj: Imię (A-Z)</option>
+                  <option value="progress-desc">Sortuj: Postęp (najpierw najwięcej ⬇️)</option>
+                  <option value="progress-asc">Sortuj: Postęp (najpierw najmniej ⬆️)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Students List */}
+            <div className="space-y-3">
+              {filteredStudents.length === 0 ? (
+                <div className={`p-10 text-center rounded-xl border ${isDark ? 'border-slate-800 bg-slate-900/10' : 'border-slate-200 bg-slate-50/50'}`}>
+                  <p className="text-sm font-medium text-slate-500">Nie znaleziono uczniów spełniających kryteria.</p>
+                  <p className="text-xs text-slate-400 mt-1">Użyj przycisku u góry, aby wygenerować fikcyjnych uczniów do testów.</p>
+                </div>
+              ) : (
+                filteredStudents.map(student => {
+                  const compCount = student.completedChapters.length;
+                  const totalCount = chapters.length;
+                  const pct = totalCount > 0 ? Math.round((compCount / totalCount) * 100) : 0;
+                  const isSelected = selectedStudentDetailId === student.id;
+
+                  // Compute score average
+                  const quizKeys = Object.keys(student.quizAttempts);
+                  const quizScoreStr = quizKeys.length > 0
+                    ? `${quizKeys.length} quizów (średnia: ${Math.round((quizKeys.reduce((acc, k) => acc + (student.quizAttempts[k].correct / student.quizAttempts[k].total), 0) / quizKeys.length) * 100)}%)`
+                    : 'Brak wykonanych quizów';
+
+                  return (
+                    <div 
+                      key={student.id} 
+                      className={`p-4 rounded-xl border transition-all ${
+                        isSelected 
+                          ? 'border-amber-500 bg-amber-50/10 shadow-xs' 
+                          : isDark ? 'bg-slate-900/45 border-slate-800 hover:border-slate-700' : 'bg-white border-slate-200/80 hover:border-slate-300 shadow-3xs'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-slate-800 dark:text-slate-100">{student.name}</span>
+                            <span className="px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                              {student.className}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-4 mt-1.5 text-[10px] font-sans text-slate-400 dark:text-slate-500">
+                            <span>Zrealizowano: <strong className="text-slate-700 dark:text-slate-300 font-bold">{compCount}/{totalCount}</strong> ({pct}%)</span>
+                            <span>•</span>
+                            <span>{quizScoreStr}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 self-end sm:self-center">
+                          <button
+                            onClick={() => setSelectedStudentDetailId(isSelected ? null : student.id)}
+                            className={`px-2.5 py-1.5 font-bold text-xs rounded-lg cursor-pointer flex items-center gap-1 transition-all ${
+                              isSelected
+                                ? getPrimaryBtnClass()
+                                : activeThemeConfig.galleryPresetBtn
+                            }`}
+                          >
+                            <span>Szczegóły 🔍</span>
+                          </button>
+                          <button
+                            onClick={() => handleStartEditStudent(student)}
+                            className={`p-1.5 rounded-lg cursor-pointer transition-colors ${activeThemeConfig.galleryPresetBtn}`}
+                            title="Edytuj dane ucznia"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteStudent(student.id)}
+                            className={`p-1.5 rounded-lg cursor-pointer transition-colors ${getDangerBtnClass()}`}
+                            title="Usuń ucznia"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar inside row */}
+                      <div className="mt-3.5 w-full bg-slate-100 dark:bg-slate-800/80 h-1.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-amber-600 h-full rounded-full transition-all duration-300"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+
+                      {/* Detailed inline block if student is active */}
+                      <AnimatePresence>
+                        {isSelected && selectedDetailedStudent && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-800 overflow-hidden"
+                          >
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                              {/* Left detail column: Chapters checklists */}
+                              <div>
+                                <h4 className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2.5">
+                                  Realizacja poszczególnych tematów (Kliknij aby zmienić):
+                                </h4>
+                                <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                                  {chapters.map(ch => {
+                                    const isDone = selectedDetailedStudent.completedChapters.includes(ch.id);
+                                    return (
+                                      <div 
+                                        key={ch.id}
+                                        onClick={() => handleToggleStudentChapterCompletion(selectedDetailedStudent.id, ch.id)}
+                                        className={`p-2 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                                          isDone 
+                                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400' 
+                                            : 'bg-slate-50/50 dark:bg-slate-900/20 border-slate-200/50 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100/50'
+                                        }`}
+                                      >
+                                        <span className="font-semibold select-none">[{ch.subject}] {ch.title}</span>
+                                        <span className="font-mono text-[10px] font-black shrink-0 ml-3 select-none">
+                                          {isDone ? 'ZREALIZOWANO ✓' : 'OCZEKUJE ○'}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              {/* Right detail column: Quizzes & Notes */}
+                              <div className="space-y-4">
+                                {/* Quiz attempts section */}
+                                <div>
+                                  <h4 className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2.5">
+                                    Wyniki quizów i sprawdzianów wiedzy:
+                                  </h4>
+                                  {Object.keys(selectedDetailedStudent.quizAttempts).length === 0 ? (
+                                    <p className="text-xs font-medium text-slate-500 italic">Uczeń nie rozwiązał jeszcze żadnego quizu.</p>
+                                  ) : (
+                                    <div className="space-y-1.5">
+                                      {Object.keys(selectedDetailedStudent.quizAttempts).map(key => {
+                                        const attempt = selectedDetailedStudent.quizAttempts[key];
+                                        const chName = chapters.find(ch => ch.id === key)?.title || key;
+                                        return (
+                                          <div key={key} className={`p-2 rounded-lg border text-xs flex items-center justify-between ${
+                                            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200/40'
+                                          }`}>
+                                            <span className="font-semibold text-slate-700 dark:text-slate-300">{chName}</span>
+                                            <span className="font-mono font-bold text-amber-600">
+                                              Wynik: {attempt.correct} / {attempt.total} ({Math.round((attempt.correct / attempt.total) * 100)}%)
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+
+                                 {/* Custom Student Notes section */}
+                                <div>
+                                  <h4 className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2.5">
+                                    Notatki własne ucznia w lekcjach:
+                                  </h4>
+                                  {Object.keys(selectedDetailedStudent.chapterNotes).length === 0 ? (
+                                    <p className="text-xs font-medium text-slate-500 italic">Brak zapisanych notatek własnych.</p>
+                                  ) : (
+                                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                                      {Object.keys(selectedDetailedStudent.chapterNotes).map(key => {
+                                        const noteText = selectedDetailedStudent.chapterNotes[key];
+                                        const chName = chapters.find(ch => ch.id === key)?.title || key;
+                                        if (!noteText.trim()) return null;
+                                        return (
+                                          <div key={key} className={`p-2.5 rounded-lg border text-xs space-y-1 ${
+                                            isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-100/60 border-slate-200/50'
+                                          }`}>
+                                            <span className="font-bold text-slate-500 text-[10px] block border-b pb-0.5 mb-1">
+                                              Temat: {chName}
+                                            </span>
+                                            <p className="text-slate-700 dark:text-slate-300 font-medium whitespace-pre-line leading-relaxed italic">
+                                              "{noteText}"
+                                            </p>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Notatki nauczyciela (prywatne uwagi) */}
+                                <div className="pt-3.5 border-t border-slate-200/60 dark:border-slate-800">
+                                  <h4 className="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2.5">
+                                    Prywatne notatki nauczyciela ✍️:
+                                  </h4>
+                                  <div className="space-y-2">
+                                    <textarea
+                                      value={tempTeacherRemarks[selectedDetailedStudent.id] ?? selectedDetailedStudent.teacherRemarks ?? ''}
+                                      onChange={(e) => setTempTeacherRemarks(prev => ({ ...prev, [selectedDetailedStudent.id]: e.target.value }))}
+                                      placeholder="Wpisz tutaj uwagi, spostrzeżenia lub zalecenia dotyczące postępów ucznia..."
+                                      className={`w-full p-2.5 text-xs border rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:outline-none min-h-[80px] transition-all font-sans leading-relaxed ${
+                                        isDark 
+                                          ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-600' 
+                                          : 'bg-white border-slate-200 placeholder-slate-400 text-slate-800'
+                                      }`}
+                                    />
+                                    <div className="flex justify-end">
+                                      <button
+                                        onClick={() => handleUpdateStudentRemarks(
+                                          selectedDetailedStudent.id, 
+                                          tempTeacherRemarks[selectedDetailedStudent.id] ?? selectedDetailedStudent.teacherRemarks ?? ''
+                                        )}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-colors flex items-center gap-1 ${getPrimaryBtnClass()}`}
+                                      >
+                                        <span>Zapisz notatkę 💾</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    );
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubject, setSelectedSubject] = useState<string>('Wszystkie');
   const [selectedSchoolType, setSelectedSchoolType] = useState<string>('Wszystkie');
@@ -317,9 +1407,6 @@ export default function App() {
   // 8. Quiz Interaction States
   // Map of chapterId -> QuizAnswersState (which question was solved and what index was chosen)
   const [quizAnswers, setQuizAnswers] = useState<Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>>({});
-
-  // 9. Personal Notes Drawer collapse state (on right side)
-  const [isNotesOpen, setIsNotesOpen] = useState(false);
 
   // 10. Mobile sidebar trigger
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -392,6 +1479,7 @@ export default function App() {
 
   const handleSaveNote = (text: string) => {
     if (!activeChapter) return;
+    setLocalNoteText(text);
     setProgress((prev) => {
       const updatedNotes = { ...prev.chapterNotes, [activeChapter.id]: text };
       return { ...prev, chapterNotes: updatedNotes };
@@ -465,7 +1553,7 @@ export default function App() {
     );
   };
 
-  // Export database backup (chapters, progress, realizations, classes, galleries, settings) to a JSON file
+  // Export database backup (chapters, progress, realizations, classes, galleries, settings, students) to a JSON file
   const handleExportDatabase = () => {
     const backupData = {
       version: '1.0',
@@ -478,6 +1566,7 @@ export default function App() {
       teacherClasses,
       realizations,
       chapterGalleryImages,
+      students,
     };
     
     try {
@@ -540,6 +1629,10 @@ export default function App() {
           }
           if (parsedData.chapterGalleryImages && typeof parsedData.chapterGalleryImages === 'object') {
             setChapterGalleryImages(parsedData.chapterGalleryImages);
+            restoredCount++;
+          }
+          if (Array.isArray(parsedData.students)) {
+            setStudents(parsedData.students);
             restoredCount++;
           }
 
@@ -919,6 +2012,22 @@ export default function App() {
           </button>
 
           <button
+            id="teacher-panel-toggle-btn"
+            onClick={() => {
+              setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
+              setIsMobileSidebarOpen(false);
+            }}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeMainTab === 'teacher-panel'
+                ? getPrimaryBtnClass()
+                : activeThemeConfig.galleryPresetBtn
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>{activeMainTab === 'teacher-panel' ? 'Widok lekcji 📖' : 'Panel Nauczyciela 🏫'}</span>
+          </button>
+
+          <button
             id="student-notes-toggle-btn"
             onClick={() => setIsNotesOpen(!isNotesOpen)}
             className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
@@ -968,6 +2077,23 @@ export default function App() {
                 <span>Dodaj lekcję</span>
               </button>
             </div>
+
+            {/* Toggle View Mode button in sidebar */}
+            <button
+              id="sidebar-view-mode-toggle"
+              onClick={() => {
+                setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
+                setIsMobileSidebarOpen(false);
+              }}
+              className={`w-full p-2.5 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                activeMainTab === 'teacher-panel'
+                  ? getPrimaryBtnClass()
+                  : activeThemeConfig.galleryPresetBtn
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 shrink-0" />
+              <span>{activeMainTab === 'teacher-panel' ? 'Przejdź do lekcji 📖' : 'Otwórz Panel Nauczyciela 🏫'}</span>
+            </button>
 
             {/* General progress stats */}
             <div className={`p-3 rounded-xl border transition-all duration-300 ${activeThemeConfig.sidebarProgressBg}`}>
@@ -1251,8 +2377,11 @@ export default function App() {
             color: theme === 'sepia' ? '#433422' : theme === 'blue' ? '#2c3e50' : theme === 'dyslexic' ? '#1b1c1b' : theme === 'dark' ? '#f1f5f9' : '#433D3C'
           } : undefined}
         >
-
-          {/* View Config Settings row over chapter content */}
+          {activeMainTab === 'teacher-panel' ? (
+            renderTeacherPanelDashboard()
+          ) : (
+            <>
+              {/* View Config Settings row over chapter content */}
           <div className={`border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 backdrop-blur-md transition-all duration-300 ${activeThemeConfig.headerBg}`}>
             
             {/* Subject name of active class */}
@@ -1431,7 +2560,47 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      {/* Text-To-Speech (Tryb czytania na głos) */}
+                      <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                        <button
+                          id="chapter-tts-toggle-btn"
+                          onClick={handleToggleSpeech}
+                          className={`px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                            isSpeaking
+                              ? isSpeakingPaused
+                                ? 'bg-amber-500 text-white shadow-sm'
+                                : `${getSubjectThemeColors(activeChapter.subject, theme).accentBg} shadow-sm`
+                              : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'
+                          }`}
+                          title={isSpeaking ? (isSpeakingPaused ? "Wznów czytanie" : "Wstrzymaj czytanie") : "Odczytaj lekcję na głos (Text-to-Speech)"}
+                        >
+                          {isSpeaking ? (
+                            isSpeakingPaused ? (
+                              <Play className="w-3.5 h-3.5" />
+                            ) : (
+                              <Pause className="w-3.5 h-3.5 animate-pulse text-emerald-600 dark:text-emerald-400" />
+                            )
+                          ) : (
+                            <Volume2 className="w-3.5 h-3.5" />
+                          )}
+                          <span>
+                            {isSpeaking ? (isSpeakingPaused ? "Wznów" : "Pauza") : "Czytaj lekcję"}
+                          </span>
+                        </button>
+
+                        {isSpeaking && (
+                          <button
+                            id="chapter-tts-stop-btn"
+                            onClick={handleStopSpeech}
+                            className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer"
+                            title="Zatrzymaj czytanie na głos"
+                          >
+                            <VolumeX className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
                       {/* Bookmark chapter toggler */}
                       <button
                         id="chapter-bookmark-toggle-btn"
@@ -1767,6 +2936,8 @@ export default function App() {
               </AnimatePresence>
             </div>
           </div>
+          </>
+          )}
         </main>
 
         {/* DZIENNIK I NOTATNIK NAUCZYCIELA & UCZNIA (DRAWER ON RIGHT SIDE) */}
@@ -1830,15 +3001,37 @@ export default function App() {
               <div className="flex-1 flex flex-col gap-3.5 min-h-0">
                 {/* Notes Textarea block */}
                 <div className="flex-1 flex flex-col gap-2 min-h-[120px]">
-                  <label className={`text-[11.5px] font-bold transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
-                    📝 Brudnopis do lekcji:
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className={`text-[11.5px] font-bold transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                      📝 Brudnopis do lekcji:
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      {isNotesSaving ? (
+                        <span className="text-[10px] font-extrabold text-amber-500 animate-pulse font-mono">
+                          ● Zapisywanie...
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-extrabold text-emerald-500 dark:text-emerald-400 font-mono">
+                          ✓ Zapisano
+                        </span>
+                      )}
+                      
+                      <button
+                        id="toggle-fullscreen-notes-btn"
+                        onClick={() => setIsNotesFullscreen(true)}
+                        className={`p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer`}
+                        title="Rozwiń do pełnego ekranu (Focus Mode)"
+                      >
+                        <Maximize className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     id="student-chapter-notes-textarea"
                     className={`flex-1 p-3 text-xs leading-relaxed border rounded-xl focus:outline-hidden focus:ring-2 font-mono resize-none transition-all duration-300 ${activeThemeConfig.studentNotesTextarea}`}
                     placeholder="np. Moje podsumowanie lekcji: Budowa komórki...\n- Jądro = centrum sterowania\n- Mitochondrium = elektrownia tlenowa"
-                    value={progress.chapterNotes[activeChapter.id] || ''}
-                    onChange={(e) => handleSaveNote(e.target.value)}
+                    value={localNoteText}
+                    onChange={(e) => setLocalNoteText(e.target.value)}
                   />
                 </div>
 
@@ -2119,6 +3312,84 @@ export default function App() {
                   
                   {teacherClasses.length > 0 ? (
                     <div className="space-y-2.5">
+                      {/* Visual Bar Chart comparing classes */}
+                      {(() => {
+                        const barChartData = teacherClasses.map((cls) => {
+                          const classRealizations = realizations.filter((r) => r.className === cls);
+                          const uniqueRealizedCount = new Set(classRealizations.map((r) => r.chapterId)).size;
+                          return {
+                            name: cls,
+                            'Zrealizowane': uniqueRealizedCount,
+                          };
+                        });
+
+                        const barColor = theme === 'dark' ? '#10b981' : '#047857';
+
+                        return (
+                          <div className={`p-3 rounded-xl border ${activeThemeConfig.border} ${activeThemeConfig.secondaryCardBg} space-y-1.5`}>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-extrabold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                                Porównanie realizacji tematów
+                              </span>
+                              <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400">
+                                Suma tematów: {chapters.length}
+                              </span>
+                            </div>
+                            <div className="w-full h-32 font-sans">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                  data={barChartData}
+                                  margin={{ top: 5, right: 5, left: -25, bottom: 5 }}
+                                >
+                                  <XAxis
+                                    dataKey="name"
+                                    stroke="#94a3b8"
+                                    fontSize={8}
+                                    tickLine={false}
+                                    axisLine={false}
+                                  />
+                                  <YAxis
+                                    stroke="#94a3b8"
+                                    fontSize={8}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    allowDecimals={false}
+                                    domain={[0, chapters.length || 10]}
+                                  />
+                                  <RechartsTooltip
+                                    cursor={{ fill: 'rgba(16, 185, 129, 0.05)' }}
+                                    content={({ active, payload }) => {
+                                      if (active && payload && payload.length) {
+                                        const data = payload[0].payload;
+                                        return (
+                                          <div className="bg-slate-900 border border-slate-800 text-white text-[9px] p-2 rounded-lg shadow-md font-sans">
+                                            <p className="font-extrabold">{data.name}</p>
+                                            <p className="text-emerald-450">Zrealizowano: <span className="font-mono font-bold">{data.Zrealizowane}</span> / {chapters.length}</p>
+                                          </div>
+                                        );
+                                      }
+                                      return null;
+                                    }}
+                                  />
+                                  <Bar
+                                    dataKey="Zrealizowane"
+                                    radius={[3, 3, 0, 0]}
+                                    maxBarSize={20}
+                                  >
+                                    {barChartData.map((entry, index) => (
+                                      <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.Zrealizowane > 0 ? barColor : '#64748b'}
+                                      />
+                                    ))}
+                                  </Bar>
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
                       {teacherClasses.map((cls) => {
                         const classRealizations = [...realizations]
                           .filter((r) => r.className === cls)
@@ -2583,6 +3854,233 @@ export default function App() {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* FULLSCREEN FOCUSED NOTE EDITOR (Focus Mode) */}
+      <AnimatePresence>
+        {isNotesFullscreen && activeChapter && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={`fixed inset-0 z-[100] flex flex-col p-6 sm:p-10 ${activeThemeConfig.sidebarBg} transition-all duration-300`}
+          >
+            {/* Header */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-slate-800/60">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400`}>
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className={`font-serif font-bold text-lg leading-tight transition-colors duration-300 ${activeThemeConfig.h1}`}>
+                    {activeChapter.title} — Pełnoekranowy Notatnik 📝
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Tryb pełnego skupienia (Focus Mode) • Przedmiot: {activeChapter.subject}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Autosave Status */}
+                {isNotesSaving ? (
+                  <span className="text-xs font-extrabold text-amber-500 animate-pulse font-mono flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 rounded-xl">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                    Autozapis...
+                  </span>
+                ) : (
+                  <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-xl">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    Zapisano
+                  </span>
+                )}
+
+                {/* Copy notes button */}
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(localNoteText);
+                    showToast("Notatki skopiowane do schowka!", "success");
+                  }}
+                  className={`p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
+                  title="Skopiuj notatki"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span className="hidden sm:inline">Skopiuj</span>
+                </button>
+
+                {/* Download notes button */}
+                <button
+                  onClick={handleDownloadNotes}
+                  className={`p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
+                  title="Pobierz notatki jako plik .md"
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden sm:inline">Pobierz .md</span>
+                </button>
+
+                {/* Clear notes button */}
+                <button
+                  onClick={() => {
+                    showConfirm(
+                      "Czy na pewno chcesz całkowicie wyczyścić wszystkie notatki dla tej lekcji? Te zmiany są nieodwracalne.",
+                      () => {
+                        setLocalNoteText('');
+                        setProgress((prev) => {
+                          const updatedNotes = { ...prev.chapterNotes, [activeChapter.id]: '' };
+                          return { ...prev, chapterNotes: updatedNotes };
+                        });
+                        showToast("Notatki zostały wyczyszczone.", "info");
+                      },
+                      "Wyczyść notatki"
+                    );
+                  }}
+                  className={`p-2.5 rounded-xl border border-red-200 hover:bg-red-50 dark:border-red-950/40 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
+                  title="Wyczyść notatki"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Wyczyść</span>
+                </button>
+
+                {/* Close fullscreen button */}
+                <button
+                  id="close-fullscreen-notes-btn"
+                  onClick={() => setIsNotesFullscreen(false)}
+                  className={`px-4 py-2.5 bg-slate-950 hover:bg-slate-900 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-extrabold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all shadow-sm`}
+                >
+                  <Minimize className="w-4 h-4" />
+                  <span>Zminimalizuj</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Editor Workspace */}
+            <div className="flex-1 flex flex-col lg:flex-row gap-6 mt-6 min-h-0">
+              
+              {/* Textarea Area */}
+              <div className="flex-1 flex flex-col gap-2 min-h-0">
+                {/* Markdown Toolbar */}
+                <div className={`flex flex-wrap items-center gap-1 p-1.5 rounded-xl border ${activeThemeConfig.border} bg-slate-50/50 dark:bg-slate-900/45`}>
+                  <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase px-2 py-1">Formatuj:</span>
+                  
+                  <button
+                    type="button"
+                    onClick={() => insertMarkdown('bold')}
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                    title="Pogrubienie (**tekst**)"
+                  >
+                    <Bold className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Pogrubienie</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => insertMarkdown('italic')}
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                    title="Kursywa (*tekst*)"
+                  >
+                    <Italic className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Kursywa</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => insertMarkdown('heading')}
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                    title="Nagłówek (### nagłówek)"
+                  >
+                    <Heading className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Nagłówek</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => insertMarkdown('list')}
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                    title="Lista wypunktowana (- element)"
+                  >
+                    <List className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Lista</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => insertMarkdown('link')}
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                    title="Wstaw odnośnik [tekst](url)"
+                  >
+                    <Link className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Link</span>
+                  </button>
+                </div>
+
+                <textarea
+                  id="fullscreen-notes-textarea"
+                  className={`flex-1 p-6 text-sm sm:text-base leading-relaxed border rounded-2xl focus:outline-hidden focus:ring-3 font-mono resize-none transition-all duration-300 shadow-inner ${activeThemeConfig.studentNotesTextarea}`}
+                  placeholder="Tutaj możesz swobodnie pisać podsumowanie, notatki z lekcji, ważne pojęcia...\nTwój postęp jest zapisywany automatycznie."
+                  value={localNoteText}
+                  onChange={(e) => setLocalNoteText(e.target.value)}
+                  autoFocus
+                />
+              </div>
+
+              {/* Sidebar Reference panel (Gallery images & Helper suggestions) */}
+              <div className="w-full lg:w-80 shrink-0 flex flex-col gap-4 min-h-0">
+                
+                {/* Visual Reference / Chapter Images */}
+                <div className={`p-4 rounded-2xl border ${activeThemeConfig.border} ${activeThemeConfig.secondaryCardBg} flex-1 flex flex-col min-h-0`}>
+                  <h3 className={`text-xs font-extrabold uppercase tracking-wide mb-3 flex items-center gap-1.5 ${activeThemeConfig.studentNotesLabel}`}>
+                    <Image className="w-4 h-4 text-emerald-600" />
+                    <span>Galeria tej lekcji</span>
+                  </h3>
+
+                  {(chapterGalleryImages[activeChapter.id] || []).length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                      <Image className="w-8 h-8 text-slate-300 dark:text-slate-700 mb-2" />
+                      <p className="text-[11px] text-slate-400 leading-normal">
+                        Brak obrazów w galerii tej lekcji. Możesz je dodać w panelu bocznym.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 gap-2.5 content-start">
+                      {(chapterGalleryImages[activeChapter.id] || []).map((imgUrl, idx) => (
+                        <div 
+                          key={idx} 
+                          className="group relative aspect-video rounded-lg overflow-hidden border border-slate-200/60 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 cursor-pointer"
+                          onClick={() => setSelectedLightboxImage(imgUrl)}
+                        >
+                          <img 
+                            src={imgUrl} 
+                            alt={`Lekcja ${idx + 1}`} 
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="text-[10px] text-white font-extrabold bg-black/60 px-2 py-1 rounded-md">Podgląd</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Helper Tips */}
+                <div className={`p-4 rounded-2xl border border-slate-100 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/40 text-xs text-slate-500 leading-relaxed space-y-2`}>
+                  <h4 className="font-bold text-slate-700 dark:text-slate-350 flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Wskazówki Focus Mode:</span>
+                  </h4>
+                  <ul className="list-disc list-inside space-y-1 text-[11px]">
+                    <li>Użyj formatu Markdown do organizacji treści.</li>
+                    <li>Notatki zapisują się natychmiast na tym urządzeniu.</li>
+                    <li>Wciśnij <strong>Zminimalizuj</strong> lub klawisz <strong>Esc</strong>, aby powrócić do widoku lekcji.</li>
+                  </ul>
+                </div>
+
+              </div>
+
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

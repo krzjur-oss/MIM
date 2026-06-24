@@ -38,19 +38,20 @@ Ten program to interaktywny podręcznik i zeszyt ćwiczeń zaprojektowany z myś
 6. **Interaktywny Kalendarz i Historia Zrealizowanych Lekcji 📅**:
    Uczniowie mogą oznaczać lekcje jako ukończone, a nauczyciele przypisywać je do realizacji w swoich klasach! W panelu klas w menu bocznym po rozwinięciu klasy zobaczysz interaktywny kalendarz z zaznaczonymi dniami odbytych lekcji, szczegółową historię chronologiczną z dokładną datą i tematem lekcji oraz możliwość wycofania realizacji przyciskiem "Cofnij".
 
-7. **Elastyczne Dostosowanie Wyglądu 🛠️**:
+7. **Elastyczne Dostosowanie Wyglądu i Motywów 🛠️**:
    * Zmieniaj wielkość czcionki, aby tekst był doskonale czytelny z końca klasy.
    * Dopasowuj **wysokość linii (interlinii)** bezpośrednio w panelu stylów na wąską, normalną lub szeroką, co natychmiast wpływa na czytelność całego tekstu.
    * Wybieraj spośród **5 uroczych motywów kolorystycznych** (Jasny, Ciemny, Ciepły Sepia, Pastelowy Niebieski oraz specjalny **Motyw Dyslektyczny** z ułatwioną dyslektyczną czcionką OpenDyslexic i łagodnym tłem).
+   * **Dynamiczne Kolory Przedmiotów** 🎨: Plakietki, aktywny wybór rozdziałów oraz kropki postępu automatycznie zmieniają barwę w zależności od wybranego przedmiotu (np. zielony dla Biologii, indigo dla Astronomii/Geografii, różowy dla Matematyki/Fizyki/Chemii, ciepły bursztynowy dla Religii).
+
+8. **Usuwanie i Zarządzanie Lekcjami 🗑️**:
+   Zarówno domyślne, jak i własne dodane lekcje mogą być teraz bez problemu usunięte z poziomu bocznej listy rozdziałów (za pomocą ikony kosza przy danej lekcji) lub bezpośrednio za pomocą przycisku usuwania w dolnym panelu aktywnej lekcji.
 
 ---
 
-### 📂 Jak dodać własne materiały?
-Kliknij przycisk **„+ Dodaj lekcję”** w menu bocznym:
-- Wybierz typ szkoły i klasę (np. *Szkoła Podstawowa*, *Klasa 1*).
-- Podaj rozdział nadrzędny (np. *Stworzenie świata*).
-- Podaj temat lekcji (np. *Bóg stwarza świat z miłości*).
-- Wpisz treść i opcjonalne pytania testowe!`,
+### 📂 Jak zarządzać materiałami?
+* **Dodawanie**: Kliknij przycisk **„+ Dodaj lekcję”** w menu bocznym, wybierz typ szkoły/klasę, wpisz rozdział, temat, treść oraz pytania testowe.
+* **Usuwanie**: Kliknij ikonę kosza przy lekcji w menu bocznym lub przycisk kosza obok oznaczenia ukończenia lekcji w oknie głównym.`,
     quizzes: [
       {
         id: 'intro-q1',
@@ -99,7 +100,7 @@ Bóg kocha każdego człowieka i z tej wielkiej miłości stworzył dla nas wspa
 Popatrz, jak wspaniale Bóg ułożył świat dla nas krok po kroku:
 *   **Światło i Ciemność** ☀️ – Bóg stworzył jasny dzień do zabawy i nauki oraz ciemną noc do odpoczynku i spokojnego snu.
 *   **Niebo i Ziemia** 🌍 – Nasz dom, pełen koloru i powietrza, którym oddychamy.
-*   **Klucze Natury (Rostliny)** 🌳 – Piękne kwiaty o cudownym zapachu, soczyste owoce, drzewa, które dają nam cień.
+*   **Klucze Natury (Rośliny)** 🌳 – Piękne kwiaty o cudownym zapachu, soczyste owoce, drzewa, które dają nam cień.
 *   **Zwierzęta** 🐶 – Nasze ukochane zwierzątka: śpiewające ptaszki, skaczące pieski, mruczące kotki i ryby w wodzie.
 *   **Człowiek** 🧑‍🤝‍🧑 – Najwspanialsze Boże stworzenie. Bóg stworzył nas na swój obraz i kocha nas najbardziej na świecie!
 
