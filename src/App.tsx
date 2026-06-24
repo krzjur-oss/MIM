@@ -60,6 +60,27 @@ import { DEFAULT_CHAPTERS } from './defaultChapters';
 import DrawingOverlay from './components/DrawingOverlay';
 import ChapterManager from './components/ChapterManager';
 
+const getChildrenText = (children: React.ReactNode): string => {
+  if (!children) return '';
+  if (typeof children === 'string') return children;
+  if (Array.isArray(children)) return children.map(getChildrenText).join('');
+  if (typeof children === 'object' && children !== null && 'props' in children) {
+    return getChildrenText((children as any).props.children);
+  }
+  return '';
+};
+
+const getCleanId = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ł/g, 'l')
+    .replace(/Ł/g, 'l')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 // Preset lists of high-quality educational illustrations from Unsplash for our interactive photo galleries
 const PRESET_SUBJECT_GALLERIES: Record<string, { label: string; url: string }[]> = {
   'Biologia': [
@@ -165,6 +186,108 @@ export default function App() {
   const activeChapter = useMemo(() => {
     return chapters.find((c) => c.id === currentChapterId) || chapters[0];
   }, [chapters, currentChapterId]);
+
+  // Table of Contents State and Logic
+  const [isTocExpanded, setIsTocExpanded] = useState<boolean>(true);
+  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+
+  const tocItems = useMemo(() => {
+    if (!activeChapter || !activeChapter.content) return [];
+    const lines = activeChapter.content.split('\n');
+    const items: { id: string; text: string; level: number }[] = [];
+    const seenIds = new Set<string>();
+
+    for (const line of lines) {
+      const match = line.match(/^(#{1,3})\s+(.*)$/);
+      if (match) {
+        const level = match[1].length;
+        const rawText = match[2].trim();
+        // Remove basic markdown syntax for bold/italic/code so text is clean
+        const cleanText = rawText
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\*([^*]+)\*/g, '$1')
+          .replace(/`([^`]+)`/g, '$1')
+          .trim();
+
+        let baseId = getCleanId(cleanText);
+        if (!baseId) {
+          baseId = `naglowek-${items.length}`;
+        }
+
+        let id = baseId;
+        let counter = 1;
+        while (seenIds.has(id)) {
+          id = `${baseId}-${counter}`;
+          counter++;
+        }
+        seenIds.add(id);
+
+        items.push({ id, text: cleanText, level });
+      }
+    }
+    return items;
+  }, [activeChapter]);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    const container = document.getElementById('multibook-reader-scroll-viewport');
+    if (element && container) {
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      const offsetTop = elementRect.top - containerRect.top + container.scrollTop - 24;
+      
+      container.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    } else if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Scroll spy to highlight the currently viewed section
+  useEffect(() => {
+    if (!activeChapter || tocItems.length === 0) {
+      setActiveHeadingId('');
+      return;
+    }
+
+    const scrollContainer = document.getElementById('multibook-reader-scroll-viewport');
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      const containerScrollTop = scrollContainer.scrollTop;
+      let activeId = '';
+
+      for (let i = 0; i < tocItems.length; i++) {
+        const item = tocItems[i];
+        const el = document.getElementById(item.id);
+        if (el) {
+          const offsetTop = el.offsetTop;
+          if (offsetTop <= containerScrollTop + 80) {
+            activeId = item.id;
+          } else {
+            break;
+          }
+        }
+      }
+
+      if (containerScrollTop < 50 && tocItems.length > 0) {
+        activeId = tocItems[0].id;
+      }
+
+      setActiveHeadingId(activeId);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once after initial render/tick to set active heading
+    const initialTimer = setTimeout(handleScroll, 150);
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      clearTimeout(initialTimer);
+    };
+  }, [activeChapter, tocItems]);
 
   // 9. Personal Notes Drawer collapse state (on right side)
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -2526,7 +2649,7 @@ export default function App() {
             />
 
             {/* Scrolling Viewport wrapper for MD Content */}
-            <div className="flex-1 overflow-y-auto px-4 py-6 md:p-8 space-y-8 select-text">
+            <div id="multibook-reader-scroll-viewport" className="flex-1 overflow-y-auto px-4 py-6 md:p-8 space-y-8 select-text">
               <AnimatePresence mode="wait">
                 {activeChapter ? (
                   <motion.article
@@ -2535,8 +2658,12 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -12 }}
                     transition={{ duration: 0.28, ease: 'easeInOut' }}
-                    className="max-w-3xl mx-auto space-y-6"
+                    className={tocItems.length > 1 
+                      ? "max-w-5xl mx-auto xl:grid xl:grid-cols-12 xl:gap-8 space-y-6 xl:space-y-0" 
+                      : "max-w-3xl mx-auto space-y-6"
+                    }
                   >
+                    <div className={tocItems.length > 1 ? "xl:col-span-8 space-y-6" : "space-y-6"}>
                   
                   {/* Title and Top interactive bar */}
                   <div className={`pb-4 border-b flex items-start justify-between gap-4 transition-all duration-300 ${activeThemeConfig.border}`}>
@@ -2650,6 +2777,58 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* INLINE COLLAPSIBLE TABLE OF CONTENTS CARD (shown on mobile, and optionally on desktop) */}
+                  {tocItems.length > 1 && (
+                    <div 
+                      id="chapter-toc-inline-card" 
+                      className={`p-4 rounded-2xl border transition-all duration-300 ${activeThemeConfig.secondaryCardBg} shadow-3xs`}
+                    >
+                      <button
+                        onClick={() => setIsTocExpanded(!isTocExpanded)}
+                        className="w-full flex items-center justify-between font-serif font-black text-sm tracking-tight cursor-pointer focus:outline-none"
+                      >
+                        <span className="flex items-center gap-2">
+                          <List className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+                          <span className={`${activeThemeConfig.h3}`}>Spis treści lekcji</span>
+                        </span>
+                        <span className="text-xs font-sans font-extrabold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors flex items-center gap-1">
+                          {isTocExpanded ? 'Ukryj' : 'Pokaż'}
+                          <ChevronRight className={`w-3.5 h-3.5 transform transition-transform duration-200 ${isTocExpanded ? 'rotate-90' : ''}`} />
+                        </span>
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isTocExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.23, ease: 'easeInOut' }}
+                            className="overflow-hidden mt-3 pt-3 border-t border-slate-200/40 dark:border-slate-800/40"
+                          >
+                            <nav className="space-y-1.5 max-h-64 overflow-y-auto pr-2">
+                              {tocItems.map((item) => (
+                                <button
+                                  key={item.id}
+                                  onClick={() => scrollToSection(item.id)}
+                                  className={`w-full text-left text-xs font-sans hover:underline focus:outline-none block transition-all cursor-pointer ${
+                                    item.level === 1
+                                      ? 'pl-0 font-extrabold text-slate-800 dark:text-slate-200'
+                                      : item.level === 2
+                                      ? 'pl-4 text-slate-600 dark:text-slate-300 font-semibold'
+                                      : 'pl-8 text-slate-450 dark:text-slate-400 font-medium'
+                                  } ${activeHeadingId === item.id ? 'text-amber-600 dark:text-amber-400 font-black scale-[1.01]' : ''}`}
+                                >
+                                  {item.text}
+                                </button>
+                              ))}
+                            </nav>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
                   {/* HIGH-RES RENDERED MARKDOWN ENGINE CONTAINER */}
                   <div 
                     id="multibook-rendered-markdown-content"
@@ -2658,9 +2837,21 @@ export default function App() {
                   >
                     <ReactMarkdown
                       components={{
-                        h1: ({node, ...props}) => <h1 className={`text-2xl md:text-3.5xl font-serif font-bold mt-8 mb-4 leading-tight tracking-tight border-b pb-2.5 transition-all duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`} {...props} />,
-                        h2: ({node, ...props}) => <h2 className={`text-xl md:text-2.5xl font-serif font-bold mt-7 mb-4 leading-snug transition-colors duration-300 ${activeThemeConfig.h2}`} {...props} />,
-                        h3: ({node, ...props}) => <h3 className={`text-lg md:text-xl font-serif font-bold mt-6 mb-3 transition-colors duration-300 ${activeThemeConfig.h3}`} {...props} />,
+                        h1: ({node, ...props}) => {
+                          const text = getChildrenText(props.children);
+                          const id = getCleanId(text);
+                          return <h1 id={id} className={`scroll-mt-12 text-2xl md:text-3.5xl font-serif font-bold mt-8 mb-4 leading-tight tracking-tight border-b pb-2.5 transition-all duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`} {...props} />;
+                        },
+                        h2: ({node, ...props}) => {
+                          const text = getChildrenText(props.children);
+                          const id = getCleanId(text);
+                          return <h2 id={id} className={`scroll-mt-12 text-xl md:text-2.5xl font-serif font-bold mt-7 mb-4 leading-snug transition-colors duration-300 ${activeThemeConfig.h2}`} {...props} />;
+                        },
+                        h3: ({node, ...props}) => {
+                          const text = getChildrenText(props.children);
+                          const id = getCleanId(text);
+                          return <h3 id={id} className={`scroll-mt-12 text-lg md:text-xl font-serif font-bold mt-6 mb-3 transition-colors duration-300 ${activeThemeConfig.h3}`} {...props} />;
+                        },
                         p: ({node, ...props}) => <p className={`mb-4 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
                         ul: ({node, ...props}) => <ul className={`list-disc list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
                         ol: ({node, ...props}) => <ol className={`list-decimal list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
@@ -2919,7 +3110,36 @@ export default function App() {
                       )}
                     </div>
                   </div>
+                    </div> {/* Close Left Column (xl:col-span-8) */}
 
+                    {/* Table of Contents Sticky Sidebar on Desktop */}
+                    {tocItems.length > 1 && (
+                      <div className="hidden xl:block xl:col-span-4">
+                        <div className={`sticky top-6 p-5 rounded-2xl border transition-all duration-300 ${activeThemeConfig.secondaryCardBg} shadow-3xs`}>
+                          <h3 className={`font-serif font-black text-sm mb-3 pb-2 border-b flex items-center gap-1.5 transition-colors duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`}>
+                            <List className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+                            <span>Spis treści</span>
+                          </h3>
+                          <nav className="space-y-2 max-h-[65vh] overflow-y-auto pr-1">
+                            {tocItems.map((item) => (
+                              <button
+                                key={item.id}
+                                onClick={() => scrollToSection(item.id)}
+                                className={`w-full text-left text-xs font-sans hover:underline focus:outline-none block transition-all cursor-pointer ${
+                                  item.level === 1
+                                    ? 'pl-0 font-extrabold text-slate-800 dark:text-slate-200'
+                                    : item.level === 2
+                                    ? 'pl-3.5 text-slate-600 dark:text-slate-350 font-semibold'
+                                    : 'pl-7 text-slate-450 dark:text-slate-400 font-medium'
+                                } ${activeHeadingId === item.id ? 'text-amber-600 dark:text-amber-500 font-black border-l-2 border-amber-500 pl-2 scale-[1.01]' : ''}`}
+                              >
+                                {item.text}
+                              </button>
+                            ))}
+                          </nav>
+                        </div>
+                      </div>
+                    )}
                   </motion.article>
                 ) : (
                   <motion.div
