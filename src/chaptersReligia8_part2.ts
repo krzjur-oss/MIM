@@ -11,6 +11,7 @@ export const RELIGIA_8_CHAPTERS_PART2: Chapter[] = [
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 25,
     createdAt: Date.now() - 420,
     content: `# Lekcja 25: Liturgia sakramentu bierzmowania 🕊️
 
@@ -110,6 +111,7 @@ Dowiedz się, jakie imię patrona do bierzmowania wybrałeś (lub zamierzasz wyb
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 28,
     createdAt: Date.now() - 410,
     content: `# Lekcja 28: Sakramenty drogowskazami na drodze do nieba 🗺️
 
@@ -202,6 +204,7 @@ Ułóż modlitwę dziękczynną za jeden z przyjętych sakramentów świętych (
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 29,
     createdAt: Date.now() - 400,
     content: `# Lekcja 29: Osiem Błogosławieństw drogą do szczęścia człowieka 🏔️
 
@@ -300,6 +303,7 @@ Napisz, które z Ośmiu Błogosławieństw najbardziej do Ciebie przemawia i w j
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 38,
     createdAt: Date.now() - 390,
     content: `# Lekcja 38: Wartość i zagrożenia ludzkiego życia 🛡️
 
@@ -395,6 +399,7 @@ Ułóż modlitwę w intencji dziecka nienarodzonego, chorego lub starszego czło
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 41,
     createdAt: Date.now() - 380,
     content: `# Lekcja 41: Świadkowie wiary w Kościele 👤
 
@@ -489,6 +494,7 @@ Napisz, dlaczego warto dawać świadectwo wiary we współczesnym świecie pełn
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 42,
     createdAt: Date.now() - 370,
     content: `# Lekcja 42: Formy apostolstwa świeckich 👥
 
@@ -576,7 +582,7 @@ Wypisz, jakie grupy lub stowarzyszenia katolickie dla dzieci i młodzieży dzia�
   },
   {
     id: 'religia-8-lekcja-46',
-    title: 'Św. Maksymilian Kolbe i męczennicy II wojny światowej ⛪',
+    title: 'Św. Maksymilian Kolbe i inni męczennicy II wojny światowej ⛪',
     subject: 'Religia',
     schoolType: 'Szkoła Podstawowa',
     grade: 'Klasa 8',
@@ -584,8 +590,9 @@ Wypisz, jakie grupy lub stowarzyszenia katolickie dla dzieci i młodzieży dzia�
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 5,
     isDefault: true,
+    lessonNumber: 46,
     createdAt: Date.now() - 360,
-    content: `# Lekcja 46: Św. Maksymilian Kolbe i męczennicy II wojny światowej ⛪
+    content: `# Lekcja 46: Św. Maksymilian Kolbe i inni męczennicy II wojny światowej ⛪
 
 > **Motto:** *„Męczennicy „stanowią dla nas wzór do naśladowania, z ich krwi winniśmy czerpać moc do codziennej ofiary, jaką mamy składać Bogu z naszego życia.”* (św. Jan Paweł II)
 

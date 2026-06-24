@@ -81,6 +81,85 @@ const getCleanId = (text: string): string => {
     .replace(/^-+|-+$/g, '');
 };
 
+const ROMAN_NUMERALS: Record<string, number> = {
+  'I': 1,
+  'II': 2,
+  'III': 3,
+  'IV': 4,
+  'V': 5,
+  'VI': 6,
+  'VII': 7,
+  'VIII': 8,
+  'IX': 9,
+  'X': 10
+};
+
+const getGroupOrder = (groupName: string): number => {
+  if (!groupName) return 999;
+  if (groupName === 'Wprowadzenie') return -1;
+  if (groupName.startsWith('Rozdział ')) {
+    const match = groupName.match(/^Rozdział\s+([I|V|X]+)/i);
+    if (match && match[1]) {
+      const roman = match[1].toUpperCase();
+      if (ROMAN_NUMERALS[roman] !== undefined) {
+        return ROMAN_NUMERALS[roman];
+      }
+    }
+  }
+  return 999;
+};
+
+const sortChapters = (list: Chapter[]): Chapter[] => {
+  return [...list].sort((a, b) => {
+    // 1. Keep intro-multibook always first
+    if (a.id === 'intro-multibook') return -1;
+    if (b.id === 'intro-multibook') return 1;
+
+    // 2. Sort by subject (Wstęp/Podręcznik first)
+    const subA = a.subject || '';
+    const subB = b.subject || '';
+    if (subA !== subB) {
+      if (subA === 'Podręcznik / Instrukcja') return -1;
+      if (subB === 'Podręcznik / Instrukcja') return 1;
+      return subA.localeCompare(subB);
+    }
+
+    // 3. Sort by school type
+    const typeA = a.schoolType || '';
+    const typeB = b.schoolType || '';
+    if (typeA !== typeB) {
+      return typeA.localeCompare(typeB);
+    }
+
+    // 4. Sort by grade
+    const gradeA = a.grade || '';
+    const gradeB = b.grade || '';
+    if (gradeA !== gradeB) {
+      return gradeA.localeCompare(gradeB);
+    }
+
+    // 5. Sort by chapter group (Roman numerals or name)
+    const grA = a.chapterGroup || '';
+    const grB = b.chapterGroup || '';
+    if (grA !== grB) {
+      const ordA = getGroupOrder(grA);
+      const ordB = getGroupOrder(grB);
+      if (ordA !== ordB) {
+        return ordA - ordB;
+      }
+      return grA.localeCompare(grB);
+    }
+
+    // 6. Sort by lesson number inside the group
+    if (a.lessonNumber !== undefined && b.lessonNumber !== undefined) {
+      return a.lessonNumber - b.lessonNumber;
+    }
+
+    // Keep relative order
+    return 0;
+  });
+};
+
 // Preset lists of high-quality educational illustrations from Unsplash for our interactive photo galleries
 const PRESET_SUBJECT_GALLERIES: Record<string, { label: string; url: string }[]> = {
   'Biologia': [
@@ -160,18 +239,41 @@ export default function App() {
   }, [toast]);
 
   // 1. Chapters database state
-  const [chapters, setChapters] = useState<Chapter[]>(() => {
+  const [chapters, setChaptersInternal] = useState<Chapter[]>(() => {
     const saved = localStorage.getItem('multibook_chapters');
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        const parsed = JSON.parse(saved) as Chapter[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Sync with DEFAULT_CHAPTERS to ensure all default chapters are present and updated
+          const synced = [...parsed];
+          DEFAULT_CHAPTERS.forEach((defaultCh) => {
+            const index = synced.findIndex((c) => c.id === defaultCh.id);
+            if (index === -1) {
+              synced.push(defaultCh);
+            } else {
+              synced[index] = {
+                ...synced[index],
+                ...defaultCh,
+              };
+            }
+          });
+          return sortChapters(synced);
+        }
       } catch (e) {
         console.error("Błąd wczytywania rozdziałów z localStorage", e);
       }
     }
-    return DEFAULT_CHAPTERS;
+    return sortChapters(DEFAULT_CHAPTERS);
   });
+
+  const setChapters = (val: Chapter[] | ((prev: Chapter[]) => Chapter[])) => {
+    if (typeof val === 'function') {
+      setChaptersInternal((prev) => sortChapters(val(prev)));
+    } else {
+      setChaptersInternal(sortChapters(val));
+    }
+  };
 
   // Save chapters to LocalStorage when changed
   useEffect(() => {

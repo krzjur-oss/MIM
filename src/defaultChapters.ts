@@ -1,6 +1,7 @@
 import { Chapter } from './types';
 import { RELIGIA_8_CHAPTERS_PART1 } from './chaptersReligia8_part1';
 import { RELIGIA_8_CHAPTERS_PART2 } from './chaptersReligia8_part2';
+import { RELIGIA_8_CHAPTERS_PART3 } from './chaptersReligia8_part3';
 
 const BASE_CHAPTERS: Chapter[] = [
   {
@@ -270,6 +271,7 @@ Characterystyczna rdzawo-czerwona barwa planety wynika z obecności **tlenku że
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 1,
     createdAt: Date.now() - 500,
     content: `# Lekcja 1: Bóg jest miłością ❤️
 
@@ -365,6 +367,7 @@ Ułóż modlitwę dziękczynną za dar Bożej miłości w Twoim życiu codzienny
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 23,
     createdAt: Date.now() - 400,
     content: `# Lekcja 23: Bierzmowanie – początek drogi do dojrzałości 🕊️
 
@@ -459,6 +462,7 @@ Napisz krótki tekst o tym, do czego zobowiązuje Cię przyjęcie sakramentu bie
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 24,
     createdAt: Date.now() - 300,
     content: `# Lekcja 24: Dary i charyzmaty Ducha Świętego w moim życiu 🌟
 
@@ -566,6 +570,7 @@ Naucz się hymnu: „O Stworzycielu Duchu, przyjdź” lub napisz rozważanie na
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 5,
     isDefault: true,
+    lessonNumber: 27,
     createdAt: Date.now() - 200,
     content: `# Lekcja 27: Owocne życie – bł. Hanna Chrzanowska 🩺
 
@@ -659,6 +664,7 @@ Uzasadnij krótko w zeszycie, dlaczego bł. Hannę Chrzanowską nazywa się „M
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 56,
     createdAt: Date.now() - 100,
     content: `# Lekcja 56: Adwent – czas czuwania 🕯️
 
@@ -748,6 +754,7 @@ Napisz krótki dekalog czuwania, jak dziś powinno wyglądać adwentowe oczekiwa
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 61,
     createdAt: Date.now() - 50,
     content: `# Lekcja 61: Liturgia Triduum Paschalnego ✝️
 
@@ -837,5 +844,6 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
 export const DEFAULT_CHAPTERS: Chapter[] = [
   ...BASE_CHAPTERS,
   ...RELIGIA_8_CHAPTERS_PART1,
-  ...RELIGIA_8_CHAPTERS_PART2
+  ...RELIGIA_8_CHAPTERS_PART2,
+  ...RELIGIA_8_CHAPTERS_PART3
 ];

@@ -11,6 +11,7 @@ export interface Chapter {
   isDefault?: boolean;
   createdAt: number;
   quizzes?: QuizQuestion[];
+  lessonNumber?: number;  // opcjonalny numer lekcji (np. do chronologicznego sortowania)
 }
 
 export interface QuizQuestion {

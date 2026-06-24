@@ -11,6 +11,7 @@ export const RELIGIA_8_CHAPTERS_PART1: Chapter[] = [
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 4,
     createdAt: Date.now() - 480,
     content: `# Lekcja 4: Będziesz miłował – przykazanie miłości Boga i bliźniego ❤️
 
@@ -103,6 +104,7 @@ Wypisz, jakie znasz akcje pomocy potrzebującym w Twojej miejscowości, w Polsce
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 5,
     createdAt: Date.now() - 470,
     content: `# Lekcja 5: Miłość, ale jedna – prawdziwe powołanie do miłości 🌹
 
@@ -197,6 +199,7 @@ Ułóż krótką modlitwę o właściwe rozeznanie i realizację swojego życiow
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 6,
     createdAt: Date.now() - 460,
     content: `# Lekcja 6: Świętość w różnych formach życia 👑
 
@@ -289,6 +292,7 @@ Zilustruj lub opisz w kilku zdaniach powołanie do świętości w wybranej formi
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 14,
     createdAt: Date.now() - 450,
     content: `# Lekcja 14: Ludzie modlitwy w Starym Testamencie 📜
 
@@ -387,6 +391,7 @@ Pomyśl, kto najbardziej potrzebuje Twojej modlitwy wstawienniczej i pomódl si�
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 15,
     createdAt: Date.now() - 440,
     content: `# Lekcja 15: Ludzie modlitwy w Nowym Testamencie ✝️
 
@@ -483,6 +488,7 @@ Wybierz jedną z postaci Nowego Testamentu i napisz, czego możemy się od niej 
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     estimatedReadTime: 4,
     isDefault: true,
+    lessonNumber: 22,
     createdAt: Date.now() - 430,
     content: `# Lekcja 22: Jesteśmy świątynią Ducha Świętego 🕊️
 
