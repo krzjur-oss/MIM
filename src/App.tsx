@@ -81,6 +81,12 @@ const getCleanId = (text: string): string => {
     .replace(/^-+|-+$/g, '');
 };
 
+const removeReadingSymbols = (text: string): string => {
+  if (!text) return '';
+  // Usuwa serduszka, świece, symbole religijne, książki, gwiazdki i inne dekoracyjne emoji
+  return text.replace(/[\u{1F300}-\u{1F9FF}\u{2700}-\u{27BF}\u{2600}-\u{26FF}\u{1F000}-\u{1F9FF}\u{1F1E0}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2190}-\u{21FF}\u{2B50}\u{2934}\u{25AA}\u{25FE}]/gu, '').trim();
+};
+
 const ROMAN_NUMERALS: Record<string, number> = {
   'I': 1,
   'II': 2,
@@ -289,13 +295,17 @@ export default function App() {
     return chapters.find((c) => c.id === currentChapterId) || chapters[0];
   }, [chapters, currentChapterId]);
 
+  // Tryb Czytania State (Hides sidebar and header, filters out symbols like hearts, candles, etc.)
+  const [isReadingMode, setIsReadingMode] = useState<boolean>(false);
+
   // Table of Contents State and Logic
   const [isTocExpanded, setIsTocExpanded] = useState<boolean>(true);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
 
   const tocItems = useMemo(() => {
     if (!activeChapter || !activeChapter.content) return [];
-    const lines = activeChapter.content.split('\n');
+    const parsedContent = isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content;
+    const lines = parsedContent.split('\n');
     const items: { id: string; text: string; level: number }[] = [];
     const seenIds = new Set<string>();
 
@@ -328,11 +338,26 @@ export default function App() {
       }
     }
     return items;
-  }, [activeChapter]);
+  }, [activeChapter, isReadingMode]);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
+    let element = document.getElementById(id);
     const container = document.getElementById('multibook-reader-scroll-viewport');
+    
+    // Inteligentny fallback: jeśli element nie został znaleziony po dokładnym ID,
+    // szukamy nagłówków h1, h2, h3 i porównujemy ich znormalizowane teksty.
+    if (!element) {
+      const headings = document.querySelectorAll('#multibook-rendered-markdown-content h1, #multibook-rendered-markdown-content h2, #multibook-rendered-markdown-content h3');
+      for (const h of Array.from(headings)) {
+        const text = h.textContent || '';
+        const cleanTextId = getCleanId(text);
+        if (cleanTextId === id || id.startsWith(cleanTextId) || cleanTextId.startsWith(id)) {
+          element = h as HTMLElement;
+          break;
+        }
+      }
+    }
+
     if (element && container) {
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
@@ -361,9 +386,20 @@ export default function App() {
       const containerScrollTop = scrollContainer.scrollTop;
       let activeId = '';
 
+      const headings = Array.from(document.querySelectorAll('#multibook-rendered-markdown-content h1, #multibook-rendered-markdown-content h2, #multibook-rendered-markdown-content h3'));
+
       for (let i = 0; i < tocItems.length; i++) {
         const item = tocItems[i];
-        const el = document.getElementById(item.id);
+        let el = document.getElementById(item.id);
+
+        if (!el) {
+          // Fallback do wyszukania po znormalizowanym tekście
+          el = headings.find(h => {
+            const cleanTextId = getCleanId(h.textContent || '');
+            return cleanTextId === item.id || item.id.startsWith(cleanTextId) || cleanTextId.startsWith(item.id);
+          }) as HTMLElement | null;
+        }
+
         if (el) {
           const offsetTop = el.offsetTop;
           if (offsetTop <= containerScrollTop + 80) {
@@ -644,7 +680,9 @@ export default function App() {
     } else {
       window.speechSynthesis.cancel(); // Stop any pending speech
 
-      const textToSpeak = `${activeChapter.title}. ${cleanMarkdownForSpeech(activeChapter.content)}`;
+      const spokeTitle = isReadingMode ? removeReadingSymbols(activeChapter.title) : activeChapter.title;
+      const spokeContent = isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content;
+      const textToSpeak = `${spokeTitle}. ${cleanMarkdownForSpeech(spokeContent)}`;
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       
       // Find a Polish voice
@@ -2200,81 +2238,83 @@ export default function App() {
     <div id="multibook-app-root" className={`min-h-screen flex flex-col font-sans transition-all duration-300 ${getThemeClasses()}`}>
       
       {/* Top Humble Header */}
-      <header className={`border-b px-5 py-3 flex items-center justify-between shrink-0 z-30 shadow-xs transition-all duration-300 ${activeThemeConfig.headerBg}`}>
-        <div className="flex items-center gap-3">
-          <button
-            id="mobile-sidebar-toggle-btn"
-            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-            className="p-1 px-2.5 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-white rounded-lg text-sm lg:hidden cursor-pointer font-semibold transition-all"
-          >
-            Spis treści
-          </button>
-          
-          <div className="hidden sm:flex items-center gap-2 font-serif">
-            <span className="p-2 bg-emerald-700 dark:bg-emerald-650 rounded-xl text-white">
-              <BookOpen className="w-5 h-5" />
-            </span>
-            <div>
-              <h1 id="brand-title" className={`text-base font-bold tracking-tight leading-4 transition-colors ${activeThemeConfig.h1}`}>Interaktywny Multibook</h1>
-              <p className="text-[10px] text-slate-500 font-medium font-sans opacity-85">Baza lekcji i ćwiczeń offline</p>
+      {!isReadingMode && (
+        <header className={`border-b px-5 py-3 flex items-center justify-between shrink-0 z-30 shadow-xs transition-all duration-300 ${activeThemeConfig.headerBg}`}>
+          <div className="flex items-center gap-3">
+            <button
+              id="mobile-sidebar-toggle-btn"
+              onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+              className="p-1 px-2.5 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-white rounded-lg text-sm lg:hidden cursor-pointer font-semibold transition-all"
+            >
+              Spis treści
+            </button>
+            
+            <div className="hidden sm:flex items-center gap-2 font-serif">
+              <span className="p-2 bg-emerald-700 dark:bg-emerald-650 rounded-xl text-white">
+                <BookOpen className="w-5 h-5" />
+              </span>
+              <div>
+                <h1 id="brand-title" className={`text-base font-bold tracking-tight leading-4 transition-colors ${activeThemeConfig.h1}`}>Interaktywny Multibook</h1>
+                <p className="text-[10px] text-slate-500 font-medium font-sans opacity-85">Baza lekcji i ćwiczeń offline</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Global settings widget */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          <button
-            id="global-whiteboard-toggle-btn"
-            onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
-            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-              isDrawingModeActive
-                ? 'bg-rose-500 text-white shadow-sm'
-                : 'bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
-            }`}
-          >
-            <Tv className="w-4 h-4" />
-            <span>Tablica-Szkicownik {isDrawingModeActive ? '(WŁ.)' : ''}</span>
-          </button>
+          {/* Global settings widget */}
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            <button
+              id="global-whiteboard-toggle-btn"
+              onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                isDrawingModeActive
+                  ? 'bg-rose-500 text-white shadow-sm'
+                  : 'bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
+              }`}
+            >
+              <Tv className="w-4 h-4" />
+              <span>Tablica-Szkicownik {isDrawingModeActive ? '(WŁ.)' : ''}</span>
+            </button>
 
-          <button
-            id="teacher-panel-toggle-btn"
-            onClick={() => {
-              setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
-              setIsMobileSidebarOpen(false);
-            }}
-            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-              activeMainTab === 'teacher-panel'
-                ? getPrimaryBtnClass()
-                : activeThemeConfig.galleryPresetBtn
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>{activeMainTab === 'teacher-panel' ? 'Widok lekcji 📖' : 'Panel Nauczyciela 🏫'}</span>
-          </button>
+            <button
+              id="teacher-panel-toggle-btn"
+              onClick={() => {
+                setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
+                setIsMobileSidebarOpen(false);
+              }}
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeMainTab === 'teacher-panel'
+                  ? getPrimaryBtnClass()
+                  : activeThemeConfig.galleryPresetBtn
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>{activeMainTab === 'teacher-panel' ? 'Widok lekcji 📖' : 'Panel Nauczyciela 🏫'}</span>
+            </button>
 
-          <button
-            id="student-notes-toggle-btn"
-            onClick={() => setIsNotesOpen(!isNotesOpen)}
-            className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
-              isNotesOpen
-                ? 'bg-emerald-700 text-white shadow-xs'
-                : activeThemeConfig.galleryPresetBtn
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>Dziennik & Notatki 🏫</span>
-          </button>
+            <button
+              id="student-notes-toggle-btn"
+              onClick={() => setIsNotesOpen(!isNotesOpen)}
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
+                isNotesOpen
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : activeThemeConfig.galleryPresetBtn
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              <span>Dziennik & Notatki 🏫</span>
+            </button>
 
-          <button
-            id="clean-reset-db-btn"
-            onClick={handleResetToDefault}
-            className="p-1 px-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer transition-colors"
-            title="Przywróć domyślne działy"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </header>
+            <button
+              id="clean-reset-db-btn"
+              onClick={handleResetToDefault}
+              className="p-1 px-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer transition-colors"
+              title="Przywróć domyślne działy"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </header>
+      )}
 
       {/* Main Container */}
       <div className="flex-1 flex relative overflow-hidden">
@@ -2282,9 +2322,11 @@ export default function App() {
         {/* SIDEBAR: Table of Contents (collapsible / responsive drawer) */}
         <aside
           id="multibook-sidebar"
-          className={`shrink-0 border-r w-80 p-4 flex flex-col gap-4 absolute lg:static top-0 bottom-0 left-0 z-45 transition-all duration-300 lg:translate-x-0 ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border} ${
-            isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+          className={`shrink-0 border-r w-80 p-4 flex flex-col gap-4 absolute top-0 bottom-0 left-0 z-45 transition-all duration-300 ${
+            isReadingMode 
+              ? 'hidden pointer-events-none' 
+              : `lg:static lg:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`
+          } ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border}`}
         >
           {/* Top of Sidebar Info & Actions */}
           <div className="space-y-3 shrink-0">
@@ -2738,6 +2780,23 @@ export default function App() {
                   </>
                 )}
               </button>
+
+              <div className={`w-[1px] h-5 border-l ${activeThemeConfig.border}`} />
+
+              {/* Reading Mode Toggle */}
+              <button
+                id="toggle-reading-mode-btn"
+                onClick={() => setIsReadingMode(!isReadingMode)}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isReadingMode
+                    ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-xs'
+                    : activeThemeConfig.galleryPresetBtn
+                }`}
+                title={isReadingMode ? 'Wyjdź z Trybu Czytania' : 'Włącz Tryb Czytania (ukrywa menu i panel boczny)'}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>{isReadingMode ? 'Tryb Czytania (WŁ.)' : 'Tryb Czytania'}</span>
+              </button>
             </div>
           </div>
 
@@ -2775,7 +2834,7 @@ export default function App() {
                         className={`text-2xl md:text-3.5xl font-extrabold tracking-tight transition-colors duration-300 ${activeThemeConfig.h1}`}
                         style={{ fontFamily: textStyle.fontFamily }}
                       >
-                        {activeChapter.title}
+                        {isReadingMode ? removeReadingSymbols(activeChapter.title) : activeChapter.title}
                       </h2>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500 opacity-95">
                         <span className={`p-0.5 px-2 rounded-md font-extrabold text-[10px] ${getSubjectThemeColors(activeChapter.subject, theme).bgLight}`}>
@@ -2883,7 +2942,7 @@ export default function App() {
                   {tocItems.length > 1 && (
                     <div 
                       id="chapter-toc-inline-card" 
-                      className={`p-4 rounded-2xl border transition-all duration-300 ${activeThemeConfig.secondaryCardBg} shadow-3xs`}
+                      className={`xl:hidden p-4 rounded-2xl border transition-all duration-300 ${activeThemeConfig.secondaryCardBg} shadow-3xs`}
                     >
                       <button
                         onClick={() => setIsTocExpanded(!isTocExpanded)}
@@ -2969,7 +3028,7 @@ export default function App() {
                         strong: ({node, ...props}) => <strong className={`font-bold px-1 py-0.5 rounded-sm transition-colors duration-300 ${activeThemeConfig.strong}`} {...props} />,
                       }}
                     >
-                      {activeChapter.content}
+                      {isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content}
                     </ReactMarkdown>
                   </div>
 
