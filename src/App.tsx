@@ -36,6 +36,7 @@ import {
   Copy,
   Download,
   Upload,
+  Printer,
   AlertCircle,
   X,
   Check,
@@ -44,7 +45,8 @@ import {
   List,
   Heading,
   Users,
-  GraduationCap
+  GraduationCap,
+  Calendar
 } from 'lucide-react';
 import {
   BarChart,
@@ -85,6 +87,18 @@ const removeReadingSymbols = (text: string): string => {
   if (!text) return '';
   // Usuwa serduszka, świece, symbole religijne, książki, gwiazdki i inne dekoracyjne emoji
   return text.replace(/[\u{1F300}-\u{1F9FF}\u{2700}-\u{27BF}\u{2600}-\u{26FF}\u{1F000}-\u{1F9FF}\u{1F1E0}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2190}-\u{21FF}\u{2B50}\u{2934}\u{25AA}\u{25FE}]/gu, '').trim();
+};
+
+const cleanMarkdownForSpeech = (markdown: string): string => {
+  return markdown
+    .replace(/#+\s+/g, '') // remove headings hashes
+    .replace(/[*_`~]/g, '') // remove markdown characters
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace links with anchor text
+    .replace(/-\s+/g, '') // remove bullet points dashes
+    .replace(/^\s*[\d+]\.\s+/gm, '') // remove numbered lists digits
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // remove image tags
+    .replace(/\s+/g, ' ') // collapse extra whitespace
+    .trim();
 };
 
 const ROMAN_NUMERALS: Record<string, number> = {
@@ -344,6 +358,48 @@ export default function App() {
       }
     }
     return items;
+  }, [activeChapter, isReadingMode]);
+
+  const sections = useMemo(() => {
+    if (!activeChapter || !activeChapter.content) return [];
+    
+    const parsedContent = isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content;
+    const lines = parsedContent.split('\n');
+    
+    const parsedSections: { title: string; content: string[] }[] = [];
+    let currentSection: { title: string; content: string[] } = { title: '', content: [] };
+    
+    for (const line of lines) {
+      const headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
+      if (headingMatch) {
+        if (currentSection.content.length > 0 || currentSection.title) {
+          parsedSections.push(currentSection);
+        }
+        currentSection = {
+          title: headingMatch[2].trim()
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/`([^`]+)`/g, '$1')
+            .trim(),
+          content: [line]
+        };
+      } else {
+        currentSection.content.push(line);
+      }
+    }
+    if (currentSection.content.length > 0 || currentSection.title) {
+      parsedSections.push(currentSection);
+    }
+    
+    return parsedSections.map((sec, idx) => {
+      const markdown = sec.content.join('\n');
+      return {
+        id: `sec-${idx}`,
+        title: sec.title || 'Wprowadzenie',
+        markdown: markdown,
+        plainText: cleanMarkdownForSpeech(markdown)
+      };
+    });
   }, [activeChapter, isReadingMode]);
 
   const scrollToSection = (id: string) => {
@@ -633,8 +689,332 @@ export default function App() {
     showToast("Notatki zostały pobrane jako plik .md!", "success");
   };
 
-  // 3.5 Text-To-Speech (TTS) State and handlers
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  // Download notes helper function (beautiful printable PDF/HTML document)
+  const handleDownloadNotesPDF = () => {
+    if (!localNoteText.trim()) {
+      showToast("Twoje notatki są puste! Napisz coś najpierw.", "error");
+      return;
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    iframe.style.visibility = 'hidden';
+    document.body.appendChild(iframe);
+
+    // Escape HTML to prevent injection and breakages
+    const escapeHtml = (text: string) => {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    };
+
+    // Inline format replacements
+    const inlineFormat = (text: string) => {
+      let html = escapeHtml(text);
+      // Bold: **text**
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Italic: *text*
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Underline: __text__
+      html = html.replace(/__(.*?)__/g, '<u>$1</u>');
+      // Strikethrough: ~~text~~
+      html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+      // Inline Code: `code`
+      html = html.replace(/`(.*?)`/g, '<code class="pdf-code">$1</code>');
+      return html;
+    };
+
+    // A robust simple markdown parser for the notes
+    const parseMarkdown = (md: string) => {
+      const lines = md.split('\n');
+      let html = '';
+      let inList = false;
+      let inOrderedList = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        // Handle list endings
+        if (inList && !trimmed.startsWith('- ') && !trimmed.startsWith('* ')) {
+          html += '</ul>\n';
+          inList = false;
+        }
+        if (inOrderedList && !trimmed.match(/^\d+\.\s/)) {
+          html += '</ol>\n';
+          inOrderedList = false;
+        }
+
+        if (trimmed.startsWith('# ')) {
+          html += `<h1 class="pdf-h1">${escapeHtml(trimmed.substring(2))}</h1>\n`;
+        } else if (trimmed.startsWith('## ')) {
+          html += `<h2 class="pdf-h2">${escapeHtml(trimmed.substring(3))}</h2>\n`;
+        } else if (trimmed.startsWith('### ')) {
+          html += `<h3 class="pdf-h3">${escapeHtml(trimmed.substring(4))}</h3>\n`;
+        } else if (trimmed.startsWith('#### ')) {
+          html += `<h4 class="pdf-h4">${escapeHtml(trimmed.substring(5))}</h4>\n`;
+        } else if (trimmed.startsWith('===') || trimmed.startsWith('---')) {
+          html += '<hr class="pdf-hr" />\n';
+        } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          if (!inList) {
+            html += '<ul class="pdf-ul">\n';
+            inList = true;
+          }
+          const content = trimmed.substring(2);
+          html += `  <li class="pdf-li">${inlineFormat(content)}</li>\n`;
+        } else if (trimmed.match(/^\d+\.\s/)) {
+          if (!inOrderedList) {
+            html += '<ol class="pdf-ol">\n';
+            inOrderedList = true;
+          }
+          const content = trimmed.replace(/^\d+\.\s/, '');
+          html += `  <li class="pdf-li">${inlineFormat(content)}</li>\n`;
+        } else if (trimmed.startsWith('> ')) {
+          html += `<blockquote class="pdf-blockquote">${inlineFormat(trimmed.substring(2))}</blockquote>\n`;
+        } else if (!trimmed) {
+          html += '<p class="pdf-space">&nbsp;</p>\n';
+        } else {
+          html += `<p class="pdf-p">${inlineFormat(line)}</p>\n`;
+        }
+      }
+
+      if (inList) html += '</ul>\n';
+      if (inOrderedList) html += '</ol>\n';
+
+      return html;
+    };
+
+    const parsedNotesHtml = parseMarkdown(localNoteText);
+
+    const docContent = `
+      <!DOCTYPE html>
+      <html lang="pl">
+      <head>
+        <meta charset="utf-8">
+        <title>Notatki z lekcji - ${escapeHtml(activeChapter.title)}</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+          
+          @page {
+            size: A4;
+            margin: 20mm;
+          }
+          
+          body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #1e293b;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            font-size: 11pt;
+            background-color: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+
+          .pdf-container {
+            max-width: 100%;
+          }
+
+          .header-card {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 18px;
+            margin-bottom: 24px;
+          }
+
+          .app-badge {
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #d97706;
+            font-weight: 800;
+            margin-bottom: 6px;
+          }
+
+          h1.main-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24pt;
+            font-weight: 900;
+            margin: 0 0 12px 0;
+            color: #0f172a;
+            line-height: 1.25;
+          }
+
+          .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+          }
+
+          .meta-item {
+            font-size: 9.5pt;
+            color: #475569;
+          }
+
+          .meta-label {
+            font-weight: 700;
+            color: #64748b;
+          }
+
+          .content {
+            margin-top: 15px;
+          }
+
+          .pdf-h1, .pdf-h2, .pdf-h3, .pdf-h4 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 20pt;
+            margin-bottom: 8pt;
+            page-break-after: avoid;
+          }
+
+          .pdf-h1 {
+            font-size: 16pt;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+          }
+
+          .pdf-h2 { font-size: 14pt; }
+          .pdf-h3 { font-size: 12pt; }
+          .pdf-h4 { font-size: 11pt; }
+
+          .pdf-p {
+            margin: 0 0 10pt 0;
+            text-align: justify;
+          }
+
+          .pdf-ul, .pdf-ol {
+            margin: 0 0 10pt 0;
+            padding-left: 20pt;
+          }
+
+          .pdf-li {
+            margin-bottom: 4pt;
+          }
+
+          .pdf-blockquote {
+            margin: 0 0 12pt 0;
+            padding: 8pt 14pt;
+            border-left: 4px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #475569;
+            font-style: italic;
+          }
+
+          .pdf-code {
+            font-family: monospace;
+            background-color: #f1f5f9;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-size: 9.5pt;
+          }
+
+          .pdf-hr {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 20pt 0;
+          }
+
+          .pdf-space {
+            margin: 0;
+            height: 8pt;
+          }
+
+          .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 8px;
+            font-size: 8pt;
+            color: #94a3b8;
+            text-align: center;
+          }
+
+          @media print {
+            body {
+              background-color: #ffffff;
+            }
+            .header-card {
+              border-bottom-color: #cbd5e1;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="pdf-container">
+          <div class="header-card">
+            <div class="app-badge">Interaktywny Multibook • Podsumowanie lekcji</div>
+            <h1 class="main-title">${escapeHtml(activeChapter.title)}</h1>
+            <div class="meta-grid">
+              <div class="meta-item">
+                <span class="meta-label">Przedmiot:</span> ${escapeHtml(activeChapter.subject)}
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Klasa / Grupa:</span> ${escapeHtml(activeChapter.grade || 'Wszystkie')}
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Rozdział:</span> ${escapeHtml(activeChapter.chapterGroup || 'Główny')}
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Data wydruku:</span> ${new Date().toLocaleDateString('pl-PL')} ${new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+          </div>
+          
+          <div class="content">
+            ${parsedNotesHtml}
+          </div>
+
+          <div class="footer">
+            Generowane automatycznie z Interaktywnego Multibooka • KrzJur@gmail.com
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              setTimeout(function() {
+                window.parent.postMessage('close-print-iframe', '*');
+              }, 500);
+            }, 300);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+    if (doc) {
+      doc.open();
+      doc.write(docContent);
+      doc.close();
+    }
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'close-print-iframe') {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+        window.removeEventListener('message', handleMessage);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+
+    showToast("Generowanie podglądu wydruku / PDF...", "success");
+  };
+
+  // 3.5 Text-To-Speech (TTS) State and handlers - Per-section reader
+  const [speakingSectionId, setSpeakingSectionId] = useState<string | null>(null);
   const [isSpeakingPaused, setIsSpeakingPaused] = useState(false);
 
   // Stop speaking on chapter change or unmount
@@ -642,7 +1022,7 @@ export default function App() {
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    setIsSpeaking(false);
+    setSpeakingSectionId(null);
     setIsSpeakingPaused(false);
   }, [currentChapterId]);
 
@@ -654,42 +1034,28 @@ export default function App() {
     };
   }, []);
 
-  // Clean markdown to readable plain text
-  const cleanMarkdownForSpeech = (markdown: string): string => {
-    return markdown
-      .replace(/#+\s+/g, '') // remove headings hashes
-      .replace(/[*_`~]/g, '') // remove markdown characters
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace links with anchor text
-      .replace(/-\s+/g, '') // remove bullet points dashes
-      .replace(/^\s*[\d+]\.\s+/gm, '') // remove numbered lists digits
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // remove image tags
-      .replace(/\s+/g, ' ') // collapse extra whitespace
-      .trim();
-  };
-
-  const handleToggleSpeech = () => {
+  const handleToggleSectionSpeech = (sectionId: string, textToSpeak: string) => {
     if (!window.speechSynthesis) {
       showToast("Twoja przeglądarka nie obsługuje syntezy mowy.", "error");
       return;
     }
 
-    if (isSpeaking) {
+    if (speakingSectionId === sectionId) {
       if (isSpeakingPaused) {
         window.speechSynthesis.resume();
         setIsSpeakingPaused(false);
-        showToast("Wznowiono czytanie lekcji na głos", "success");
+        showToast("Wznowiono czytanie części 🔊", "success");
       } else {
         window.speechSynthesis.pause();
         setIsSpeakingPaused(true);
-        showToast("Wstrzymano czytanie", "info");
+        showToast("Wstrzymano czytanie części ⏸️", "info");
       }
     } else {
       window.speechSynthesis.cancel(); // Stop any pending speech
 
-      const spokeTitle = isReadingMode ? removeReadingSymbols(activeChapter.title) : activeChapter.title;
-      const spokeContent = isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content;
-      const textToSpeak = `${spokeTitle}. ${cleanMarkdownForSpeech(spokeContent)}`;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      // Remove any emojis or symbols that don't need reading
+      const cleanText = isReadingMode ? removeReadingSymbols(textToSpeak) : textToSpeak;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       
       // Find a Polish voice
       const voices = window.speechSynthesis.getVoices();
@@ -701,30 +1067,34 @@ export default function App() {
       utterance.rate = 0.95; // Slightly slower for better educational focus
 
       utterance.onend = () => {
-        setIsSpeaking(false);
+        setSpeakingSectionId(null);
         setIsSpeakingPaused(false);
       };
 
       utterance.onerror = (e) => {
-        console.error("TTS speech error", e);
-        setIsSpeaking(false);
+        // 'interrupted' or 'canceled' are standard when we stop or switch the reader
+        const errType = String(e.error);
+        if (errType !== 'interrupted' && errType !== 'canceled' && errType !== 'cancelled') {
+          console.warn("TTS speech warning:", e.error, e);
+        }
+        setSpeakingSectionId(null);
         setIsSpeakingPaused(false);
       };
 
       window.speechSynthesis.speak(utterance);
-      setIsSpeaking(true);
+      setSpeakingSectionId(sectionId);
       setIsSpeakingPaused(false);
-      showToast("Rozpoczęto czytanie lekcji na głos", "success");
+      showToast("Rozpoczęto czytanie wybranej części 🔊", "success");
     }
   };
 
-  const handleStopSpeech = () => {
+  const handleStopSectionSpeech = () => {
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    setIsSpeaking(false);
+    setSpeakingSectionId(null);
     setIsSpeakingPaused(false);
-    showToast("Zatrzymano czytanie", "info");
+    showToast("Zatrzymano czytanie części 🛑", "info");
   };
 
   // 4. Customizing layout text, line-height, dyslexic fonts, themes
@@ -806,6 +1176,21 @@ export default function App() {
   const [selectedTeacherClass, setSelectedTeacherClass] = useState<string>('');
   const [curriculumSearchQuery, setCurriculumSearchQuery] = useState('');
   const [curriculumSubjectFilter, setCurriculumSubjectFilter] = useState('Wszystkie');
+
+  const [templateWeekday, setTemplateWeekday] = useState<number>(1); // 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
+  const [templateTime, setTemplateTime] = useState<string>("08:00");
+  const [templateStartDate, setTemplateStartDate] = useState<string>("2026-06-22");
+  const [templateSelectedChapters, setTemplateSelectedChapters] = useState<string[]>([]);
+  const [isTemplateGeneratorOpen, setIsTemplateGeneratorOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (selectedTeacherClass) {
+      const assigned = classChapters[selectedTeacherClass] ?? [];
+      setTemplateSelectedChapters(assigned);
+    } else {
+      setTemplateSelectedChapters([]);
+    }
+  }, [selectedTeacherClass, classChapters]);
 
   const [rightDrawerTab, setRightDrawerTab] = useState<'notes' | 'classes'>('notes');
   const [newClassNameInput, setNewClassNameInput] = useState('');
@@ -1179,15 +1564,15 @@ export default function App() {
   const getDangerBtnClass = () => {
     switch (theme) {
       case 'dark':
-        return 'bg-rose-950/40 hover:bg-rose-950/60 text-rose-400 border border-rose-900/40';
+        return 'bg-rose-950/40 hover:bg-rose-950/60 text-rose-300 border border-rose-900/40';
       case 'sepia':
-        return 'bg-[#ebdcb3]/20 hover:bg-[#ebdcb3]/40 text-red-800 border border-[#ebdcb3]';
+        return 'bg-[#ebdcb3]/30 hover:bg-[#ebdcb3]/50 text-red-900 border border-[#ebdcb3]';
       case 'blue':
-        return 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100';
+        return 'bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-200';
       case 'dyslexic':
-        return 'bg-white hover:bg-red-50 text-red-700 border border-red-200';
+        return 'bg-rose-100 hover:bg-rose-250 text-rose-950 border border-rose-300';
       default: // light
-        return 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/60';
+        return 'bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-200';
     }
   };
 
@@ -1237,7 +1622,7 @@ export default function App() {
             className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
               teacherActiveSubTab === 'students'
                 ? 'border-amber-600 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-350'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -1253,7 +1638,7 @@ export default function App() {
             className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
               teacherActiveSubTab === 'curriculum'
                 ? 'border-amber-600 text-amber-600 dark:text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-350'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
             <GraduationCap className="w-4 h-4" />
@@ -1771,6 +2156,17 @@ export default function App() {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
+                                  handleExportClassRealizationsIcs(cls);
+                                }}
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
+                                title="Eksportuj realizację tematów klasy do pliku .ics"
+                              >
+                                <Calendar className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   handleDeleteTeacherClass(cls);
                                 }}
                                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${getDangerBtnClass()}`}
@@ -1807,6 +2203,14 @@ export default function App() {
 
                         <div className="flex items-center gap-2 flex-wrap">
                           <button
+                            onClick={() => handleExportClassRealizationsIcs(selectedTeacherClass)}
+                            className={`px-3 py-1.5 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${getEmeraldBtnClass()}`}
+                            title="Eksportuj daty realizacji tematów klasy do pliku .ics dla kalendarza"
+                          >
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>Eksportuj do .ics 📅</span>
+                          </button>
+                          <button
                             onClick={() => handleAssignAllChapters(selectedTeacherClass)}
                             className={`px-3 py-1.5 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
                           >
@@ -1841,6 +2245,194 @@ export default function App() {
                           </div>
                         );
                       })()}
+
+                      {/* Generowanie Szablonu Planu Lekcji */}
+                      <div className={`p-4 rounded-xl border ${
+                        isTemplateGeneratorOpen 
+                          ? 'border-amber-400 bg-amber-500/5 shadow-xs' 
+                          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/20 dark:bg-slate-900/10'
+                        } transition-all duration-300`}
+                      >
+                        <button
+                          onClick={() => setIsTemplateGeneratorOpen(!isTemplateGeneratorOpen)}
+                          className="w-full flex items-center justify-between font-bold text-xs cursor-pointer focus:outline-none"
+                        >
+                          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-200">
+                            <span className="text-sm">🗓️</span>
+                            <span className="font-extrabold uppercase tracking-wider text-[10.5px]">
+                              Szablon planu lekcji (Automatyczny terminarz)
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-extrabold hover:underline">
+                            {isTemplateGeneratorOpen ? 'Zwiń panel ◀' : 'Rozwiń i konfiguruj ▶'}
+                          </span>
+                        </button>
+
+                        <AnimatePresence>
+                          {isTemplateGeneratorOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-800/80 space-y-4"
+                            >
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                  <label className="block text-[9.5px] font-black text-slate-400 uppercase mb-1">Dzień tygodnia</label>
+                                  <select
+                                    value={templateWeekday}
+                                    onChange={(e) => setTemplateWeekday(Number(e.target.value))}
+                                    className={`w-full p-2 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                                      isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-slate-200'
+                                    }`}
+                                  >
+                                    <option value={1}>Poniedziałek</option>
+                                    <option value={2}>Wtorek</option>
+                                    <option value={3}>Środa</option>
+                                    <option value={4}>Czwartek</option>
+                                    <option value={5}>Piątek</option>
+                                    <option value={6}>Sobota</option>
+                                    <option value={7}>Niedziela</option>
+                                  </select>
+                                </div>
+
+                                <div>
+                                  <label className="block text-[9.5px] font-black text-slate-400 uppercase mb-1">Godzina lekcji</label>
+                                  <input
+                                    type="time"
+                                    value={templateTime}
+                                    onChange={(e) => setTemplateTime(e.target.value)}
+                                    className={`w-full p-2 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                                      isDark ? 'bg-slate-950 border-slate-800 text-white font-mono' : 'bg-white border-slate-200 font-mono'
+                                    }`}
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-[9.5px] font-black text-slate-400 uppercase mb-1">Data rozpoczęcia</label>
+                                  <input
+                                    type="date"
+                                    value={templateStartDate}
+                                    onChange={(e) => setTemplateStartDate(e.target.value)}
+                                    className={`w-full p-2 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                                      isDark ? 'bg-slate-950 border-slate-800 text-white font-mono' : 'bg-white border-slate-200 font-mono'
+                                    }`}
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="flex items-center justify-between mb-1.5">
+                                  <label className="block text-[9.5px] font-black text-slate-400 uppercase">
+                                    Wybierz tematy do uwzględnienia w planie
+                                  </label>
+                                  <div className="flex gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setTemplateSelectedChapters(classChapters[selectedTeacherClass] ?? [])}
+                                      className="text-[9px] font-bold text-amber-600 hover:underline"
+                                    >
+                                      Zaznacz wszystkie
+                                    </button>
+                                    <span className="text-slate-300">|</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTemplateSelectedChapters([])}
+                                      className="text-[9px] font-bold text-slate-400 hover:underline"
+                                    >
+                                      Odznacz wszystkie
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {(() => {
+                                  const assignedIds = classChapters[selectedTeacherClass] ?? [];
+                                  if (assignedIds.length === 0) {
+                                    return (
+                                      <p className="text-[10.5px] text-slate-400 italic py-1">
+                                        Klasa nie ma przypisanych żadnych tematów! Przypisz je na liście poniżej przed tworzeniem planu.
+                                      </p>
+                                    );
+                                  }
+
+                                  const assignedChaptersList = chapters.filter(ch => assignedIds.includes(ch.id));
+
+                                  return (
+                                    <div className="border border-slate-150 dark:border-slate-800 rounded-lg max-h-36 overflow-y-auto p-2 space-y-1 bg-white/50 dark:bg-slate-950/20">
+                                      {assignedChaptersList.map(ch => {
+                                        const isChecked = templateSelectedChapters.includes(ch.id);
+                                        return (
+                                          <div
+                                            key={ch.id}
+                                            onClick={() => {
+                                              setTemplateSelectedChapters(prev =>
+                                                prev.includes(ch.id)
+                                                  ? prev.filter(id => id !== ch.id)
+                                                  : [...prev, ch.id]
+                                              );
+                                            }}
+                                            className={`p-1.5 rounded-md flex items-center gap-2 cursor-pointer transition-colors text-[11px] ${
+                                              isChecked 
+                                                ? 'bg-amber-500/10 text-amber-900 dark:text-amber-300 font-bold' 
+                                                : 'hover:bg-slate-100/50 dark:hover:bg-slate-900/30 text-slate-600 dark:text-slate-400'
+                                            }`}
+                                          >
+                                            <span className="shrink-0">
+                                              {isChecked ? (
+                                                <CheckSquare className="w-4 h-4 text-amber-600" />
+                                              ) : (
+                                                <Square className="w-4 h-4 text-slate-400" />
+                                              )}
+                                            </span>
+                                            <span className="px-1 py-0.5 rounded text-[8.5px] bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase font-extrabold font-mono shrink-0">
+                                              {ch.subject}
+                                            </span>
+                                            <span className="truncate">{ch.title}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+
+                              {templateSchedulingSummary && (
+                                <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-lg space-y-1">
+                                  <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                                    💡 <strong>Podsumowanie generowania planu:</strong>
+                                  </p>
+                                  <ul className="list-disc list-inside text-[10.5px] text-slate-600 dark:text-slate-400 space-y-0.5">
+                                    <li>Liczba tygodni / lekcji do zaplanowania: <strong>{templateSchedulingSummary.count}</strong></li>
+                                    <li>Pierwsza lekcja: <strong>{templateSchedulingSummary.first} o {templateTime}</strong></li>
+                                    <li>Ostatnia lekcja: <strong>{templateSchedulingSummary.last} o {templateTime}</strong></li>
+                                    <li className="text-amber-700 dark:text-amber-400 font-medium">
+                                      Uwaga: To automatycznie zaktualizuje daty w kalendarzu dla klasy {selectedTeacherClass}!
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+
+                              <div className="flex justify-end gap-2 pt-1 border-t border-slate-200/45 dark:border-slate-800/40">
+                                <button
+                                  type="button"
+                                  onClick={() => setIsTemplateGeneratorOpen(false)}
+                                  className={`px-3 py-1.5 text-[10.5px] font-bold rounded-lg cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
+                                >
+                                  Anuluj
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleGenerateTemplateSchedule}
+                                  disabled={templateSelectedChapters.length === 0}
+                                  className={`px-4 py-1.5 text-[10.5px] font-extrabold rounded-lg cursor-pointer flex items-center gap-1.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed ${getEmeraldBtnClass()}`}
+                                >
+                                  <span>Rozplanuj tematy co tydzień 🚀</span>
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
 
                       {/* Search & Filter within curriculum */}
                       <div className="flex flex-col sm:flex-row gap-3">
@@ -2231,6 +2823,164 @@ export default function App() {
     );
   };
 
+  const templateSchedulingSummary = useMemo(() => {
+    if (!selectedTeacherClass || templateSelectedChapters.length === 0) return null;
+    
+    const [startYear, startMonth, startDay] = templateStartDate.split('-').map(Number);
+    const startDateObj = new Date(startYear, startMonth - 1, startDay);
+    if (isNaN(startDateObj.getTime())) return null;
+
+    const targetWeekdayIndex = templateWeekday === 7 ? 0 : templateWeekday;
+    const daysToAdd = (targetWeekdayIndex - startDateObj.getDay() + 7) % 7;
+    
+    const firstLessonDate = new Date(startDateObj);
+    firstLessonDate.setDate(startDateObj.getDate() + daysToAdd);
+    
+    const lastLessonDate = new Date(firstLessonDate);
+    lastLessonDate.setDate(firstLessonDate.getDate() + (templateSelectedChapters.length - 1) * 7);
+
+    const formatDate = (d: Date) => {
+      const weekdays = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      return `${weekdays[d.getDay()]}, ${day}.${month}.${d.getFullYear()}`;
+    };
+
+    return {
+      first: formatDate(firstLessonDate),
+      last: formatDate(lastLessonDate),
+      count: templateSelectedChapters.length
+    };
+  }, [selectedTeacherClass, templateStartDate, templateWeekday, templateSelectedChapters]);
+
+  const handleGenerateTemplateSchedule = () => {
+    if (!selectedTeacherClass) {
+      showToast("Proszę najpierw wybrać klasę!", "error");
+      return;
+    }
+    if (templateSelectedChapters.length === 0) {
+      showToast("Proszę zaznaczyć przynajmniej jeden temat do rozplanowania!", "error");
+      return;
+    }
+
+    const [startYear, startMonth, startDay] = templateStartDate.split('-').map(Number);
+    const startDateObj = new Date(startYear, startMonth - 1, startDay);
+    
+    if (isNaN(startDateObj.getTime())) {
+      showToast("Nieprawidłowa data początkowa!", "error");
+      return;
+    }
+
+    const targetWeekdayIndex = templateWeekday === 7 ? 0 : templateWeekday;
+
+    let currentScheduleDate = new Date(startDateObj);
+    const daysToAdd = (targetWeekdayIndex - currentScheduleDate.getDay() + 7) % 7;
+    currentScheduleDate.setDate(currentScheduleDate.getDate() + daysToAdd);
+
+    const [hours, minutes] = templateTime.split(':').map(Number);
+    currentScheduleDate.setHours(hours || 8, minutes || 0, 0, 0);
+
+    const newRealizationsToAdd: { className: string; chapterId: string; timestamp: number }[] = [];
+
+    templateSelectedChapters.forEach((chapterId, index) => {
+      const scheduledTime = new Date(currentScheduleDate);
+      scheduledTime.setDate(scheduledTime.getDate() + (index * 7));
+      
+      newRealizationsToAdd.push({
+        className: selectedTeacherClass,
+        chapterId: chapterId,
+        timestamp: scheduledTime.getTime()
+      });
+    });
+
+    setRealizations((prev) => {
+      const filtered = prev.filter(r => 
+        !(r.className === selectedTeacherClass && templateSelectedChapters.includes(r.chapterId))
+      );
+      return [...filtered, ...newRealizationsToAdd];
+    });
+
+    setCurrentCalendarDate(new Date(currentScheduleDate.getFullYear(), currentScheduleDate.getMonth(), 1));
+
+    showToast(`Pomyślnie rozplanowano ${templateSelectedChapters.length} lekcji od ${currentScheduleDate.toLocaleDateString('pl-PL')}!`, "success");
+    setIsTemplateGeneratorOpen(false);
+  };
+
+  // Export realizations dates of topics in the teacher panel to an .ics file
+  const handleExportClassRealizationsIcs = (className: string) => {
+    const classRealizations = realizations.filter(r => r.className === className);
+    if (classRealizations.length === 0) {
+      showToast(`Klasa "${className}" nie ma jeszcze żadnych zrealizowanych tematów lekcji do wyeksportowania!`, "error");
+      return;
+    }
+
+    const formatIcsDate = (date: Date): string => {
+      const y = date.getUTCFullYear();
+      const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const d = String(date.getUTCDate()).padStart(2, '0');
+      const h = String(date.getUTCHours()).padStart(2, '0');
+      const min = String(date.getUTCMinutes()).padStart(2, '0');
+      const s = String(date.getUTCSeconds()).padStart(2, '0');
+      return `${y}${m}${d}T${h}${min}${s}Z`;
+    };
+
+    let icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Multibook//PL',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      `X-WR-CALNAME:Realizacja lekcji - ${className}`,
+      'X-WR-TIMEZONE:UTC'
+    ];
+
+    classRealizations.forEach((r) => {
+      const ch = chapters.find(c => c.id === r.chapterId);
+      const chTitle = ch ? ch.title : 'Zrealizowany temat';
+      const chSubject = ch ? ch.subject : 'Nieokreślony';
+      const groupInfo = ch && ch.chapterGroup ? `Dział: ${ch.chapterGroup}` : '';
+      const lessonNumInfo = ch && ch.lessonNumber ? `Numer lekcji: ${ch.lessonNumber}` : '';
+      
+      let descLines = [
+        `Klasa: ${className}`,
+        `Przedmiot: ${chSubject}`,
+        groupInfo,
+        lessonNumInfo,
+        'Status: Zrealizowano w Multibooku'
+      ].filter(Boolean);
+
+      const desc = descLines.join('\n');
+      const eventUid = `${r.chapterId}-${r.className.replace(/\s+/g, '_')}-${r.timestamp}@multibook`;
+      
+      icsContent.push('BEGIN:VEVENT');
+      icsContent.push(`UID:${eventUid}`);
+      icsContent.push(`DTSTAMP:${formatIcsDate(new Date())}`);
+      icsContent.push(`DTSTART:${formatIcsDate(new Date(r.timestamp))}`);
+      icsContent.push(`DTEND:${formatIcsDate(new Date(r.timestamp + 45 * 60 * 1000))}`);
+      icsContent.push(`SUMMARY:[${chSubject}] ${chTitle}`.replace(/[,;]/g, '\\$&'));
+      icsContent.push(`DESCRIPTION:${desc.replace(/\n/g, '\\n').replace(/[,;]/g, '\\$&')}`);
+      icsContent.push(`LOCATION:${className}`.replace(/[,;]/g, '\\$&'));
+      icsContent.push('END:VEVENT');
+    });
+
+    icsContent.push('END:VCALENDAR');
+    
+    try {
+      const finalIcsString = icsContent.join('\r\n');
+      const blob = new Blob([finalIcsString], { type: 'text/calendar;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', url);
+      linkElement.setAttribute('download', `realizacja_lekcji_${className.toLowerCase().replace(/\s+/g, '_')}.ics`);
+      linkElement.click();
+      URL.revokeObjectURL(url);
+      showToast(`Pomyślnie wygenerowano terminarz .ics dla klasy ${className}!`, 'success');
+    } catch (e) {
+      showToast('Wystąpił błąd podczas generowania pliku kalendarza .ics.', 'error');
+      console.error(e);
+    }
+  };
+
   // Export database backup (chapters, progress, realizations, classes, galleries, settings, students) to a JSON file
   const handleExportDatabase = () => {
     const backupData = {
@@ -2408,44 +3158,44 @@ export default function App() {
       return {
         text: 'text-emerald-700 dark:text-emerald-400',
         bgLight: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/40',
-        activeChapterCard: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500/40 text-emerald-900 dark:text-emerald-250 ring-2 ring-emerald-500/10',
-        accentBg: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 text-white border-emerald-650',
+        activeChapterCard: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500/40 text-emerald-900 dark:text-emerald-300 ring-2 ring-emerald-500/10',
+        accentBg: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 text-white border-emerald-600',
         subPillActive: 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm font-extrabold',
         subPillHover: 'hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400',
-        dotColorActive: 'bg-emerald-600 dark:bg-emerald-400 ring-4 ring-emerald-550/20 scale-125',
+        dotColorActive: 'bg-emerald-600 dark:bg-emerald-400 ring-4 ring-emerald-500/20 scale-125',
         dotColorCompleted: 'bg-emerald-500/50 dark:bg-emerald-400/30 hover:bg-emerald-600',
       };
     } else if (sub.includes('religia')) {
       return {
         text: 'text-amber-700 dark:text-amber-400',
-        bgLight: 'bg-amber-55 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/40',
-        activeChapterCard: 'bg-amber-50 dark:bg-amber-950/40 border-amber-500/40 text-amber-900 dark:text-amber-250 ring-2 ring-amber-500/10',
-        accentBg: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-500 text-white border-amber-550',
-        subPillActive: 'bg-amber-550 dark:bg-amber-500 text-slate-900 dark:text-white shadow-sm font-extrabold',
+        bgLight: 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/40',
+        activeChapterCard: 'bg-amber-50 dark:bg-amber-950/40 border-amber-500/40 text-amber-900 dark:text-amber-300 ring-2 ring-amber-500/10',
+        accentBg: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-500 text-white border-amber-500',
+        subPillActive: 'bg-amber-600 dark:bg-amber-500 text-slate-900 dark:text-white shadow-sm font-extrabold',
         subPillHover: 'hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400',
-        dotColorActive: 'bg-amber-500 dark:bg-amber-400 ring-4 ring-amber-550/20 scale-125',
+        dotColorActive: 'bg-amber-500 dark:bg-amber-400 ring-4 ring-amber-500/20 scale-125',
         dotColorCompleted: 'bg-amber-500/50 dark:bg-amber-400/35 hover:bg-amber-600',
       };
     } else if (sub.includes('geografia') || sub.includes('astronomia') || sub.includes('kosmos')) {
       return {
         text: 'text-indigo-700 dark:text-indigo-400',
         bgLight: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/40',
-        activeChapterCard: 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500/40 text-indigo-900 dark:text-indigo-250 ring-2 ring-indigo-500/10',
-        accentBg: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white border-indigo-650',
+        activeChapterCard: 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500/40 text-indigo-900 dark:text-indigo-300 ring-2 ring-indigo-500/10',
+        accentBg: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white border-indigo-600',
         subPillActive: 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-sm font-extrabold',
         subPillHover: 'hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400',
-        dotColorActive: 'bg-indigo-600 dark:bg-indigo-400 ring-4 ring-indigo-550/20 scale-125',
-        dotColorCompleted: 'bg-indigo-505/50 dark:bg-indigo-400/30 hover:bg-indigo-600',
+        dotColorActive: 'bg-indigo-600 dark:bg-indigo-400 ring-4 ring-indigo-500/20 scale-125',
+        dotColorCompleted: 'bg-indigo-500/50 dark:bg-indigo-400/30 hover:bg-indigo-600',
       };
     } else if (sub.includes('matematyka') || sub.includes('fizyka') || sub.includes('chemia')) {
       return {
         text: 'text-rose-700 dark:text-rose-400',
         bgLight: 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200/50 dark:border-rose-800/40',
-        activeChapterCard: 'bg-rose-50 dark:bg-rose-950/40 border-rose-500/40 text-rose-900 dark:text-rose-250 ring-2 ring-rose-500/10',
-        accentBg: 'bg-rose-600 hover:bg-rose-700 focus:ring-rose-500 text-white border-rose-650',
+        activeChapterCard: 'bg-rose-50 dark:bg-rose-950/40 border-rose-500/40 text-rose-900 dark:text-rose-300 ring-2 ring-rose-500/10',
+        accentBg: 'bg-rose-600 hover:bg-rose-700 focus:ring-rose-500 text-white border-rose-600',
         subPillActive: 'bg-rose-600 dark:bg-rose-500 text-white shadow-sm font-extrabold',
         subPillHover: 'hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400',
-        dotColorActive: 'bg-rose-600 dark:bg-rose-400 ring-4 ring-rose-550/20 scale-125',
+        dotColorActive: 'bg-rose-600 dark:bg-rose-400 ring-4 ring-rose-500/20 scale-125',
         dotColorCompleted: 'bg-rose-500/50 dark:bg-rose-400/30 hover:bg-rose-600',
       };
     } else {
@@ -2454,11 +3204,11 @@ export default function App() {
         text: 'text-slate-700 dark:text-slate-300',
         bgLight: 'bg-slate-100 dark:bg-slate-800/70 text-slate-800 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50',
         activeChapterCard: 'bg-slate-100 dark:bg-slate-800 border-slate-400 text-slate-900 dark:text-slate-100 ring-2 ring-slate-400/10',
-        accentBg: 'bg-slate-700 hover:bg-slate-800 focus:ring-slate-500 text-white border-slate-750',
-        subPillActive: 'bg-slate-850 dark:bg-slate-650 text-white shadow-sm font-extrabold',
+        accentBg: 'bg-slate-700 hover:bg-slate-800 focus:ring-slate-500 text-white border-slate-700',
+        subPillActive: 'bg-slate-800 dark:bg-slate-600 text-white shadow-sm font-extrabold',
         subPillHover: 'hover:bg-slate-500/10 hover:text-slate-600 dark:hover:text-slate-400',
-        dotColorActive: 'bg-slate-700 dark:bg-slate-400 ring-4 ring-slate-550/20 scale-125',
-        dotColorCompleted: 'bg-slate-400/50 dark:bg-slate-500/30 hover:bg-slate-550',
+        dotColorActive: 'bg-slate-700 dark:bg-slate-400 ring-4 ring-slate-500/20 scale-125',
+        dotColorCompleted: 'bg-slate-400/50 dark:bg-slate-500/30 hover:bg-slate-600',
       };
     }
   };
@@ -2690,10 +3440,10 @@ export default function App() {
             <button
               id="global-whiteboard-toggle-btn"
               onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
-              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 border transition-all cursor-pointer ${
                 isDrawingModeActive
-                  ? 'bg-rose-500 text-white shadow-sm'
-                  : 'bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
+                  ? 'bg-rose-600 text-white border-rose-700 shadow-sm'
+                  : 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/40'
               }`}
             >
               <Tv className="w-4 h-4" />
@@ -2908,7 +3658,7 @@ export default function App() {
                     {Object.entries(sGrades).map(([sGrade, sGroups]) => (
                       <div key={sGrade} className="space-y-2 PL_GRADE pl-1.5">
                         {/* Class/Grade Label Pill */}
-                        <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-850 dark:text-emerald-350 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full w-max">
+                        <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full w-max">
                           <span>🎓</span>
                           <span>{sGrade}</span>
                         </div>
@@ -3012,7 +3762,7 @@ export default function App() {
                   type="button"
                   id="export-db-backup-btn"
                   onClick={handleExportDatabase}
-                  className="flex-1 py-1.5 px-2 bg-emerald-750 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-550 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs"
+                  className="flex-1 py-1.5 px-2 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs"
                   title="Pobierz backup wszystkich danych (postępy, notatki, rozdziały) do pliku JSON"
                 >
                   <Download className="w-3 h-3 shrink-0" />
@@ -3036,7 +3786,7 @@ export default function App() {
             </div>
             <div className="flex justify-between items-center px-1">
               <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.3</p>
-              <p className="text-[8px] text-slate-400 dark:text-slate-550">Wydanie offline</p>
+              <p className="text-[8px] text-slate-400 dark:text-slate-500">Wydanie offline</p>
             </div>
           </div>
         </aside>
@@ -3245,11 +3995,11 @@ export default function App() {
                     exit={{ opacity: 0, y: -12 }}
                     transition={{ duration: 0.28, ease: 'easeInOut' }}
                     className={tocItems.length > 1 
-                      ? "max-w-5xl mx-auto xl:grid xl:grid-cols-12 xl:gap-8 space-y-6 xl:space-y-0" 
-                      : "max-w-3xl mx-auto space-y-6"
+                      ? "w-full max-w-5xl xl:max-w-7xl 2xl:max-w-[90%] 3xl:max-w-[95%] mx-auto xl:grid xl:grid-cols-12 xl:gap-8 space-y-6 xl:space-y-0" 
+                      : "w-full max-w-3xl xl:max-w-5xl 2xl:max-w-7xl 3xl:max-w-[90%] 4xl:max-w-[95%] mx-auto space-y-6"
                     }
                   >
-                    <div className={tocItems.length > 1 ? "xl:col-span-8 space-y-6" : "space-y-6"}>
+                    <div className={tocItems.length > 1 ? "xl:col-span-8 2xl:col-span-9 3xl:col-span-10 space-y-6" : "space-y-6"}>
                   
                   {/* Title and Top interactive bar */}
                   <div className={`pb-4 border-b flex items-start justify-between gap-4 transition-all duration-300 ${activeThemeConfig.border}`}>
@@ -3274,45 +4024,7 @@ export default function App() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 shrink-0">
-                      {/* Text-To-Speech (Tryb czytania na głos) */}
-                      <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                        <button
-                          id="chapter-tts-toggle-btn"
-                          onClick={handleToggleSpeech}
-                          className={`px-3 py-1.5 rounded-lg font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-                            isSpeaking
-                              ? isSpeakingPaused
-                                ? 'bg-amber-500 text-white shadow-sm'
-                                : `${getSubjectThemeColors(activeChapter.subject, theme).accentBg} shadow-sm`
-                              : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'
-                          }`}
-                          title={isSpeaking ? (isSpeakingPaused ? "Wznów czytanie" : "Wstrzymaj czytanie") : "Odczytaj lekcję na głos (Text-to-Speech)"}
-                        >
-                          {isSpeaking ? (
-                            isSpeakingPaused ? (
-                              <Play className="w-3.5 h-3.5" />
-                            ) : (
-                              <Pause className="w-3.5 h-3.5 animate-pulse text-emerald-600 dark:text-emerald-400" />
-                            )
-                          ) : (
-                            <Volume2 className="w-3.5 h-3.5" />
-                          )}
-                          <span>
-                            {isSpeaking ? (isSpeakingPaused ? "Wznów" : "Pauza") : "Czytaj lekcję"}
-                          </span>
-                        </button>
 
-                        {isSpeaking && (
-                          <button
-                            id="chapter-tts-stop-btn"
-                            onClick={handleStopSpeech}
-                            className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer"
-                            title="Zatrzymaj czytanie na głos"
-                          >
-                            <VolumeX className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
 
                       {/* Bookmark chapter toggler */}
                       <button
@@ -3402,8 +4114,8 @@ export default function App() {
                                       ? 'pl-0 font-extrabold text-slate-800 dark:text-slate-200'
                                       : item.level === 2
                                       ? 'pl-4 text-slate-600 dark:text-slate-300 font-semibold'
-                                      : 'pl-8 text-slate-450 dark:text-slate-400 font-medium'
-                                  } ${activeHeadingId === item.id ? 'text-amber-600 dark:text-amber-400 font-black scale-[1.01]' : ''}`}
+                                      : 'pl-8 text-slate-500 dark:text-slate-400 font-medium'
+                                  } ${activeHeadingId === item.id ? 'text-amber-700 dark:text-amber-400 font-black scale-[1.01]' : ''}`}
                                 >
                                   {item.text}
                                 </button>
@@ -3418,43 +4130,97 @@ export default function App() {
                   {/* HIGH-RES RENDERED MARKDOWN ENGINE CONTAINER */}
                   <div 
                     id="multibook-rendered-markdown-content"
-                    className="prose dark:prose-invert max-w-none transition-all"
+                    className="prose dark:prose-invert max-w-none transition-all space-y-6"
                     style={textStyle}
                   >
-                    <ReactMarkdown
-                      components={{
-                        h1: ({node, ...props}) => {
-                          const text = getChildrenText(props.children);
-                          const id = getCleanId(text);
-                          return <h1 id={id} className={`scroll-mt-12 text-2xl md:text-3.5xl font-serif font-bold mt-8 mb-4 leading-tight tracking-tight border-b pb-2.5 transition-all duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`} {...props} />;
-                        },
-                        h2: ({node, ...props}) => {
-                          const text = getChildrenText(props.children);
-                          const id = getCleanId(text);
-                          return <h2 id={id} className={`scroll-mt-12 text-xl md:text-2.5xl font-serif font-bold mt-7 mb-4 leading-snug transition-colors duration-300 ${activeThemeConfig.h2}`} {...props} />;
-                        },
-                        h3: ({node, ...props}) => {
-                          const text = getChildrenText(props.children);
-                          const id = getCleanId(text);
-                          return <h3 id={id} className={`scroll-mt-12 text-lg md:text-xl font-serif font-bold mt-6 mb-3 transition-colors duration-300 ${activeThemeConfig.h3}`} {...props} />;
-                        },
-                        p: ({node, ...props}) => <p className={`mb-4 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
-                        ul: ({node, ...props}) => <ul className={`list-disc list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
-                        ol: ({node, ...props}) => <ol className={`list-decimal list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
-                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                        blockquote: ({node, ...props}) => <blockquote className={`border-l-4 pl-4 italic my-6 py-3 pr-3 text-sm rounded-r-xl font-serif transition-colors duration-300 ${activeThemeConfig.blockquote}`} {...props} />,
-                        table: ({node, ...props}) => <div className={`overflow-x-auto my-6 border rounded-xl transition-all duration-300 ${activeThemeConfig.border}`}><table className={`min-w-full divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} /></div>,
-                        thead: ({node, ...props}) => <thead className={`${activeThemeConfig.thead}`} {...props} />,
-                        tbody: ({node, ...props}) => <tbody className={`divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
-                        tr: ({node, ...props}) => <tr className="hover:bg-slate-50/10" {...props} />,
-                        th: ({node, ...props}) => <th className={`px-4 py-3 text-left text-xs font-bold uppercase tracking-wider border-b transition-all duration-300 ${activeThemeConfig.border} ${activeThemeConfig.th}`} {...props} />,
-                        td: ({node, ...props}) => <td className={`px-4 py-3 text-sm transition-colors duration-300 ${activeThemeConfig.td}`} {...props} />,
-                        hr: ({node, ...props}) => <hr className={`my-8 transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
-                        strong: ({node, ...props}) => <strong className={`font-bold px-1 py-0.5 rounded-sm transition-colors duration-300 ${activeThemeConfig.strong}`} {...props} />,
-                      }}
-                    >
-                      {isReadingMode ? removeReadingSymbols(activeChapter.content) : activeChapter.content}
-                    </ReactMarkdown>
+                    {sections.map((section) => {
+                      const isThisSpeaking = speakingSectionId === section.id;
+                      return (
+                        <div 
+                          key={section.id} 
+                          className={`relative group/sec-block rounded-2xl p-5 md:p-6 transition-all duration-300 border ${
+                            isThisSpeaking
+                              ? 'bg-amber-50/15 border-amber-500/40 shadow-sm'
+                              : 'bg-white/40 dark:bg-slate-900/10 border-transparent hover:border-slate-250 dark:hover:border-slate-800/80 hover:bg-slate-50/50 dark:hover:bg-slate-900/20'
+                          }`}
+                        >
+                          {/* Floating Speaker Control inside each block */}
+                          <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 transition-opacity opacity-75 hover:opacity-100 md:opacity-0 md:group-hover/sec-block:opacity-100">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleSectionSpeech(section.id, section.plainText)}
+                              className={`p-1.5 px-2.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer border ${
+                                isThisSpeaking
+                                  ? isSpeakingPaused
+                                    ? 'bg-amber-500 text-white border-amber-500 shadow-sm'
+                                    : 'bg-emerald-600 text-white border-emerald-600 shadow-sm animate-pulse'
+                                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                              }`}
+                              title={isThisSpeaking ? (isSpeakingPaused ? "Wznów czytanie tej części" : "Wstrzymaj czytanie") : "Przeczytaj tę część na głos"}
+                            >
+                              {isThisSpeaking ? (
+                                isSpeakingPaused ? (
+                                  <Play className="w-3 h-3" />
+                                ) : (
+                                  <Pause className="w-3 h-3" />
+                                )
+                              ) : (
+                                <Volume2 className="w-3 h-3" />
+                              )}
+                              <span className="text-[10px]">
+                                {isThisSpeaking ? (isSpeakingPaused ? "Wznów" : "Pauza") : "Lektor 🔊"}
+                              </span>
+                            </button>
+
+                            {isThisSpeaking && (
+                              <button
+                                type="button"
+                                onClick={handleStopSectionSpeech}
+                                className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-3xs cursor-pointer border border-rose-100 dark:border-rose-950/40"
+                                title="Zatrzymaj lektora"
+                              >
+                                <VolumeX className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+
+                          <ReactMarkdown
+                            components={{
+                              h1: ({node, ...props}) => {
+                                const text = getChildrenText(props.children);
+                                const id = getCleanId(text);
+                                return <h1 id={id} className={`scroll-mt-12 text-2xl md:text-3.5xl font-serif font-bold mt-2 mb-4 leading-tight tracking-tight border-b pb-2.5 transition-all duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`} {...props} />;
+                              },
+                              h2: ({node, ...props}) => {
+                                const text = getChildrenText(props.children);
+                                const id = getCleanId(text);
+                                return <h2 id={id} className={`scroll-mt-12 text-xl md:text-2.5xl font-serif font-bold mt-2 mb-4 leading-snug transition-colors duration-300 ${activeThemeConfig.h2}`} {...props} />;
+                              },
+                              h3: ({node, ...props}) => {
+                                const text = getChildrenText(props.children);
+                                const id = getCleanId(text);
+                                return <h3 id={id} className={`scroll-mt-12 text-lg md:text-xl font-serif font-bold mt-2 mb-3 transition-colors duration-300 ${activeThemeConfig.h3}`} {...props} />;
+                              },
+                              p: ({node, ...props}) => <p className={`mb-4 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                              ul: ({node, ...props}) => <ul className={`list-disc list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                              ol: ({node, ...props}) => <ol className={`list-decimal list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
+                              li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                              blockquote: ({node, ...props}) => <blockquote className={`border-l-4 pl-4 italic my-6 py-3 pr-3 text-sm rounded-r-xl font-serif transition-colors duration-300 ${activeThemeConfig.blockquote}`} {...props} />,
+                              table: ({node, ...props}) => <div className={`overflow-x-auto my-6 border rounded-xl transition-all duration-300 ${activeThemeConfig.border}`}><table className={`min-w-full divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} /></div>,
+                              thead: ({node, ...props}) => <thead className={`${activeThemeConfig.thead}`} {...props} />,
+                              tbody: ({node, ...props}) => <tbody className={`divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
+                              tr: ({node, ...props}) => <tr className="hover:bg-slate-50/10" {...props} />,
+                              th: ({node, ...props}) => <th className={`px-4 py-3 text-left text-xs font-bold uppercase tracking-wider border-b transition-all duration-300 ${activeThemeConfig.border} ${activeThemeConfig.th}`} {...props} />,
+                              td: ({node, ...props}) => <td className={`px-4 py-3 text-sm transition-colors duration-300 ${activeThemeConfig.td}`} {...props} />,
+                              hr: ({node, ...props}) => <hr className={`my-8 transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
+                              strong: ({node, ...props}) => <strong className={`font-bold px-1 py-0.5 rounded-sm transition-colors duration-300 ${activeThemeConfig.strong}`} {...props} />,
+                            }}
+                          >
+                            {section.markdown}
+                          </ReactMarkdown>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* INTERACTIVE QUIZ BLOCK (Renders if chapter contains quizzes defined with it) */}
@@ -3613,7 +4379,7 @@ export default function App() {
                   )}
 
                   {/* Bookmark suggestion panel for bottom */}
-                  <div className="pt-6 border-t border-slate-100 dark:border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-1.5 text-xs text-slate-500">
                       <BookMarked className="w-4 h-4 text-slate-400" />
                       <span>Uważasz tę lekcję za skończoną? Zaznacz u góry jako ukończoną!</span>
@@ -3700,7 +4466,7 @@ export default function App() {
 
                     {/* Table of Contents Sticky Sidebar on Desktop */}
                     {tocItems.length > 1 && (
-                      <div className="hidden xl:block xl:col-span-4">
+                      <div className="hidden xl:block xl:col-span-4 2xl:col-span-3 3xl:col-span-2">
                         <div className={`sticky top-6 p-5 rounded-2xl border transition-all duration-300 ${activeThemeConfig.secondaryCardBg} shadow-3xs`}>
                           <h3 className={`font-serif font-black text-sm mb-3 pb-2 border-b flex items-center gap-1.5 transition-colors duration-300 ${activeThemeConfig.h1} ${activeThemeConfig.border}`}>
                             <List className="w-4 h-4 text-amber-600 dark:text-amber-500" />
@@ -3715,9 +4481,9 @@ export default function App() {
                                   item.level === 1
                                     ? 'pl-0 font-extrabold text-slate-800 dark:text-slate-200'
                                     : item.level === 2
-                                    ? 'pl-3.5 text-slate-600 dark:text-slate-350 font-semibold'
-                                    : 'pl-7 text-slate-450 dark:text-slate-400 font-medium'
-                                } ${activeHeadingId === item.id ? 'text-amber-600 dark:text-amber-500 font-black border-l-2 border-amber-500 pl-2 scale-[1.01]' : ''}`}
+                                    ? 'pl-3.5 text-slate-600 dark:text-slate-300 font-semibold'
+                                    : 'pl-7 text-slate-500 dark:text-slate-400 font-medium'
+                                } ${activeHeadingId === item.id ? 'text-amber-700 dark:text-amber-400 font-black border-l-2 border-amber-500 pl-2 scale-[1.01]' : ''}`}
                               >
                                 {item.text}
                               </button>
@@ -4036,7 +4802,7 @@ export default function App() {
                             }`}
                           >
                             <span className={`w-3.5 h-3.5 flex items-center justify-center rounded border text-[10px] ${
-                              isRealized ? 'bg-emerald-600 border-emerald-650 text-white' : activeThemeConfig.studentNotesTextarea
+                              isRealized ? 'bg-emerald-600 border-emerald-600 text-white' : activeThemeConfig.studentNotesTextarea
                             }`}>
                               {isRealized && '✓'}
                             </span>
@@ -4048,6 +4814,31 @@ export default function App() {
                   ) : (
                     <p className="text-[10px] text-slate-500 italic">Brak zdefiniowanych klas. Przejdź do zakładki "Klasy & Statystyki", aby dodać swoje klasy.</p>
                   )}
+                </div>
+
+                {/* Eksport/Pobieranie notatek */}
+                <div className={`pt-3 border-t ${activeThemeConfig.border} space-y-2`}>
+                  <label className={`text-[11.5px] font-bold block transition-colors duration-300 ${activeThemeConfig.studentNotesLabel}`}>
+                    📥 Eksportuj podsumowanie lekcji:
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleDownloadNotes}
+                      className="flex-1 p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold"
+                      title="Pobierz notatki jako plik Markdown (.md)"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Plik .md</span>
+                    </button>
+                    <button
+                      onClick={handleDownloadNotesPDF}
+                      className="flex-1 p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 dark:border-emerald-950/40 dark:hover:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold"
+                      title="Wydrukuj podsumowanie lekcji lub zapisz jako PDF"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Drukuj / PDF</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-100 dark:border-slate-900 shrink-0 mt-auto">
@@ -4100,7 +4891,7 @@ export default function App() {
                           type="button"
                           id={`delete-class-btn-${cls}`}
                           onClick={() => handleDeleteTeacherClass(cls)}
-                          className="text-red-400 hover:text-red-650 transition-colors cursor-pointer ml-1 font-bold text-xs p-0.5"
+                          className="text-red-400 hover:text-red-600 transition-colors cursor-pointer ml-1 font-bold text-xs p-0.5"
                           title={`Usuń klasę ${cls}`}
                         >
                           ×
@@ -4413,7 +5204,7 @@ export default function App() {
                                     [cls]: !prev[cls],
                                   }));
                                 }}
-                                className="w-full text-center text-[10px] font-bold text-emerald-700 hover:text-emerald-850 dark:text-emerald-400 dark:hover:text-emerald-300 flex items-center justify-center gap-1 cursor-pointer py-1 bg-slate-50 dark:bg-slate-900/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors"
+                                className="w-full text-center text-[10px] font-bold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 flex items-center justify-center gap-1 cursor-pointer py-1 bg-slate-50 dark:bg-slate-900/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-colors"
                               >
                                 {isExpanded ? (
                                   <><span>▲ Ukryj szczegóły, kalendarz i historię</span></>
@@ -4586,10 +5377,10 @@ export default function App() {
           >
             <div className={`p-1.5 rounded-lg shrink-0 ${
               toast.type === 'success' 
-                ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400' 
+                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400' 
                 : toast.type === 'error'
-                ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400'
-                : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400'
+                ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/50 dark:text-rose-400'
+                : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-400'
             }`}>
               {toast.type === 'success' ? (
                 <Check className="w-4 h-4" />
@@ -4723,6 +5514,16 @@ export default function App() {
                 >
                   <Download className="w-4 h-4" />
                   <span className="hidden sm:inline">Pobierz .md</span>
+                </button>
+
+                {/* Download PDF button */}
+                <button
+                  onClick={handleDownloadNotesPDF}
+                  className={`p-2.5 rounded-xl border border-emerald-200 hover:bg-emerald-50 dark:border-emerald-950/40 dark:hover:bg-emerald-950/20 text-emerald-700 dark:text-emerald-450 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
+                  title="Wydrukuj podsumowanie lekcji lub pobierz jako PDF"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span className="hidden sm:inline">Drukuj / PDF</span>
                 </button>
 
                 {/* Clear notes button */}
