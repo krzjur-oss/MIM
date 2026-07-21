@@ -296,7 +296,13 @@ export default function App() {
   }, [chapters, currentChapterId]);
 
   // Tryb Czytania State (Hides sidebar and header, filters out symbols like hearts, candles, etc.)
-  const [isReadingMode, setIsReadingMode] = useState<boolean>(false);
+  const [isReadingMode, setIsReadingMode] = useState<boolean>(() => {
+    return localStorage.getItem('multibook_reading_mode') === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_reading_mode', isReadingMode.toString());
+  }, [isReadingMode]);
 
   // Table of Contents State and Logic
   const [isTocExpanded, setIsTocExpanded] = useState<boolean>(true);
@@ -772,6 +778,35 @@ export default function App() {
     return [];
   });
 
+  // Curriculum configuration states (stores which chapters/lessons are assigned to which classes)
+  const [classChapters, setClassChapters] = useState<Record<string, string[]>>(() => {
+    const saved = localStorage.getItem('multibook_class_chapters');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed === 'object' && parsed !== null) return parsed;
+      } catch (e) {}
+    }
+    
+    // Default fallback: assign all existing chapter IDs to each initial teacher class
+    const defaults: Record<string, string[]> = {};
+    const initialClasses = ['Klasa 4A', 'Klasa 4B', 'Klasa 7A', 'Klasa 8B'];
+    const allIds = DEFAULT_CHAPTERS.map(c => c.id);
+    initialClasses.forEach(cls => {
+      defaults[cls] = [...allIds];
+    });
+    return defaults;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('multibook_class_chapters', JSON.stringify(classChapters));
+  }, [classChapters]);
+
+  const [teacherActiveSubTab, setTeacherActiveSubTab] = useState<'students' | 'curriculum'>('students');
+  const [selectedTeacherClass, setSelectedTeacherClass] = useState<string>('');
+  const [curriculumSearchQuery, setCurriculumSearchQuery] = useState('');
+  const [curriculumSubjectFilter, setCurriculumSubjectFilter] = useState('Wszystkie');
+
   const [rightDrawerTab, setRightDrawerTab] = useState<'notes' | 'classes'>('notes');
   const [newClassNameInput, setNewClassNameInput] = useState('');
   const [expandedClassDetails, setExpandedClassDetails] = useState<Record<string, boolean>>({});
@@ -911,6 +946,13 @@ export default function App() {
     const targetClass = studentClassInput.trim();
     if (!teacherClasses.includes(targetClass)) {
       setTeacherClasses(prev => [...prev, targetClass]);
+      setClassChapters(prev => {
+        if (prev[targetClass]) return prev;
+        return {
+          ...prev,
+          [targetClass]: chapters.map(c => c.id)
+        };
+      });
     }
 
     if (editingStudentId) {
@@ -1188,7 +1230,40 @@ export default function App() {
           </div>
         </div>
 
-        {/* Overview Key Indicators */}
+        {/* Navigation sub-tabs within Teacher Panel */}
+        <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+          <button
+            onClick={() => setTeacherActiveSubTab('students')}
+            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+              teacherActiveSubTab === 'students'
+                ? 'border-amber-600 text-amber-600 dark:text-amber-400'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-350'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Dziennik uczniów i postępy 👥</span>
+          </button>
+          <button
+            onClick={() => {
+              setTeacherActiveSubTab('curriculum');
+              if (!selectedTeacherClass && teacherClasses.length > 0) {
+                setSelectedTeacherClass(teacherClasses[0]);
+              }
+            }}
+            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+              teacherActiveSubTab === 'curriculum'
+                ? 'border-amber-600 text-amber-600 dark:text-amber-400'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-350'
+            }`}
+          >
+            <GraduationCap className="w-4 h-4" />
+            <span>Klasy i Programy nauczania 🏫</span>
+          </button>
+        </div>
+
+        {teacherActiveSubTab === 'students' ? (
+          <>
+            {/* Overview Key Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Liczba uczniów</span>
@@ -1605,6 +1680,290 @@ export default function App() {
           </div>
 
         </div>
+        </>
+        ) : (
+          (() => {
+            // Filter chapters for curriculum view
+            const filteredCurriculumChapters = chapters.filter(ch => {
+              const matchesSearch = ch.title.toLowerCase().includes(curriculumSearchQuery.toLowerCase()) ||
+                ch.subject.toLowerCase().includes(curriculumSearchQuery.toLowerCase()) ||
+                (ch.chapterGroup || '').toLowerCase().includes(curriculumSearchQuery.toLowerCase());
+              const matchesSubject = curriculumSubjectFilter === 'Wszystkie' || ch.subject === curriculumSubjectFilter;
+              return matchesSearch && matchesSubject;
+            });
+
+            return (
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+                {/* LEFT COLUMN: Classes list (col-span-4) */}
+                <div className="xl:col-span-4 space-y-5">
+                  {/* Add New Class */}
+                  <div className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs`}>
+                    <h3 className="text-sm font-black text-slate-800 dark:text-slate-200 border-b pb-2 mb-4 flex items-center gap-2">
+                      <span className="p-1.5 bg-amber-500/10 text-amber-600 rounded-lg">➕</span>
+                      <span>Dodaj nową klasę / grupę</span>
+                    </h3>
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!newClassNameInput.trim()) {
+                          showToast("Wpisz nazwę klasy!", "error");
+                          return;
+                        }
+                        handleAddTeacherClass(newClassNameInput);
+                      }} 
+                      className="space-y-3"
+                    >
+                      <div>
+                        <input
+                          type="text"
+                          value={newClassNameInput}
+                          onChange={(e) => setNewClassNameInput(e.target.value)}
+                          placeholder="np. Klasa 5C"
+                          className={`w-full p-2.5 rounded-lg border text-sm font-medium focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                            isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className={`w-full py-2.5 font-extrabold text-xs rounded-lg cursor-pointer transition-colors ${getPrimaryBtnClass()}`}
+                      >
+                        Dodaj klasę
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* List of existing classes */}
+                  <div className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs`}>
+                    <h3 className="text-sm font-black text-slate-800 dark:text-slate-200 border-b pb-2 mb-3 flex items-center gap-2">
+                      <span className="p-1.5 bg-amber-500/10 text-amber-600 rounded-lg">🏫</span>
+                      <span>Twoje klasy ({teacherClasses.length})</span>
+                    </h3>
+                    {teacherClasses.length === 0 ? (
+                      <p className="text-xs text-slate-400 italic text-center py-4">Brak zdefiniowanych klas.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                        {teacherClasses.map(cls => {
+                          const isSelected = selectedTeacherClass === cls;
+                          const assignedCount = (classChapters[cls] ?? []).length;
+                          const classRealized = realizations.filter(r => r.className === cls && (classChapters[cls] ?? []).includes(r.chapterId)).length;
+                          const pct = assignedCount > 0 ? Math.round((classRealized / assignedCount) * 100) : 0;
+
+                          return (
+                            <div
+                              key={cls}
+                              onClick={() => setSelectedTeacherClass(cls)}
+                              className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                                isSelected
+                                  ? 'border-amber-500 bg-amber-50/10'
+                                  : isDark ? 'bg-slate-950/40 border-slate-800 hover:border-slate-700' : 'bg-slate-50 hover:bg-slate-100 border-slate-200/50'
+                              }`}
+                            >
+                              <div className="space-y-1 min-w-0 flex-1">
+                                <div className="font-bold text-xs text-slate-800 dark:text-slate-200 truncate">{cls}</div>
+                                <div className="text-[9.5px] text-slate-400 flex items-center gap-1.5">
+                                  <span>📚 {assignedCount} tematów</span>
+                                  <span>•</span>
+                                  <span className="text-emerald-600 font-semibold">✓ {classRealized} zrealizowano ({pct}%)</span>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteTeacherClass(cls);
+                                }}
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${getDangerBtnClass()}`}
+                                title="Usuń klasę"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN: Curriculum Detail (col-span-8) */}
+                <div className="xl:col-span-8 space-y-5">
+                  {!selectedTeacherClass ? (
+                    <div className={`p-12 text-center rounded-xl border ${isDark ? 'border-slate-800 bg-slate-900/10' : 'border-slate-200 bg-slate-50/50'}`}>
+                      <GraduationCap className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Brak wybranej klasy</p>
+                      <p className="text-xs text-slate-400 mt-1">Wybierz lub utwórz klasę po lewej stronie, aby zarządzać jej programem nauczania.</p>
+                    </div>
+                  ) : (
+                    <div className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/35 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs space-y-5`}>
+                      {/* Header detail */}
+                      <div className="border-b pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider">Menedżer programu lekcji</span>
+                          <h3 className="text-base font-black text-slate-800 dark:text-slate-200 flex items-center gap-2 mt-0.5">
+                            <span>Program dla klasy: {selectedTeacherClass} 📚</span>
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <button
+                            onClick={() => handleAssignAllChapters(selectedTeacherClass)}
+                            className={`px-3 py-1.5 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
+                          >
+                            Przypisz wszystkie tematy
+                          </button>
+                          <button
+                            onClick={() => handleClearAllChapters(selectedTeacherClass)}
+                            className={`px-3 py-1.5 font-bold text-[10.5px] text-red-600 hover:text-red-700 bg-red-50 dark:bg-red-950/20 rounded-lg transition-colors cursor-pointer`}
+                          >
+                            Wyczyść przypisania
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Progress bar info */}
+                      {(() => {
+                        const assignedIds = classChapters[selectedTeacherClass] ?? [];
+                        const classRealized = realizations.filter(r => r.className === selectedTeacherClass && assignedIds.includes(r.chapterId));
+                        const pct = assignedIds.length > 0 ? Math.round((classRealized.length / assignedIds.length) * 100) : 0;
+                        return (
+                          <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-150 dark:border-slate-800/80 space-y-2">
+                            <div className="flex items-center justify-between text-xs font-semibold">
+                              <span className="text-slate-500">Postęp realizacji przypisanego programu:</span>
+                              <span className="text-emerald-600 font-bold">{classRealized.length} / {assignedIds.length} zrealizowanych ({pct}%)</span>
+                            </div>
+                            <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                              <div 
+                                className="bg-emerald-600 h-full rounded-full transition-all duration-300"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Search & Filter within curriculum */}
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex-1 relative">
+                          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
+                          <input
+                            type="text"
+                            value={curriculumSearchQuery}
+                            onChange={(e) => setCurriculumSearchQuery(e.target.value)}
+                            placeholder="Szukaj tematu po nazwie, dziale..."
+                            className={`w-full pl-9 pr-4 py-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                              isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          />
+                        </div>
+                        <div className="w-full sm:w-48">
+                          <select
+                            value={curriculumSubjectFilter}
+                            onChange={(e) => setCurriculumSubjectFilter(e.target.value)}
+                            className={`w-full p-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                              isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          >
+                            <option value="Wszystkie">Wszystkie przedmioty</option>
+                            {subjects.filter(s => s !== 'Wszystkie').map(s => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* List of chapters/lessons with Assignment and Realization toggles */}
+                      <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1">
+                        {filteredCurriculumChapters.length === 0 ? (
+                          <div className="text-center italic text-slate-400 dark:text-slate-500 py-6 text-xs">
+                            Nie znaleziono tematów spełniających kryteria wyszukiwania.
+                          </div>
+                        ) : (
+                          filteredCurriculumChapters.map(ch => {
+                            const assignedIds = classChapters[selectedTeacherClass] ?? [];
+                            const isAssigned = assignedIds.includes(ch.id);
+                            const realizationEntry = realizations.find(r => r.className === selectedTeacherClass && r.chapterId === ch.id);
+                            const isRealized = !!realizationEntry;
+
+                            return (
+                              <div 
+                                key={ch.id} 
+                                className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
+                                  isAssigned 
+                                    ? isRealized 
+                                      ? 'bg-emerald-500/5 border-emerald-500/20' 
+                                      : isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200/80'
+                                    : 'bg-slate-100/40 dark:bg-slate-900/10 border-slate-200/40 dark:border-slate-800/40 opacity-75'
+                                }`}
+                              >
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="px-1.5 py-0.5 rounded text-[8.5px] font-extrabold uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                      {ch.subject}
+                                    </span>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[200px]">
+                                      📂 {ch.chapterGroup || 'Główny'}
+                                    </span>
+                                  </div>
+                                  <h4 className="font-bold text-xs text-slate-800 dark:text-slate-100 mt-1 truncate" title={ch.title}>
+                                    {ch.title}
+                                  </h4>
+                                </div>
+
+                                <div className="flex items-center gap-4 shrink-0">
+                                  {/* Toggle Assignment */}
+                                  <div className="flex items-center gap-1.5 border-r border-slate-200 dark:border-slate-800 pr-4">
+                                    <span className="text-[10.5px] font-semibold text-slate-400">Przypisany:</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleChapterAssignment(selectedTeacherClass, ch.id)}
+                                      className={`p-1 rounded-lg cursor-pointer transition-colors ${
+                                        isAssigned 
+                                          ? 'text-amber-600 bg-amber-500/10' 
+                                          : 'text-slate-400 bg-slate-100 dark:bg-slate-800'
+                                      }`}
+                                      title={isAssigned ? "Usuń przypisanie tego tematu" : "Przypisz ten temat do klasy"}
+                                    >
+                                      {isAssigned ? (
+                                        <CheckSquare className="w-5 h-5" />
+                                      ) : (
+                                        <Square className="w-5 h-5" />
+                                      )}
+                                    </button>
+                                  </div>
+
+                                  {/* Toggle Realization (Enabled only if assigned) */}
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10.5px] font-semibold text-slate-400">Status:</span>
+                                    <button
+                                      type="button"
+                                      disabled={!isAssigned}
+                                      onClick={() => handleToggleRealizationInClass(selectedTeacherClass, ch.id)}
+                                      className={`px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all ${
+                                        !isAssigned
+                                          ? 'bg-slate-100/50 dark:bg-slate-900/10 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                                          : isRealized
+                                            ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/20'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer'
+                                      }`}
+                                      title={!isAssigned ? "Przypisz temat, aby móc oznaczyć go jako zrealizowany" : isRealized ? "Cofnij realizację lekcji" : "Oznacz temat jako zrealizowany"}
+                                    >
+                                      {isRealized ? 'Zrealizowany ✓' : 'Planowany ○'}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()
+        )}
       </div>
     );
   };
@@ -1782,6 +2141,18 @@ export default function App() {
   };
 
   const handleToggleRealizationInClass = (className: string, chapterId: string) => {
+    // Automatically assign if not already assigned
+    setClassChapters((prev) => {
+      const currentAssigned = prev[className] || [];
+      if (!currentAssigned.includes(chapterId)) {
+        return {
+          ...prev,
+          [className]: [...currentAssigned, chapterId]
+        };
+      }
+      return prev;
+    });
+
     setRealizations((prev) => {
       const exists = prev.some((r) => r.className === className && r.chapterId === chapterId);
       if (exists) {
@@ -1792,6 +2163,37 @@ export default function App() {
     });
   };
 
+  const handleToggleChapterAssignment = (className: string, chapterId: string) => {
+    setClassChapters((prev) => {
+      const currentAssigned = prev[className] || [];
+      const isAssigned = currentAssigned.includes(chapterId);
+      const updated = isAssigned
+        ? currentAssigned.filter(id => id !== chapterId)
+        : [...currentAssigned, chapterId];
+      return {
+        ...prev,
+        [className]: updated
+      };
+    });
+    showToast(`Zaktualizowano przypisanie tematu dla klasy ${className}`, "success");
+  };
+
+  const handleAssignAllChapters = (className: string) => {
+    setClassChapters((prev) => ({
+      ...prev,
+      [className]: chapters.map(c => c.id)
+    }));
+    showToast(`Przypisano wszystkie dostępne tematy do klasy ${className}`, "success");
+  };
+
+  const handleClearAllChapters = (className: string) => {
+    setClassChapters((prev) => ({
+      ...prev,
+      [className]: []
+    }));
+    showToast(`Usunięto wszystkie przypisania dla klasy ${className}`, "info");
+  };
+
   const handleAddTeacherClass = (name: string) => {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -1800,7 +2202,12 @@ export default function App() {
       return;
     }
     setTeacherClasses((prev) => [...prev, trimmed]);
+    setClassChapters((prev) => ({
+      ...prev,
+      [trimmed]: chapters.map(c => c.id) // By default, assign all chapters to make it easy for teachers
+    }));
     setNewClassNameInput('');
+    setSelectedTeacherClass(trimmed); // Select the newly created class
     showToast(`Dodano klasę: ${trimmed}`, 'success');
   };
 
@@ -1810,6 +2217,14 @@ export default function App() {
       () => {
         setTeacherClasses((prev) => prev.filter((c) => c !== name));
         setRealizations((prev) => prev.filter((r) => r.className !== name));
+        setClassChapters((prev) => {
+          const updated = { ...prev };
+          delete updated[name];
+          return updated;
+        });
+        if (selectedTeacherClass === name) {
+          setSelectedTeacherClass('');
+        }
         showToast(`Usunięto klasę: ${name}`, 'success');
       },
       'Usuwanie klasy'
@@ -1826,7 +2241,9 @@ export default function App() {
       theme,
       fontSize,
       lineHeight,
+      isReadingMode,
       teacherClasses,
+      classChapters,
       realizations,
       chapterGalleryImages,
       students,
@@ -1882,8 +2299,16 @@ export default function App() {
             setLineHeight(parsedData.lineHeight);
             restoredCount++;
           }
+          if (typeof parsedData.isReadingMode === 'boolean') {
+            setIsReadingMode(parsedData.isReadingMode);
+            restoredCount++;
+          }
           if (Array.isArray(parsedData.teacherClasses)) {
             setTeacherClasses(parsedData.teacherClasses);
+            restoredCount++;
+          }
+          if (parsedData.classChapters && typeof parsedData.classChapters === 'object') {
+            setClassChapters(parsedData.classChapters);
             restoredCount++;
           }
           if (Array.isArray(parsedData.realizations)) {
