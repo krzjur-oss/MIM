@@ -5,6 +5,8 @@ import { Upload, Plus, Trash2, BookOpen, Save, FileText, Sparkles, AlertCircle, 
 
 interface ChapterManagerProps {
   onAddChapter: (chapter: Chapter) => void;
+  onUpdateChapter?: (chapter: Chapter) => void;
+  editingChapter?: Chapter | null;
   onImportAll: (chapters: Chapter[]) => void;
   allChapters: Chapter[];
   onClose: () => void;
@@ -12,7 +14,7 @@ interface ChapterManagerProps {
   showConfirm?: (message: string, onConfirm: () => void, title?: string) => void;
 }
 
-export default function ChapterManager({ onAddChapter, onImportAll, allChapters, onClose, showToast, showConfirm }: ChapterManagerProps) {
+export default function ChapterManager({ onAddChapter, onUpdateChapter, editingChapter = null, onImportAll, allChapters, onClose, showToast, showConfirm }: ChapterManagerProps) {
   const notify = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
     if (showToast) {
       showToast(msg, type);
@@ -32,18 +34,30 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
   const [activeTab, setActiveTab] = useState<'create' | 'import_files'>('create');
   
   // Create Chapter States
-  const [title, setTitle] = useState(''); // Temat lekcji (np. "Bóg stwarza świat z miłości")
-  const [subject, setSubject] = useState(''); // Przedmiot (np. "Religia")
-  const [content, setContent] = useState('');
-  const [readTime, setReadTime] = useState(5);
-  const [quizzes, setQuizzes] = useState<QuizQuestion[]>([]);
+  const [title, setTitle] = useState(editingChapter?.title || ''); // Temat lekcji (np. "Bóg stwarza świat z miłości")
+  const [subject, setSubject] = useState(editingChapter?.subject || ''); // Przedmiot (np. "Religia")
+  const [content, setContent] = useState(editingChapter?.content || '');
+  const [readTime, setReadTime] = useState(editingChapter?.estimatedReadTime || 5);
+  const [quizzes, setQuizzes] = useState<QuizQuestion[]>(editingChapter?.quizzes || []);
   
   // Advanced Education States
-  const [schoolType, setSchoolType] = useState('Szkoła Podstawowa');
-  const [customSchoolType, setCustomSchoolType] = useState('');
-  const [grade, setGrade] = useState('Klasa 1');
-  const [customGrade, setCustomGrade] = useState('');
-  const [chapterGroup, setChapterGroup] = useState(''); // Rozdział / Dział nadrzędny (np. "Stworzenie świata")
+  const [schoolType, setSchoolType] = useState(
+    editingChapter 
+      ? (SCHOOL_TYPES.includes(editingChapter.schoolType) ? editingChapter.schoolType : 'Inny...') 
+      : 'Szkoła Podstawowa'
+  );
+  const [customSchoolType, setCustomSchoolType] = useState(
+    editingChapter && !SCHOOL_TYPES.includes(editingChapter.schoolType) ? editingChapter.schoolType : ''
+  );
+  const [grade, setGrade] = useState(
+    editingChapter 
+      ? (GRADES.includes(editingChapter.grade) ? editingChapter.grade : 'Inny...') 
+      : 'Klasa 1'
+  );
+  const [customGrade, setCustomGrade] = useState(
+    editingChapter && !GRADES.includes(editingChapter.grade) ? editingChapter.grade : ''
+  );
+  const [chapterGroup, setChapterGroup] = useState(editingChapter?.chapterGroup || ''); // Rozdział / Dział nadrzędny (np. "Stworzenie świata")
   
   // Quiz creator state
   const [quizQuestion, setQuizQuestion] = useState('');
@@ -168,7 +182,7 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
     const finalChapterGroup = chapterGroup.trim() || 'Ogólne';
 
     const finalChapter: Chapter = {
-      id: 'custom-' + Math.random().toString(36).substr(2, 9),
+      id: editingChapter?.id || 'custom-' + Math.random().toString(36).substr(2, 9),
       title: title.trim(),
       subject: subject.trim() || 'Ogólne',
       schoolType: finalSchoolType,
@@ -178,10 +192,14 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
       content: content.trim(),
       estimatedReadTime: readTime || 3,
       quizzes: quizzes.length > 0 ? quizzes : undefined,
-      createdAt: Date.now()
+      createdAt: editingChapter?.createdAt || Date.now()
     };
 
-    onAddChapter(finalChapter);
+    if (editingChapter && onUpdateChapter) {
+      onUpdateChapter(finalChapter);
+    } else {
+      onAddChapter(finalChapter);
+    }
     onClose();
   };
 
@@ -260,11 +278,11 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
         <div className="p-5 border-b border-[#EDEAE2] dark:border-slate-800 flex items-center justify-between">
           <div>
             <h2 id="manager-title" className="text-xl font-serif font-bold text-emerald-900 dark:text-emerald-400 flex items-center gap-2">
-              <Plus className="w-5 h-5 text-emerald-700" />
-              <span>Centrum Twórcy i Zarządzania Książką</span>
+              {editingChapter ? <Edit3 className="w-5 h-5 text-emerald-700" /> : <Plus className="w-5 h-5 text-emerald-700" />}
+              <span>{editingChapter ? `Edycja Lekcji: ${editingChapter.title}` : 'Centrum Twórcy i Zarządzania Książką'}</span>
             </h2>
             <p className="text-xs text-[#5A5450] dark:text-slate-400 mt-1">
-              Rozwiń swój multibook dodając nowe lekcje, sprawdziany lub importując pliki w formacie Markdown (.md).
+              {editingChapter ? 'Wprowadź poprawki do treści lekcji, zmień jej atrybuty lub zaktualizuj interaktywny quiz.' : 'Rozwiń swój multibook dodając nowe lekcje, sprawdziany lub importując pliki w formacie Markdown (.md).'}
             </p>
           </div>
           <button
@@ -272,38 +290,40 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
             onClick={onClose}
             className="p-1 px-3 text-sm font-semibold rounded-lg text-[#5A5450] hover:bg-stone-200/50 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition-colors"
           >
-            Zamknij
+            Anuluj
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-[#EDEAE2] dark:bg-slate-800 border-b border-[#D9D4C7] dark:border-slate-800/80 p-1 px-4 gap-1">
-          <button
-            id="create-tab-btn"
-            onClick={() => setActiveTab('create')}
-            className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
-              activeTab === 'create'
-                ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
-                : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
-            }`}
-          >
-            <Edit3 className="w-4 h-4" />
-            <span>Napisz nowy rozdział</span>
-          </button>
+        {!editingChapter && (
+          <div className="flex bg-[#EDEAE2] dark:bg-slate-800 border-b border-[#D9D4C7] dark:border-slate-800/80 p-1 px-4 gap-1">
+            <button
+              id="create-tab-btn"
+              onClick={() => setActiveTab('create')}
+              className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
+                activeTab === 'create'
+                  ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
+                  : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
+              }`}
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>Napisz nowy rozdział</span>
+            </button>
 
-          <button
-            id="import-tab-btn"
-            onClick={() => setActiveTab('import_files')}
-            className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
-              activeTab === 'import_files'
-                ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
-                : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
-            }`}
-          >
-            <Upload className="w-4 h-4" />
-            <span>Importuj pliki (.md / .json)</span>
-          </button>
-        </div>
+            <button
+              id="import-tab-btn"
+              onClick={() => setActiveTab('import_files')}
+              className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
+                activeTab === 'import_files'
+                  ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
+                  : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
+              }`}
+            >
+              <Upload className="w-4 h-4" />
+              <span>Importuj pliki (.md / .json)</span>
+            </button>
+          </div>
+        )}
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -620,7 +640,7 @@ export default function ChapterManager({ onAddChapter, onImportAll, allChapters,
                   className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-xl cursor-pointer shadow-md shadow-emerald-700/10 dark:shadow-none flex items-center gap-1.5 transition-colors"
                 >
                   <Save className="w-4 h-4" />
-                  <span>Zapisz i wyświetl lekcję</span>
+                  <span>{editingChapter ? 'Zapisz zmiany' : 'Zapisz i wyświetl lekcję'}</span>
                 </button>
               </div>
             </div>

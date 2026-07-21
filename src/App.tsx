@@ -1124,6 +1124,7 @@ export default function App() {
 
   // 5. Open/close manager modal
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
+  const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
 
   // 5a. Teacher Classes & Realization Tracker States
   const [teacherClasses, setTeacherClasses] = useState<string[]>(() => {
@@ -1134,7 +1135,7 @@ export default function App() {
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch (e) {}
     }
-    return ['Klasa 4A', 'Klasa 4B', 'Klasa 7A', 'Klasa 8B'];
+    return ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'];
   });
 
   const [realizations, setRealizations] = useState<{ className: string; chapterId: string; timestamp: number }[]>(() => {
@@ -1160,7 +1161,7 @@ export default function App() {
     
     // Default fallback: assign all existing chapter IDs to each initial teacher class
     const defaults: Record<string, string[]> = {};
-    const initialClasses = ['Klasa 4A', 'Klasa 4B', 'Klasa 7A', 'Klasa 8B'];
+    const initialClasses = ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'];
     const allIds = DEFAULT_CHAPTERS.map(c => c.id);
     initialClasses.forEach(cls => {
       defaults[cls] = [...allIds];
@@ -1275,6 +1276,50 @@ export default function App() {
       id: 'stud-5',
       name: 'Kacper Zieliński',
       className: 'Klasa 4B',
+      completedChapters: [],
+      bookmarkedChapters: [],
+      chapterNotes: {},
+      quizAttempts: {}
+    },
+    {
+      id: 'stud-6',
+      name: 'Piotr Wiśniewski',
+      className: 'Klasa 6A',
+      completedChapters: ['religia-6-lekcja-1'],
+      bookmarkedChapters: ['religia-6-lekcja-1'],
+      chapterNotes: {
+        'religia-6-lekcja-1': 'Bóg stworzył świat z miłości i obdarzył nas pięknem przyrody.'
+      },
+      quizAttempts: {
+        'religia-6-lekcja-1': { correct: 2, total: 2 }
+      }
+    },
+    {
+      id: 'stud-7',
+      name: 'Julia Malinowska',
+      className: 'Klasa 6A',
+      completedChapters: [],
+      bookmarkedChapters: [],
+      chapterNotes: {},
+      quizAttempts: {}
+    },
+    {
+      id: 'stud-8',
+      name: 'Michał Jankowski',
+      className: 'Klasa 5A',
+      completedChapters: ['religia-5-lekcja-1'],
+      bookmarkedChapters: ['religia-5-lekcja-1'],
+      chapterNotes: {
+        'religia-5-lekcja-1': 'Bóg pragnie naszego szczęścia i poszukuje człowieka z miłości.'
+      },
+      quizAttempts: {
+        'religia-5-lekcja-1': { correct: 2, total: 2 }
+      }
+    },
+    {
+      id: 'stud-9',
+      name: 'Katarzyna Wójcik',
+      className: 'Klasa 5A',
       completedChapters: [],
       bookmarkedChapters: [],
       chapterNotes: {},
@@ -2503,6 +2548,29 @@ export default function App() {
                                 </div>
 
                                 <div className="flex items-center gap-4 shrink-0">
+                                  {/* Lesson Actions (Edit & Delete) */}
+                                  <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-4">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingChapter(ch);
+                                        setIsCreatorOpen(true);
+                                      }}
+                                      className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 dark:hover:text-emerald-400"
+                                      title="Edytuj lekcję"
+                                    >
+                                      <Edit className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                      className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-rose-600 hover:bg-rose-500/10 dark:hover:text-rose-400"
+                                      title="Usuń lekcję"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+
                                   {/* Toggle Assignment */}
                                   <div className="flex items-center gap-1.5 border-r border-slate-200 dark:border-slate-800 pr-4">
                                     <span className="text-[10.5px] font-semibold text-slate-400">Przypisany:</span>
@@ -3098,6 +3166,11 @@ export default function App() {
     showToast(`Utworzono lekcję: ${newChap.title}`, 'success');
   };
 
+  const handleUpdateChapter = (updatedChap: Chapter) => {
+    setChapters((prev) => prev.map((c) => (c.id === updatedChap.id ? updatedChap : c)));
+    showToast(`Zaktualizowano lekcję: ${updatedChap.title}`, 'success');
+  };
+
   const handleImportAllChapters = (imported: Chapter[]) => {
     setChapters(imported);
     if (imported.length > 0) {
@@ -3510,6 +3583,7 @@ export default function App() {
               <button
                 id="add-chapter-sidebar-btn"
                 onClick={() => {
+                  setEditingChapter(null);
                   setIsCreatorOpen(true);
                   setIsMobileSidebarOpen(false);
                 }}
@@ -5357,8 +5431,13 @@ export default function App() {
           <ChapterManager
             allChapters={chapters}
             onAddChapter={handleAddNewChapter}
+            onUpdateChapter={handleUpdateChapter}
+            editingChapter={editingChapter}
             onImportAll={handleImportAllChapters}
-            onClose={() => setIsCreatorOpen(false)}
+            onClose={() => {
+              setIsCreatorOpen(false);
+              setEditingChapter(null);
+            }}
             showToast={showToast}
             showConfirm={showConfirm}
           />

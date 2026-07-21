@@ -1,4 +1,10 @@
 import { Chapter } from './types';
+import { RELIGIA_5_CHAPTERS_PART1 } from './chaptersReligia5_part1';
+import { RELIGIA_5_CHAPTERS_PART2 } from './chaptersReligia5_part2';
+import { RELIGIA_5_CHAPTERS_PART3 } from './chaptersReligia5_part3';
+import { RELIGIA_6_CHAPTERS_PART1 } from './chaptersReligia6_part1';
+import { RELIGIA_6_CHAPTERS_PART2 } from './chaptersReligia6_part2';
+import { RELIGIA_6_CHAPTERS_PART3 } from './chaptersReligia6_part3';
 import { RELIGIA_7_CHAPTERS_PART1 } from './chaptersReligia7_part1';
 import { RELIGIA_7_CHAPTERS_PART2 } from './chaptersReligia7_part2';
 import { RELIGIA_7_CHAPTERS_PART3 } from './chaptersReligia7_part3';
@@ -846,6 +852,12 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
 
 export const DEFAULT_CHAPTERS: Chapter[] = [
   ...BASE_CHAPTERS,
+  ...RELIGIA_5_CHAPTERS_PART1,
+  ...RELIGIA_5_CHAPTERS_PART2,
+  ...RELIGIA_5_CHAPTERS_PART3,
+  ...RELIGIA_6_CHAPTERS_PART1,
+  ...RELIGIA_6_CHAPTERS_PART2,
+  ...RELIGIA_6_CHAPTERS_PART3,
   ...RELIGIA_7_CHAPTERS_PART1,
   ...RELIGIA_7_CHAPTERS_PART2,
   ...RELIGIA_7_CHAPTERS_PART3,
