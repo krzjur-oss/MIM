@@ -188,6 +188,102 @@ const sortChapters = (list: Chapter[]): Chapter[] => {
   });
 };
 
+export interface LevelGroupInfo {
+  key: string;
+  label: string;
+  badge: string;
+  icon: string;
+  orderNum: number;
+}
+
+export const getChapterLevelGroup = (ch: Chapter): LevelGroupInfo => {
+  const school = ch.schoolType || 'Ogólny / Pozostałe';
+  const grade = ch.grade || 'Ogólny';
+  const eduLevel = ch.educationLevel;
+
+  if (school === 'Szkoła Podstawowa') {
+    if (grade && grade !== 'Ogólny') {
+      const match = grade.match(/(\d+)/);
+      const num = match ? parseInt(match[1], 10) : 0;
+      return {
+        key: `sp-grade-${num || grade}`,
+        label: `Szkoła Podstawowa — ${grade}`,
+        badge: `${grade} (Szkoła Podstawowa)`,
+        icon: '🎒',
+        orderNum: 100 + num
+      };
+    } else if (eduLevel && eduLevel !== 'Ogólny') {
+      return {
+        key: `sp-edu-${eduLevel}`,
+        label: `Szkoła Podstawowa — ${eduLevel}`,
+        badge: eduLevel,
+        icon: '🎒',
+        orderNum: 190
+      };
+    } else {
+      return {
+        key: 'sp-ogolny',
+        label: 'Szkoła Podstawowa — Poziom Ogólny',
+        badge: 'SP Ogólny',
+        icon: '🎒',
+        orderNum: 199
+      };
+    }
+  } else if (school === 'Liceum / Technikum') {
+    if (grade && grade !== 'Ogólny') {
+      const match = grade.match(/(\d+)/);
+      const num = match ? parseInt(match[1], 10) : 0;
+      return {
+        key: `lo-grade-${num || grade}`,
+        label: `Liceum / Technikum — ${grade}`,
+        badge: `${grade} (Liceum / Technikum)`,
+        icon: '🏛️',
+        orderNum: 200 + num
+      };
+    }
+    return {
+      key: 'lo-ogolny',
+      label: 'Liceum / Technikum — Poziom Ogólny',
+      badge: 'Liceum / Technikum',
+      icon: '🏛️',
+      orderNum: 299
+    };
+  } else if (school === 'Szkoła Branżowa') {
+    return {
+      key: 'branzowa',
+      label: 'Szkoła Branżowa',
+      badge: 'Szkoła Branżowa',
+      icon: '🛠️',
+      orderNum: 300
+    };
+  } else if (school === 'Studia / Wyższe') {
+    return {
+      key: 'studia',
+      label: 'Studia / Wyższe',
+      badge: 'Studia / Wyższe',
+      icon: '🎓',
+      orderNum: 400
+    };
+  } else {
+    if (grade && grade !== 'Ogólny') {
+      return {
+        key: `ogolny-grade-${grade}`,
+        label: `Poziom Ogólny — ${grade}`,
+        badge: grade,
+        icon: '🌍',
+        orderNum: 500
+      };
+    }
+    return {
+      key: 'ogolny',
+      label: 'Poziom Ogólny / Uniwersalny',
+      badge: 'Poziom Ogólny',
+      icon: '🌍',
+      orderNum: 599
+    };
+  }
+};
+
 // Preset lists of high-quality educational illustrations from Unsplash for our interactive photo galleries
 const PRESET_SUBJECT_GALLERIES: Record<string, { label: string; url: string }[]> = {
   'Biologia': [
@@ -1197,6 +1293,8 @@ export default function App() {
   const [selectedTeacherClass, setSelectedTeacherClass] = useState<string>('');
   const [curriculumSearchQuery, setCurriculumSearchQuery] = useState('');
   const [curriculumSubjectFilter, setCurriculumSubjectFilter] = useState('Wszystkie');
+  const [curriculumLevelFilter, setCurriculumLevelFilter] = useState('Wszystkie poziomy');
+  const [collapsedLevelGroups, setCollapsedLevelGroups] = useState<Record<string, boolean>>({});
 
   const [templateWeekday, setTemplateWeekday] = useState<number>(1); // 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
   const [templateTime, setTemplateTime] = useState<string>("08:00");
@@ -1558,6 +1656,35 @@ export default function App() {
       "Resetuj postępy klasy"
     );
   };
+
+  const handleAssignLevelGroup = (className: string, chapterIdsToAssign: string[]) => {
+    if (!className || chapterIdsToAssign.length === 0) return;
+    setClassChapters(prev => {
+      const currentAssigned = prev[className] ?? [];
+      const updated = Array.from(new Set([...currentAssigned, ...chapterIdsToAssign]));
+      return { ...prev, [className]: updated };
+    });
+    showToast(`Przypisano tematy z tego poziomu do klasy ${className}!`, "success");
+  };
+
+  const handleUnassignLevelGroup = (className: string, chapterIdsToUnassign: string[]) => {
+    if (!className || chapterIdsToUnassign.length === 0) return;
+    setClassChapters(prev => {
+      const currentAssigned = prev[className] ?? [];
+      const updated = currentAssigned.filter(id => !chapterIdsToUnassign.includes(id));
+      return { ...prev, [className]: updated };
+    });
+    showToast(`Usunięto przypisanie tematów z tego poziomu dla klasy ${className}.`, "info");
+  };
+
+  const availableLevelLabels = useMemo(() => {
+    const set = new Set<string>();
+    chapters.forEach(ch => {
+      const grp = getChapterLevelGroup(ch);
+      set.add(grp.label);
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
+  }, [chapters]);
 
   // Computed lists for teacher panel
   const uniqueStudentClasses = useMemo(() => {
@@ -2147,12 +2274,33 @@ export default function App() {
           (() => {
             // Filter chapters for curriculum view
             const filteredCurriculumChapters = chapters.filter(ch => {
+              const levelInfo = getChapterLevelGroup(ch);
               const matchesSearch = ch.title.toLowerCase().includes(curriculumSearchQuery.toLowerCase()) ||
                 ch.subject.toLowerCase().includes(curriculumSearchQuery.toLowerCase()) ||
-                (ch.chapterGroup || '').toLowerCase().includes(curriculumSearchQuery.toLowerCase());
+                (ch.chapterGroup || '').toLowerCase().includes(curriculumSearchQuery.toLowerCase()) ||
+                levelInfo.label.toLowerCase().includes(curriculumSearchQuery.toLowerCase());
               const matchesSubject = curriculumSubjectFilter === 'Wszystkie' || ch.subject === curriculumSubjectFilter;
-              return matchesSearch && matchesSubject;
+              const matchesLevel = curriculumLevelFilter === 'Wszystkie poziomy' || levelInfo.label === curriculumLevelFilter;
+
+              return matchesSearch && matchesSubject && matchesLevel;
             });
+
+            const groupedCurriculumByLevel = (() => {
+              const map = new Map<string, {
+                info: LevelGroupInfo;
+                chapters: Chapter[];
+              }>();
+
+              filteredCurriculumChapters.forEach(ch => {
+                const info = getChapterLevelGroup(ch);
+                if (!map.has(info.key)) {
+                  map.set(info.key, { info, chapters: [] });
+                }
+                map.get(info.key)!.chapters.push(ch);
+              });
+
+              return Array.from(map.values()).sort((a, b) => a.info.orderNum - b.info.orderNum);
+            })();
 
             return (
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
@@ -2519,13 +2667,13 @@ export default function App() {
                             type="text"
                             value={curriculumSearchQuery}
                             onChange={(e) => setCurriculumSearchQuery(e.target.value)}
-                            placeholder="Szukaj tematu po nazwie, dziale..."
+                            placeholder="Szukaj tematu po nazwie, dziale lub poziomie..."
                             className={`w-full pl-9 pr-4 py-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
                               isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
                             }`}
                           />
                         </div>
-                        <div className="w-full sm:w-48">
+                        <div className="w-full sm:w-44">
                           <select
                             value={curriculumSubjectFilter}
                             onChange={(e) => setCurriculumSubjectFilter(e.target.value)}
@@ -2539,111 +2687,255 @@ export default function App() {
                             ))}
                           </select>
                         </div>
+                        <div className="w-full sm:w-52">
+                          <select
+                            value={curriculumLevelFilter}
+                            onChange={(e) => setCurriculumLevelFilter(e.target.value)}
+                            className={`w-full p-2.5 rounded-lg border text-xs font-semibold focus:ring-2 focus:ring-amber-500/20 focus:outline-none ${
+                              isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          >
+                            <option value="Wszystkie poziomy">🎓 Wszystkie poziomy</option>
+                            {availableLevelLabels.map(lbl => (
+                              <option key={lbl} value={lbl}>{lbl}</option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
 
-                      {/* List of chapters/lessons with Assignment and Realization toggles */}
-                      <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1">
-                        {filteredCurriculumChapters.length === 0 ? (
-                          <div className="text-center italic text-slate-400 dark:text-slate-500 py-6 text-xs">
-                            Nie znaleziono tematów spełniających kryteria wyszukiwania.
+                      {/* Header bar for Level Groups */}
+                      <div className="flex items-center justify-between text-xs pt-1 px-1">
+                        <span className="font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                          <Layers className="w-4 h-4 text-amber-600" />
+                          <span>Podział na poziomy edukacyjne ({groupedCurriculumByLevel.length} {groupedCurriculumByLevel.length === 1 ? 'grupa' : 'grup'}):</span>
+                        </span>
+                        <div className="flex items-center gap-2 text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setCollapsedLevelGroups({})}
+                            className="text-amber-600 hover:underline font-bold cursor-pointer"
+                          >
+                            Rozwiń wszystkie
+                          </button>
+                          <span className="text-slate-300 dark:text-slate-700">•</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const allCollapsed: Record<string, boolean> = {};
+                              groupedCurriculumByLevel.forEach(g => { allCollapsed[g.info.key] = true; });
+                              setCollapsedLevelGroups(allCollapsed);
+                            }}
+                            className="text-slate-400 hover:underline font-medium cursor-pointer"
+                          >
+                            Zwiń wszystkie
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* List of Level Groups */}
+                      <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                        {groupedCurriculumByLevel.length === 0 ? (
+                          <div className="text-center italic text-slate-400 dark:text-slate-500 py-8 text-xs">
+                            Nie znaleziono tematów spełniających kryteria wyszukiwania lub wybranego poziomu.
                           </div>
                         ) : (
-                          filteredCurriculumChapters.map(ch => {
+                          groupedCurriculumByLevel.map(group => {
+                            const { info, chapters: levelChapters } = group;
+                            const isCollapsed = !!collapsedLevelGroups[info.key];
+
                             const assignedIds = classChapters[selectedTeacherClass] ?? [];
-                            const isAssigned = assignedIds.includes(ch.id);
-                            const realizationEntry = realizations.find(r => r.className === selectedTeacherClass && r.chapterId === ch.id);
-                            const isRealized = !!realizationEntry;
+                            const assignedInGroupCount = levelChapters.filter(ch => assignedIds.includes(ch.id)).length;
+                            const allGroupAssigned = levelChapters.length > 0 && assignedInGroupCount === levelChapters.length;
+
+                            // Check if selected teacher class matches this level group (e.g. class name has "4" and group label has "Klasa 4")
+                            const classMatchNumber = selectedTeacherClass.match(/\d+/)?.[0];
+                            const isClassMatch = !!classMatchNumber && (info.label.includes(`Klasa ${classMatchNumber}`) || info.key.includes(`grade-${classMatchNumber}`));
 
                             return (
-                              <div 
-                                key={ch.id} 
-                                className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
-                                  isAssigned 
-                                    ? isRealized 
-                                      ? 'bg-emerald-500/5 border-emerald-500/20' 
-                                      : isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200/80'
-                                    : 'bg-slate-100/40 dark:bg-slate-900/10 border-slate-200/40 dark:border-slate-800/40 opacity-75'
+                              <div
+                                key={info.key}
+                                className={`rounded-xl border transition-all overflow-hidden ${
+                                  isClassMatch
+                                    ? 'border-amber-500/60 shadow-xs'
+                                    : isDark ? 'border-slate-800 bg-slate-900/30' : 'border-slate-200/90 bg-white'
                                 }`}
                               >
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-1.5 flex-wrap">
-                                    <span className="px-1.5 py-0.5 rounded text-[8.5px] font-extrabold uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                      {ch.subject}
-                                    </span>
-                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[200px]">
-                                      📂 {ch.chapterGroup || 'Główny'}
-                                    </span>
-                                  </div>
-                                  <h4 className="font-bold text-xs text-slate-800 dark:text-slate-100 mt-1 truncate" title={ch.title}>
-                                    {ch.title}
-                                  </h4>
-                                </div>
-
-                                <div className="flex items-center gap-4 shrink-0">
-                                  {/* Lesson Actions (Edit & Delete) */}
-                                  <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-4">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setEditingChapter(ch);
-                                        setIsCreatorOpen(true);
-                                      }}
-                                      className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 dark:hover:text-emerald-400"
-                                      title="Edytuj lekcję"
-                                    >
-                                      <Edit className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={(e) => handleDeleteChapter(ch.id, e)}
-                                      className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-rose-600 hover:bg-rose-500/10 dark:hover:text-rose-400"
-                                      title="Usuń lekcję"
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </button>
+                                {/* Level Group Header */}
+                                <div
+                                  onClick={() => setCollapsedLevelGroups(prev => ({ ...prev, [info.key]: !isCollapsed }))}
+                                  className={`p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none transition-colors ${
+                                    isClassMatch
+                                      ? isDark ? 'bg-amber-950/20 hover:bg-amber-950/30' : 'bg-amber-50/60 hover:bg-amber-50'
+                                      : isDark ? 'bg-slate-900/60 hover:bg-slate-800/60' : 'bg-slate-50/80 hover:bg-slate-100/80'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="text-lg shrink-0">{info.icon}</span>
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <h4 className="font-extrabold text-xs sm:text-sm text-slate-800 dark:text-slate-100 tracking-tight">
+                                          {info.label}
+                                        </h4>
+                                        {isClassMatch && (
+                                          <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-500 text-white shadow-3xs flex items-center gap-1">
+                                            ⭐ Zalecany dla {selectedTeacherClass}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-2">
+                                        <span>Liczba tematów: <strong className="text-slate-700 dark:text-slate-300">{levelChapters.length}</strong></span>
+                                        <span>•</span>
+                                        <span>Przypisanych do {selectedTeacherClass || 'klasy'}: <strong className={assignedInGroupCount > 0 ? 'text-amber-600 dark:text-amber-400 font-extrabold' : 'text-slate-400'}>{assignedInGroupCount}/{levelChapters.length}</strong></span>
+                                      </div>
+                                    </div>
                                   </div>
 
-                                  {/* Toggle Assignment */}
-                                  <div className="flex items-center gap-1.5 border-r border-slate-200 dark:border-slate-800 pr-4">
-                                    <span className="text-[10.5px] font-semibold text-slate-400">Przypisany:</span>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleToggleChapterAssignment(selectedTeacherClass, ch.id)}
-                                      className={`p-1 rounded-lg cursor-pointer transition-colors ${
-                                        isAssigned 
-                                          ? 'text-amber-600 bg-amber-500/10' 
-                                          : 'text-slate-400 bg-slate-100 dark:bg-slate-800'
-                                      }`}
-                                      title={isAssigned ? "Usuń przypisanie tego tematu" : "Przypisz ten temat do klasy"}
-                                    >
-                                      {isAssigned ? (
-                                        <CheckSquare className="w-5 h-5" />
-                                      ) : (
-                                        <Square className="w-5 h-5" />
-                                      )}
-                                    </button>
-                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center" onClick={(e) => e.stopPropagation()}>
+                                    {/* Group assign buttons */}
+                                    {selectedTeacherClass && (
+                                      <>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleAssignLevelGroup(selectedTeacherClass, levelChapters.map(c => c.id))}
+                                          disabled={allGroupAssigned}
+                                          className={`px-2.5 py-1 text-[10px] font-extrabold rounded-lg cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                                            allGroupAssigned
+                                              ? 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                                              : getPrimaryBtnClass()
+                                          }`}
+                                          title={`Przypisz wszystkie ${levelChapters.length} tematów z poziomu ${info.label} do klasy ${selectedTeacherClass}`}
+                                        >
+                                          + Przypisz poziom ({levelChapters.length})
+                                        </button>
+                                        {assignedInGroupCount > 0 && (
+                                          <button
+                                            type="button"
+                                            onClick={() => handleUnassignLevelGroup(selectedTeacherClass, levelChapters.map(c => c.id))}
+                                            className={`px-2 py-1 text-[10px] font-extrabold rounded-lg cursor-pointer transition-all ${getDangerBtnClass()}`}
+                                            title={`Odznacz tematy tego poziomu z klasy ${selectedTeacherClass}`}
+                                          >
+                                            - Odznacz poziom
+                                          </button>
+                                        )}
+                                      </>
+                                    )}
 
-                                  {/* Toggle Realization (Enabled only if assigned) */}
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-[10.5px] font-semibold text-slate-400">Status:</span>
                                     <button
                                       type="button"
-                                      disabled={!isAssigned}
-                                      onClick={() => handleToggleRealizationInClass(selectedTeacherClass, ch.id)}
-                                      className={`px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all ${
-                                        !isAssigned
-                                          ? 'bg-slate-100/50 dark:bg-slate-900/10 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                                          : isRealized
-                                            ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/20'
-                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer'
-                                      }`}
-                                      title={!isAssigned ? "Przypisz temat, aby móc oznaczyć go jako zrealizowany" : isRealized ? "Cofnij realizację lekcji" : "Oznacz temat jako zrealizowany"}
+                                      onClick={() => setCollapsedLevelGroups(prev => ({ ...prev, [info.key]: !isCollapsed }))}
+                                      className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                                     >
-                                      {isRealized ? 'Zrealizowany ✓' : 'Planowany ○'}
+                                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-180'}`} />
                                     </button>
                                   </div>
                                 </div>
+
+                                {/* Group Chapters List */}
+                                {!isCollapsed && (
+                                  <div className="p-3 space-y-2 border-t border-slate-200/60 dark:border-slate-800/80 bg-slate-50/30 dark:bg-slate-950/20">
+                                    {levelChapters.map(ch => {
+                                      const isAssigned = assignedIds.includes(ch.id);
+                                      const realizationEntry = realizations.find(r => r.className === selectedTeacherClass && r.chapterId === ch.id);
+                                      const isRealized = !!realizationEntry;
+
+                                      return (
+                                        <div
+                                          key={ch.id}
+                                          className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all ${
+                                            isAssigned
+                                              ? isRealized
+                                                ? 'bg-emerald-500/5 border-emerald-500/20'
+                                                : isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-white border-slate-200'
+                                              : 'bg-slate-100/40 dark:bg-slate-900/10 border-slate-200/40 dark:border-slate-800/40 opacity-75'
+                                          }`}
+                                        >
+                                          <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                              <span className="px-2 py-0.5 rounded text-[9px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                🎯 {info.badge}
+                                              </span>
+                                              <span className="px-1.5 py-0.5 rounded text-[8.5px] font-extrabold uppercase bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                                {ch.subject}
+                                              </span>
+                                              <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[200px]">
+                                                📂 {ch.chapterGroup || 'Główny'}
+                                              </span>
+                                            </div>
+                                            <h4 className="font-bold text-xs text-slate-800 dark:text-slate-100 mt-1 truncate" title={ch.title}>
+                                              {ch.title}
+                                            </h4>
+                                          </div>
+
+                                          <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                            {/* Lesson Actions (Edit & Delete) */}
+                                            <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-3">
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  setEditingChapter(ch);
+                                                  setIsCreatorOpen(true);
+                                                }}
+                                                className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 dark:hover:text-emerald-400"
+                                                title="Edytuj lekcję"
+                                              >
+                                                <Edit className="w-3.5 h-3.5" />
+                                              </button>
+                                              <button
+                                                type="button"
+                                                onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                                className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-rose-600 hover:bg-rose-500/10 dark:hover:text-rose-400"
+                                                title="Usuń lekcję"
+                                              >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                              </button>
+                                            </div>
+
+                                            {/* Toggle Assignment */}
+                                            <div className="flex items-center gap-1.5 border-r border-slate-200 dark:border-slate-800 pr-3">
+                                              <span className="text-[10.5px] font-semibold text-slate-400">Przypisany:</span>
+                                              <button
+                                                type="button"
+                                                onClick={() => handleToggleChapterAssignment(selectedTeacherClass, ch.id)}
+                                                className={`p-1 rounded-lg cursor-pointer transition-colors ${
+                                                  isAssigned
+                                                    ? 'text-amber-600 bg-amber-500/10'
+                                                    : 'text-slate-400 bg-slate-100 dark:bg-slate-800'
+                                                }`}
+                                                title={isAssigned ? "Usuń przypisanie tego tematu" : "Przypisz ten temat do klasy"}
+                                              >
+                                                {isAssigned ? (
+                                                  <CheckSquare className="w-5 h-5" />
+                                                ) : (
+                                                  <Square className="w-5 h-5" />
+                                                )}
+                                              </button>
+                                            </div>
+
+                                            {/* Toggle Realization (Enabled only if assigned) */}
+                                            <div className="flex items-center gap-2">
+                                              <span className="text-[10.5px] font-semibold text-slate-400">Status:</span>
+                                              <button
+                                                type="button"
+                                                disabled={!isAssigned}
+                                                onClick={() => handleToggleRealizationInClass(selectedTeacherClass, ch.id)}
+                                                className={`px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all ${
+                                                  !isAssigned
+                                                    ? 'bg-slate-100/50 dark:bg-slate-900/10 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                                                    : isRealized
+                                                      ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/20'
+                                                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer'
+                                                }`}
+                                                title={!isAssigned ? "Przypisz temat, aby móc oznaczyć go jako zrealizowany" : isRealized ? "Cofnij realizację lekcji" : "Oznacz temat jako zrealizowany"}
+                                              >
+                                                {isRealized ? 'Zrealizowany ✓' : 'Planowany ○'}
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
                               </div>
                             );
                           })
