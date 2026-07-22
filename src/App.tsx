@@ -16,6 +16,7 @@ import {
   Edit, 
   ChevronRight, 
   ChevronLeft, 
+  ChevronDown,
   CheckSquare, 
   Square, 
   FileText, 
@@ -46,7 +47,11 @@ import {
   Heading,
   Users,
   GraduationCap,
-  Calendar
+  Calendar,
+  BarChart2,
+  PieChart as PieChartIcon,
+  TrendingUp,
+  CheckCircle2
 } from 'lucide-react';
 import {
   BarChart,
@@ -55,7 +60,10 @@ import {
   YAxis,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
-  Cell
+  Cell,
+  PieChart,
+  Pie,
+  Legend
 } from 'recharts';
 import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
@@ -1185,7 +1193,7 @@ export default function App() {
     localStorage.setItem('multibook_class_chapters', JSON.stringify(classChapters));
   }, [classChapters]);
 
-  const [teacherActiveSubTab, setTeacherActiveSubTab] = useState<'students' | 'curriculum'>('students');
+  const [teacherActiveSubTab, setTeacherActiveSubTab] = useState<'students' | 'curriculum' | 'stats'>('students');
   const [selectedTeacherClass, setSelectedTeacherClass] = useState<string>('');
   const [curriculumSearchQuery, setCurriculumSearchQuery] = useState('');
   const [curriculumSubjectFilter, setCurriculumSubjectFilter] = useState('Wszystkie');
@@ -1673,10 +1681,10 @@ export default function App() {
         </div>
 
         {/* Navigation sub-tabs within Teacher Panel */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 overflow-x-auto">
           <button
             onClick={() => setTeacherActiveSubTab('students')}
-            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               teacherActiveSubTab === 'students'
                 ? 'border-amber-600 text-amber-600 dark:text-amber-400'
                 : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
@@ -1692,7 +1700,7 @@ export default function App() {
                 setSelectedTeacherClass(teacherClasses[0]);
               }
             }}
-            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               teacherActiveSubTab === 'curriculum'
                 ? 'border-amber-600 text-amber-600 dark:text-amber-400'
                 : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
@@ -1700,6 +1708,18 @@ export default function App() {
           >
             <GraduationCap className="w-4 h-4" />
             <span>Klasy i Programy nauczania 🏫</span>
+          </button>
+          <button
+            id="teacher-subtab-stats"
+            onClick={() => setTeacherActiveSubTab('stats')}
+            className={`px-3 py-2 text-xs font-black border-b-2 transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              teacherActiveSubTab === 'stats'
+                ? 'border-amber-600 text-amber-600 dark:text-amber-400'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+            }`}
+          >
+            <BarChart2 className="w-4 h-4" />
+            <span>Statystyki 📊</span>
           </button>
         </div>
 
@@ -2123,7 +2143,7 @@ export default function App() {
 
         </div>
         </>
-        ) : (
+        ) : teacherActiveSubTab === 'curriculum' ? (
           (() => {
             // Filter chapters for curriculum view
             const filteredCurriculumChapters = chapters.filter(ch => {
@@ -2635,6 +2655,349 @@ export default function App() {
               </div>
             );
           })()
+        ) : (
+          (() => {
+            // Statystyki view
+            const isDark = theme === 'dark';
+
+            // Calculate statistics for every class
+            const classStatsList = teacherClasses.map((cls) => {
+              const assigned = classChapters[cls] ?? chapters.map(c => c.id);
+              const totalAssigned = assigned.length;
+              const classRealizations = realizations.filter(r => r.className === cls && assigned.includes(r.chapterId));
+              const uniqueRealizedCount = new Set(classRealizations.map(r => r.chapterId)).size;
+              const programCompletionPct = totalAssigned > 0 ? Math.round((uniqueRealizedCount / totalAssigned) * 100) : 0;
+
+              const classStudents = students.filter(s => s.className === cls);
+              const avgStudentProgressPct = classStudents.length > 0
+                ? Math.round(classStudents.reduce((acc, s) => acc + (chapters.length > 0 ? (s.completedChapters.length / chapters.length) * 100 : 0), 0) / classStudents.length)
+                : 0;
+
+              return {
+                className: cls,
+                programCompletionPct,
+                avgStudentProgressPct,
+                uniqueRealizedCount,
+                totalAssigned,
+                studentCount: classStudents.length,
+              };
+            });
+
+            // Sort classes alphabetically
+            const sortedClassStats = [...classStatsList].sort((a, b) => 
+              a.className.localeCompare(b.className, 'pl', { numeric: true, sensitivity: 'base' })
+            );
+
+            // Summary metrics
+            const totalTeacherClassesCount = teacherClasses.length;
+            const totalAssignedTopicsAll = sortedClassStats.reduce((acc, c) => acc + c.totalAssigned, 0);
+            const totalRealizedTopicsAll = sortedClassStats.reduce((acc, c) => acc + c.uniqueRealizedCount, 0);
+            const overallAveragePct = sortedClassStats.length > 0
+              ? Math.round(sortedClassStats.reduce((acc, c) => acc + c.programCompletionPct, 0) / sortedClassStats.length)
+              : 0;
+
+            const topPerformingClass = [...sortedClassStats].sort((a, b) => b.programCompletionPct - a.programCompletionPct)[0];
+
+            // Recharts Bar Chart Data
+            const barChartData = sortedClassStats.map((c) => ({
+              name: c.className,
+              'Średni stopień realizacji (%)': c.programCompletionPct,
+              'Postęp uczniów (%)': c.avgStudentProgressPct,
+              realized: c.uniqueRealizedCount,
+              total: c.totalAssigned,
+              students: c.studentCount
+            }));
+
+            // Recharts Pie Chart Data (Categorized by progress level)
+            const highProgress = sortedClassStats.filter(c => c.programCompletionPct >= 70).length;
+            const midProgress = sortedClassStats.filter(c => c.programCompletionPct >= 30 && c.programCompletionPct < 70).length;
+            const lowProgress = sortedClassStats.filter(c => c.programCompletionPct < 30).length;
+
+            const pieChartBucketData = [
+              { name: 'Zaawansowane (≥70%)', value: highProgress, color: '#10b981' },
+              { name: 'Średnio zaawansowane (30-69%)', value: midProgress, color: '#f59e0b' },
+              { name: 'Początkowe (<30%)', value: lowProgress, color: '#6366f1' },
+            ].filter(item => item.value > 0);
+
+            return (
+              <div id="teacher-stats-view-container" className="space-y-6 animate-in fade-in duration-200">
+                {/* KPI Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className={`p-4 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Średnia realizacja programu</span>
+                      <TrendingUp className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+                      {overallAveragePct}%
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Średnia dla wszystkich {totalTeacherClassesCount} klas</p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Lider realizacji</span>
+                      <Award className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-xl font-black text-amber-600 dark:text-amber-400 mt-1 truncate">
+                      {topPerformingClass ? topPerformingClass.className : 'Brak klas'}
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">
+                      {topPerformingClass ? `${topPerformingClass.programCompletionPct}% zrealizowanego programu` : 'Brak danych'}
+                    </p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Zrealizowane tematy</span>
+                      <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div className="text-2xl font-black text-blue-600 dark:text-blue-400 mt-1">
+                      {totalRealizedTopicsAll} <span className="text-xs font-normal text-slate-400">/ {totalAssignedTopicsAll}</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Suma zrealizowanych zajęć w klasach</p>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200/60'} shadow-3xs`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Aktywne klasy i uczniowie</span>
+                      <Users className="w-4 h-4 text-purple-500" />
+                    </div>
+                    <div className="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">
+                      {totalTeacherClassesCount} <span className="text-xs font-normal text-slate-400">klas ({students.length} uczniów)</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Baza w dzienniku nauczyciela</p>
+                  </div>
+                </div>
+
+                {/* Charts Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Bar Chart (col-span-7) */}
+                  <div className={`lg:col-span-7 p-5 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs space-y-3`}>
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <div>
+                        <h3 className="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                          <BarChart2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Średni stopień realizacji programu nauczania w klasach (%)</span>
+                        </h3>
+                        <p className="text-[11px] text-slate-400 font-medium">
+                          Porównanie procentowego poziomu realizacji materiału w poszczególnych klasach
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="w-full h-72 pt-2">
+                      {sortedClassStats.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={barChartData}
+                            margin={{ top: 15, right: 15, left: -20, bottom: 25 }}
+                          >
+                            <XAxis
+                              dataKey="name"
+                              stroke={isDark ? '#94a3b8' : '#64748b'}
+                              fontSize={10}
+                              tickLine={false}
+                              axisLine={false}
+                              angle={-20}
+                              textAnchor="end"
+                              interval={0}
+                            />
+                            <YAxis
+                              stroke={isDark ? '#94a3b8' : '#64748b'}
+                              fontSize={10}
+                              tickLine={false}
+                              axisLine={false}
+                              unit="%"
+                              domain={[0, 100]}
+                            />
+                            <RechartsTooltip
+                              cursor={{ fill: isDark ? 'rgba(16, 185, 129, 0.08)' : 'rgba(16, 185, 129, 0.05)' }}
+                              content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                  const d = payload[0].payload;
+                                  return (
+                                    <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 text-white text-xs p-3 rounded-xl shadow-xl space-y-1 font-sans min-w-[180px]">
+                                      <p className="font-extrabold text-amber-400 border-b border-slate-800 pb-1 flex items-center justify-between">
+                                        <span>{d.name}</span>
+                                        <span>{d['Średni stopień realizacji (%)']}%</span>
+                                      </p>
+                                      <p className="text-slate-300 font-medium pt-0.5">
+                                        Zrealizowano: <span className="font-mono font-bold text-emerald-400">{d.realized}</span> / {d.total} tematów
+                                      </p>
+                                      <p className="text-slate-400 text-[10.5px]">
+                                        Uczniowie w klasie: <span className="font-bold text-slate-200">{d.students}</span> (śr. postęp: {d['Postęp uczniów (%)']}%)
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }}
+                            />
+                            <Bar
+                              dataKey="Średni stopień realizacji (%)"
+                              radius={[6, 6, 0, 0]}
+                              maxBarSize={38}
+                            >
+                              {barChartData.map((entry, index) => {
+                                const val = entry['Średni stopień realizacji (%)'];
+                                const fillColor = val >= 70 ? '#10b981' : val >= 30 ? '#f59e0b' : '#3b82f6';
+                                return <Cell key={`cell-${index}`} fill={fillColor} />;
+                              })}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="h-full flex items-center justify-center text-xs text-slate-400 italic">
+                          Brak klas do wyświetlenia statystyk.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Pie Chart (col-span-5) */}
+                  <div className={`lg:col-span-5 p-5 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs space-y-3 flex flex-col justify-between`}>
+                    <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <h3 className="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <PieChartIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        <span>Rozkład zaawansowania klas</span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        Struktura klas według progu zrealizowania materiału
+                      </p>
+                    </div>
+
+                    <div className="w-full h-64">
+                      {pieChartBucketData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={pieChartBucketData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={50}
+                              outerRadius={80}
+                              paddingAngle={4}
+                              dataKey="value"
+                            >
+                              {pieChartBucketData.map((entry, index) => (
+                                <Cell key={`pie-cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <RechartsTooltip
+                              content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                  const data = payload[0].payload;
+                                  return (
+                                    <div className="bg-slate-900 border border-slate-700 text-white text-xs p-2.5 rounded-xl shadow-lg">
+                                      <p className="font-bold">{data.name}</p>
+                                      <p className="text-emerald-400 font-mono font-extrabold">{data.value} {data.value === 1 ? 'klasa' : 'klasy'}</p>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              }}
+                            />
+                            <Legend 
+                              verticalAlign="bottom" 
+                              height={36} 
+                              iconType="circle"
+                              wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="h-full flex items-center justify-center text-xs text-slate-400 italic">
+                          Brak danych do wykresu kołowego.
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200/50 dark:border-amber-900/30 text-[10.5px] text-amber-900 dark:text-amber-200">
+                      💡 <strong>Podsumowanie:</strong> Stopień realizacji wyliczany jest automatycznie na podstawie odznaczonych tematów lekcji przypisanych do danej klasy.
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed Table / Breakdown List per Class */}
+                <div className={`p-5 rounded-2xl border ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200'} shadow-3xs space-y-4`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div>
+                      <h3 className="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <span>Zestawienie szczegółowe dla każdej klasy 📋</span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        Pełna lista klas z wyliczonym stopniem realizacji i stanem uczniów
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {sortedClassStats.map((item) => {
+                      return (
+                        <div
+                          key={item.className}
+                          className={`p-4 rounded-xl border transition-all ${
+                            isDark ? 'bg-slate-950/40 border-slate-800 hover:border-slate-700' : 'bg-slate-50/80 hover:bg-slate-100/80 border-slate-200/70'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <div className="font-extrabold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-1.5 truncate">
+                              <span>🏫</span>
+                              <span className="truncate">{item.className}</span>
+                            </div>
+                            <span className={`text-[10px] font-extrabold font-mono px-2 py-0.5 rounded-full ${
+                              item.programCompletionPct >= 70
+                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                                : item.programCompletionPct >= 30
+                                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                                : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30'
+                            }`}>
+                              {item.programCompletionPct}%
+                            </span>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="space-y-1 my-2.5">
+                            <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-300 ${
+                                  item.programCompletionPct >= 70
+                                    ? 'bg-emerald-500'
+                                    : item.programCompletionPct >= 30
+                                    ? 'bg-amber-500'
+                                    : 'bg-blue-500'
+                                }`}
+                                style={{ width: `${item.programCompletionPct}%` }}
+                              />
+                            </div>
+                            <div className="flex justify-between text-[9.5px] text-slate-400 font-medium">
+                              <span>Zrealizowano: <strong>{item.uniqueRealizedCount}</strong> / {item.totalAssigned} tematów</span>
+                              <span>{item.programCompletionPct}%</span>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between text-[10.5px] text-slate-500 dark:text-slate-400">
+                            <span>👥 Uczniowie: <strong>{item.studentCount}</strong> (śr. postęp {item.avgStudentProgressPct}%)</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedTeacherClass(item.className);
+                                setTeacherActiveSubTab('curriculum');
+                              }}
+                              className="text-amber-600 dark:text-amber-400 hover:underline font-bold text-[10px] cursor-pointer"
+                            >
+                              Program klasy →
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })()
         )}
       </div>
     );
@@ -2676,6 +3039,23 @@ export default function App() {
     });
   }, [chapters, searchQuery, selectedSubject, selectedSchoolType, selectedGrade]);
 
+  // Collapsible state for Table of Contents hierarchy (School Types, Grades, Chapter Groups)
+  const [collapsedSchoolTypes, setCollapsedSchoolTypes] = useState<Record<string, boolean>>({});
+  const [collapsedGrades, setCollapsedGrades] = useState<Record<string, boolean>>({});
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleSchoolTypeCollapse = (sType: string) => {
+    setCollapsedSchoolTypes((prev) => ({ ...prev, [sType]: !prev[sType] }));
+  };
+
+  const toggleGradeCollapse = (key: string) => {
+    setCollapsedGrades((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const toggleGroupCollapse = (key: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   // Group chapters hierarchically for structured navigation
   const groupedChapters = useMemo(() => {
     const groups: Record<string, Record<string, Record<string, Chapter[]>>> = {};
@@ -2694,6 +3074,47 @@ export default function App() {
 
     return groups;
   }, [filteredChapters]);
+
+  const handleCollapseAll = () => {
+    const newSchoolTypes: Record<string, boolean> = {};
+    const newGrades: Record<string, boolean> = {};
+    const newGroups: Record<string, boolean> = {};
+
+    Object.entries(groupedChapters).forEach(([sType, sGrades]) => {
+      Object.entries(sGrades).forEach(([sGrade, sGroups]) => {
+        const gradeKey = `${sType}__${sGrade}`;
+        newGrades[gradeKey] = true;
+        Object.keys(sGroups).forEach((sGroup) => {
+          const groupKey = `${sType}__${sGrade}__${sGroup}`;
+          newGroups[groupKey] = true;
+        });
+      });
+    });
+
+    setCollapsedGrades(newGrades);
+    setCollapsedGroups(newGroups);
+  };
+
+  const handleExpandAll = () => {
+    setCollapsedSchoolTypes({});
+    setCollapsedGrades({});
+    setCollapsedGroups({});
+  };
+
+  // Auto-expand sections containing the active chapter
+  useEffect(() => {
+    if (activeChapter) {
+      const sType = activeChapter.schoolType || 'Ogólny / Pozostałe';
+      const sGrade = activeChapter.grade || 'Ogólny';
+      const sGroup = activeChapter.chapterGroup || 'Inne działy';
+      const gradeKey = `${sType}__${sGrade}`;
+      const groupKey = `${sType}__${sGrade}__${sGroup}`;
+
+      setCollapsedSchoolTypes((prev) => prev[sType] ? { ...prev, [sType]: false } : prev);
+      setCollapsedGrades((prev) => prev[gradeKey] ? { ...prev, [gradeKey]: false } : prev);
+      setCollapsedGroups((prev) => prev[groupKey] ? { ...prev, [groupKey]: false } : prev);
+    }
+  }, [activeChapter?.id]);
 
   // 7. Interactive Board / Whiteboard Overlay State
   const [isDrawingModeActive, setIsDrawingModeActive] = useState(false);
@@ -3729,107 +4150,217 @@ export default function App() {
             </div>
           </div>
 
-          {/* Chapters listing list block (Hierarchical Tree View) */}
-          <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+          {/* Chapters listing list block (Hierarchical Collapsible Tree View) */}
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            {/* Quick Expand / Collapse Controls for Table of Contents */}
+            <div className="flex items-center justify-between pt-0.5 pb-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 border-b border-slate-200/40 dark:border-slate-800/40">
+              <span className="uppercase tracking-wider text-[9px]">Program lekcji</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  id="collapse-all-toc-btn"
+                  onClick={handleCollapseAll}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors cursor-pointer px-1 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                  title="Zwiń wszystkie działy i klasy"
+                >
+                  Zwiń wsz.
+                </button>
+                <span>|</span>
+                <button
+                  type="button"
+                  id="expand-all-toc-btn"
+                  onClick={handleExpandAll}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors cursor-pointer px-1 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+                  title="Rozwiń wszystkie działy i klasy"
+                >
+                  Rozwiń wsz.
+                </button>
+              </div>
+            </div>
+
             {filteredChapters.length > 0 ? (
-              Object.entries(groupedChapters).map(([sType, sGrades]) => (
-                <div key={sType} className="space-y-2 border-b border-slate-100 dark:border-slate-800/30 pb-3 last:border-0 last:pb-0">
-                  {/* School Type Header Banner */}
-                  <div className={`flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg ${activeThemeConfig.tabGroupBg} ${activeThemeConfig.studentNotesLabel}`}>
-                    <span>🏫</span>
-                    <span className="truncate">{sType}</span>
-                  </div>
+              Object.entries(groupedChapters).map(([sType, sGrades]) => {
+                const isTypeCollapsed = !searchQuery && !!collapsedSchoolTypes[sType];
+                const totalLessonsInType = Object.values(sGrades).reduce((acc, groups) => 
+                  acc + Object.values(groups).reduce((gAcc, list) => gAcc + list.length, 0), 0
+                );
+                const hasActiveInType = Object.values(sGrades).some((groups) => 
+                  Object.values(groups).some((list) => list.some((ch) => ch.id === activeChapter?.id))
+                );
 
-                  <div className="space-y-3 pl-1">
-                    {Object.entries(sGrades).map(([sGrade, sGroups]) => (
-                      <div key={sGrade} className="space-y-2 PL_GRADE pl-1.5">
-                        {/* Class/Grade Label Pill */}
-                        <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full w-max">
-                          <span>🎓</span>
-                          <span>{sGrade}</span>
-                        </div>
-
-                        <div className="space-y-2.5 pl-2">
-                          {Object.entries(sGroups).map(([sGroup, chaptersListInGroup]) => (
-                            <div key={sGroup} className="space-y-1">
-                              {/* Chapter Group Section header (Dział nadrzędny) */}
-                              <div className="flex items-center gap-1 text-[9px] font-semibold text-slate-500 dark:text-slate-400 py-0.5 uppercase tracking-wide">
-                                <span className="text-emerald-600">📂 Rozdział:</span>
-                                <span className="truncate">{sGroup}</span>
-                              </div>
-
-                              {/* Lesson list under this group */}
-                              <div className="space-y-1 pl-1 ml-1 border-l border-emerald-600/10 dark:border-emerald-500/10">
-                                {chaptersListInGroup.map((ch) => {
-                                  const isCurrent = ch.id === activeChapter?.id;
-                                  const isCompleted = progress.completedChapters.includes(ch.id);
-                                  const isBookmarked = progress.bookmarkedChapters.includes(ch.id);
-                                  const hasNotes = !!progress.chapterNotes[ch.id];
-
-                                  return (
-                                    <div
-                                      key={ch.id}
-                                      id={`chapter-card-${ch.id}`}
-                                      onClick={() => {
-                                        setCurrentChapterId(ch.id);
-                                        setIsMobileSidebarOpen(false);
-                                        setIsDrawingModeActive(false); // clear drawing overlays for fresh chapters
-                                      }}
-                                      className={`p-2.5 rounded-xl border transition-all cursor-pointer group flex flex-col gap-1 ${
-                                        isCurrent
-                                          ? `${getSubjectThemeColors(ch.subject, theme).activeChapterCard} font-bold`
-                                          : `${activeThemeConfig.chapterCardInactive}`
-                                      }`}
-                                    >
-                                      <div className="flex items-start justify-between gap-1.5">
-                                        <span className="text-xs font-semibold leading-snug text-current transition-colors">
-                                          {ch.title}
-                                        </span>
-                                        <div className="flex items-center gap-1 shrink-0">
-                                          {isBookmarked && (
-                                            <span className="text-amber-500 text-[10px]" title="Zakładka">
-                                              ★
-                                            </span>
-                                          )}
-                                          {isCompleted ? (
-                                            <span className="text-emerald-500 font-bold text-[11px]" title="Ukończona lekcja">✓</span>
-                                          ) : (
-                                            <span className="text-slate-300 dark:text-slate-700 text-[10px]">○</span>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      <div className="flex flex-wrap items-center justify-between gap-1 mt-0.5 text-[9px] text-slate-400 dark:text-slate-500 font-sans">
-                                        <span className={`p-0.5 px-1.5 rounded text-[8px] font-extrabold ${getSubjectThemeColors(ch.subject, theme).bgLight}`}>
-                                          {ch.subject}
-                                        </span>
-                                        <div className="flex items-center gap-1.5">
-                                          <span>⏱️ {ch.estimatedReadTime} min</span>
-                                          {hasNotes && <span title="Posiada notatki">📝</span>}
-                                          
-                                          {/* Option to delete any chapter */}
-                                          <button
-                                            id={`delete-chapter-btn-${ch.id}`}
-                                            onClick={(e) => handleDeleteChapter(ch.id, e)}
-                                            className="text-rose-400 hover:text-rose-600 dark:text-rose-500 dark:hover:text-rose-400 opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
-                                            title="Usuń tę lekcję"
-                                          >
-                                            <Trash2 className="w-3 h-3" />
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                return (
+                  <div key={sType} className="space-y-2 border-b border-slate-100 dark:border-slate-800/30 pb-3 last:border-0 last:pb-0">
+                    {/* School Type Header Banner (Clickable Toggle) */}
+                    <button
+                      type="button"
+                      id={`toggle-schooltype-${sType.replace(/\s+/g, '-').toLowerCase()}`}
+                      onClick={() => toggleSchoolTypeCollapse(sType)}
+                      className={`w-full flex items-center justify-between gap-1.5 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${activeThemeConfig.tabGroupBg} ${activeThemeConfig.studentNotesLabel} hover:opacity-90`}
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span>🏫</span>
+                        <span className="truncate">{sType}</span>
+                        <span className="text-[9px] font-semibold opacity-70">({totalLessonsInType})</span>
+                        {hasActiveInType && isTypeCollapsed && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" title="Zawiera aktywną lekcję" />
+                        )}
                       </div>
-                    ))}
+                      <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isTypeCollapsed ? '-rotate-90' : ''}`} />
+                    </button>
+
+                    {!isTypeCollapsed && (
+                      <div className="space-y-2.5 pl-1">
+                        {Object.entries(sGrades)
+                          .sort(([aGrade], [bGrade]) => aGrade.localeCompare(bGrade, 'pl', { numeric: true, sensitivity: 'base' }))
+                          .map(([sGrade, sGroups]) => {
+                          const gradeKey = `${sType}__${sGrade}`;
+                          const isGradeCollapsed = !searchQuery && !!collapsedGrades[gradeKey];
+                          const totalLessonsInGrade = Object.values(sGroups).reduce((acc, list) => acc + list.length, 0);
+                          const completedLessonsInGrade = Object.values(sGroups).reduce((acc, list) => 
+                            acc + list.filter((ch) => progress.completedChapters.includes(ch.id)).length, 0
+                          );
+                          const hasActiveInGrade = Object.values(sGroups).some((list) => list.some((ch) => ch.id === activeChapter?.id));
+
+                          return (
+                            <div key={sGrade} className="space-y-1.5 PL_GRADE pl-1">
+                              {/* Class/Grade Label Pill (Clickable Toggle with (X/Y) Progress Counter) */}
+                              <button
+                                type="button"
+                                id={`toggle-grade-${gradeKey.replace(/\s+/g, '-').toLowerCase()}`}
+                                onClick={() => toggleGradeCollapse(gradeKey)}
+                                className={`flex items-center gap-1.5 text-[9.5px] font-bold px-2.5 py-1 rounded-lg w-full justify-between transition-all cursor-pointer ${
+                                  hasActiveInGrade
+                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 ring-1 ring-emerald-500/30'
+                                    : 'bg-emerald-50/80 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/40'
+                                }`}
+                              >
+                                <div className="flex items-center gap-1.5 truncate">
+                                  <span>🎓</span>
+                                  <span className="font-extrabold">{sGrade}</span>
+                                  <span 
+                                    className={`text-[8.5px] font-mono font-extrabold px-1.5 py-0.2 rounded-md ${
+                                      completedLessonsInGrade === totalLessonsInGrade && totalLessonsInGrade > 0
+                                        ? 'bg-emerald-500 text-white dark:bg-emerald-600'
+                                        : 'bg-emerald-200/60 dark:bg-emerald-900/60 text-emerald-950 dark:text-emerald-200'
+                                    }`}
+                                    title={`${completedLessonsInGrade} z ${totalLessonsInGrade} tematów zrealizowanych`}
+                                  >
+                                    ({completedLessonsInGrade}/{totalLessonsInGrade})
+                                  </span>
+                                  {hasActiveInGrade && isGradeCollapsed && (
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-0.5" title="Zawiera aktywną lekcję" />
+                                  )}
+                                </div>
+                                <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-200 ${isGradeCollapsed ? '-rotate-90' : ''}`} />
+                              </button>
+
+                              {!isGradeCollapsed && (
+                                <div className="space-y-2 pl-1.5">
+                                  {Object.entries(sGroups).map(([sGroup, chaptersListInGroup]) => {
+                                    const groupKey = `${sType}__${sGrade}__${sGroup}`;
+                                    const isGroupCollapsed = !searchQuery && !!collapsedGroups[groupKey];
+                                    const hasActiveInGroup = chaptersListInGroup.some((ch) => ch.id === activeChapter?.id);
+
+                                    return (
+                                      <div key={sGroup} className="space-y-1">
+                                        {/* Chapter Group Section header (Clickable Toggle) */}
+                                        <button
+                                          type="button"
+                                          id={`toggle-group-${groupKey.replace(/\s+/g, '-').toLowerCase()}`}
+                                          onClick={() => toggleGroupCollapse(groupKey)}
+                                          className={`w-full flex items-center justify-between gap-1 text-[9px] font-semibold py-0.5 px-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer ${
+                                            hasActiveInGroup ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-slate-600 dark:text-slate-400'
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-1 truncate">
+                                            <span className="text-emerald-600 dark:text-emerald-400 text-[10px]">📂</span>
+                                            <span className="truncate">{sGroup}</span>
+                                            <span className="text-[8px] opacity-70 font-mono">({chaptersListInGroup.length})</span>
+                                            {hasActiveInGroup && isGroupCollapsed && (
+                                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-0.5" title="Zawiera aktywną lekcję" />
+                                            )}
+                                          </div>
+                                          <ChevronDown className={`w-3 h-3 shrink-0 text-slate-400 transition-transform duration-200 ${isGroupCollapsed ? '-rotate-90' : ''}`} />
+                                        </button>
+
+                                        {!isGroupCollapsed && (
+                                          <div className="space-y-1 pl-1 ml-1 border-l border-emerald-600/10 dark:border-emerald-500/10">
+                                            {chaptersListInGroup.map((ch) => {
+                                              const isCurrent = ch.id === activeChapter?.id;
+                                              const isCompleted = progress.completedChapters.includes(ch.id);
+                                              const isBookmarked = progress.bookmarkedChapters.includes(ch.id);
+                                              const hasNotes = !!progress.chapterNotes[ch.id];
+
+                                              return (
+                                                <div
+                                                  key={ch.id}
+                                                  id={`chapter-card-${ch.id}`}
+                                                  onClick={() => {
+                                                    setCurrentChapterId(ch.id);
+                                                    setIsMobileSidebarOpen(false);
+                                                    setIsDrawingModeActive(false); // clear drawing overlays for fresh chapters
+                                                  }}
+                                                  className={`p-2 rounded-xl border transition-all cursor-pointer group flex flex-col gap-1 ${
+                                                    isCurrent
+                                                      ? `${getSubjectThemeColors(ch.subject, theme).activeChapterCard} font-bold`
+                                                      : `${activeThemeConfig.chapterCardInactive}`
+                                                  }`}
+                                                >
+                                                  <div className="flex items-start justify-between gap-1.5">
+                                                    <span className="text-xs font-semibold leading-snug text-current transition-colors">
+                                                      {ch.title}
+                                                    </span>
+                                                    <div className="flex items-center gap-1 shrink-0">
+                                                      {isBookmarked && (
+                                                        <span className="text-amber-500 text-[10px]" title="Zakładka">
+                                                          ★
+                                                        </span>
+                                                      )}
+                                                      {isCompleted ? (
+                                                        <span className="text-emerald-500 font-bold text-[11px]" title="Ukończona lekcja">✓</span>
+                                                      ) : (
+                                                        <span className="text-slate-300 dark:text-slate-700 text-[10px]">○</span>
+                                                      )}
+                                                    </div>
+                                                  </div>
+
+                                                  <div className="flex flex-wrap items-center justify-between gap-1 mt-0.5 text-[9px] text-slate-400 dark:text-slate-500 font-sans">
+                                                    <span className={`p-0.5 px-1.5 rounded text-[8px] font-extrabold ${getSubjectThemeColors(ch.subject, theme).bgLight}`}>
+                                                      {ch.subject}
+                                                    </span>
+                                                    <div className="flex items-center gap-1.5">
+                                                      <span>⏱️ {ch.estimatedReadTime} min</span>
+                                                      {hasNotes && <span title="Posiada notatki">📝</span>}
+                                                      
+                                                      {/* Option to delete any chapter */}
+                                                      <button
+                                                        id={`delete-chapter-btn-${ch.id}`}
+                                                        onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                                        className="text-rose-400 hover:text-rose-600 dark:text-rose-500 dark:hover:text-rose-400 opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
+                                                        title="Usuń tę lekcję"
+                                                      >
+                                                        <Trash2 className="w-3 h-3" />
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="text-center py-8 px-4">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Brak rozdziałów spełniających kryteria.</p>
