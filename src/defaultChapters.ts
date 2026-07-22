@@ -862,8 +862,10 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
   }
 ];
 
-export const DEFAULT_CHAPTERS: Chapter[] = [
-  ...BASE_CHAPTERS,
+export const DEFAULT_CHAPTERS: Chapter[] = BASE_CHAPTERS.filter((c) => c.subject !== 'Religia');
+
+export const ALL_RELIGIA_CHAPTERS: Chapter[] = [
+  ...BASE_CHAPTERS.filter((c) => c.subject === 'Religia'),
   ...RELIGIA_1_CHAPTERS_PART1,
   ...RELIGIA_1_CHAPTERS_PART2,
   ...RELIGIA_1_CHAPTERS_PART3,

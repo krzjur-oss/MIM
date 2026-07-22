@@ -1305,13 +1305,13 @@ export default function App() {
       id: 'stud-6',
       name: 'Piotr Wiśniewski',
       className: 'Klasa 6A',
-      completedChapters: ['religia-6-lekcja-1'],
-      bookmarkedChapters: ['religia-6-lekcja-1'],
+      completedChapters: ['space-mars'],
+      bookmarkedChapters: ['space-mars'],
       chapterNotes: {
-        'religia-6-lekcja-1': 'Bóg stworzył świat z miłości i obdarzył nas pięknem przyrody.'
+        'space-mars': 'Mars to czwarta planeta od Słońca, badamy czapy lodowe na biegunach.'
       },
       quizAttempts: {
-        'religia-6-lekcja-1': { correct: 2, total: 2 }
+        'space-mars': { correct: 2, total: 2 }
       }
     },
     {
@@ -1327,13 +1327,13 @@ export default function App() {
       id: 'stud-8',
       name: 'Michał Jankowski',
       className: 'Klasa 5A',
-      completedChapters: ['religia-5-lekcja-1'],
-      bookmarkedChapters: ['religia-5-lekcja-1'],
+      completedChapters: ['biology-cell'],
+      bookmarkedChapters: ['biology-cell'],
       chapterNotes: {
-        'religia-5-lekcja-1': 'Bóg pragnie naszego szczęścia i poszukuje człowieka z miłości.'
+        'biology-cell': 'Komórka jest podstawową jednostką strukturalną wszystkich organizmów żywych.'
       },
       quizAttempts: {
-        'religia-5-lekcja-1': { correct: 2, total: 2 }
+        'biology-cell': { correct: 2, total: 2 }
       }
     },
     {

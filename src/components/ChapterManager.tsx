@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Chapter, QuizQuestion, EDUCATION_LEVELS, SCHOOL_TYPES, GRADES } from '../types';
+import { ALL_RELIGIA_CHAPTERS } from '../defaultChapters';
 import { Upload, Plus, Trash2, BookOpen, Save, FileText, Sparkles, AlertCircle, HelpCircle, Eye, Edit3, Check } from 'lucide-react';
 
 interface ChapterManagerProps {
@@ -72,6 +73,16 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
 
   // Preview toggle in editor
   const [editorMode, setEditorMode] = useState<'edit' | 'preview'>('edit');
+
+  // Selective JSON backup import state
+  const [pendingImportBackup, setPendingImportBackup] = useState<Chapter[] | null>(null);
+  const [selectedImportIds, setSelectedImportIds] = useState<Set<string>>(new Set());
+  const [importSearch, setImportSearch] = useState('');
+  const [importSubjectFilter, setImportSubjectFilter] = useState('Wszystkie');
+  const [importMergeMode, setImportMergeMode] = useState<'merge' | 'replace'>('merge');
+
+  // Export filter state
+  const [exportSubjectFilter, setExportSubjectFilter] = useState('Wszystkie');
 
   // Handle Drag & Drop events
   const handleDrag = (e: React.DragEvent) => {
@@ -227,25 +238,80 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
   };
 
   const handleExportBook = () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(allChapters, null, 2));
+    const chaptersToExport = exportSubjectFilter === 'Wszystkie'
+      ? allChapters
+      : allChapters.filter((c) => c.subject === exportSubjectFilter);
+
+    if (chaptersToExport.length === 0) {
+      notify('Brak rozdziałów do wyeksportowania dla wybranego przedmiotu.', 'error');
+      return;
+    }
+
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(chaptersToExport, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `multibook-export-${new Date().toISOString().slice(0, 10)}.json`);
+    const suffix = exportSubjectFilter === 'Wszystkie' ? 'all' : exportSubjectFilter.toLowerCase().replace(/\s+/g, '-');
+    downloadAnchor.setAttribute('download', `multibook-export-${suffix}-${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+    notify(`Pomyślnie pobrano plik kopii zapasowej z ${chaptersToExport.length} lekcjami!`, 'success');
+  };
+
+  const handleRestoreReligiaBackup = () => {
+    ask('Czy na pewno chcesz odblokować i przywrócić wszystkie materiały z przedmiotu Religia na tym urządzeniu?', () => {
+      const existingIds = new Set(allChapters.map((c) => c.id));
+      const toAdd = ALL_RELIGIA_CHAPTERS.filter((c) => !existingIds.has(c.id));
+      if (toAdd.length === 0) {
+        notify('Treści z przedmiotu Religia są już w pełni odblokowane!', 'info');
+        return;
+      }
+      const merged = [...allChapters, ...toAdd];
+      onImportAll(merged);
+      notify(`Pomyślnie odblokowano ${toAdd.length} lekcji Religii z kopii zapasowej!`, 'success');
+      onClose();
+    }, 'Przywracanie Religii z Kopii Zapasowej');
   };
 
   const handleImportBookJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
       const fileReader = new FileReader();
       fileReader.onload = (event) => {
         try {
-          const parsed = JSON.parse(event.target?.result as string);
-          if (Array.isArray(parsed) && parsed.every((itm) => itm.title && itm.content)) {
-            onImportAll(parsed);
-            notify(`Pomyślnie zaimportowano multibook z ${parsed.length} rozdziałami!`, 'success');
-            onClose();
+          const raw = event.target?.result as string;
+          const parsed = JSON.parse(raw);
+          let loadedChapters: Chapter[] = [];
+
+          if (Array.isArray(parsed)) {
+            loadedChapters = parsed;
+          } else if (parsed && typeof parsed === 'object') {
+            if (Array.isArray(parsed.chapters)) loadedChapters = parsed.chapters;
+            else if (Array.isArray(parsed.allChapters)) loadedChapters = parsed.allChapters;
+            else if (Array.isArray(parsed.items)) loadedChapters = parsed.items;
+          }
+
+          if (loadedChapters.length > 0 && loadedChapters.every((itm) => itm.title && itm.content)) {
+            const sanitized: Chapter[] = loadedChapters.map((ch, idx) => ({
+              id: ch.id || `imported-${Date.now()}-${idx}`,
+              title: ch.title,
+              subject: ch.subject || 'Inny',
+              educationLevel: ch.educationLevel || 'Ogólny',
+              grade: ch.grade || 'Klasa 1',
+              schoolType: ch.schoolType || 'Szkoła Podstawowa',
+              chapterGroup: ch.chapterGroup || 'Inne',
+              content: ch.content,
+              estimatedReadTime: ch.estimatedReadTime || 5,
+              quizzes: ch.quizzes || [],
+              createdAt: ch.createdAt || Date.now()
+            }));
+
+            setPendingImportBackup(sanitized);
+            setSelectedImportIds(new Set(sanitized.map((c) => c.id)));
+            setImportSearch('');
+            setImportSubjectFilter('Wszystkie');
+            setImportMergeMode('merge');
+            notify(`Odczytano plik kopii z ${sanitized.length} lekcjami. Wybierz tematy do przywrócenia.`, 'info');
           } else {
             notify('Niepoprawny format pliku JSON. Plik musi zawierać tablicę rozdziałów.', 'error');
           }
@@ -253,8 +319,75 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
           notify('Błąd odczytu pliku JSON.', 'error');
         }
       };
-      fileReader.readAsText(e.target.files[0]);
+      fileReader.readAsText(file);
+      e.target.value = '';
     }
+  };
+
+  const handleConfirmSelectiveImport = () => {
+    if (!pendingImportBackup) return;
+
+    const selectedChapters = pendingImportBackup.filter((ch) => selectedImportIds.has(ch.id));
+
+    if (selectedChapters.length === 0) {
+      notify('Proszę zaznaczyć przynajmniej jeden rozdział do zaimportowania.', 'error');
+      return;
+    }
+
+    if (importMergeMode === 'replace') {
+      ask(
+        `Czy na pewno chcesz zastąpić CAŁĄ obecną bazę (${allChapters.length} lekcji) wybranymi ${selectedChapters.length} rozdziałami z kopii zapasowej?`,
+        () => {
+          onImportAll(selectedChapters);
+          notify(`Zaimportowano i przywrócono ${selectedChapters.length} wybranych rozdziałów!`, 'success');
+          setPendingImportBackup(null);
+          onClose();
+        },
+        'Potwierdzenie Zastąpienia Bazy'
+      );
+    } else {
+      // Merge mode
+      const existingMap = new Map<string, Chapter>();
+      allChapters.forEach((c) => existingMap.set(c.id, c));
+
+      let addedCount = 0;
+      let updatedCount = 0;
+
+      selectedChapters.forEach((ch) => {
+        if (existingMap.has(ch.id)) {
+          updatedCount++;
+        } else {
+          addedCount++;
+        }
+        existingMap.set(ch.id, ch);
+      });
+
+      const mergedList = Array.from(existingMap.values());
+      onImportAll(mergedList);
+
+      notify(
+        `Pomyślnie przywrócono rozdziały z kopii! Dodano ${addedCount} nowych lekcji, zaktualizowano ${updatedCount}.`,
+        'success'
+      );
+      setPendingImportBackup(null);
+      onClose();
+    }
+  };
+
+  const handleSelectAllImport = () => {
+    if (!pendingImportBackup) return;
+    setSelectedImportIds(new Set(pendingImportBackup.map((c) => c.id)));
+  };
+
+  const handleDeselectAllImport = () => {
+    setSelectedImportIds(new Set());
+  };
+
+  const handleSelectOnlyNewImport = () => {
+    if (!pendingImportBackup) return;
+    const existingIds = new Set(allChapters.map((c) => c.id));
+    const newIds = pendingImportBackup.filter((c) => !existingIds.has(c.id)).map((c) => c.id);
+    setSelectedImportIds(new Set(newIds));
   };
 
   return (
@@ -651,7 +784,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
             <div className="space-y-6 animate-in fade-in duration-200">
               
               {/* Export / Import Section for JSON Backup */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-[#EDEAE2]/50 dark:bg-slate-800/40 p-5 rounded-2xl border border-[#EDEAE2] dark:border-slate-800 flex flex-col justify-between">
                   <div>
                     <h3 className="font-serif font-bold text-emerald-900 dark:text-white text-sm flex items-center gap-1.5">
@@ -659,8 +792,26 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                       <span>Eksportuj Twój Multibook</span>
                     </h3>
                     <p className="text-xs text-[#5A5450] dark:text-slate-350 mt-1.5 leading-relaxed">
-                      Chcesz przenieść wszystkie przygotowane lekcje dla uczniów na komputer szkolny lub drugie urządzenie? Możesz pobrać kompletną bazę danych jako jeden plik JSON.
+                      Chcesz przenieść przygotowane lekcje na inne urządzenie? Wybierz zakres i pobierz plik kopii zapasowej (.json).
                     </p>
+                    <div className="mt-3">
+                      <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                        Zakres eksportu:
+                      </label>
+                      <select
+                        id="export-subject-select"
+                        value={exportSubjectFilter}
+                        onChange={(e) => setExportSubjectFilter(e.target.value)}
+                        className="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      >
+                        <option value="Wszystkie">Wszystkie przedmioty ({allChapters.length})</option>
+                        {Array.from(new Set(allChapters.map((c) => c.subject).filter(Boolean))).map((s) => (
+                          <option key={s} value={s}>
+                            {s} ({allChapters.filter((c) => c.subject === s).length})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                   <button
                     id="export-multibook-json-btn"
@@ -675,10 +826,10 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                   <div>
                     <h3 className="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-1.5">
                       <Upload className="w-4.5 h-4.5 text-emerald-500" />
-                      <span>Importuj Kompletną Książkę</span>
+                      <span>Importuj i Przywróć Wybrane</span>
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-slate-350 mt-1.5 leading-relaxed">
-                      Wczytaj wcześniej zapisany plik .json, aby błyskawicznie przywrócić wszystkie działy podręcznika, quizzes oraz ich zaangażowanie. Twoja baza ulegnie zastąpieniu.
+                      Wczytaj plik .json kopii zapasowej. Następnie w wygodnym oknie wybierzesz dokładnie te rozdziały, które chcesz przywrócić lub scalić z obecną bazą.
                     </p>
                   </div>
                   <div className="mt-4 flex items-center gap-2">
@@ -693,6 +844,25 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                       />
                     </label>
                   </div>
+                </div>
+
+                <div className="bg-amber-50/70 dark:bg-amber-950/20 p-5 rounded-2xl border border-amber-200/80 dark:border-amber-900/40 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-amber-900 dark:text-amber-300 text-sm flex items-center gap-1.5">
+                      <Sparkles className="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" />
+                      <span>Przywróć Kopię Zapasową Religii</span>
+                    </h3>
+                    <p className="text-xs text-amber-800/80 dark:text-amber-400/80 mt-1.5 leading-relaxed">
+                      Chcesz odblokować pełne materiały dydaktyczne z przedmiotu Religia na tym urządzeniu? Kliknij poniżej, aby zaimportować fabryczną kopię zapasową Religii.
+                    </p>
+                  </div>
+                  <button
+                    id="restore-religia-backup-btn"
+                    onClick={handleRestoreReligiaBackup}
+                    className="mt-4 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors self-start"
+                  >
+                    <span>Odblokuj kopię Religii ✝️</span>
+                  </button>
                 </div>
               </div>
 
@@ -856,6 +1026,216 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
 
         </div>
       </motion.div>
+
+      {/* Selective Import Backup Modal */}
+      {pendingImportBackup && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Wybór rozdziałów z kopii zapasowej JSON</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Znaleziono {pendingImportBackup.length} rozdziałów w pliku. Wybierz, które chcesz przywrócić.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPendingImportBackup(null)}
+                className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Mode & Filters Toolbar */}
+            <div className="p-4 bg-slate-100/70 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800 space-y-3">
+              {/* Mode selector & quick select */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Tryb:</span>
+                  <label className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="importMergeMode"
+                      value="merge"
+                      checked={importMergeMode === 'merge'}
+                      onChange={() => setImportMergeMode('merge')}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="font-semibold">Scal z obecnymi ({allChapters.length})</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="importMergeMode"
+                      value="replace"
+                      checked={importMergeMode === 'replace'}
+                      onChange={() => setImportMergeMode('replace')}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="font-semibold text-rose-600 dark:text-rose-400">Zastąp całą bazę</span>
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-1.5 text-xs">
+                  <button
+                    type="button"
+                    onClick={handleSelectAllImport}
+                    className="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg text-slate-800 dark:text-slate-200 font-semibold transition-colors cursor-pointer"
+                  >
+                    Zaznacz wszystkie
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSelectOnlyNewImport}
+                    className="px-2.5 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 rounded-lg font-semibold transition-colors cursor-pointer"
+                  >
+                    Tylko nowe
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeselectAllImport}
+                    className="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg text-slate-800 dark:text-slate-200 font-semibold transition-colors cursor-pointer"
+                  >
+                    Odznacz
+                  </button>
+                </div>
+              </div>
+
+              {/* Search and Subject filter */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="Szukaj po tytule lub dziale..."
+                  value={importSearch}
+                  onChange={(e) => setImportSearch(e.target.value)}
+                  className="px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <select
+                  value={importSubjectFilter}
+                  onChange={(e) => setImportSubjectFilter(e.target.value)}
+                  className="px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                >
+                  <option value="Wszystkie">Wszystkie przedmioty w pliku</option>
+                  {Array.from(new Set(pendingImportBackup.map((c) => c.subject).filter(Boolean))).map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Chapters list with checkboxes */}
+            <div className="p-4 overflow-y-auto flex-1 space-y-2 max-h-[45vh]">
+              {(() => {
+                const filtered = pendingImportBackup.filter((ch) => {
+                  const matchesSearch = !importSearch || ch.title.toLowerCase().includes(importSearch.toLowerCase()) || (ch.chapterGroup && ch.chapterGroup.toLowerCase().includes(importSearch.toLowerCase()));
+                  const matchesSubject = importSubjectFilter === 'Wszystkie' || ch.subject === importSubjectFilter;
+                  return matchesSearch && matchesSubject;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="text-center py-8 text-xs text-slate-400 italic">
+                      Brak rozdziałów spełniających kryteria wyszukiwania.
+                    </div>
+                  );
+                }
+
+                const existingIds = new Set(allChapters.map((c) => c.id));
+
+                return filtered.map((ch) => {
+                  const isChecked = selectedImportIds.has(ch.id);
+                  const existsLocally = existingIds.has(ch.id);
+
+                  return (
+                    <label
+                      key={ch.id}
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                        isChecked
+                          ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800/80'
+                          : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          const next = new Set(selectedImportIds);
+                          if (isChecked) {
+                            next.delete(ch.id);
+                          } else {
+                            next.add(ch.id);
+                          }
+                          setSelectedImportIds(next);
+                        }}
+                        className="mt-1 rounded text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-xs text-slate-800 dark:text-slate-100 truncate">
+                            {ch.title}
+                          </span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {existsLocally ? (
+                              <span className="text-[9.5px] px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 font-semibold">
+                                W bazie
+                              </span>
+                            ) : (
+                              <span className="text-[9.5px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 font-semibold">
+                                Nowa
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 mt-1 text-[10px] text-slate-500 dark:text-slate-400">
+                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-medium">
+                            {ch.subject || 'Inny'}
+                          </span>
+                          {ch.chapterGroup && (
+                            <span className="truncate max-w-[200px]">Dział: {ch.chapterGroup}</span>
+                          )}
+                          <span>⏱ {ch.estimatedReadTime || 5} min</span>
+                          <span>❓ Quiz: {ch.quizzes?.length || 0} pytań</span>
+                        </div>
+                      </div>
+                    </label>
+                  );
+                });
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between">
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
+                Zaznaczono: <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">{selectedImportIds.size}</span> z {pendingImportBackup.length}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPendingImportBackup(null)}
+                  className="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                >
+                  Anuluj
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSelectiveImport}
+                  disabled={selectedImportIds.size === 0}
+                  className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Zaimportuj wybrane ({selectedImportIds.size})</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
