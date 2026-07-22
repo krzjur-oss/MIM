@@ -1248,10 +1248,12 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
+        }
       } catch (e) {}
     }
-    return ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'];
+    return ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'].sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
   });
 
   const [realizations, setRealizations] = useState<{ className: string; chapterId: string; timestamp: number }[]>(() => {
@@ -1493,12 +1495,12 @@ export default function App() {
 
     const targetClass = studentClassInput.trim();
     if (!teacherClasses.includes(targetClass)) {
-      setTeacherClasses(prev => [...prev, targetClass]);
+      setTeacherClasses(prev => [...prev, targetClass].sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
       setClassChapters(prev => {
         if (prev[targetClass]) return prev;
         return {
           ...prev,
-          [targetClass]: chapters.map(c => c.id)
+          [targetClass]: []
         };
       });
     }
@@ -1690,7 +1692,7 @@ export default function App() {
   const uniqueStudentClasses = useMemo(() => {
     const set = new Set(students.map(s => s.className));
     teacherClasses.forEach(c => set.add(c));
-    return Array.from(set);
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
   }, [students, teacherClasses]);
 
   const filteredStudents = useMemo(() => {
@@ -3586,10 +3588,10 @@ export default function App() {
       showToast('Ta klasa już istnieje!', 'error');
       return;
     }
-    setTeacherClasses((prev) => [...prev, trimmed]);
+    setTeacherClasses((prev) => [...prev, trimmed].sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
     setClassChapters((prev) => ({
       ...prev,
-      [trimmed]: chapters.map(c => c.id) // By default, assign all chapters to make it easy for teachers
+      [trimmed]: [] // Do not automatically assign all chapters
     }));
     setNewClassNameInput('');
     setSelectedTeacherClass(trimmed); // Select the newly created class
