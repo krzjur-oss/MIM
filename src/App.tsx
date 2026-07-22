@@ -309,6 +309,18 @@ export default function App() {
     return chapters.find((c) => c.id === currentChapterId) || chapters[0];
   }, [chapters, currentChapterId]);
 
+  const activeCategoryChapters = useMemo(() => {
+    if (!activeChapter) return [];
+    const filtered = chapters.filter((c) => {
+      const sameSubject = (c.subject || '') === (activeChapter.subject || '');
+      const sameGrade = (c.grade || '') === (activeChapter.grade || '');
+      const sameSchoolType = (c.schoolType || '') === (activeChapter.schoolType || '');
+      const sameGroup = (c.chapterGroup || '') === (activeChapter.chapterGroup || '');
+      return sameSubject && sameGrade && sameSchoolType && sameGroup;
+    });
+    return filtered.length > 0 ? filtered : [activeChapter];
+  }, [chapters, activeChapter]);
+
   // Tryb Czytania State (Hides sidebar and header, filters out symbols like hearts, candles, etc.)
   const [isReadingMode, setIsReadingMode] = useState<boolean>(() => {
     return localStorage.getItem('multibook_reading_mode') === 'true';
@@ -4461,13 +4473,13 @@ export default function App() {
 
                     <div className="flex items-center gap-3">
                       {/* Navigating chapters sequentially with circular progress indicators (dots) */}
-                      {chapters.findIndex((c) => c.id === activeChapter.id) > 0 ? (
+                      {activeCategoryChapters.findIndex((c) => c.id === activeChapter.id) > 0 ? (
                         <button
                           id="prev-chapter-btn-bottom"
                           type="button"
                           onClick={() => {
-                            const idx = chapters.findIndex((c) => c.id === activeChapter.id);
-                            setCurrentChapterId(chapters[idx - 1].id);
+                            const idx = activeCategoryChapters.findIndex((c) => c.id === activeChapter.id);
+                            setCurrentChapterId(activeCategoryChapters[idx - 1].id);
                             setIsDrawingModeActive(false);
                           }}
                           className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0"
@@ -4481,7 +4493,7 @@ export default function App() {
 
                       {/* Visual Dots Indicators */}
                       <div className="flex items-center gap-2 justify-center flex-wrap max-w-[220px] xs:max-w-[280px] md:max-w-[340px]">
-                        {chapters.map((chap, idx) => {
+                        {activeCategoryChapters.map((chap, idx) => {
                           const isActive = chap.id === activeChapter.id;
                           const isCompleted = progress.completedChapters.includes(chap.id);
                           const sc = getSubjectThemeColors(chap.subject, theme);
@@ -4506,7 +4518,7 @@ export default function App() {
                             >
                               {/* Rich Hover Tooltip with detail info */}
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2.5 hidden group-hover/dot:block bg-slate-900 text-[#ECE7DE] text-[10px] leading-relaxed py-1.5 px-3 rounded-lg whitespace-nowrap shadow-xl border border-slate-800 z-50 pointer-events-none transition-all">
-                                <span className={`font-extrabold mr-1 ${getSubjectThemeColors(chap.subject, theme).text}`}>{idx + 1}.</span>
+                                <span className={`font-extrabold mr-1 ${getSubjectThemeColors(chap.subject, theme).text}`}>{chap.lessonNumber ? `${chap.lessonNumber}.` : `${idx + 1}.`}</span>
                                 <span className="font-semibold">{chap.title}</span>
                                 {isCompleted && (
                                   <span className="text-emerald-400 ml-1.5 font-extrabold" title="Lekcja ukończona">✓</span>
@@ -4517,13 +4529,13 @@ export default function App() {
                         })}
                       </div>
 
-                      {chapters.findIndex((c) => c.id === activeChapter.id) < chapters.length - 1 ? (
+                      {activeCategoryChapters.findIndex((c) => c.id === activeChapter.id) < activeCategoryChapters.length - 1 ? (
                         <button
                           id="next-chapter-btn-bottom"
                           type="button"
                           onClick={() => {
-                            const idx = chapters.findIndex((c) => c.id === activeChapter.id);
-                            setCurrentChapterId(chapters[idx + 1].id);
+                            const idx = activeCategoryChapters.findIndex((c) => c.id === activeChapter.id);
+                            setCurrentChapterId(activeCategoryChapters[idx + 1].id);
                             setIsDrawingModeActive(false);
                           }}
                           className={`px-3 py-1.5 text-xs font-extrabold rounded-lg flex items-center gap-1 transition-all cursor-pointer shrink-0 ${getSubjectThemeColors(activeChapter.subject, theme).accentBg}`}
