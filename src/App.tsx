@@ -4673,7 +4673,7 @@ export default function App() {
                   type="button"
                   id="export-db-backup-btn"
                   onClick={handleExportDatabase}
-                  className="flex-1 py-1.5 px-2 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs"
+                  className="flex-1 py-1.5 px-2 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 dark:hover:border-rose-300 ring-1 ring-rose-500/20"
                   title="Pobierz backup wszystkich danych (postępy, notatki, rozdziały) do pliku JSON"
                 >
                   <Download className="w-3 h-3 shrink-0" />
@@ -4681,7 +4681,7 @@ export default function App() {
                 </button>
                 <label
                   id="import-db-backup-label"
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 ${activeThemeConfig.galleryPresetBtn}`}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 dark:hover:border-rose-300 ring-1 ring-rose-500/20 ${activeThemeConfig.galleryPresetBtn}`}
                   title="Wczytaj backup wszystkich danych z pliku JSON"
                 >
                   <Upload className="w-3 h-3 shrink-0 text-emerald-600 dark:text-emerald-500" />

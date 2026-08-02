@@ -816,7 +816,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                   <button
                     id="export-multibook-json-btn"
                     onClick={handleExportBook}
-                    className="mt-4 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors self-start"
+                    className="mt-4 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors self-start border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 ring-1 ring-rose-500/20"
                   >
                     <span>Wyeksportuj (.json)</span>
                   </button>
@@ -833,7 +833,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                     </p>
                   </div>
                   <div className="mt-4 flex items-center gap-2">
-                    <label className="px-4 py-2 bg-slate-200 dark:bg-slate-700 dark:text-slate-200 hover:bg-slate-300 text-slate-800 font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                    <label className="px-4 py-2 bg-slate-200 dark:bg-slate-700 dark:text-slate-200 hover:bg-slate-300 text-slate-800 font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition-all border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 ring-1 ring-rose-500/20">
                       <span>Wgraj plik (.json)</span>
                       <input
                         id="import-multibook-json-input"
