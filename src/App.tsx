@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   BookOpen, 
   Plus, 
@@ -1337,6 +1337,49 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('multibook_chapter_gallery_images', JSON.stringify(chapterGalleryImages));
   }, [chapterGalleryImages]);
+
+  // Selective Export Backup Modal states
+  const [isExportBackupModalOpen, setIsExportBackupModalOpen] = useState(false);
+  const [exportSubjectFilter, setExportSubjectFilter] = useState('Wszystkie');
+  const [exportCategories, setExportCategories] = useState({
+    chapters: true,
+    progress: true,
+    teacherClasses: true,
+    realizations: true,
+    students: true,
+    chapterGalleryImages: true,
+    settings: true,
+  });
+
+  // Selective Import Backup Modal states
+  const [isImportBackupModalOpen, setIsImportBackupModalOpen] = useState(false);
+  const [pendingBackupImportData, setPendingBackupImportData] = useState<{
+    raw: any;
+    version?: string;
+    exportedAt?: string;
+    chapters?: Chapter[];
+    progress?: Record<string, any>;
+    teacherClasses?: string[];
+    classChapters?: Record<string, string[]>;
+    realizations?: any[];
+    chapterGalleryImages?: Record<string, any[]>;
+    students?: Student[];
+    theme?: string;
+    fontSize?: number;
+    lineHeight?: string;
+    isReadingMode?: boolean;
+  } | null>(null);
+
+  const [importCategories, setImportCategories] = useState({
+    chapters: true,
+    progress: true,
+    teacherClasses: true,
+    realizations: true,
+    students: true,
+    chapterGalleryImages: true,
+    settings: true,
+  });
+  const [importMergeMode, setImportMergeMode] = useState<'merge' | 'replace'>('merge');
 
   // Teacher Panel State & Default Students list
   const DEFAULT_STUDENTS: Student[] = [
@@ -3776,42 +3819,91 @@ export default function App() {
     }
   };
 
-  // Export database backup (chapters, progress, realizations, classes, galleries, settings, students) to a JSON file
+  // Helper date formatter for backup info
+  const formatExportDate = (isoString?: string) => {
+    if (!isoString) return null;
+    try {
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleString('pl-PL', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Open export backup selective modal
   const handleExportDatabase = () => {
-    const backupData = {
-      version: '1.0',
+    setIsExportBackupModalOpen(true);
+  };
+
+  // Execute export with chosen categories and subject filter
+  const handleConfirmExportBackup = () => {
+    const backupData: Record<string, any> = {
+      version: '1.3',
       exportedAt: new Date().toISOString(),
-      chapters,
-      progress,
-      theme,
-      fontSize,
-      lineHeight,
-      isReadingMode,
-      teacherClasses,
-      classChapters,
-      realizations,
-      chapterGalleryImages,
-      students,
     };
-    
+
+    if (exportCategories.chapters) {
+      if (exportSubjectFilter === 'Wszystkie') {
+        backupData.chapters = chapters;
+      } else {
+        backupData.chapters = chapters.filter((c) => c.subject === exportSubjectFilter);
+      }
+    }
+
+    if (exportCategories.progress) {
+      backupData.progress = progress;
+    }
+
+    if (exportCategories.teacherClasses) {
+      backupData.teacherClasses = teacherClasses;
+      backupData.classChapters = classChapters;
+    }
+
+    if (exportCategories.realizations) {
+      backupData.realizations = realizations;
+    }
+
+    if (exportCategories.students) {
+      backupData.students = students;
+    }
+
+    if (exportCategories.chapterGalleryImages) {
+      backupData.chapterGalleryImages = chapterGalleryImages;
+    }
+
+    if (exportCategories.settings) {
+      backupData.theme = theme;
+      backupData.fontSize = fontSize;
+      backupData.lineHeight = lineHeight;
+      backupData.isReadingMode = isReadingMode;
+    }
+
     try {
       const dataStr = JSON.stringify(backupData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = `multibook_backup_${new Date().toISOString().slice(0, 10)}.json`;
-      
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      const filename = `multibook_backup_${new Date().toISOString().slice(0, 10)}.json`;
+
       const linkElement = document.createElement('a');
       linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.setAttribute('download', filename);
       linkElement.click();
-      showToast('Kopia bezpieczeństwa została pobrana!', 'success');
+
+      showToast('Kopia bezpieczeństwa z wybranymi danymi została pobrana!', 'success');
+      setIsExportBackupModalOpen(false);
     } catch (e) {
       showToast('Wystąpił błąd podczas generowania pliku kopii zapasowej.', 'error');
       console.error(e);
     }
   };
 
-  // Import database backup from a JSON file and dynamically restore properties
+  // Read JSON backup file and open selective import modal
   const handleImportDatabase = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
     const file = event.target.files?.[0];
@@ -3820,71 +3912,200 @@ export default function App() {
     fileReader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target?.result as string);
-        
-        if (parsedData && typeof parsedData === 'object') {
-          let restoredCount = 0;
-          
-          if (Array.isArray(parsedData.chapters)) {
-            setChapters(parsedData.chapters);
-            restoredCount++;
-          }
-          if (parsedData.progress && typeof parsedData.progress === 'object') {
-            setProgress(parsedData.progress);
-            restoredCount++;
-          }
-          if (parsedData.theme) {
-            setTheme(parsedData.theme || 'light');
-            restoredCount++;
-          }
-          if (typeof parsedData.fontSize === 'number') {
-            setFontSize(parsedData.fontSize);
-            restoredCount++;
-          }
-          if (parsedData.lineHeight) {
-            setLineHeight(parsedData.lineHeight);
-            restoredCount++;
-          }
-          if (typeof parsedData.isReadingMode === 'boolean') {
-            setIsReadingMode(parsedData.isReadingMode);
-            restoredCount++;
-          }
-          if (Array.isArray(parsedData.teacherClasses)) {
-            setTeacherClasses(parsedData.teacherClasses);
-            restoredCount++;
-          }
-          if (parsedData.classChapters && typeof parsedData.classChapters === 'object') {
-            setClassChapters(parsedData.classChapters);
-            restoredCount++;
-          }
-          if (Array.isArray(parsedData.realizations)) {
-            setRealizations(parsedData.realizations);
-            restoredCount++;
-          }
-          if (parsedData.chapterGalleryImages && typeof parsedData.chapterGalleryImages === 'object') {
-            setChapterGalleryImages(parsedData.chapterGalleryImages);
-            restoredCount++;
-          }
-          if (Array.isArray(parsedData.students)) {
-            setStudents(parsedData.students);
-            restoredCount++;
+        let importObj: any = null;
+
+        if (Array.isArray(parsedData)) {
+          // Plain array of chapters
+          importObj = { chapters: parsedData };
+        } else if (parsedData && typeof parsedData === 'object') {
+          importObj = parsedData;
+        }
+
+        if (importObj) {
+          const hasChaps = Array.isArray(importObj.chapters) && importObj.chapters.length > 0;
+          const hasProg = importObj.progress && typeof importObj.progress === 'object';
+          const hasClasses = Array.isArray(importObj.teacherClasses) && importObj.teacherClasses.length > 0;
+          const hasRealiz = Array.isArray(importObj.realizations) && importObj.realizations.length > 0;
+          const hasStuds = Array.isArray(importObj.students) && importObj.students.length > 0;
+          const hasGal = importObj.chapterGalleryImages && typeof importObj.chapterGalleryImages === 'object' && Object.keys(importObj.chapterGalleryImages).length > 0;
+          const hasSett = Boolean(importObj.theme || importObj.fontSize || importObj.lineHeight || typeof importObj.isReadingMode === 'boolean');
+
+          const totalPresent = [hasChaps, hasProg, hasClasses, hasRealiz, hasStuds, hasGal, hasSett].filter(Boolean).length;
+
+          if (totalPresent === 0) {
+            showToast('Plik nie zawiera żadnych rozpoznanych kategorii danych kopii zapasowej.', 'error');
+            event.target.value = '';
+            return;
           }
 
-          if (restoredCount > 0) {
-            showToast('Kopia zapasowa została pomyślnie zaimportowana i przywrócona!', 'success');
-            // Reset files target input
-            event.target.value = '';
-          } else {
-            showToast('Niepoprawny format pliku kopii zapasowej.', 'error');
-          }
+          setPendingBackupImportData({
+            raw: importObj,
+            version: importObj.version,
+            exportedAt: importObj.exportedAt,
+            chapters: importObj.chapters,
+            progress: importObj.progress,
+            teacherClasses: importObj.teacherClasses,
+            classChapters: importObj.classChapters,
+            realizations: importObj.realizations,
+            chapterGalleryImages: importObj.chapterGalleryImages,
+            students: importObj.students,
+            theme: importObj.theme,
+            fontSize: importObj.fontSize,
+            lineHeight: importObj.lineHeight,
+            isReadingMode: importObj.isReadingMode,
+          });
+
+          setImportCategories({
+            chapters: hasChaps,
+            progress: hasProg,
+            teacherClasses: hasClasses,
+            realizations: hasRealiz,
+            students: hasStuds,
+            chapterGalleryImages: hasGal,
+            settings: hasSett,
+          });
+
+          setIsImportBackupModalOpen(true);
         } else {
-          showToast('Plik nie zawiera poprawnego obiektu JSON.', 'error');
+          showToast('Niepoprawny format pliku JSON.', 'error');
         }
       } catch (err) {
-        showToast('Błąd podczas odczytu pliku kopii zapasowej. Upewnij się, że plik jest poprawny.', 'error');
+        showToast('Błąd podczas odczytu pliku kopii zapasowej. Upewnij się, że plik jest poprawnym plikiem JSON.', 'error');
         console.error(err);
       }
+      event.target.value = '';
     };
+
     fileReader.readAsText(file);
+  };
+
+  // Execute restore based on user selection and merge/replace mode
+  const handleConfirmImportBackup = () => {
+    if (!pendingBackupImportData) return;
+
+    const data = pendingBackupImportData;
+    const isMerge = importMergeMode === 'merge';
+    const restoredSummary: string[] = [];
+
+    if (importCategories.chapters && Array.isArray(data.chapters)) {
+      if (isMerge) {
+        setChapters((prev) => {
+          const existingIds = new Set(prev.map((c) => c.id));
+          const newChaps = data.chapters!.filter((c) => !existingIds.has(c.id));
+          return [...prev, ...newChaps];
+        });
+        restoredSummary.push(`Rozdziały (${data.chapters.length})`);
+      } else {
+        setChapters(data.chapters);
+        restoredSummary.push(`Rozdziały (${data.chapters.length})`);
+      }
+    }
+
+    if (importCategories.progress && data.progress) {
+      if (isMerge) {
+        setProgress((prev) => ({
+          completedChapters: Array.from(new Set([...(prev?.completedChapters || []), ...(data.progress?.completedChapters || [])])),
+          bookmarkedChapters: Array.from(new Set([...(prev?.bookmarkedChapters || []), ...(data.progress?.bookmarkedChapters || [])])),
+          chapterNotes: { ...(prev?.chapterNotes || {}), ...(data.progress?.chapterNotes || {}) },
+        }));
+      } else {
+        setProgress({
+          completedChapters: Array.isArray(data.progress.completedChapters) ? data.progress.completedChapters : [],
+          bookmarkedChapters: Array.isArray(data.progress.bookmarkedChapters) ? data.progress.bookmarkedChapters : [],
+          chapterNotes: data.progress.chapterNotes && typeof data.progress.chapterNotes === 'object' ? data.progress.chapterNotes : {},
+        });
+      }
+      restoredSummary.push('Postępy i notatki');
+    }
+
+    if (importCategories.teacherClasses) {
+      if (Array.isArray(data.teacherClasses)) {
+        if (isMerge) {
+          setTeacherClasses((prev) => Array.from(new Set([...prev, ...data.teacherClasses!])).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
+        } else {
+          setTeacherClasses(data.teacherClasses.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
+        }
+      }
+      if (data.classChapters) {
+        if (isMerge) {
+          setClassChapters((prev) => {
+            const merged = { ...prev };
+            Object.keys(data.classChapters!).forEach((cls) => {
+              merged[cls] = Array.from(new Set([...(merged[cls] || []), ...(data.classChapters![cls] || [])]));
+            });
+            return merged;
+          });
+        } else {
+          setClassChapters(data.classChapters);
+        }
+      }
+      restoredSummary.push('Klasy i przypisania');
+    }
+
+    if (importCategories.realizations && Array.isArray(data.realizations)) {
+      if (isMerge) {
+        setRealizations((prev) => {
+          const makeKey = (r: any) => `${r.className}_${r.chapterId}_${r.timestamp}`;
+          const existing = new Set(prev.map(makeKey));
+          const newItems = data.realizations!.filter((r) => !existing.has(makeKey(r)));
+          return [...prev, ...newItems];
+        });
+      } else {
+        setRealizations(data.realizations);
+      }
+      restoredSummary.push(`Realizacje (${data.realizations.length})`);
+    }
+
+    if (importCategories.students && Array.isArray(data.students)) {
+      if (isMerge) {
+        setStudents((prev) => {
+          const existing = new Set(prev.map((s) => s.id));
+          const newStuds = data.students!.filter((s) => !existing.has(s.id));
+          return [...prev, ...newStuds];
+        });
+      } else {
+        setStudents(data.students);
+      }
+      restoredSummary.push(`Uczniowie (${data.students.length})`);
+    }
+
+    if (importCategories.chapterGalleryImages && data.chapterGalleryImages) {
+      if (isMerge) {
+        setChapterGalleryImages((prev) => {
+          const merged = { ...prev };
+          Object.keys(data.chapterGalleryImages!).forEach((chapId) => {
+            merged[chapId] = Array.from(new Set([...(merged[chapId] || []), ...(data.chapterGalleryImages![chapId] || [])]));
+          });
+          return merged;
+        });
+      } else {
+        setChapterGalleryImages(data.chapterGalleryImages);
+      }
+      restoredSummary.push('Galeria zdjęć');
+    }
+
+    if (importCategories.settings) {
+      const validThemes: ThemeType[] = ['light', 'sepia', 'blue', 'dark', 'dyslexic'];
+      if (data.theme && validThemes.includes(data.theme as ThemeType)) {
+        setTheme(data.theme as ThemeType);
+      }
+      if (typeof data.fontSize === 'number') setFontSize(data.fontSize);
+      const validLineHeights: ('normal' | 'relaxed' | 'loose')[] = ['normal', 'relaxed', 'loose'];
+      if (data.lineHeight && validLineHeights.includes(data.lineHeight as any)) {
+        setLineHeight(data.lineHeight as 'normal' | 'relaxed' | 'loose');
+      }
+      if (typeof data.isReadingMode === 'boolean') setIsReadingMode(data.isReadingMode);
+      restoredSummary.push('Ustawienia wyglądu');
+    }
+
+    if (restoredSummary.length > 0) {
+      showToast(`Zaimportowano wybrane dane: ${restoredSummary.join(', ')}!`, 'success');
+    } else {
+      showToast('Nie wybrano żadnych kategorii do zaimportowania.', 'info');
+    }
+
+    setIsImportBackupModalOpen(false);
+    setPendingBackupImportData(null);
   };
 
   const handleAddNewChapter = (newChap: Chapter) => {
@@ -6604,6 +6825,742 @@ export default function App() {
 
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* EXPORT BACKUP SELECTIVE MODAL */}
+      <AnimatePresence>
+        {isExportBackupModalOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+                    <Download className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                      Wyeksportuj Kopię Zapasową (Backup)
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Wybierz dane, które chcesz zapisać w pliku JSON
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsExportBackupModalOpen(false)}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Quick select toolbar */}
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-3 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <span className="font-semibold text-slate-700 dark:text-slate-300">Kategorie do eksportu:</span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setExportCategories({
+                      chapters: true,
+                      progress: true,
+                      teacherClasses: true,
+                      realizations: true,
+                      students: true,
+                      chapterGalleryImages: true,
+                      settings: true,
+                    })}
+                    className="px-2 py-1 text-[11px] font-extrabold text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer"
+                  >
+                    Zaznacz wszystkie
+                  </button>
+                  <span className="text-slate-300 dark:text-slate-700">|</span>
+                  <button
+                    type="button"
+                    onClick={() => setExportCategories({
+                      chapters: false,
+                      progress: false,
+                      teacherClasses: false,
+                      realizations: false,
+                      students: false,
+                      chapterGalleryImages: false,
+                      settings: false,
+                    })}
+                    className="px-2 py-1 text-[11px] font-extrabold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+                  >
+                    Odznacz wszystkie
+                  </button>
+                </div>
+              </div>
+
+              {/* Checklist options */}
+              <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 my-1">
+                {/* 1. Chapters */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, chapters: !prev.chapters }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.chapters 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.chapters ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.chapters && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Rozdziały i lekcje dydaktyczne</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Treści lekcji, quizy i zadania ({chapters.length} tematów)
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                      {chapters.length} tematów
+                    </span>
+                  </div>
+
+                  {exportCategories.chapters && (
+                    <div className="mt-3 pt-2.5 border-t border-emerald-200/60 dark:border-emerald-900/40 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 shrink-0">Filtr przedmiotu:</span>
+                      <select
+                        value={exportSubjectFilter}
+                        onChange={(e) => setExportSubjectFilter(e.target.value)}
+                        className="flex-1 px-2.5 py-1 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-hidden"
+                      >
+                        <option value="Wszystkie">Wszystkie przedmioty ({chapters.length})</option>
+                        {Array.from(new Set(chapters.map((c) => c.subject).filter(Boolean))).map((s) => (
+                          <option key={s} value={s}>
+                            {s} ({chapters.filter((c) => c.subject === s).length})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Progress */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, progress: !prev.progress }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.progress 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.progress ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.progress && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <BarChart2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Postępy uczniów i notatki</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Wyniki testów, uzupełnione pytania, notatki oraz zakładki
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Teacher Classes */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.teacherClasses 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.teacherClasses ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.teacherClasses && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <GraduationCap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Klasy nauczyciela i przypisane lekcje</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Nazwy klas ({teacherClasses.length}) oraz rozdziały przypisane do każdej klasy
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                      {teacherClasses.length} klas
+                    </span>
+                  </div>
+                </div>
+
+                {/* 4. Realizations */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, realizations: !prev.realizations }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.realizations 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.realizations ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.realizations && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Dziennik realizacji tematycznych</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Historia zrealizowanych tematów z datami ({realizations.length} wpisów)
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                      {realizations.length} wpisów
+                    </span>
+                  </div>
+                </div>
+
+                {/* 5. Students */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, students: !prev.students }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.students 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.students ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.students && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Lista i konta uczniów</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Spis uczniów w klasach wraz z ich postępami indyw. ({students.length} uczniów)
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                      {students.length} uczniów
+                    </span>
+                  </div>
+                </div>
+
+                {/* 6. Chapter Gallery Images */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.chapterGalleryImages 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.chapterGalleryImages ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.chapterGalleryImages && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <Image className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Galeria zdjęć do lekcji</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Ilustracje i obrazy dodane do rozdziałów przez użytkownika
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 7. Settings */}
+                <div 
+                  onClick={() => setExportCategories(prev => ({ ...prev, settings: !prev.settings }))}
+                  className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                    exportCategories.settings 
+                      ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                        exportCategories.settings ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                      }`}>
+                        {exportCategories.settings && <Check className="w-3.5 h-3.5" />}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <Sliders className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Ustawienia wyglądu i czytnika</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Motyw kolorystyczny, wielkość czcionki, interlinia i tryb czytania
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Modal Footer */}
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                <span className="text-xs text-slate-500 font-medium">
+                  Zaznaczono: <strong className="text-emerald-700 dark:text-emerald-400 font-mono font-bold">
+                    {Object.values(exportCategories).filter(Boolean).length}
+                  </strong> z 7 kategorii
+                </span>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsExportBackupModalOpen(false)}
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Anuluj
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmExportBackup}
+                    disabled={Object.values(exportCategories).filter(Boolean).length === 0}
+                    className="px-4 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Wyeksportuj plik (.json)</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* IMPORT BACKUP SELECTIVE MODAL */}
+      <AnimatePresence>
+        {isImportBackupModalOpen && pendingBackupImportData && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                      Importuj Wybrane Dane z Kopii Zapasowej
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Wybierz kategorie, które chcesz wgrać do Multibooka
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsImportBackupModalOpen(false);
+                    setPendingBackupImportData(null);
+                  }}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* File Timestamp Banner */}
+              {pendingBackupImportData.exportedAt && (
+                <div className="mb-3 px-3.5 py-2 bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-900/40 rounded-xl text-xs text-emerald-900 dark:text-emerald-300 flex items-center justify-between">
+                  <span className="font-semibold flex items-center gap-1.5">
+                    📅 Kopia zapasowa z dnia: <strong>{formatExportDate(pendingBackupImportData.exportedAt)}</strong>
+                  </span>
+                  {pendingBackupImportData.version && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-200/60 dark:bg-emerald-900/60 font-bold">
+                      v{pendingBackupImportData.version}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Quick select toolbar */}
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-3 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <span className="font-semibold text-slate-700 dark:text-slate-300">Wybierz dane z pliku:</span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setImportCategories({
+                      chapters: Boolean(pendingBackupImportData.chapters?.length),
+                      progress: Boolean(pendingBackupImportData.progress),
+                      teacherClasses: Boolean(pendingBackupImportData.teacherClasses?.length),
+                      realizations: Boolean(pendingBackupImportData.realizations?.length),
+                      students: Boolean(pendingBackupImportData.students?.length),
+                      chapterGalleryImages: Boolean(pendingBackupImportData.chapterGalleryImages),
+                      settings: Boolean(pendingBackupImportData.theme || pendingBackupImportData.fontSize || pendingBackupImportData.lineHeight || typeof pendingBackupImportData.isReadingMode === 'boolean'),
+                    })}
+                    className="px-2 py-1 text-[11px] font-extrabold text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer"
+                  >
+                    Zaznacz wszystkie
+                  </button>
+                  <span className="text-slate-300 dark:text-slate-700">|</span>
+                  <button
+                    type="button"
+                    onClick={() => setImportCategories({
+                      chapters: false,
+                      progress: false,
+                      teacherClasses: false,
+                      realizations: false,
+                      students: false,
+                      chapterGalleryImages: false,
+                      settings: false,
+                    })}
+                    className="px-2 py-1 text-[11px] font-extrabold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+                  >
+                    Odznacz wszystkie
+                  </button>
+                </div>
+              </div>
+
+              {/* List of found categories */}
+              <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 my-1">
+                {/* 1. Chapters */}
+                {Array.isArray(pendingBackupImportData.chapters) && pendingBackupImportData.chapters.length > 0 && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, chapters: !prev.chapters }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.chapters 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.chapters ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.chapters && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Rozdziały i lekcje dydaktyczne</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Baza lekcji i treści ({pendingBackupImportData.chapters.length} tematów)
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                        {pendingBackupImportData.chapters.length} w pliku
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Progress */}
+                {pendingBackupImportData.progress && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, progress: !prev.progress }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.progress 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.progress ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.progress && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <BarChart2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Postępy uczniów i notatki</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Historia quizów, odpowiedzi i zapamiętane notatki
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                        Znaleziono
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Teacher Classes */}
+                {Array.isArray(pendingBackupImportData.teacherClasses) && pendingBackupImportData.teacherClasses.length > 0 && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.teacherClasses 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.teacherClasses ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.teacherClasses && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <GraduationCap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Klasy nauczyciela i przypisania</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Wykaz klas ({pendingBackupImportData.teacherClasses.length}) i rozkład tematów
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                        {pendingBackupImportData.teacherClasses.length} klas
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Realizations */}
+                {Array.isArray(pendingBackupImportData.realizations) && pendingBackupImportData.realizations.length > 0 && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, realizations: !prev.realizations }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.realizations 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.realizations ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.realizations && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Dziennik realizacji tematycznych</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Realizacje lekcji z datami ({pendingBackupImportData.realizations.length} wpisów)
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                        {pendingBackupImportData.realizations.length} wpisów
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Students */}
+                {Array.isArray(pendingBackupImportData.students) && pendingBackupImportData.students.length > 0 && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, students: !prev.students }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.students 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.students ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.students && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Konta uczniów</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Profile uczniów ({pendingBackupImportData.students.length} uczniów)
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-mono">
+                        {pendingBackupImportData.students.length} uczniów
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Chapter Gallery Images */}
+                {pendingBackupImportData.chapterGalleryImages && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.chapterGalleryImages 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.chapterGalleryImages ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.chapterGalleryImages && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <Image className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Galeria zdjęć do lekcji</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Ilustracje i zdjęcia przypisane do tematów
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Settings */}
+                {(pendingBackupImportData.theme || pendingBackupImportData.fontSize || pendingBackupImportData.lineHeight || typeof pendingBackupImportData.isReadingMode === 'boolean') && (
+                  <div 
+                    onClick={() => setImportCategories(prev => ({ ...prev, settings: !prev.settings }))}
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                      importCategories.settings 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/60 shadow-2xs' 
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                          importCategories.settings ? 'bg-emerald-600 text-white' : 'border border-slate-300 dark:border-slate-600'
+                        }`}>
+                          {importCategories.settings && <Check className="w-3.5 h-3.5" />}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <Sliders className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <span>Ustawienia wyglądu</span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Preferencje motywu i parametrów czytnika
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Mode Selector */}
+              <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-2">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                  Sposób przywracania danych:
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setImportMergeMode('merge')}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                      importMergeMode === 'merge'
+                        ? 'bg-emerald-700 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <span>🔀 Scal z obecnymi</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportMergeMode('replace')}
+                    className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                      importMergeMode === 'replace'
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <span>🔄 Zastąp obecne</span>
+                  </button>
+                </div>
+                <p className="text-[10.5px] text-slate-500 dark:text-slate-400 leading-tight">
+                  {importMergeMode === 'merge'
+                    ? 'Dopisze nowe pozycje z pliku bez usuwania obecnych danych.'
+                    : 'Nadpisze wybrane kategorie danych nową zawartością z pliku.'}
+                </p>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                <span className="text-xs text-slate-500 font-medium">
+                  Zaznaczono: <strong className="text-emerald-700 dark:text-emerald-400 font-mono font-bold">
+                    {Object.values(importCategories).filter(Boolean).length}
+                  </strong> kategorii
+                </span>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsImportBackupModalOpen(false);
+                      setPendingBackupImportData(null);
+                    }}
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Anuluj
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmImportBackup}
+                    disabled={Object.values(importCategories).filter(Boolean).length === 0}
+                    className="px-4 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>Zaimportuj wybrane dane</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
