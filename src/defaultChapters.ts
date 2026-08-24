@@ -65,6 +65,8 @@ W tym dziale (**Wprowadzenie**) znajdziesz kompletne instrukcje krok po kroku do
 5. **Lekcja 5**: **Notatki, Galeria Obrazów i Eksport do PDF 📝** – prowadzenie brudnopisu i generowanie dokumentów
 6. **Lekcja 6**: **Kopie Zapasowe, Import i Eksport Bazy 💾** – bezpieczne przechowywanie danych offline
 7. **Lekcja 7**: **Ułatwienia Dostępności, Lektor TTS i Motywy 👓** – personalizacja czcionek, kolorów i głosu lektora
+8. **Lekcja 8**: **Regulamin i Polityka Prywatności (RODO / Offline) 📜** – zasady darmowego użytku prywatnego i edukacyjnego
+9. **Lekcja 9**: **Licencja Użytkowania (Wolna Licencja Prywatno-Edukacyjna) ⚖️** – warunki licencji WLPE, prawa autorskie i ograniczenia
 
 ---
 
@@ -571,6 +573,237 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
         ],
         correctAnswer: 1,
         explanation: 'Każda sekcja i akapit posiada własny przycisk lektora, umożliwiający odsłuchanie dokładnie tego fragmentu, który aktualnie omawiamy.'
+      }
+    ]
+  },
+  {
+    id: 'guide-terms-and-privacy',
+    title: 'Regulamin i Polityka Prywatności (RODO / Offline) 📜',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 8,
+    createdAt: Date.now() - 800,
+    content: `# Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny” 📜
+
+**Wersja 1.3 · obowiązuje od 2026 r.**
+
+---
+
+### 🛡️ Najważniejsze informacje w pigułce:
+*   **Twórca i właściciel praw**: mgr Krzysztof Jureczek (*kjureczek@proton.me*, *github.com/krzjur-oss*).
+*   **Licencja**: Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE.
+*   **Darmowy użytek**: 100% bezpłatny do **użytku prywatnego** oraz do **użytku edukacyjnego** w szkołach i placówkach oświatowych.
+*   **Prywatność i RODO**: Program nie przesyła żadnych danych do sieci – wszystkie notatki, klasy i plany są zapisywane **wyłącznie lokalnie w pamięci Twojego urządzenia** (localStorage).
+
+---
+
+## § 1. Postanowienia ogólne
+
+1. Niniejszy Regulamin określa zasady korzystania z aplikacji **„Cyfrowy Multibook Edukacyjny”** (dalej: „Aplikacja”), dostępnej w wersji online oraz pracującej w trybie offline w przeglądarce internetowej.
+2. Właścicielem, twórcą i jedynym autorem Aplikacji jest **mgr Krzysztof Jureczek** (dalej: „Autor”).
+3. Aplikacja dystrybuowana jest na warunkach **Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE** (pełna treść w pliku LICENSE.md oraz w oknie licencji programu). Regulamin i Licencja stanowią całość i obowiązują łącznie.
+4. Korzystanie z Aplikacji oznacza pełną akceptację niniejszego Regulaminu oraz Licencji WLPE.
+
+---
+
+## § 2. Przeznaczenie Aplikacji
+
+Aplikacja przeznaczona jest wyłącznie do:
+1. **Użytku prywatnego** – bezpłatne korzystanie przez osoby fizyczne (uczniów, rodziców, samouków) w celach własnych, w tym powtórkowych, samokształceniowych i poznawczych.
+2. **Użytku edukacyjnego** – bezpłatne wykorzystanie w placówkach oświatowych (przedszkola, szkoły podstawowe, licea, technika, szkoły branżowe, uczelnie wyższe, świetlice, biblioteki, placówki opiekuńczo-wychowawcze i terapeutyczne) w ramach lekcji, zajęć dydaktycznych, kół zainteresowań, katechezy i warsztatów.
+
+Wszelkie inne zastosowania, w tym w szczególności komercyjne, odpłatne lub w ramach płatnych platform, wymagają uprzedniej pisemnej zgody Autora.
+
+---
+
+## § 3. Zasady korzystania
+
+1. Aplikacja jest całkowicie bezpłatna dla celów prywatnych i edukacyjnych wskazanych w § 2.
+2. Aplikacja nie zawiera żadnych reklam, banerów sponsorowanych, mikropłatności, płatnych subskrypcji ani ukrytych opłat.
+3. Użytkownik zobowiązuje się do korzystania z Aplikacji zgodnie z jej przeznaczeniem, normami współżycia społecznego oraz obowiązującym prawem.
+4. Zabronione jest podejmowanie działań mogących zakłócić działanie Aplikacji lub narazić innych użytkowników na szkodę.
+
+---
+
+## § 4. Prawa autorskie i warunki licencyjne
+
+Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Szkicownik na Żywo, generator sprawdzianów, koło fortuny, kalendarz realizacji), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie prawnoautorskiej.
+
+| Zakres | Szczegółowe zasady |
+| :--- | :--- |
+| ❌ **Zabronione** | Kopiowanie kodu, dekompilacja, modyfikowanie, tworzenie forków, publikowanie na zewnętrznych serwerach/sklepach, sprzedaż, komercjalizacja lub odpłatne udostępnianie Aplikacji bądź jej części bez pisemnej zgody Autora. |
+| ✅ **Dozwolone** | Korzystanie z Aplikacji zgodnie z przeznaczeniem (§ 2), prowadzenie zajęć w szkołach, tworzenie i eksportowanie własnych notatek/kartkówek oraz udostępnianie oficjalnego adresu Aplikacji innym nauczycielom i uczniom. |
+
+---
+
+## § 5. Dane i polityka prywatności (RODO / Pełna ochrona offline)
+
+1. Aplikacja **nie wymaga rejestracji, tworzenia kont ani logowania** i nie przesyła jakichkolwiek danych na zewnętrzne serwery.
+2. **Całkowita lokalność danych**: Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki do tematów, listy klas i imiona uczniów, historia realizacji lekcji w kalendarzu, wyniki quizów, załączone grafiki oraz rysunki ze szkicownika) są przechowywane **wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej** (localStorage) i nigdy nie opuszczają Twojego urządzenia.
+3. **Administrator danych**: W rozumieniu przepisów RODO administratorem ewentualnych danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor nie ma technicznego dostępu do tych danych.
+4. **Brak śledzenia**: Aplikacja nie używa marketingowych plików cookies, nie korzysta ze skryptów śledzących (typu Google Analytics) ani nie profiluje użytkowników.
+5. **Kontrola nad danymi**: Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON (kopia zapasowa) lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.
+
+---
+
+## § 6. Wyłączenie odpowiedzialności
+
+1. Aplikacja udostępniana jest w stanie „takim, jakim jest” (as is), bez jakichkolwiek gwarancji prawidłowości czy nieprzerwanego działania.
+2. Autor nie ponosi odpowiedzialności za ewentualną utratę danych (np. wskutek awarii przeglądarki lub wyczyszczenia pamięci podręcznej systemu) ani za szkody powstałe w wyniku korzystania z Aplikacji.
+3. Zaleca się regularne pobieranie kopii zapasowej danych za pomocą wbudowanego przycisku **„💾 Eksport kopii zapasowej”**.
+
+---
+
+## § 7. Postanowienia końcowe
+
+W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy prawa polskiego, w szczególności Kodeksu cywilnego oraz ustawy o prawie autorskim i prawach pokrewnych.
+
+**Kontakt z Autorem:** mgr Krzysztof Jureczek · E-mail: kjureczek@proton.me · GitHub: github.com/krzjur-oss`,
+    quizzes: [
+      {
+        id: 'guide-terms-q1',
+        question: 'Dla jakich celów aplikacja Cyfrowy Multibook Edukacyjny jest całkowicie bezpłatna?',
+        options: [
+          'Tylko do celów komercyjnych w płatnych firmach',
+          'Do darmowego użytku prywatnego oraz edukacyjnego (w szkołach, przedszkolach, uczelniach i placówkach oświatowych)',
+          'Tylko przez pierwsze 7 dni okresu próbnego',
+          'Wymaga comiesięcznej opłaty subskrypcyjnej'
+        ],
+        correctAnswer: 1,
+        explanation: 'Aplikacja została udostępniona całkowicie bezpłatnie do darmowego użytku prywatnego (własnego) oraz edukacyjnego (w placówkach oświatowo-wychowawczych).'
+      },
+      {
+        id: 'guide-terms-q2',
+        question: 'Czy dane uczniów i notatki wprowadzane do programu są przesyłane na serwery zewnętrzne?',
+        options: [
+          'Tak, trafiają do zagranicznej bazy danych',
+          'Nie, wszystkie dane są przechowywane w 100% lokalnie w pamięci przeglądarki (localStorage) i nigdy nie opuszczają urządzenia użytkownika',
+          'Są wysyłane pocztą e-mail do producenta',
+          'Tylko w weekendy'
+        ],
+        correctAnswer: 1,
+        explanation: 'Aplikacja działa w trybie pełnego poszanowania prywatności (RODO offline) – wszelkie dane pozostają wyłącznie na Twoim urządzeniu.'
+      }
+    ]
+  },
+  {
+    id: 'guide-license-wlpe',
+    title: 'Licencja Użytkowania (Wolna Licencja Prywatno-Edukacyjna) ⚖️',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 5,
+    isDefault: true,
+    lessonNumber: 9,
+    createdAt: Date.now() - 600,
+    content: `# LICENCJA UŻYTKOWANIA OPROGRAMOWANIA ⚖️
+## Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE
+
+### Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.3 i wyższe)
+
+**Właściciel praw autorskich i twórca:**
+**mgr Krzysztof Jureczek**
+*Copyright © 2026 Krzysztof Jureczek. Wszelkie prawa zastrzeżone.*
+
+Kontakt: kjureczek@proton.me · GitHub: github.com/krzjur-oss
+
+---
+
+### PREAMBUŁA
+
+Niniejsza licencja ma na celu zabezpieczenie niekomercyjnego charakteru projektu **„Cyfrowy Multibook Edukacyjny”**. Intencją Autora jest bezpłatne udostępnienie aplikacji do **użytku prywatnego** oraz placówkom edukacyjnym do **użytku dydaktycznego**, przy jednoczesnym pełnym zachowaniu praw autorskich, integralności kodu źródłowego oraz zakazie jakiejkolwiek komercjalizacji, kopiowania, modyfikacji i rozpowszechniania Oprogramowania bez pisemnej zgody Autora.
+
+---
+
+### § 1. DEFINICJE
+
+1. **Oprogramowanie** – aplikacja „Cyfrowy Multibook Edukacyjny” wraz z całym kodem źródłowym, interfejsem, skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, zasobami multimedialnymi oraz dokumentacją.
+2. **Autor / Licencjodawca** – mgr Krzysztof Jureczek, jedyny twórca i wyłączny dysponent autorskich praw majątkowych i osobistych do Oprogramowania.
+3. **Użytkownik / Licencjobiorca** – każda osoba fizyczna korzystająca z Oprogramowania w celach prywatnych / własnych, a także każda szkoła (podstawowa, ponadpodstawowa), przedszkole, uczelnia wyższa, świetlica lub inna placówka oświatowo-wychowawcza, opiekuńcza i terapeutyczna korzystająca z Oprogramowania w celach dydaktycznych.
+
+---
+
+### § 2. DOZWOLONY UŻYTEK (BEZPŁATNY)
+
+Autor udziela Użytkownikowi bezpłatnej, niewyłącznej, nieprzenoszalnej i ograniczonej licencji na korzystanie z Oprogramowania wyłącznie w następujących celach:
+
+1. **Użytek prywatny** – instalowanie, otwieranie i uruchamianie Oprogramowania przez osoby fizyczne na własny, niekomercyjny użytek, w tym w celach samokształceniowych, powtórkowych i poznawczych.
+2. **Użytek edukacyjny** – bezpłatne wykorzystanie Oprogramowania w placówkach oświatowych (przedszkola, szkoły podstawowe, licea, technika, szkoły branżowe, uczelnie wyższe, świetlice szkolne, biblioteki, ogniska wychowawcze, poradnie psychologiczno-pedagogiczne oraz placówki terapeutyczne) w ramach zajęć dydaktycznych, lekcji, wykładów, kół zainteresowań, katechezy oraz warsztatów.
+3. **Instalacja lokalna i tryb offline** – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.
+4. **Prezentacje niekomercyjne** – publiczne demonstrowanie działania Oprogramowania na konferencjach metodycznych, lekcjach otwartych, szkoleniach nauczycieli i spotkaniach popularyzujących nowoczesne technologie w edukacji, pod warunkiem wyraźnego wskazania autorstwa.
+
+---
+
+### § 3. ZAKAZY I OGRANICZENIA
+
+Wszelkie działania wykraczające poza § 2 wymagają uprzedniej, bezwzględnej pisemnej zgody Autora. W szczególności **surowo zabrania się**:
+
+1. **Kopiowania kodu i inżynierii wstecznej** – kopiowania, dekompilacji, dezasemblacji, inżynierii wstecznej, pobierania w celu tworzenia produktów pochodnych lub redystrybucji kodu źródłowego i plików Oprogramowania.
+2. **Modyfikacji i ingerencji** – wprowadzania jakichkolwiek zmian w kodzie źródłowym, logice aplikacji, interfejsie, logotypach, treściach licencyjnych lub innych zasobach Oprogramowania bez zgody Autora.
+3. **Rozpowszechniania i publikowania kopii** – dystrybuowania, odsprzedaży, sublicencjonowania, wynajmu, publikowania kopii, obrazów kontenerów lub „forków” Oprogramowania osobom trzecim, w tym za pośrednictwem serwisów GitHub, GitLab, forów internetowych, serwerów plików lub sklepów z aplikacjami.
+4. **Sprzedaży i komercjalizacji** – pobierania jakichkolwiek bezpośrednich lub pośrednich opłat za dostęp, pobranie, instalację lub użytkowanie Oprogramowania, umieszczania go w płatnych pakietach komercyjnych, za paywallem, w serwisach z reklamami zarobkowymi lub świadczenia na jego bazie odpłatnych usług.
+5. **Usuwania oznaczeń autorskich** – usuwania, zacierania, ukrywania lub modyfikowania informacji o Autorze, not copyright, logotypach, numerach wersji oraz odnośników do niniejszej Licencji i Regulaminu.
+
+---
+
+### § 4. WŁASNOŚĆ INTELEKTUALNA I INTEGRALNOŚĆ
+
+1. Oprogramowanie oraz wszelkie prawa autorskie, prawa pokrewne i prawa własności przemysłowej stanowią wyłączną własność Autora.
+2. Niniejsza licencja nie przenosi na Użytkownika jakichkolwiek majątkowych praw autorskich do Oprogramowania — udziela jedynie prawa do jego bezpłatnej, niekomercyjnej eksploatacji w granicach określonych w § 2.
+3. Użytkownik zobowiązuje się zachować w nienaruszonym stanie wszystkie oznaczenia praw autorskich.
+
+---
+
+### § 5. WYŁĄCZENIE ODPOWIEDZIALNOŚCI (AS IS)
+
+1. Oprogramowanie dostarczane jest w stanie takim, w jakim się znajduje („AS IS”), bez jakiejkolwiek rękojmi i gwarancji, wyraźnych lub dorozumianych, w tym gwarancji przydatności do określonego celu edukacyjnego lub technicznego.
+2. Autor nie ponosi odpowiedzialności za ewentualną utratę danych, błędy przeglądarki, awarie sprzętu szkolnego lub jakiekolwiek szkody bezpośrednie i pośrednie wynikłe z korzystania bądź braku możliwości korzystania z Oprogramowania. Użytkownikom zaleca się korzystanie z wbudowanej funkcji tworzenia kopii zapasowych (eksport JSON).
+
+---
+
+### § 6. ROZWIĄZANIE LICENCJI
+
+Naruszenie któregokolwiek z postanowień niniejszej licencji skutkuje jej natychmiastowym i bezwarunkowym wygaśnięciem. W takim przypadku Użytkownik zobowiązany jest do natychmiastowego zaprzestania korzystania z Oprogramowania oraz usunięcia wszelkich jego kopii ze swoich nośników i pamięci urządzeń.
+
+---
+
+### § 7. POSTANOWIENIA KOŃCOWE
+
+W sprawach nieuregulowanych niniejszą licencją zastosowanie mają przepisy prawa Rzeczypospolitej Polskiej, w szczególności ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych oraz Kodeksu cywilnego. Wszelkie spory rozstrzyga rzeczowo właściwy sąd powszechny dla miejsca zamieszkania Autora.
+
+---
+*© 2026 Krzysztof Jureczek · Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona)*`,
+    quizzes: [
+      {
+        id: 'guide-lic-q1',
+        question: 'Co oznacza skrót WLPE w licencji oprogramowania Multibooka?',
+        options: [
+          'Wirtualna Licencja Płatna Elektronicznie',
+          'Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona)',
+          'Wielomodułowa Licencja Przedsiębiorstwa Europejskiego',
+          'Wstępna Licencja Programisty Edukatora'
+        ],
+        correctAnswer: 1,
+        explanation: 'WLPE to Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona), gwarantująca bezpłatny użytek prywatny i edukacyjny przy ochronie praw autorskich.'
+      },
+      {
+        id: 'guide-lic-q2',
+        question: 'Czy wolno sprzedawać program lub pobierać opłaty za jego udostępnianie bez pisemnej zgody Autora?',
+        options: [
+          'Tak, każdy może sprzedawać program w internecie',
+          'Nie, jakakolwiek sprzedaż, komercjalizacja, pobieranie opłat czy usuwanie oznaczeń autorskich jest surowo zabronione',
+          'Tylko jeśli zmienimy kolory interfejsu',
+          'Tylko w szkołach niepublicznych'
+        ],
+        correctAnswer: 1,
+        explanation: 'Licencja WLPE zabrania jakiejkolwiek komercjalizacji, redystrybucji za opłatą, usuwania oznaczeń autorskich czy tworzenia nieautoryzowanych kopii.'
       }
     ]
   },

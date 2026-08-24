@@ -52,7 +52,9 @@ import {
   BarChart2,
   PieChart as PieChartIcon,
   TrendingUp,
-  CheckCircle2
+  CheckCircle2,
+  ShieldCheck,
+  Scale
 } from 'lucide-react';
 import {
   BarChart,
@@ -1381,6 +1383,10 @@ export default function App() {
     settings: true,
   });
   const [importMergeMode, setImportMergeMode] = useState<'merge' | 'replace'>('merge');
+
+  // Terms & License Modal states
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [termsTab, setTermsTab] = useState<'terms' | 'license'>('terms');
 
   // Teacher Panel State & Default Students list
   const DEFAULT_STUDENTS: Student[] = [
@@ -4504,6 +4510,24 @@ export default function App() {
             </button>
 
             <button
+              id="terms-license-header-btn"
+              onClick={() => {
+                setTermsTab('terms');
+                setIsTermsModalOpen(true);
+              }}
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
+                isTermsModalOpen
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : activeThemeConfig.galleryPresetBtn
+              }`}
+              title="Regulamin, Polityka Prywatności i Wolna Licencja Prywatno-Edukacyjna (WLPE)"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="hidden md:inline">Regulamin & Licencja</span>
+              <span className="md:hidden">WLPE</span>
+            </button>
+
+            <button
               id="clean-reset-db-btn"
               onClick={handleResetToDefault}
               className="p-1 px-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer transition-colors"
@@ -4937,6 +4961,21 @@ export default function App() {
               <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.3</p>
               <p className="text-[8px] text-slate-400 dark:text-slate-500">Wydanie offline</p>
             </div>
+
+            <button
+              type="button"
+              id="sidebar-open-terms-modal-btn"
+              onClick={() => {
+                setTermsTab('terms');
+                setIsTermsModalOpen(true);
+                setIsMobileSidebarOpen(false);
+              }}
+              className="w-full py-1.5 px-2 rounded-lg text-[9px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 border border-emerald-300/70 hover:border-emerald-400 dark:border-emerald-800/80 bg-emerald-50/70 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 shadow-3xs active:scale-98"
+              title="Zobacz Regulamin, RODO oraz Wolną Licencję Prywatno-Edukacyjną (WLPE)"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>📜 Regulamin & Licencja (WLPE)</span>
+            </button>
           </div>
         </aside>
 
@@ -7615,6 +7654,359 @@ export default function App() {
                   >
                     <Upload className="w-4 h-4" />
                     <span>Zaimportuj wybrane dane</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* TERMS & LICENSE (WLPE) MODAL DIALOG */}
+      <AnimatePresence>
+        {isTermsModalOpen && (
+          <div 
+            id="terms-license-modal-backdrop" 
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+            onClick={() => setIsTermsModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 16 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+              className={`w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden pointer-events-auto ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Top Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/50 via-transparent to-amber-50/30 dark:from-emerald-950/20 dark:to-slate-900">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-2xl bg-emerald-700 text-white shadow-md shadow-emerald-700/20">
+                    <ShieldCheck className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className={`font-serif font-extrabold text-base sm:text-lg tracking-tight ${activeThemeConfig.h1}`}>
+                        Regulamin, Prywatność & Licencja
+                      </h2>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800">
+                        WLPE • 100% Free
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                      <span>Darmowy użytek prywatny i edukacyjny</span>
+                      <span>•</span>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Autor: mgr Krzysztof Jureczek</span>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  id="close-terms-modal-btn"
+                  onClick={() => setIsTermsModalOpen(false)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  title="Zamknij okno"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Document Switcher Tabs */}
+              <div className="px-4 pt-3 pb-2 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center gap-2 bg-slate-50/40 dark:bg-slate-900/40">
+                <button
+                  type="button"
+                  id="tab-terms-btn"
+                  onClick={() => setTermsTab('terms')}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
+                    termsTab === 'terms'
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>📜 Regulamin i Prywatność (RODO)</span>
+                </button>
+
+                <button
+                  type="button"
+                  id="tab-license-btn"
+                  onClick={() => setTermsTab('license')}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
+                    termsTab === 'license'
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <Scale className="w-4 h-4" />
+                  <span>⚖️ Wolna Licencja (WLPE)</span>
+                </button>
+              </div>
+
+              {/* Scrollable Document Content */}
+              <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-6 text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed select-text">
+                
+                {termsTab === 'terms' ? (
+                  /* TERMS & PRIVACY TAB CONTENT */
+                  <div className="space-y-6">
+                    {/* Summary Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-900/50 space-y-1">
+                        <span className="font-extrabold text-xs text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>100% Bezpłatny</span>
+                        </span>
+                        <p className="text-[11px] text-emerald-800/80 dark:text-emerald-400/80 leading-snug">
+                          Darmowy do użytku prywatnego oraz edukacyjnego w placówkach oświatowych.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/50 space-y-1">
+                        <span className="font-extrabold text-xs text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+                          <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          <span>Prywatność RODO Offline</span>
+                        </span>
+                        <p className="text-[11px] text-blue-800/80 dark:text-blue-400/80 leading-snug">
+                          Żadne dane nie opuszczają Twojej przeglądarki. Wszystko zapisywane jest w localStorage.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 space-y-1">
+                        <span className="font-extrabold text-xs text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                          <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                          <span>Brak reklam i opłat</span>
+                        </span>
+                        <p className="text-[11px] text-amber-800/80 dark:text-amber-400/80 leading-snug">
+                          Zero mikropłatności, płatnych subskrypcji i uciążliwych bannerów marketingowych.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 space-y-4">
+                      <div>
+                        <h3 className="font-serif font-bold text-base text-slate-900 dark:text-white">
+                          Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny”
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                          Wersja 1.3 · Obowiązuje od 2026 r.
+                        </p>
+                      </div>
+
+                      <hr className="border-slate-200/70 dark:border-slate-800" />
+
+                      <div className="space-y-4 text-slate-700 dark:text-slate-300">
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 1. Postanowienia ogólne</h4>
+                          <p>1. Niniejszy Regulamin określa zasady korzystania z aplikacji <strong>„Cyfrowy Multibook Edukacyjny”</strong> (dalej: „Aplikacja”), dostępnej w wersji online oraz pracującej w trybie offline w przeglądarce internetowej.</p>
+                          <p>2. Właścicielem, twórcą i jedynym autorem Aplikacji jest <strong>mgr Krzysztof Jureczek</strong> (dalej: „Autor”).</p>
+                          <p>3. Aplikacja dystrybuowana jest na warunkach <strong>Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE</strong> (pełna treść w zakładce <em>Wolna Licencja (WLPE)</em>). Regulamin i Licencja stanowią całość i obowiązują łącznie.</p>
+                          <p>4. Uruchomienie lub korzystanie z Aplikacji oznacza pełną akceptację niniejszego Regulaminu oraz Licencji WLPE.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 2. Przeznaczenie Aplikacji</h4>
+                          <p>Aplikacja przeznaczona jest wyłącznie do:</p>
+                          <ul className="list-disc pl-5 space-y-1">
+                            <li><strong>Użytku prywatnego</strong> — bezpłatne korzystanie przez osoby fizyczne (uczniów, rodziców, nauczycieli, samouków) w celach własnych, w tym powtórkowych, samokształceniowych i poznawczych.</li>
+                            <li><strong>Użytku edukacyjnego</strong> — bezpłatne wykorzystanie w placówkach oświatowych (przedszkola, szkoły podstawowe, licea, technika, szkoły branżowe, uczelnie wyższe, świetlice, biblioteki, placówki opiekuńczo-wychowawcze i terapeutyczne) w ramach lekcji, zajęć dydaktycznych, kół zainteresowań, katechezy i warsztatów.</li>
+                          </ul>
+                          <p className="text-amber-800 dark:text-amber-300/90 font-medium">Wszelkie inne zastosowania, w tym w szczególności komercyjne, odpłatne lub w ramach płatnych platform, wymagają uprzedniej, pisemnej zgody Autora.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 3. Zasady korzystania</h4>
+                          <p>1. Aplikacja jest całkowicie bezpłatna dla celów prywatnych i edukacyjnych wskazanych w § 2.</p>
+                          <p>2. Aplikacja nie zawiera żadnych reklam, banerów sponsorowanych, mikropłatności, płatnych subskrypcji ani ukrytych opłat.</p>
+                          <p>3. Użytkownik zobowiązuje się do korzystania z Aplikacji zgodnie z jej przeznaczeniem, normami współżycia społecznego oraz obowiązującym prawem.</p>
+                          <p>4. Zabronione jest podejmowanie działań mogących zakłócić działanie Aplikacji lub narazić innych użytkowników na szkodę.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 4. Prawa autorskie i licencja</h4>
+                          <p>Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Szkicownik na Żywo, generator kartkówek, koło fortuny, terminarz), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie prawnoautorskiej.</p>
+                          
+                          <div className="my-2 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                            <div className="p-2.5 bg-rose-50/70 dark:bg-rose-950/20 border-b border-slate-200 dark:border-slate-800 flex items-start gap-2">
+                              <span className="font-bold text-rose-700 dark:text-rose-400 shrink-0">❌ Zabronione:</span>
+                              <span className="text-[11.5px]">Kopiowanie kodu, dekompilacja, modyfikowanie, tworzenie forków, publikowanie na zewnętrznych serwerach/sklepach, sprzedaż, komercjalizacja lub odpłatne udostępnianie Aplikacji bez pisemnej zgody Autora.</span>
+                            </div>
+                            <div className="p-2.5 bg-emerald-50/70 dark:bg-emerald-950/20 flex items-start gap-2">
+                              <span className="font-bold text-emerald-700 dark:text-emerald-400 shrink-0">✅ Dozwolone:</span>
+                              <span className="text-[11.5px]">Korzystanie z Aplikacji zgodnie z przeznaczeniem (§ 2), prowadzenie zajęć w szkołach, tworzenie i eksportowanie własnych notatek/kartkówek oraz udostępnianie oficjalnego adresu Aplikacji innym osobom.</span>
+                            </div>
+                          </div>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 5. Dane i polityka prywatności (RODO / GDPR)</h4>
+                          <p>1. Aplikacja <strong>nie wymaga rejestracji ani logowania</strong> i nie przesyła jakichkolwiek danych osobowych na zewnętrzne serwery.</p>
+                          <p>2. <strong>Całkowita lokalność danych:</strong> Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki, listy klas i imiona uczniów, historia realizacji w kalendarzu, wyniki quizów, załączone zdjęcia oraz rysunki) są przechowywane <strong>wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej (localStorage)</strong> i nigdy nie opuszczają Twojego komputera lub tabletu.</p>
+                          <p>3. <strong>Administrator danych:</strong> Administratorem danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor nie ma technicznego ani fizycznego dostępu do tych danych.</p>
+                          <p>4. <strong>Brak śledzenia i ciasteczek:</strong> Aplikacja nie używa plików cookie do śledzenia, zewnętrznych systemów analitycznych ani pikseli reklamowych.</p>
+                          <p>5. Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 6. Odpowiedzialność</h4>
+                          <p>1. Aplikacja udostępniana jest w stanie „takim, jakim jest” (<em>as is</em>), bez jakichkolwiek gwarancji prawidłowości czy nieprzerwanego działania.</p>
+                          <p>2. Autor nie ponosi odpowiedzialności za utratę danych, błędy przeglądarki ani szkody wynikające z korzystania bądź niemożności korzystania z Aplikacji.</p>
+                          <p>3. Zaleca się regularne tworzenie kopii zapasowych danych za pomocą wbudowanej funkcji <strong>„💾 Eksport kopii zapasowej”</strong>.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 7. Postanowienia końcowe & Kontakt</h4>
+                          <p>W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy prawa polskiego, w szczególności Kodeksu cywilnego oraz ustawy o prawie autorskim i prawach pokrewnych.</p>
+                          <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-[11.5px] space-y-1 font-mono">
+                            <p><strong>Autor i Właściciel:</strong> mgr Krzysztof Jureczek</p>
+                            <p><strong>Kontakt E-mail:</strong> <a href="mailto:kjureczek@proton.me" className="text-emerald-600 dark:text-emerald-400 underline">kjureczek@proton.me</a></p>
+                            <p><strong>GitHub:</strong> <a href="https://github.com/krzjur-oss" target="_blank" rel="noreferrer" className="text-emerald-600 dark:text-emerald-400 underline">github.com/krzjur-oss</a></p>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* LICENSE WLPE TAB CONTENT */
+                  <div className="space-y-6">
+                    {/* License Badge Header */}
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-700 to-teal-800 text-white shadow-lg space-y-2">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <span className="text-xs font-mono uppercase tracking-widest px-2 py-0.5 bg-white/20 rounded-md font-bold">
+                          Licencja Oprogramowania
+                        </span>
+                        <span className="text-xs font-mono font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded-md">
+                          WLPE • Wolna Licencja (Zastrzeżona)
+                        </span>
+                      </div>
+                      <h3 className="font-serif font-black text-lg sm:text-xl leading-tight">
+                        Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE
+                      </h3>
+                      <p className="text-xs text-emerald-100 opacity-90">
+                        Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.3 i wyższe) • Właściciel praw i twórca: mgr Krzysztof Jureczek
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 space-y-4">
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          Copyright © 2026 Krzysztof Jureczek. Wszelkie prawa zastrzeżone.
+                        </p>
+                        <p className="text-[11.5px] text-slate-500 dark:text-slate-400 font-mono">
+                          Kontakt: kjureczek@proton.me · GitHub: github.com/krzjur-oss
+                        </p>
+                      </div>
+
+                      <hr className="border-slate-200/70 dark:border-slate-800" />
+
+                      <div className="space-y-4 text-slate-700 dark:text-slate-300">
+                        <section className="space-y-1.5 p-3.5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/70 dark:border-emerald-900/40">
+                          <h4 className="font-bold text-xs uppercase tracking-wider text-emerald-900 dark:text-emerald-300">PREAMBUŁA</h4>
+                          <p className="text-[12px] leading-relaxed">
+                            Niniejsza licencja ma na celu zabezpieczenie niekomercyjnego charakteru projektu <strong>„Cyfrowy Multibook Edukacyjny”</strong>. Intencją Autora jest bezpłatne udostępnienie aplikacji do <strong>użytku prywatnego</strong> oraz placówkom edukacyjnym do <strong>użytku dydaktycznego</strong>, przy jednoczesnym pełnym zachowaniu praw autorskich, integralności kodu źródłowego oraz zakazie jakiejkolwiek komercjalizacji, kopiowania, modyfikacji i rozpowszechniania Oprogramowania bez pisemnej zgody Autora.
+                          </p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 1. DEFINICJE</h4>
+                          <p>1. <strong>Oprogramowanie</strong> – aplikacja „Cyfrowy Multibook Edukacyjny” wraz z całym kodem źródłowym, interfejsem, skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, zasobami multimedialnymi oraz dokumentacją.</p>
+                          <p>2. <strong>Autor / Licencjodawca</strong> – mgr Krzysztof Jureczek, jedyny twórca i wyłączny dysponent autorskich praw majątkowych i osobistych do Oprogramowania.</p>
+                          <p>3. <strong>Użytkownik / Licencjobiorca</strong> – każda osoba fizyczna korzystająca z Oprogramowania w celach prywatnych / własnych, a także każda szkoła (podstawowa, ponadpodstawowa), przedszkole, uczelnia wyższa, świetlica lub inna placówka oświatowo-wychowawcza, opiekuńcza i terapeutyczna korzystająca z Oprogramowania w celach dydaktycznych.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 2. DOZWOLONY UŻYTEK (BEZPŁATNY)</h4>
+                          <p>Autor udziela Użytkownikowi bezpłatnej, niewyłącznej, nieprzenoszalnej i ograniczonej licencji na korzystanie z Oprogramowania wyłącznie w następujących celach:</p>
+                          <ol className="list-decimal pl-5 space-y-1 text-[12px]">
+                            <li><strong>Użytek prywatny</strong> – instalowanie, otwieranie i uruchamianie Oprogramowania przez osoby fizyczne na własny, niekomercyjny użytek, w tym w celach samokształceniowych, powtórkowych i poznawczych.</li>
+                            <li><strong>Użytek edukacyjny</strong> – bezpłatne wykorzystanie Oprogramowania w placówkach oświatowych (przedszkola, szkoły podstawowe i ponadpodstawowe, uczelnie wyższe, świetlice, biblioteki, placówki opiekuńczo-wychowawcze i terapeutyczne) w ramach zajęć dydaktycznych, lekcji, wykładów, kół zainteresowań, katechezy oraz warsztatów.</li>
+                            <li><strong>Instalacja lokalna i tryb offline</strong> – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.</li>
+                            <li><strong>Prezentacje niekomercyjne</strong> – publiczne demonstrowanie działania Oprogramowania na konferencjach metodycznych, lekcjach otwartych i szkoleniach, pod warunkiem wyraźnego wskazania autorstwa.</li>
+                          </ol>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 3. ZAKAZY I OGRANICZENIA</h4>
+                          <p>Wszelkie działania wykraczające poza § 2 wymagają uprzedniej, bezwzględnej pisemnej zgody Autora. W szczególności <strong>surowo zabrania się</strong>:</p>
+                          <ul className="list-disc pl-5 space-y-1 text-[12px] text-rose-900 dark:text-rose-300">
+                            <li><strong>Kopiowania kodu i inżynierii wstecznej</strong> – dekompilacji, dezasemblacji, inżynierii wstecznej lub tworzenia produktów pochodnych.</li>
+                            <li><strong>Modyfikacji i ingerencji</strong> – wprowadzania zmian w kodzie, logice, grafikach, treściach lub oznaczeniach licencyjnych.</li>
+                            <li><strong>Rozpowszechniania i publikowania kopii</strong> – publikowania kopii, forków lub kontenerów w repozytoriach publicznych i sklepach z aplikacjami.</li>
+                            <li><strong>Sprzedaży i komercjalizacji</strong> – pobierania opłat bezpośrednich/pośrednich, umieszczania w płatnych pakietach lub za bramkami płatniczymi.</li>
+                            <li><strong>Usuwania oznaczeń autorskich</strong> – usuwania lub ukrywania informacji o Autorze i prawach autorskich.</li>
+                          </ul>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 4. WŁASNOŚĆ INTELEKTUALNA I INTEGRALNOŚĆ</h4>
+                          <p>1. Oprogramowanie oraz wszelkie prawa autorskie stanowią wyłączną własność Autora.</p>
+                          <p>2. Niniejsza licencja nie przenosi na Użytkownika praw własności do Oprogramowania — udziela jedynie prawa do bezpłatnego korzystania zgodnie z § 2.</p>
+                          <p>3. Użytkownik zobowiązuje się zachować w nienaruszonym stanie wszystkie oznaczenia praw autorskich.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 5. WYŁĄCZENIE ODPOWIEDZIALNOŚCI (AS IS)</h4>
+                          <p>1. Oprogramowanie dostarczane jest w stanie, w jakim się znajduje („AS IS”), bez jakichkolwiek gwarancji, wyraźnych lub dorozumianych.</p>
+                          <p>2. Autor nie ponosi odpowiedzialności za jakiekolwiek szkody bezpośrednie lub pośrednie wynikłe z użytkowania Oprogramowania, w tym utratę danych.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 6. ROZWIĄZANIE LICENCJI</h4>
+                          <p>Naruszenie któregokolwiek z postanowień niniejszej licencji skutkuje jej natychmiastowym i bezwarunkowym wygaśnięciem oraz obowiązkiem trwałego usunięcia wszelkich kopii Oprogramowania.</p>
+                        </section>
+
+                        <section className="space-y-1.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 7. POSTANOWIENIA KOŃCOWE</h4>
+                          <p>W sprawach nieuregulowanych niniejszą licencją zastosowanie mają przepisy ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych oraz Kodeksu cywilnego RP.</p>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer Controls */}
+              <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Jump to Reader Chapter button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsTermsModalOpen(false);
+                      const targetId = termsTab === 'terms' ? 'guide-terms-and-privacy' : 'guide-license-wlpe';
+                      setCurrentChapterId(targetId);
+                      setActiveMainTab('lessons');
+                      showToast("Przejście do rozdziału w podręczniku 📖", "info");
+                    }}
+                    className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Otwórz jako lekcję w Multibooku</span>
+                  </button>
+
+                  {/* Copy Text button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const textToCopy = termsTab === 'terms'
+                        ? "Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny” (WLPE)\nAutor: mgr Krzysztof Jureczek (kjureczek@proton.me)\nDarmowy użytek prywatny i edukacyjny. Dane w 100% lokalne (localStorage)."
+                        : "Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE\nProjekt: Cyfrowy Multibook Edukacyjny\nAutor: mgr Krzysztof Jureczek (kjureczek@proton.me)\nCopyright © 2026 Krzysztof Jureczek. Wszelkie prawa zastrzeżone.";
+                      navigator.clipboard.writeText(textToCopy);
+                      showToast("Podsumowanie skopiowane do schowka! 📋", "success");
+                    }}
+                    className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Kopiuj notkę</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsTermsModalOpen(false)}
+                    className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md shadow-emerald-700/20 transition-all cursor-pointer"
+                  >
+                    Rozumiem i Akceptuję ✓
                   </button>
                 </div>
               </div>
