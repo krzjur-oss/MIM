@@ -13,7 +13,8 @@ import {
   Play,
   Pause,
   Tv, 
-  Edit, 
+  Edit,
+  Edit3, 
   ChevronRight, 
   ChevronLeft, 
   ChevronDown,
@@ -3990,9 +3991,11 @@ export default function App() {
     if (importCategories.chapters && Array.isArray(data.chapters)) {
       if (isMerge) {
         setChapters((prev) => {
-          const existingIds = new Set(prev.map((c) => c.id));
-          const newChaps = data.chapters!.filter((c) => !existingIds.has(c.id));
-          return [...prev, ...newChaps];
+          const map = new Map(prev.map((c) => [c.id, c]));
+          data.chapters!.forEach((c) => {
+            map.set(c.id, c);
+          });
+          return Array.from(map.values());
         });
         restoredSummary.push(`Rozdziały (${data.chapters.length})`);
       } else {
@@ -4847,6 +4850,20 @@ export default function App() {
                                                       <span>⏱️ {ch.estimatedReadTime} min</span>
                                                       {hasNotes && <span title="Posiada notatki">📝</span>}
                                                       
+                                                      {/* Option to edit any chapter */}
+                                                      <button
+                                                        id={`edit-chapter-btn-${ch.id}`}
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          setEditingChapter(ch);
+                                                          setIsCreatorOpen(true);
+                                                        }}
+                                                        className="text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
+                                                        title="Edytuj treść lub quiz tego tematu"
+                                                      >
+                                                        <Edit3 className="w-3 h-3" />
+                                                      </button>
+
                                                       {/* Option to delete any chapter */}
                                                       <button
                                                         id={`delete-chapter-btn-${ch.id}`}
@@ -5157,6 +5174,19 @@ export default function App() {
 
                     <div className="flex flex-wrap items-center gap-2 shrink-0">
 
+                      {/* Edit current chapter button */}
+                      <button
+                        id="chapter-edit-active-btn"
+                        onClick={() => {
+                          setEditingChapter(activeChapter);
+                          setIsCreatorOpen(true);
+                        }}
+                        className="px-3 py-2 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                        title="Edytuj treść, klasę, dział lub quiz tego tematu"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Edytuj temat</span>
+                      </button>
 
                       {/* Bookmark chapter toggler */}
                       <button
@@ -5592,6 +5622,28 @@ export default function App() {
                       ) : (
                         <div className="w-[50px] xs:w-[68px] shrink-0" />
                       )}
+                    </div>
+
+                    {/* Quick Edit Chapter Footer Banner */}
+                    <div className={`mt-6 p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${activeThemeConfig.secondaryCardBg} ${activeThemeConfig.border} shadow-3xs`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-base">✏️</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">
+                          Chcesz zmodyfikować treść tej lekcji, zaktualizować quiz lub zmienić przypisany dział?
+                        </span>
+                      </div>
+                      <button
+                        id="chapter-quick-edit-bottom-btn"
+                        type="button"
+                        onClick={() => {
+                          setEditingChapter(activeChapter);
+                          setIsCreatorOpen(true);
+                        }}
+                        className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors shrink-0"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>Edytuj ten temat</span>
+                      </button>
                     </div>
                   </div>
                     </div> {/* Close Left Column (xl:col-span-8) */}
@@ -6490,6 +6542,13 @@ export default function App() {
             allChapters={chapters}
             onAddChapter={handleAddNewChapter}
             onUpdateChapter={handleUpdateChapter}
+            onDeleteChapter={(id) => {
+              const afterDelete = chapters.filter((c) => c.id !== id);
+              setChapters(afterDelete);
+              if (currentChapterId === id && afterDelete.length > 0) {
+                setCurrentChapterId(afterDelete[0].id);
+              }
+            }}
             editingChapter={editingChapter}
             onImportAll={handleImportAllChapters}
             onClose={() => {

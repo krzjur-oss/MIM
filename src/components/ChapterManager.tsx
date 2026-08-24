@@ -1,12 +1,34 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Chapter, QuizQuestion, EDUCATION_LEVELS, SCHOOL_TYPES, GRADES } from '../types';
 import { ALL_RELIGIA_CHAPTERS } from '../defaultChapters';
-import { Upload, Plus, Trash2, BookOpen, Save, FileText, Sparkles, AlertCircle, HelpCircle, Eye, Edit3, Check } from 'lucide-react';
+import {
+  Upload,
+  Plus,
+  Trash2,
+  BookOpen,
+  Save,
+  FileText,
+  Sparkles,
+  AlertCircle,
+  HelpCircle,
+  Eye,
+  Edit3,
+  Check,
+  Search,
+  Filter,
+  ArrowLeft,
+  RotateCcw,
+  CheckCircle2,
+  Clock,
+  Layers,
+  X
+} from 'lucide-react';
 
 interface ChapterManagerProps {
   onAddChapter: (chapter: Chapter) => void;
   onUpdateChapter?: (chapter: Chapter) => void;
+  onDeleteChapter?: (chapterId: string) => void;
   editingChapter?: Chapter | null;
   onImportAll: (chapters: Chapter[]) => void;
   allChapters: Chapter[];
@@ -15,7 +37,17 @@ interface ChapterManagerProps {
   showConfirm?: (message: string, onConfirm: () => void, title?: string) => void;
 }
 
-export default function ChapterManager({ onAddChapter, onUpdateChapter, editingChapter = null, onImportAll, allChapters, onClose, showToast, showConfirm }: ChapterManagerProps) {
+export default function ChapterManager({
+  onAddChapter,
+  onUpdateChapter,
+  onDeleteChapter,
+  editingChapter = null,
+  onImportAll,
+  allChapters,
+  onClose,
+  showToast,
+  showConfirm,
+}: ChapterManagerProps) {
   const notify = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
     if (showToast) {
       showToast(msg, type);
@@ -31,35 +63,98 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       onConfirm();
     }
   };
-  // Mode: 'create' | 'import_files' | 'export_import'
-  const [activeTab, setActiveTab] = useState<'create' | 'import_files'>('create');
-  
-  // Create Chapter States
-  const [title, setTitle] = useState(editingChapter?.title || ''); // Temat lekcji (np. "Bóg stwarza świat z miłości")
-  const [subject, setSubject] = useState(editingChapter?.subject || ''); // Przedmiot (np. "Religia")
-  const [content, setContent] = useState(editingChapter?.content || '');
-  const [readTime, setReadTime] = useState(editingChapter?.estimatedReadTime || 5);
-  const [quizzes, setQuizzes] = useState<QuizQuestion[]>(editingChapter?.quizzes || []);
-  
-  // Advanced Education States
-  const [schoolType, setSchoolType] = useState(
-    editingChapter 
-      ? (SCHOOL_TYPES.includes(editingChapter.schoolType) ? editingChapter.schoolType : 'Inny...') 
-      : 'Szkoła Podstawowa'
+
+  // Currently selected chapter for editing
+  const [currentEditingChapter, setCurrentEditingChapter] = useState<Chapter | null>(editingChapter);
+
+  // Mode: 'list_topics' | 'create' | 'import_files'
+  const [activeTab, setActiveTab] = useState<'list_topics' | 'create' | 'import_files'>(
+    editingChapter ? 'create' : 'list_topics'
   );
-  const [customSchoolType, setCustomSchoolType] = useState(
-    editingChapter && !SCHOOL_TYPES.includes(editingChapter.schoolType) ? editingChapter.schoolType : ''
-  );
-  const [grade, setGrade] = useState(
-    editingChapter 
-      ? (GRADES.includes(editingChapter.grade) ? editingChapter.grade : 'Inny...') 
-      : 'Klasa 1'
-  );
-  const [customGrade, setCustomGrade] = useState(
-    editingChapter && !GRADES.includes(editingChapter.grade) ? editingChapter.grade : ''
-  );
-  const [chapterGroup, setChapterGroup] = useState(editingChapter?.chapterGroup || ''); // Rozdział / Dział nadrzędny (np. "Stworzenie świata")
-  
+
+  // Sync state when editingChapter prop changes
+  useEffect(() => {
+    if (editingChapter) {
+      setCurrentEditingChapter(editingChapter);
+      setActiveTab('create');
+    }
+  }, [editingChapter]);
+
+  // Create / Edit Chapter Form States
+  const [title, setTitle] = useState('');
+  const [subject, setSubject] = useState('');
+  const [content, setContent] = useState('');
+  const [readTime, setReadTime] = useState(5);
+  const [quizzes, setQuizzes] = useState<QuizQuestion[]>([]);
+  const [schoolType, setSchoolType] = useState('Szkoła Podstawowa');
+  const [customSchoolType, setCustomSchoolType] = useState('');
+  const [grade, setGrade] = useState('Klasa 1');
+  const [customGrade, setCustomGrade] = useState('');
+  const [chapterGroup, setChapterGroup] = useState('');
+
+  // Sync form inputs when currentEditingChapter changes
+  useEffect(() => {
+    if (currentEditingChapter) {
+      setTitle(currentEditingChapter.title || '');
+      setSubject(currentEditingChapter.subject || '');
+      setContent(currentEditingChapter.content || '');
+      setReadTime(currentEditingChapter.estimatedReadTime || 5);
+      setQuizzes(currentEditingChapter.quizzes || []);
+
+      if (SCHOOL_TYPES.includes(currentEditingChapter.schoolType)) {
+        setSchoolType(currentEditingChapter.schoolType);
+        setCustomSchoolType('');
+      } else if (currentEditingChapter.schoolType) {
+        setSchoolType('Inny...');
+        setCustomSchoolType(currentEditingChapter.schoolType);
+      } else {
+        setSchoolType('Szkoła Podstawowa');
+        setCustomSchoolType('');
+      }
+
+      if (GRADES.includes(currentEditingChapter.grade)) {
+        setGrade(currentEditingChapter.grade);
+        setCustomGrade('');
+      } else if (currentEditingChapter.grade) {
+        setGrade('Inny...');
+        setCustomGrade(currentEditingChapter.grade);
+      } else {
+        setGrade('Klasa 1');
+        setCustomGrade('');
+      }
+
+      setChapterGroup(currentEditingChapter.chapterGroup || '');
+    }
+  }, [currentEditingChapter]);
+
+  // Handler to switch into clean "Create New Topic" mode
+  const handleStartCreateNew = () => {
+    setCurrentEditingChapter(null);
+    setTitle('');
+    setSubject('');
+    setContent('');
+    setReadTime(5);
+    setQuizzes([]);
+    setSchoolType('Szkoła Podstawowa');
+    setCustomSchoolType('');
+    setGrade('Klasa 1');
+    setCustomGrade('');
+    setChapterGroup('');
+    setActiveTab('create');
+  };
+
+  // Handler to start editing a specific chapter
+  const handleStartEditChapter = (ch: Chapter) => {
+    setCurrentEditingChapter(ch);
+    setActiveTab('create');
+  };
+
+  // List filter states
+  const [listSearch, setListSearch] = useState('');
+  const [listSubjectFilter, setListSubjectFilter] = useState('Wszystkie');
+  const [listSchoolTypeFilter, setListSchoolTypeFilter] = useState('Wszystkie');
+  const [listGradeFilter, setListGradeFilter] = useState('Wszystkie');
+
   // Quiz creator state
   const [quizQuestion, setQuizQuestion] = useState('');
   const [quizOpts, setQuizOpts] = useState<string[]>(['', '', '']);
@@ -96,23 +191,22 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
   };
 
   const parseMdFile = (fileName: string, text: string): Partial<Chapter> => {
-    // Attempt to extract top-level header as title
     const match = text.match(/^\s*#\s+(.+)$/m);
-    let extractedTitle = match ? match[1].trim() : fileName.replace('.md', '');
-    
-    // Clean markdown cleanups if any
-    let cleanContent = text;
-    // Calculate reading time: avg 150 words per minute
+    const extractedTitle = match ? match[1].trim() : fileName.replace(/\.(md|txt)$/i, '');
+
     const wordCount = text.split(/\s+/).filter(Boolean).length;
     const estTime = Math.max(1, Math.round(wordCount / 150));
 
     return {
       id: 'custom-' + Math.random().toString(36).substr(2, 9),
       title: extractedTitle,
-      content: cleanContent,
+      content: text,
       subject: 'Własne',
+      schoolType: 'Szkoła Podstawowa',
+      grade: 'Klasa 1',
+      chapterGroup: 'Materiały importowane',
       estimatedReadTime: estTime,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
   };
 
@@ -131,7 +225,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
           parsed.push(parseMdFile(file.name, text));
         }
       }
-      
+
       if (parsed.length > 0) {
         setImportedChapters((prev) => [...prev, ...parsed]);
       }
@@ -147,7 +241,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
         const text = await file.text();
         parsed.push(parseMdFile(file.name, text));
       }
-      
+
       if (parsed.length > 0) {
         setImportedChapters((prev) => [...prev, ...parsed]);
       }
@@ -158,7 +252,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
     if (!quizQuestion.trim()) return;
     const nonEmptyOpts = quizOpts.map((o) => o.trim()).filter(Boolean);
     if (nonEmptyOpts.length < 2) {
-      notify('Pytanie musi zawierać co najmniej 2 poprawne odpowiedzi!', 'error');
+      notify('Pytanie musi zawierać co najmniej 2 warianty odpowiedzi!', 'error');
       return;
     }
 
@@ -167,11 +261,10 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       question: quizQuestion.trim(),
       options: nonEmptyOpts,
       correctAnswer: correctOptIdx >= nonEmptyOpts.length ? 0 : correctOptIdx,
-      explanation: explanation.trim() || undefined
+      explanation: explanation.trim() || undefined,
     };
 
     setQuizzes([...quizzes, newQ]);
-    // Reset quiz fields
     setQuizQuestion('');
     setQuizOpts(['', '', '']);
     setCorrectOptIdx(0);
@@ -188,12 +281,12 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       return;
     }
 
-    const finalSchoolType = schoolType === 'Inny...' ? customSchoolType.trim() || 'Ogólny' : schoolType;
-    const finalGrade = grade === 'Inny...' ? customGrade.trim() || 'Ogólny' : grade;
+    const finalSchoolType = schoolType === 'Inny...' ? (customSchoolType.trim() || 'Ogólny') : schoolType;
+    const finalGrade = grade === 'Inny...' ? (customGrade.trim() || 'Ogólny') : grade;
     const finalChapterGroup = chapterGroup.trim() || 'Ogólne';
 
     const finalChapter: Chapter = {
-      id: editingChapter?.id || 'custom-' + Math.random().toString(36).substr(2, 9),
+      id: currentEditingChapter?.id || 'custom-' + Math.random().toString(36).substr(2, 9),
       title: title.trim(),
       subject: subject.trim() || 'Ogólne',
       schoolType: finalSchoolType,
@@ -201,15 +294,18 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       chapterGroup: finalChapterGroup,
       educationLevel: `${finalSchoolType} (${finalGrade})`,
       content: content.trim(),
-      estimatedReadTime: readTime || 3,
+      estimatedReadTime: Number(readTime) || 3,
       quizzes: quizzes.length > 0 ? quizzes : undefined,
-      createdAt: editingChapter?.createdAt || Date.now()
+      lessonNumber: currentEditingChapter?.lessonNumber,
+      createdAt: currentEditingChapter?.createdAt || Date.now(),
     };
 
-    if (editingChapter && onUpdateChapter) {
+    if (currentEditingChapter && onUpdateChapter) {
       onUpdateChapter(finalChapter);
+      notify(`Zaktualizowano temat: "${finalChapter.title}"`, 'success');
     } else {
       onAddChapter(finalChapter);
+      notify(`Utworzono nowy temat: "${finalChapter.title}"`, 'success');
     }
     onClose();
   };
@@ -222,25 +318,48 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       id: item.id || 'custom-' + Math.random().toString(36).substr(2, 9),
       title: item.title,
       subject: item.subject || 'Własne',
-      educationLevel: item.educationLevel || 'Ogólny',
+      schoolType: item.schoolType || 'Szkoła Podstawowa',
+      grade: item.grade || 'Klasa 1',
+      chapterGroup: item.chapterGroup || 'Materiały importowane',
+      educationLevel: item.educationLevel || `${item.schoolType || 'Szkoła Podstawowa'} (${item.grade || 'Klasa 1'})`,
       content: item.content,
       estimatedReadTime: item.estimatedReadTime || 3,
       quizzes: item.quizzes,
-      createdAt: item.createdAt || Date.now()
+      createdAt: item.createdAt || Date.now(),
     };
 
     onAddChapter(finalChapter);
-    // Remove from importing list
     setImportedChapters(importedChapters.filter((_, idx) => idx !== index));
+    notify(`Zapisano importowany temat "${finalChapter.title}"!`, 'success');
     if (importedChapters.length === 1) {
       onClose();
     }
   };
 
+  const handleDeleteTopic = (ch: Chapter) => {
+    ask(
+      `Czy na pewno chcesz usunąć temat "${ch.title}" z Twojego multibooka?`,
+      () => {
+        if (onDeleteChapter) {
+          onDeleteChapter(ch.id);
+        } else {
+          const remaining = allChapters.filter((c) => c.id !== ch.id);
+          onImportAll(remaining);
+        }
+        notify(`Usunięto temat "${ch.title}"`, 'success');
+        if (currentEditingChapter?.id === ch.id) {
+          handleStartCreateNew();
+        }
+      },
+      'Usuwanie tematu'
+    );
+  };
+
   const handleExportBook = () => {
-    const chaptersToExport = exportSubjectFilter === 'Wszystkie'
-      ? allChapters
-      : allChapters.filter((c) => c.subject === exportSubjectFilter);
+    const chaptersToExport =
+      exportSubjectFilter === 'Wszystkie'
+        ? allChapters
+        : allChapters.filter((c) => c.subject === exportSubjectFilter);
 
     if (chaptersToExport.length === 0) {
       notify('Brak rozdziałów do wyeksportowania dla wybranego przedmiotu.', 'error');
@@ -259,18 +378,22 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
   };
 
   const handleRestoreReligiaBackup = () => {
-    ask('Czy na pewno chcesz odblokować i przywrócić wszystkie materiały z przedmiotu Religia na tym urządzeniu?', () => {
-      const existingIds = new Set(allChapters.map((c) => c.id));
-      const toAdd = ALL_RELIGIA_CHAPTERS.filter((c) => !existingIds.has(c.id));
-      if (toAdd.length === 0) {
-        notify('Treści z przedmiotu Religia są już w pełni odblokowane!', 'info');
-        return;
-      }
-      const merged = [...allChapters, ...toAdd];
-      onImportAll(merged);
-      notify(`Pomyślnie odblokowano ${toAdd.length} lekcji Religii z kopii zapasowej!`, 'success');
-      onClose();
-    }, 'Przywracanie Religii z Kopii Zapasowej');
+    ask(
+      'Czy na pewno chcesz odblokować i przywrócić wszystkie materiały z przedmiotu Religia na tym urządzeniu?',
+      () => {
+        const existingIds = new Set(allChapters.map((c) => c.id));
+        const toAdd = ALL_RELIGIA_CHAPTERS.filter((c) => !existingIds.has(c.id));
+        if (toAdd.length === 0) {
+          notify('Treści z przedmiotu Religia są już w pełni odblokowane!', 'info');
+          return;
+        }
+        const merged = [...allChapters, ...toAdd];
+        onImportAll(merged);
+        notify(`Pomyślnie odblokowano ${toAdd.length} lekcji Religii z kopii zapasowej!`, 'success');
+        onClose();
+      },
+      'Przywracanie Religii z Kopii Zapasowej'
+    );
   };
 
   const handleImportBookJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -303,7 +426,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
               content: ch.content,
               estimatedReadTime: ch.estimatedReadTime || 5,
               quizzes: ch.quizzes || [],
-              createdAt: ch.createdAt || Date.now()
+              createdAt: ch.createdAt || Date.now(),
             }));
 
             setPendingImportBackup(sanitized);
@@ -339,14 +462,13 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
         `Czy na pewno chcesz zastąpić CAŁĄ obecną bazę (${allChapters.length} lekcji) wybranymi ${selectedChapters.length} rozdziałami z kopii zapasowej?`,
         () => {
           onImportAll(selectedChapters);
-          notify(`Zaimportowano i przywrócono ${selectedChapters.length} wybranych rozdziałów!`, 'success');
+          notify(`Zaimportowano i przywrócono ${selectedChapters.length} wybranych rozdziałów! Możesz je teraz dowolnie edytować.`, 'success');
           setPendingImportBackup(null);
           onClose();
         },
         'Potwierdzenie Zastąpienia Bazy'
       );
     } else {
-      // Merge mode
       const existingMap = new Map<string, Chapter>();
       allChapters.forEach((c) => existingMap.set(c.id, c));
 
@@ -366,7 +488,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       onImportAll(mergedList);
 
       notify(
-        `Pomyślnie przywrócono rozdziały z kopii! Dodano ${addedCount} nowych lekcji, zaktualizowano ${updatedCount}.`,
+        `Pomyślnie przywrócono rozdziały z kopii! Dodano ${addedCount} nowych lekcji, zaktualizowano ${updatedCount}. Wszystkie tematy możesz edytować w dowolnym momencie.`,
         'success'
       );
       setPendingImportBackup(null);
@@ -390,6 +512,29 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
     setSelectedImportIds(new Set(newIds));
   };
 
+  // Distinct values for list filtering
+  const distinctSubjects = Array.from(new Set(allChapters.map((c) => c.subject).filter(Boolean)));
+  const distinctSchoolTypes = Array.from(new Set(allChapters.map((c) => c.schoolType).filter(Boolean)));
+  const distinctGrades = Array.from(new Set(allChapters.map((c) => c.grade).filter(Boolean)));
+
+  // Filtered chapters for the "Baza Tematów" list
+  const filteredChaptersList = allChapters.filter((ch) => {
+    const searchLower = listSearch.trim().toLowerCase();
+    const matchesSearch =
+      !searchLower ||
+      ch.title.toLowerCase().includes(searchLower) ||
+      (ch.chapterGroup && ch.chapterGroup.toLowerCase().includes(searchLower)) ||
+      (ch.subject && ch.subject.toLowerCase().includes(searchLower)) ||
+      (ch.grade && ch.grade.toLowerCase().includes(searchLower)) ||
+      (ch.content && ch.content.toLowerCase().includes(searchLower));
+
+    const matchesSubject = listSubjectFilter === 'Wszystkie' || ch.subject === listSubjectFilter;
+    const matchesSchoolType = listSchoolTypeFilter === 'Wszystkie' || ch.schoolType === listSchoolTypeFilter;
+    const matchesGrade = listGradeFilter === 'Wszystkie' || ch.grade === listGradeFilter;
+
+    return matchesSearch && matchesSubject && matchesSchoolType && matchesGrade;
+  });
+
   return (
     <motion.div
       id="chapter-manager-overlay"
@@ -397,73 +542,386 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22 }}
-      className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto"
+      className="fixed inset-0 bg-stone-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ type: 'spring', damping: 28, stiffness: 240 }}
-        className="bg-[#FAF9F5] dark:bg-slate-900 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-[#EDEAE2] dark:border-slate-800"
+        className="bg-[#FAF9F5] dark:bg-slate-900 rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl border border-[#EDEAE2] dark:border-slate-800 overflow-hidden"
       >
-        
         {/* Header */}
-        <div className="p-5 border-b border-[#EDEAE2] dark:border-slate-800 flex items-center justify-between">
+        <div className="p-5 border-b border-[#EDEAE2] dark:border-slate-800 bg-white/70 dark:bg-slate-900/80 flex items-center justify-between shrink-0">
           <div>
-            <h2 id="manager-title" className="text-xl font-serif font-bold text-emerald-900 dark:text-emerald-400 flex items-center gap-2">
-              {editingChapter ? <Edit3 className="w-5 h-5 text-emerald-700" /> : <Plus className="w-5 h-5 text-emerald-700" />}
-              <span>{editingChapter ? `Edycja Lekcji: ${editingChapter.title}` : 'Centrum Twórcy i Zarządzania Książką'}</span>
+            <h2 id="manager-title" className="text-lg sm:text-xl font-serif font-bold text-emerald-900 dark:text-emerald-400 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
+              <span>Centrum Zarządzania Tematami Multibooka</span>
             </h2>
             <p className="text-xs text-[#5A5450] dark:text-slate-400 mt-1">
-              {editingChapter ? 'Wprowadź poprawki do treści lekcji, zmień jej atrybuty lub zaktualizuj interaktywny quiz.' : 'Rozwiń swój multibook dodając nowe lekcje, sprawdziany lub importując pliki w formacie Markdown (.md).'}
+              Przeglądaj, twórz, importuj oraz edytuj dowolne tematy lekcji, zadania quizowe i działy w Twoim programie.
             </p>
           </div>
           <button
             id="close-manager-btn"
+            type="button"
             onClick={onClose}
-            className="p-1 px-3 text-sm font-semibold rounded-lg text-[#5A5450] hover:bg-stone-200/50 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+            className="p-1.5 px-3 text-sm font-semibold rounded-xl text-[#5A5450] hover:bg-stone-200/60 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition-colors flex items-center gap-1"
           >
-            Anuluj
+            <X className="w-4 h-4" />
+            <span>Zamknij</span>
           </button>
         </div>
 
         {/* Tabs */}
-        {!editingChapter && (
-          <div className="flex bg-[#EDEAE2] dark:bg-slate-800 border-b border-[#D9D4C7] dark:border-slate-800/80 p-1 px-4 gap-1">
-            <button
-              id="create-tab-btn"
-              onClick={() => setActiveTab('create')}
-              className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
-                activeTab === 'create'
-                  ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
-                  : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Edit3 className="w-4 h-4" />
-              <span>Napisz nowy rozdział</span>
-            </button>
+        <div className="flex flex-wrap items-center bg-[#EDEAE2] dark:bg-slate-800/90 border-b border-[#D9D4C7] dark:border-slate-800 p-1.5 px-4 gap-1.5 shrink-0">
+          <button
+            id="tab-list-topics-btn"
+            type="button"
+            onClick={() => setActiveTab('list_topics')}
+            className={`px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer flex items-center gap-2 transition-all ${
+              activeTab === 'list_topics'
+                ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
+                : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Wszystkie tematy ({allChapters.length})</span>
+          </button>
 
-            <button
-              id="import-tab-btn"
-              onClick={() => setActiveTab('import_files')}
-              className={`px-4 py-2.5 text-sm font-medium rounded-lg cursor-pointer flex items-center gap-2 transition-all ${
-                activeTab === 'import_files'
-                  ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
-                  : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Upload className="w-4 h-4" />
-              <span>Importuj pliki (.md / .json)</span>
-            </button>
-          </div>
-        )}
+          <button
+            id="tab-create-topic-btn"
+            type="button"
+            onClick={() => setActiveTab('create')}
+            className={`px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer flex items-center gap-2 transition-all ${
+              activeTab === 'create'
+                ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
+                : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Edit3 className="w-4 h-4" />
+            <span>
+              {currentEditingChapter ? `Edytujesz: ${currentEditingChapter.title.slice(0, 24)}${currentEditingChapter.title.length > 24 ? '...' : ''}` : 'Napisz nowy temat'}
+            </span>
+          </button>
+
+          <button
+            id="tab-import-files-btn"
+            type="button"
+            onClick={() => setActiveTab('import_files')}
+            className={`px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer flex items-center gap-2 transition-all ${
+              activeTab === 'import_files'
+                ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-400 shadow-xs'
+                : 'text-[#5A5450] dark:text-slate-400 hover:text-emerald-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <Upload className="w-4 h-4" />
+            <span>Import / Eksport kopii</span>
+          </button>
+        </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
 
-          {/* TAB 1: WRITE MANUALLY */}
+          {/* TAB 1: BROWSE AND EDIT ALL TOPICS */}
+          {activeTab === 'list_topics' && (
+            <div className="space-y-5 animate-in fade-in duration-200">
+              
+              {/* Filter and Action Bar */}
+              <div className="bg-white dark:bg-slate-800/60 p-4 rounded-2xl border border-[#EDEAE2] dark:border-slate-800 space-y-3 shadow-2xs">
+                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                  {/* Search bar */}
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <input
+                      id="topics-list-search-input"
+                      type="text"
+                      value={listSearch}
+                      onChange={(e) => setListSearch(e.target.value)}
+                      placeholder="Wyszukaj po tytule lekcji, dziale, przedmiocie lub treści..."
+                      className="w-full pl-9.5 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-600/30"
+                    />
+                    {listSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setListSearch('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      id="list-create-new-topic-btn"
+                      type="button"
+                      onClick={handleStartCreateNew}
+                      className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-bold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Dodaj nowy temat</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter dropdowns */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+                  <div>
+                    <label className="block text-[10.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                      Przedmiot
+                    </label>
+                    <select
+                      id="topics-subject-filter-select"
+                      value={listSubjectFilter}
+                      onChange={(e) => setListSubjectFilter(e.target.value)}
+                      className="w-full p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-slate-800 dark:text-white focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                    >
+                      <option value="Wszystkie">Wszystkie przedmioty ({allChapters.length})</option>
+                      {distinctSubjects.map((sub) => (
+                        <option key={sub} value={sub}>
+                          {sub} ({allChapters.filter((c) => c.subject === sub).length})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                      Etap edukacyjny
+                    </label>
+                    <select
+                      id="topics-schooltype-filter-select"
+                      value={listSchoolTypeFilter}
+                      onChange={(e) => setListSchoolTypeFilter(e.target.value)}
+                      className="w-full p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-slate-800 dark:text-white focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                    >
+                      <option value="Wszystkie">Wszystkie etapy</option>
+                      {distinctSchoolTypes.map((st) => (
+                        <option key={st} value={st}>
+                          {st}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10.5px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                      Klasa / Poziom
+                    </label>
+                    <select
+                      id="topics-grade-filter-select"
+                      value={listGradeFilter}
+                      onChange={(e) => setListGradeFilter(e.target.value)}
+                      className="w-full p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-slate-800 dark:text-white focus:outline-hidden focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                    >
+                      <option value="Wszystkie">Wszystkie klasy</option>
+                      {distinctGrades.map((g) => (
+                        <option key={g} value={g}>
+                          {g}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Topics counter & Active Filters Info */}
+              <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 px-1">
+                <span className="font-semibold">
+                  Wyświetlanie: <strong className="text-emerald-700 dark:text-emerald-400 font-mono">{filteredChaptersList.length}</strong> z {allChapters.length} tematów
+                </span>
+                {(listSearch || listSubjectFilter !== 'Wszystkie' || listSchoolTypeFilter !== 'Wszystkie' || listGradeFilter !== 'Wszystkie') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setListSearch('');
+                      setListSubjectFilter('Wszystkie');
+                      setListSchoolTypeFilter('Wszystkie');
+                      setListGradeFilter('Wszystkie');
+                    }}
+                    className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Wyczyść filtry</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Topics Grid */}
+              {filteredChaptersList.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {filteredChaptersList.map((ch) => {
+                    const isCurrentlyActiveInEditor = currentEditingChapter?.id === ch.id;
+
+                    return (
+                      <div
+                        key={ch.id}
+                        id={`topic-card-${ch.id}`}
+                        className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 shadow-2xs ${
+                          isCurrentlyActiveInEditor
+                            ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-400 dark:border-emerald-700'
+                            : 'bg-white dark:bg-slate-900 border-[#EDEAE2] dark:border-slate-800 hover:border-emerald-300 dark:hover:border-slate-700'
+                        }`}
+                      >
+                        <div>
+                          {/* Badges Bar */}
+                          <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                            <span className="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-[10.5px]">
+                              {ch.subject || 'Ogólny'}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-slate-800 text-stone-700 dark:text-slate-300 font-semibold text-[10px]">
+                              {ch.schoolType || 'Szkoła'}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-slate-800 text-stone-700 dark:text-slate-300 font-semibold text-[10px]">
+                              {ch.grade || 'Klasa'}
+                            </span>
+                            {ch.quizzes && ch.quizzes.length > 0 && (
+                              <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 font-bold text-[10px] flex items-center gap-1">
+                                <Sparkles className="w-2.5 h-2.5" />
+                                <span>Quiz: {ch.quizzes.length}</span>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Chapter Group & Title */}
+                          {ch.chapterGroup && (
+                            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                              {ch.chapterGroup}
+                            </p>
+                          )}
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5 leading-snug">
+                            {ch.title}
+                          </h4>
+
+                          {/* Excerpt */}
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                            {ch.content.replace(/[#*`_]/g, '').slice(0, 140)}...
+                          </p>
+                        </div>
+
+                        {/* Card Footer Actions */}
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+                          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{ch.estimatedReadTime || 5} min</span>
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            {/* Primary Edit Button */}
+                            <button
+                              id={`edit-topic-btn-${ch.id}`}
+                              type="button"
+                              onClick={() => handleStartEditChapter(ch)}
+                              className="px-3 py-1.5 bg-emerald-100 dark:bg-emerald-950/50 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                              title="Edytuj treść, quiz, klasę lub dział tego tematu"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                              <span>Edytuj temat</span>
+                            </button>
+
+                            {/* Delete button */}
+                            <button
+                              id={`delete-topic-btn-${ch.id}`}
+                              type="button"
+                              onClick={() => handleDeleteTopic(ch)}
+                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer"
+                              title="Usuń ten temat"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-10 text-center space-y-3">
+                  <BookOpen className="w-8 h-8 text-slate-400 mx-auto" />
+                  <h4 className="font-bold text-sm text-slate-700 dark:text-slate-300">
+                    Brak tematów spełniających wybrane kryteria wyszukiwania
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Zmień frazę wyszukiwania lub filtry, albo utwórz nowy temat lekcji.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setListSearch('');
+                      setListSubjectFilter('Wszystkie');
+                      setListSchoolTypeFilter('Wszystkie');
+                      setListGradeFilter('Wszystkie');
+                    }}
+                    className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Wyczyść wszystkie filtry
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 2: WRITE MANUALLY / EDIT FORM */}
           {activeTab === 'create' && (
             <div className="space-y-6 animate-in fade-in duration-200">
+              
+              {/* Editing Banner notification */}
+              {currentEditingChapter ? (
+                <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-200/80 dark:bg-emerald-900/80 flex items-center justify-center text-emerald-800 dark:text-emerald-300 shrink-0">
+                      <Edit3 className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xs sm:text-sm text-emerald-950 dark:text-emerald-200">
+                        Tryb edycji tematu: <span className="underline">{currentEditingChapter.title}</span>
+                      </h4>
+                      <p className="text-[11px] text-emerald-800/80 dark:text-emerald-400 mt-0.5">
+                        Przedmiot: <strong>{currentEditingChapter.subject || 'Ogólny'}</strong> | Poziom: <strong>{currentEditingChapter.grade || 'Klasa 1'}</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('list_topics')}
+                      className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 rounded-xl text-xs font-bold hover:bg-emerald-100/60 transition-colors cursor-pointer flex items-center gap-1"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Baza tematów</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleStartCreateNew}
+                      className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Nowy pusty</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3.5 bg-stone-100/80 dark:bg-slate-800/50 border border-stone-200/80 dark:border-slate-800 rounded-2xl flex items-center justify-between text-xs text-stone-700 dark:text-slate-300">
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <span>Wypełnij poniższy formularz, aby utworzyć nową lekcję z tekstem Markdown i quizem.</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('list_topics')}
+                    className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Przeglądaj istniejące tematy</span>
+                    <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+                  </button>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   {/* SCHOOL TYPE SELECTOR */}
@@ -554,7 +1012,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="np. Bóg stwarza świat z miłości"
-                      className="w-full p-2.5 border border-[#EDEAE2] dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-slate-800 dark:text-white"
+                      className="w-full p-2.5 border border-[#EDEAE2] dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-slate-800 dark:text-white font-bold"
                     />
                   </div>
 
@@ -595,7 +1053,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     Treść rozdziału (Format Markdown) *
                   </label>
-                  <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs">
+                  <div className="flex gap-1 bg-slate-150 dark:bg-slate-800 p-0.5 rounded-lg text-xs">
                     <button
                       id="editor-edit-mode-btn"
                       type="button"
@@ -626,16 +1084,16 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                 {editorMode === 'edit' ? (
                   <textarea
                     id="new-chapter-content-textarea"
-                    rows={10}
+                    rows={12}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder={`Napisz treść w języku Markdown za pomocą standardowych tagów:\n\n# Nagłówek 1\n## Nagłówek 2\n\n* To jest punkt listy\n* Kolejny punkt\n\nZapraszamy do **pogrubień** oraz tabel!` }
-                    className="w-full p-3 font-mono text-sm border border-[#EDEAE2] dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-slate-800 dark:text-white"
+                    placeholder={`Napisz treść w języku Markdown za pomocą standardowych tagów:\n\n# Nagłówek 1\n## Nagłówek 2\n\n* To jest punkt listy\n* Kolejny punkt\n\nZapraszamy do **pogrubień** oraz tabel!`}
+                    className="w-full p-3 font-mono text-sm border border-[#EDEAE2] dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-slate-800 dark:text-white leading-relaxed"
                   />
                 ) : (
-                  <div id="new-chapter-preview-well" className="p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 rounded-xl min-h-[220px] max-h-[300px] overflow-y-auto">
+                  <div id="new-chapter-preview-well" className="p-4 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 rounded-xl min-h-[220px] max-h-[350px] overflow-y-auto">
                     {content ? (
-                      <div className="prose dark:prose-invert max-w-none text-sm space-y-2 text-slate-700 dark:text-slate-350">
+                      <div className="prose dark:prose-invert max-w-none text-sm space-y-2 text-slate-700 dark:text-slate-300">
                         {content.split('\n').map((line, idx) => {
                           if (line.startsWith('# ')) return <h1 key={idx} className="text-xl font-bold mt-2 ml-0">{line.replace('# ', '')}</h1>;
                           if (line.startsWith('## ')) return <h2 key={idx} className="text-lg font-bold mt-2">{line.replace('## ', '')}</h2>;
@@ -654,7 +1112,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
               <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-150 dark:border-slate-800">
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mb-1">
                   <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span>Stwórz Interaktywny Quiz (Opcjonalnie)</span>
+                  <span>Stwórz Interaktywny Quiz dla tego tematu (Opcjonalnie)</span>
                 </h3>
                 <p className="text-xs text-slate-500 mb-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-2 rounded-lg">
                   Dodaj pytania testowe do tego rozdziału. Uczniowie będą mogli sprawdzić swoją wiedzę bezpośrednio pod tekstem lekcji!
@@ -740,12 +1198,13 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                       {quizzes.map((q, idx) => (
                         <div key={q.id} className="flex items-center justify-between text-xs p-2.5 bg-white dark:bg-slate-900 border border-[#EDEAE2] dark:border-slate-800 rounded-xl">
                           <div>
-                            <span className="font-semibold text-emerald-800 dark:text-emerald-400 mr-1.5 icon font-sans">Q{idx + 1}.</span>
+                            <span className="font-semibold text-emerald-800 dark:text-emerald-400 mr-1.5 font-sans">Q{idx + 1}.</span>
                             <span className="text-slate-700 dark:text-slate-300 font-medium">{q.question}</span>
                             <span className="text-[10px] text-[#9A9382] ml-2 block">Opcje: {q.options.join(', ')}</span>
                           </div>
                           <button
                             id={`remove-quiz-q-${idx}`}
+                            type="button"
                             onClick={() => removeQuizQuestion(q.id)}
                             className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md cursor-pointer transition-colors"
                           >
@@ -759,27 +1218,40 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-2">
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
-                  id="cancel-creative-btn"
-                  onClick={onClose}
-                  className="px-4 py-2 border border-[#EDEAE2] dark:border-slate-700 text-[#5A5450] dark:text-slate-300 text-sm font-semibold rounded-xl cursor-pointer hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
+                  type="button"
+                  onClick={() => setActiveTab('list_topics')}
+                  className="px-3.5 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5"
                 >
-                  Anuluj
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Wróć do listy tematów</span>
                 </button>
-                <button
-                  id="save-new-chapter-btn"
-                  onClick={handleSaveCreatedChapter}
-                  className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-xl cursor-pointer shadow-md shadow-emerald-700/10 dark:shadow-none flex items-center gap-1.5 transition-colors"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{editingChapter ? 'Zapisz zmiany' : 'Zapisz i wyświetl lekcję'}</span>
-                </button>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    id="cancel-creative-btn"
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2 border border-[#EDEAE2] dark:border-slate-700 text-[#5A5450] dark:text-slate-300 text-xs sm:text-sm font-semibold rounded-xl cursor-pointer hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    Anuluj
+                  </button>
+                  <button
+                    id="save-new-chapter-btn"
+                    type="button"
+                    onClick={handleSaveCreatedChapter}
+                    className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-bold rounded-xl cursor-pointer shadow-md shadow-emerald-700/10 dark:shadow-none flex items-center gap-1.5 transition-colors"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{currentEditingChapter ? 'Zapisz zmiany w temacie' : 'Zapisz i utwórz lekcję'}</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
-          {/* TAB 2: IMPORT DIGITAL BOOK OR MD FILES */}
+          {/* TAB 3: IMPORT DIGITAL BOOK OR MD FILES */}
           {activeTab === 'import_files' && (
             <div className="space-y-6 animate-in fade-in duration-200">
               
@@ -802,7 +1274,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                         id="export-subject-select"
                         value={exportSubjectFilter}
                         onChange={(e) => setExportSubjectFilter(e.target.value)}
-                        className="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        className="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
                       >
                         <option value="Wszystkie">Wszystkie przedmioty ({allChapters.length})</option>
                         {Array.from(new Set(allChapters.map((c) => c.subject).filter(Boolean))).map((s) => (
@@ -815,6 +1287,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                   </div>
                   <button
                     id="export-multibook-json-btn"
+                    type="button"
                     onClick={handleExportBook}
                     className="mt-4 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors self-start border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 ring-1 ring-rose-500/20"
                   >
@@ -829,7 +1302,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                       <span>Importuj i Przywróć Wybrane</span>
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-slate-350 mt-1.5 leading-relaxed">
-                      Wczytaj plik .json kopii zapasowej. Następnie w wygodnym oknie wybierzesz dokładnie te rozdziały, które chcesz przywrócić lub scalić z obecną bazą.
+                      Wczytaj plik .json kopii zapasowej. Wszystkie zaimportowane lekcje możesz od razu przeglądać i edytować w programie.
                     </p>
                   </div>
                   <div className="mt-4 flex items-center gap-2">
@@ -858,6 +1331,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                   </div>
                   <button
                     id="restore-religia-backup-btn"
+                    type="button"
                     onClick={handleRestoreReligiaBackup}
                     className="mt-4 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors self-start"
                   >
@@ -904,7 +1378,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                     Wspieramy pliki .md (Markdown) oraz .txt.
                   </p>
                   <div className="mt-3 text-[10px] bg-stone-100 dark:bg-slate-750 px-2.5 py-1 rounded-md font-mono text-slate-600 dark:text-slate-400 inline-block">
-                    Pliki zostaną natychmiast przekonwertowane na interaktywne lekcje!
+                    Pliki zostaną natychmiast przekonwertowane na interaktywne lekcje, które możesz dowolnie edytować!
                   </div>
                 </div>
               </div>
@@ -918,6 +1392,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                     </span>
                     <button
                       id="clear-imported-chapters-list"
+                      type="button"
                       onClick={() => setImportedChapters([])}
                       className="text-xs text-red-500 hover:underline font-semibold cursor-pointer"
                     >
@@ -1000,6 +1475,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             id={`trash-imported-${index}`}
+                            type="button"
                             onClick={() => setImportedChapters(importedChapters.filter((_, idx) => idx !== index))}
                             className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer"
                             title="Usuń"
@@ -1009,6 +1485,7 @@ export default function ChapterManager({ onAddChapter, onUpdateChapter, editingC
 
                           <button
                             id={`save-imported-${index}`}
+                            type="button"
                             onClick={() => handleSaveImportedChapter(index)}
                             className="px-3.5 py-2 bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 font-bold text-xs rounded-xl flex items-center gap-1 hover:bg-emerald-200/50 cursor-pointer"
                           >
