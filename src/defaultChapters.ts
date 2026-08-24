@@ -35,71 +35,542 @@ const BASE_CHAPTERS: Chapter[] = [
     educationLevel: 'Ogólny',
     estimatedReadTime: 3,
     isDefault: true,
-    createdAt: Date.now() - 4000,
+    lessonNumber: 1,
+    createdAt: Date.now() - 7000,
     content: `# Witaj w Cyfrowym Multibooku Edukacyjnym! 👋
 
-Ten program to interaktywny podręcznik i zeszyt ćwiczeń zaprojektowany z myślą o nowoczesnej nauce stacjonarnej oraz offline. Działa w całości w Twojej przeglądarce i nie wymaga połączenia internetowego po załadowaniu.
+Ten program to **nowoczesny, interaktywny podręcznik i zeszyt ćwiczeń**, zaprojektowany z myślą o dydaktyce stacjonarnej w klasie oraz samodzielnej nauce w domu. Aplikacja działa w **100% w Twojej przeglądarce i nie wymaga stałego połączenia z Internetem** po jednokrotnym otwarciu.
 
 ---
 
-### 🌟 Najważniejsze Możliwości Multibooka:
+### 🌟 Dlaczego Multibook to idealne narzędzie do nauki?
 
-1. **Podział na Typy Szkół, Klasy oraz Rozdziały**:
-   Nauczyciel może uczyć na różnych poziomach edukacyjnych! W menu bocznym można filtrować i grupować treści wg typu szkoły oraz konkretnej klasy (np. Klasa 1, Klasa 7) oraz według rozdziałów przedmiotowych.
-
-2. **Wyświetlanie i Tworzenie Treści w Formacie Lekcji**:
-   Każda lekcja posiada swój **Rozdział nadrzędny** (np. *Stworzenie świata*) oraz **Temat lekcji** (np. *Bóg stwarza świat z miłości*).
-
-3. **Szkicownik na Żywo (Interaktywna Tablica) 🖌️**:
-   Nauczyciel lub uczeń może rysować, zakreślać i pisać bezpośrednio na wyświetlanym tekście! Kliknij **„Uruchom Szkicownik”** w pasku narzędzi, aby zacząć nanosić notatki na ekranie (idealne do rzutników i tablic interaktywnych).
-
-4. **Indywidualne Notatki Ucznia i Interaktywna Galeria Obrazów 📝🖼️**:
-   Każdy materiał posiada dedykowany brudnopis, który automatycznie zapisuje się w pamięci lokalnej. Dodatkowo możesz **wklejać linki URL do obrazów** lub wybierać **edukacyjne ilustracje z podręcznej bocznej galerii przedmiotowej** (np. mikroskopy dla Biologii, mapy dla Geografii, równania dla Matematyki). Obrazy w notatkach are automatycznie wykrywane, można je powiększać w oknie podglądu (Lightbox), kopiować ich linki lub wstawiać bezpośrednio do notatek.
-
-5. **Wizualne Wskaźniki Postępu (Ścieżka Lekcji) 🟢**:
-   Na dole strony znajduje się interaktywny pasek kropek postępu. Pokazuje on, w którym miejscu podręcznika się znajdujesz, które lekcje zostały już ukończone (oznaczone ptaszkiem ✓) oraz pozwala na natychmiastowe przejście do wybranej lekcji po naciśnięciu lub najechaniu myszką (wyświetla się wtedy dymek podglądu z pełnym tytułem).
-
-6. **Interaktywny Kalendarz i Historia Zrealizowanych Lekcji 📅**:
-   Uczniowie mogą oznaczać lekcje jako ukończone, a nauczyciele przypisywać je do realizacji w swoich klasach! W panelu klas w menu bocznym po rozwinięciu klasy zobaczysz interaktywny kalendarz z zaznaczonymi dniami odbytych lekcji, szczegółową historię chronologiczną z dokładną datą i tematem lekcji oraz możliwość wycofania realizacji przyciskiem "Cofnij".
-
-7. **Elastyczne Dostosowanie Wyglądu i Motywów 🛠️**:
-   * Zmieniaj wielkość czcionki, aby tekst był doskonale czytelny z końca klasy.
-   * Dopasowuj **wysokość linii (interlinii)** bezpośrednio w panelu stylów na wąską, normalną lub szeroką, co natychmiast wpływa na czytelność całego tekstu.
-   * Wybieraj spośród **5 uroczych motywów kolorystycznych** (Jasny, Ciemny, Ciepły Sepia, Pastelowy Niebieski oraz specjalny **Motyw Dyslektyczny** z ułatwioną dyslektyczną czcionką OpenDyslexic i łagodnym tłem).
-   * **Dynamiczne Kolory Przedmiotów** 🎨: Plakietki, aktywny wybór rozdziałów oraz kropki postępu automatycznie zmieniają barwę w zależności od wybranego przedmiotu (np. zielony dla Biologii, indigo dla Astronomii/Geografii, różowy dla Matematyki/Fizyki/Chemii, ciepły bursztynowy dla Religii).
-
-8. **Usuwanie i Zarządzanie Lekcjami 🗑️**:
-   Zarówno domyślne, jak i własne dodane lekcje mogą być teraz bez problemu usunięte z poziomu bocznej listy rozdziałów (za pomocą ikony kosza przy danej lekcji) lub bezpośrednio za pomocą przycisku usuwania w dolnym panelu aktywnej lekcji.
+| Funkcja | Co zyskujesz? | Dla kogo? |
+| :--- | :--- | :--- |
+| **Hierarchiczny układ** | Przejrzysty podział na etapy (np. Szkoła Podstawowa), klasy (1–8) i działy tematyczne | Nauczyciel i Uczeń |
+| **Szkicownik na Żywo** 🖌️ | Rysowanie, zakreślanie i wskaźnik laserowy bezpośrednio na treści lekcji | Tablice interaktywne i rzutniki |
+| **Panel Nauczyciela** 👨‍🏫 | Zarządzanie klasami, terminarz, rejestr zrealizowanych lekcji i generator kartkówek | Nauczyciele i wychowawcy |
+| **Interaktywne Quizy** ⚡ | Natychmiastowa weryfikacja wiedzy z wyjaśnieniem poprawnych odpowiedzi | Uczniowie i powtórki |
+| **Notatki i Galeria** 📝🖼️ | Osobisty brudnopis z wklejaniem zdjęć oraz eksportem do pliku PDF/HTML | Każdy użytkownik |
+| **Dostępność i Lektor** 👓🔊 | Tryb dyslektyczny (OpenDyslexic), synteza mowy (TTS) i 5 motywów barwnych | Wyrównywanie szans |
 
 ---
 
-### 📂 Jak zarządzać materiałami?
-* **Dodawanie**: Kliknij przycisk **„+ Dodaj lekcję”** w menu bocznym, wybierz typ szkoły/klasę, wpisz rozdział, temat, treść oraz pytania testowe.
-* **Usuwanie**: Kliknij ikonę kosza przy lekcji w menu bocznym lub przycisk kosza obok oznaczenia ukończenia lekcji w oknie głównym.`,
+### 🗺️ Spis Treści Przewodnika po Aplikacji:
+W tym dziale (**Wprowadzenie**) znajdziesz kompletne instrukcje krok po kroku do każdej funkcji programu:
+1. **Lekcja 1**: Wstęp do Interaktywnego Multibooka *(bieżący temat)*
+2. **Lekcja 2**: **Jak utworzyć i edytować własną lekcję ✍️** – przewodnik po kreatorze lekcji, formatowaniu Markdown i quizach
+3. **Lekcja 3**: **Panel Nauczyciela i Organizacja Pracy 👨‍🏫** – zarządzanie klasami, terminarz, koło fortuny i generator testów
+4. **Lekcja 4**: **Szkicownik na Żywo i Tryb Tablicy 🖌️** – narzędzia rysowania, zakreślacz, reflektor i wskaźnik
+5. **Lekcja 5**: **Notatki, Galeria Obrazów i Eksport do PDF 📝** – prowadzenie brudnopisu i generowanie dokumentów
+6. **Lekcja 6**: **Kopie Zapasowe, Import i Eksport Bazy 💾** – bezpieczne przechowywanie danych offline
+7. **Lekcja 7**: **Ułatwienia Dostępności, Lektor TTS i Motywy 👓** – personalizacja czcionek, kolorów i głosu lektora
+
+---
+
+> 💡 **Wskazówka:** Przejdź do kolejnych tematów za pomocą dolnych przycisków nawigacji lub klikając w kropki postępu na dole ekranu!`,
     quizzes: [
       {
         id: 'intro-q1',
         question: 'Gdzie są zapisywane Twoje prywatne notatki i nowo dodane rozdziały w tym Multibooku?',
         options: [
           'Na zewnętrznym serwerze w chmurze',
-          'Lokalnie w pamięci przeglądarki (LocalStorage) - działają w pełni offline',
+          'Lokalnie w pamięci Twojej przeglądarki (LocalStorage) – działają w 100% offline',
           'Są jednorazowe i znikają po zamknięciu karty',
-          'W specjalnej bazie danych wymagającej logowania'
+          'W bazie danych wymagającej logowania i hasła'
         ],
         correctAnswer: 1,
-        explanation: 'Wszystkie dane są zapisywane lokalnie w Twojej przeglądarce, dzięki czemu aplikacja działa w 100% offline bez wysyłania jakichkolwiek informacji do sieci!'
+        explanation: 'Wszystkie materiały, notatki i zrealizowane lekcje są bezpiecznie zapisywane w pamięci lokalnej Twojego urządzenia, co gwarantuje pełną prywatność i działanie bez internetu.'
       },
       {
         id: 'intro-q2',
-        question: 'Która funkcja ułatwia pracę nauczyciela na lekcji z tablicą interaktywną lub rzutnikiem?',
+        question: 'Która funkcja ułatwia pracę na lekcji z tablicą interaktywną lub rzutnikiem?',
         options: [
-          'Tylko czytanie tekstu',
+          'Tylko czytanie statycznego tekstu',
           'Wyłącznie import plików PDF',
-          'Szkicownik na Żywo pozwalający pisać i rysować bezpośrednio na treści podręcznika',
+          'Szkicownik na Żywo pozwalający pisać, zakreślać i rysować bezpośrednio na treści podręcznika',
           'Odtwarzacz plików MP3'
         ],
         correctAnswer: 2,
-        explanation: 'Szkicownik na Żywo pozwala rysować i pisać po ekranie w czasie rzeczywistym, co jest bezcenne przy omawianiu tematów wspólnie z klasą.'
+        explanation: 'Szkicownik na Żywo pozwala na nanoszenie odręcznych notatek, zakreśleń neonowych i figur bezpośrednio na wyświetlaną stronę w czasie rzeczywistym.'
+      }
+    ]
+  },
+  {
+    id: 'guide-create-lesson',
+    title: 'Jak utworzyć i edytować własną lekcję ✍️',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 2,
+    createdAt: Date.now() - 6000,
+    content: `# Jak utworzyć i edytować własną lekcję ✍️
+
+Multibook pozwala każdemu nauczycielowi oraz uczniowi na **tworzenie autorskich tematów lekcji**, rozbudowywanie programu nauczania o nowe przedmioty oraz swobodne modyfikowanie istniejących materiałów.
+
+---
+
+### 🚀 Krok 1: Otwarcie Kreatora Lekcji
+
+Do modułu tworzenia i edycji lekcji możesz przejść na kilka wygodnych sposobów:
+1. **Z lewego paska bocznego**: kliknij przycisk **„+ Dodaj lekcję”** na samej górze spisu treści.
+2. **Z poziomu dowolnego tematu**: kliknij przycisk **„Edytuj temat”** w górnym nagłówku strony lub na dole pod treścią lekcji.
+3. **Z listy tematów w menu**: najedź myszką na dowolny temat w spisie i kliknij ikonę ołówka ✏️.
+
+---
+
+### 📝 Krok 2: Uzupełnienie Formularza Tematu
+
+W otwartym oknie kreatora wypełnij podstawowe metadane:
+*   **Typ Szkoły / Etap edukacyjny**: wybierz z listy (np. *Szkoła Podstawowa*, *Liceum Ogólnokształcące*) lub wpisz własny (np. *Przedszkole*, *Technikum*).
+*   **Klasa / Poziom**: wybierz konkretną klasę (np. *Klasa 4*, *Klasa 8*) lub zdefiniuj własną grupę.
+*   **Dział / Rozdział nadrzędny**: wpisz nazwę modułu tematycznego (np. *Stworzenie świata*, *Biologia Komórki*, *Świat Starożytny*). Dzięki temu lekcje zostaną estetycznie pogrupowane w spisie treści!
+*   **Temat lekcji / Tytuł**: główny tytuł lekcji, który będzie widoczny na liście i w nagłówku.
+*   **Przedmiot / Kategoria**: nazwa przedmiotu (np. *Religia*, *Biologia*, *Historia*, *Informatyka*).
+*   **Szacowany czas czytania**: orientacyjna liczba minut potrzebna na zapoznanie się z materiałem.
+
+---
+
+### 🎨 Krok 3: Formatowanie Treści w Standardzie Markdown
+
+Treść lekcji wpisujesz w intuicyjnym formacie Markdown. Możesz w każdej chwili przełączać się między trybem **Edycji** a **Podglądem na żywo**:
+
+*   **Nagłówki**: użyj znaku kratki, np. \`# Tytuł sekcji\` lub \`## Podtytuł\`
+*   **Wyróżnienia**: \`**tekst pogrubiony**\`, \`*tekst pochylony*\`, \`__podkreślenie__\`
+*   **Listy punktowane**: zacznij linię od gwiazdki lub myślnika: \`* Punkt pierwszy\`
+*   **Listy numerowane**: wpisz numer z kropką: \`1. Krok pierwszy\`
+*   **Cytaty i złote myśli**: zacznij od znaku większości: \`> Ważna myśl\`
+*   **Tabele**: rozdzielaj kolumny pionowymi kreskami: \`| Kolumna A | Kolumna B |\`
+*   **Wstawianie ilustracji**: wpisz \`![Opis](https://adres-obrazka.pl/zdjecie.jpg)\`
+*   **Wzory i symbole**: wpisz formuły matematyczne lub symbole religijne i przyrodnicze
+
+---
+
+### ⚡ Krok 4: Dodawanie Interaktywnych Pytań Quizowych
+
+Każda lekcja może posiadać własny **test sprawdzający wiedzę**:
+1. W sekcji **„Dodaj pytanie quizowe”** wpisz treść pytania.
+2. Uzupełnij warianty odpowiedzi (minimum 2 opcje, możesz dodać kolejne przyciskiem *+ Dodaj wariant*).
+3. Kliknij na kropkę przy poprawnej odpowiedzi, aby oznaczyć klucz.
+4. *(Opcjonalnie)* Wpisz **Dydaktyczne wyjaśnienie** – pojawi się ono uczniowi po zaznaczeniu odpowiedzi!
+5. Kliknij **„+ Dodaj to pytanie do quizu”**.
+
+---
+
+### 💾 Krok 5: Zapisanie i Edycja
+
+* Kliknij **„Zapisz temat w multibooku”**.
+* Twój nowy temat pojawi się natychmiast w odpowiednim dziale i klasie.
+* Możesz do niego wrócić w dowolnym momencie i zaktualizować tekst, dopisać nowe pytania lub zmienić dział!`,
+    quizzes: [
+      {
+        id: 'guide-create-q1',
+        question: 'W jaki sposób możesz pogrubić fragment tekstu w treści lekcji Markdown?',
+        options: [
+          'Wpisując <pogrubienie>tekst</pogrubienie>',
+          'Otaczając tekst podwójnymi gwiazdkami: **tekst**',
+          'Wpisując tekst wielkimi literami',
+          'Otaczając tekst nawiasami kwadratowymi [tekst]'
+        ],
+        correctAnswer: 1,
+        explanation: 'W standardzie Markdown pogrubienie tekstu uzyskujemy poprzez otoczenie go dwoma gwiazdkami z każdej strony: **ważny tekst**.'
+      },
+      {
+        id: 'guide-create-q2',
+        question: 'Czy po zapisaniu nowej lekcji można ją później modyfikować i edytować?',
+        options: [
+          'Nie, lekcje są jednorazowe i nie można ich zmieniać',
+          'Tak, klikając przycisk „Edytuj temat” w nagłówku, stopce lub na liście tematów',
+          'Tylko jeśli usuniemy plik z dysku komputera',
+          'Tylko przez kontakt z administratorem serwera'
+        ],
+        correctAnswer: 1,
+        explanation: 'Wszystkie tematy – zarówno autorskie, jak i domyślne – można w dowolnej chwili otworzyć w edytorze, zmienić treść, dodać pytania testowe lub zaktualizować dział.'
+      }
+    ]
+  },
+  {
+    id: 'guide-teacher-panel',
+    title: 'Panel Nauczyciela i Organizacja Pracy 👨‍🏫',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 5,
+    isDefault: true,
+    lessonNumber: 3,
+    createdAt: Date.now() - 5000,
+    content: `# Panel Nauczyciela i Organizacja Pracy 👨‍🏫
+
+Panel Nauczyciela to dedykowane centrum dowodzenia stworzone specjalnie dla pedagogów i katechetów. Umożliwia sprawne prowadzenie zajęć, ewidencję postępów dydaktycznych oraz generowanie materiałów do druku.
+
+---
+
+### 🚪 Jak otworzyć Panel Nauczyciela?
+Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** znajdujący się w prawym górnym pasku nawigacyjnym lub przełącz prawą zakładkę boczną na widok klas.
+
+---
+
+### 📋 Główne Moduły Panelu Nauczyciela:
+
+#### 1. Zarządzanie Klasami i Uczniami 👥
+*   **Tworzenie oddziałów**: Dodawaj klasy, które uczysz (np. *Klasa 4A*, *Klasa 7B*, *Kółko Biblijne*).
+*   **Lista uczniów**: Wpisz imiona i nazwiska uczniów w danej klasie.
+*   **Generator grup i par**: Jednym kliknięciem podziel obecnych uczniów na zrównoważone grupy robocze lub pary do ćwiczeń!
+
+#### 2. Dziennik Realizacji Lekcji i Kalendarz 📅
+*   **Odznaczanie tematów**: Po przeprowadzeniu lekcji kliknij **„Oznacz jako zrealizowaną w klasie”**.
+*   **Kalendarz dydaktyczny**: System automatycznie zaznacza dni na osi czasu, w których odbyły się zajęcia.
+*   **Historia chronologiczna**: Przeglądaj dokładną historię zrealizowanego materiału dla każdego oddziału z możliwością wycofania (przycisk *Cofnij*).
+
+#### 3. Koło Fortuny i „Szczęśliwy Numerek” 🎲
+*   **Losowanie ucznia**: Narzędzie do sprawiedliwego i bezstresowego wyboru ucznia do odpowiedzi lub wykonania zadania przy tablicy.
+*   **Tryb bez powtórzeń**: Wylosowany uczeń zostaje tymczasowo odłożony, aby każdy miał równe szanse w trakcie semestru.
+
+#### 4. Generator Planu Lekcji i Rozkładu Materiału ⏰
+*   Wybierz klasę, dzień tygodnia (np. *Wtorek*), godzinę rozpoczęcia (np. *08:50*) oraz datę pierwszej lekcji.
+*   Multibook **automatycznie rozpisze harmonogram wszystkich tematów** na kolejne tygodnie roku szkolnego!
+
+#### 5. Kreator Sprawdzianów i Kartkówek (PDF do druku) 📄
+*   Wybierz działy lub tematy, z których chcesz przeprowadzić sprawdzian.
+*   System automatycznie skompiluje **gotowy arkusz testowy A4 dla ucznia** (z miejscem na imię, nazwisko, ocenę i punktację) oraz **klucz odpowiedzi dla nauczyciela**.
+*   Możesz wydrukować arkusz bezpośrednio na drukarce lub zapisać jako estetyczny plik PDF.
+
+---
+
+> 💡 **Rada dydaktyczna:** Połącz Panel Nauczyciela ze Szkicownikiem na Żywo, aby w czasie rzeczywistym omawiać zadania z kartkówek na tablicy interaktywnej!`,
+    quizzes: [
+      {
+        id: 'guide-teacher-q1',
+        question: 'Do czego służy funkcja Dziennika Realizacji w Panelu Nauczyciela?',
+        options: [
+          'Do wysyłania e-maili do dyrekcji',
+          'Do ewidencjonowania dat i tematów lekcji przeprowadzonych w poszczególnych klasach',
+          'Do blokowania uczniom dostępu do Internetu',
+          'Do automatycznego pisania notatek za uczniów'
+        ],
+        correctAnswer: 1,
+        explanation: 'Dziennik Realizacji pozwala przypisywać ukończone tematy do poszczególnych oddziałów klasowych i śledzić ich realizację w kalendarzu dydaktycznym.'
+      },
+      {
+        id: 'guide-teacher-q2',
+        question: 'W jakiej formie Kreator Sprawdzianów przygotowuje materiały testowe?',
+        options: [
+          'Tylko jako dźwięk MP3',
+          'Jako sformatowany arkusz A4 do bezpośredniego druku oraz plik PDF (wersja dla ucznia i klucz dla nauczyciela)',
+          'Tylko jako surowy plik tekstowy bez formatowania',
+          'Jako prezentację wideo'
+        ],
+        correctAnswer: 1,
+        explanation: 'Kreator generuje profesjonalny, gotowy do druku arkusz testowy z nagłówkiem szkolnym, miejscem na podpis i punktację oraz osobnym kluczem odpowiedzi.'
+      }
+    ]
+  },
+  {
+    id: 'guide-whiteboard-tools',
+    title: 'Szkicownik na Żywo i Tryb Tablicy 🖌️',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 4,
+    createdAt: Date.now() - 4000,
+    content: `# Szkicownik na Żywo i Tryb Tablicy 🖌️
+
+Moduł **Szkicownika na Żywo** zamienia Twoją przeglądarkę w pełnoprawną **tablicę interaktywną**. Narzędzie zostało zoptymalizowane pod kątem rzutników multimedialnych, monitorów dotykowych (np. Promethean, SMART Board) oraz obsługi rysikiem i myszą.
+
+---
+
+### 🕹️ Jak uruchomić Szkicownik?
+Kliknij przycisk **„🖌️ Szkicownik”** w górnym pasku narzędzi. Na ekranie pojawi się podręczny, pływający przybornik malarski.
+
+---
+
+### 🎨 Dwa Tryby Pracy Tablicy:
+
+1. **Tryb Nakładki (Rysowanie po podręczniku)**:
+   Pozwala zakreślać kluczowe pojęcia, dopisywać uwagi na marginesach i rysować strzałki bezpośrednio na czytanym tekście lekcji. Tekst pod spodem pozostaje w pełni widoczny!
+2. **Tryb Czystej Tablicy (Whiteboard)**:
+   Jednym kliknięciem przełącz tło na:
+   *   **Klasyczną Białą Tablicę** (czysty biały arkusz)
+   *   **Tablicę Kredową** (ciemnozielone tło)
+   *   **Papier w Kratkę** (do geometrii, matematyki i wykresów)
+   *   **Papier w Linie** (do ćwiczeń kaligraficznych i językowych)
+
+---
+
+### 🛠️ Przybornik Narzędzi Dydaktycznych:
+
+*   **Pędzel / Pisak**: precyzyjne odręczne rysowanie i pisanie notatek.
+*   **Neonowy Zakreślacz**: półprzezroczysty marker do podkreślania ważnych fragmentów w tekście.
+*   **Linia Prosta i Strzałki**: idealne do tworzenia schematów, osi czasu i powiązań przyczynowo-skutkowych.
+*   **Figury Geometryczne**: szybkie wstawianie idealnych prostokątów, elips i kół.
+*   **Wskaźnik Laserowy 🔴**: pulsujący punkt świetlny skupiający wzrok uczniów bez pozostawiania śladów na ekranie.
+*   **Reflektor (Spotlight) 🔦**: przyciemnia cały ekran poza wybranym kołem światła, skupiając 100% uwagi klasy na jednym elemencie.
+*   **Gumka i Czyszczenie**: usuwanie pojedynczych pociągnięć lub natychmiastowe wyczyszczenie całej tablicy.
+
+---
+
+### 💾 Zapisywanie Rysunków
+Wszystkie notatki naniesione na tablicy możesz w każdej chwili **zapisać jako plik graficzny PNG** i dołączyć do materiałów powtórkowych dla uczniów!`,
+    quizzes: [
+      {
+        id: 'guide-board-q1',
+        question: 'Do czego służy funkcja Reflektora (Spotlight) w szkicowniku?',
+        options: [
+          'Do zmiany koloru czcionki w całym podręczniku',
+          'Do przyciemnienia tła i wyróżnienia pojedynczego fragmentu lekcji kręgiem światła',
+          'Do wyłączania monitora',
+          'Do automatycznego czytania tekstu'
+        ],
+        correctAnswer: 1,
+        explanation: 'Reflektor pozwala skupić wzrok klasy na kluczowym fragmencie ilustracji lub tekstu poprzez przyciemnienie pozostałej części ekranu.'
+      },
+      {
+        id: 'guide-board-q2',
+        question: 'Jakie tła są dostępne w trybie Czystej Tablicy?',
+        options: [
+          'Tylko czarne tło bez opcji zmiany',
+          'Biała tablica, zielona tablica kredowa, papier w kratkę oraz papier w linie',
+          'Tylko tapeta ze zdjęciem',
+          'Brak możliwości korzystania z czystej tablicy'
+        ],
+        correctAnswer: 1,
+        explanation: 'Multibook oferuje różnorodne tła tablicowe dopasowane do specyfiki różnych przedmiotów szkolnych (w tym kratkę i linie).'
+      }
+    ]
+  },
+  {
+    id: 'guide-notes-and-media',
+    title: 'Notatki, Galeria Obrazów i Eksport do PDF 📝',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 5,
+    createdAt: Date.now() - 3000,
+    content: `# Notatki, Galeria Obrazów i Eksport do PDF 📝
+
+Każdy temat w Multibooku posiada **indywidualny zeszyt notatek ucznia i nauczyciela**, który zapisuje się automatycznie w czasie rzeczywistym.
+
+---
+
+### 📖 Prowadzenie Notatek do Lekcji
+
+1. Otwórz prawy panel boczny i wybierz zakładkę **„📝 Notatki”**.
+2. Wpisuj własne przemyślenia, punkty do zapamiętania, definicje lub odpowiedzi na zadania domowe.
+3. Notatki wspierają pełne formatowanie Markdown (listy, pogrubienia, nagłówki).
+4. **Automatyczny zapis**: nic nie przepada – treść jest na bieżąco utrwalana w pamięci przeglądarki.
+
+---
+
+### 🖼️ Galeria Obrazów i Praca z Multimediami
+
+Do notatek możesz łatwo dołączać pomoce wizualne:
+*   **Wbudowana Galeria Przedmiotowa**: wybieraj spośród gotowych, wysokiej jakości ilustracji edukacyjnych (mikroskopy, mapy, symbole religijne, portrety historyczne).
+*   **Wklejanie Linków URL**: wklej adres dowolnego obrazka z sieci.
+*   **Przeciągnij i Upuść (Drag & Drop)**: upuść plik graficzny bezpośrednio w obszarze notatek.
+*   **Przeglądarka Lightbox**: kliknij na dowolną miniaturę, aby wyświetlić obraz w pełnym powiększeniu na całym ekranie.
+
+---
+
+### 🖨️ Eksport do PDF, Markdown i Druk
+
+Swoje notatki możesz w każdej chwili przenieść poza aplikację:
+*   **Pobierz jako .MD**: pobiera lekki plik tekstowy zgodny ze standardem Markdown.
+*   **Generuj estetyczny PDF / Drukuj**: Multibook automatycznie kompiluje elegancki dokument z profesjonalnym nagłówkiem szkolnym, datą, tematem lekcji, nazwą przedmiotu i Twoją treścią – gotowy do druku lub archiwizacji.
+
+---
+
+### ⭐ Ulubione i Zakładki
+Kliknij ikonę gwiazdki **„Dodaj do zakładek”** w nagłówku aktywnej lekcji, aby dodać materiał do listy szybkiego dostępu na samej górze spisu treści.`,
+    quizzes: [
+      {
+        id: 'guide-notes-q1',
+        question: 'Czy po wyjściu z aplikacji lub zamknięciu przeglądarki Twoje notatki zostaną utracone?',
+        options: [
+          'Tak, trzeba je za każdym razem zapisywać ręcznie na pendrive',
+          'Nie, notatki zapisują się automatycznie w pamięci lokalnej i będą dostępne po ponownym otwarciu',
+          'Zostaną skasowane po 10 minutach bezczynności',
+          'Tylko jeśli klikniemy specjalny przycisk w chmurze'
+        ],
+        correctAnswer: 1,
+        explanation: 'System automatycznego zapisu dba o natychmiastowe utrwalanie każdej wpisanej litery w bezpiecznej pamięci lokalnej Twojej przeglądarki.'
+      },
+      {
+        id: 'guide-notes-q2',
+        question: 'W jaki sposób możesz powiększyć ilustrację dołączoną do notatek?',
+        options: [
+          'Należy wydrukować ją na papierze',
+          'Klikając na miniaturę obrazka, co otworzy pełnoekranowy podgląd Lightbox',
+          'Przez zmianę rozdzielczości ekranu w systemie Windows',
+          'Nie można powiększać ilustracji'
+        ],
+        correctAnswer: 1,
+        explanation: 'Kliknięcie w dowolny obrazek otwiera elegancki, wyśrodkowany podgląd Lightbox z możliwością powiększenia i skopiowania odnośnika.'
+      }
+    ]
+  },
+  {
+    id: 'guide-backup-and-sync',
+    title: 'Kopie Zapasowe, Import i Eksport Bazy 💾',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 6,
+    createdAt: Date.now() - 2000,
+    content: `# Kopie Zapasowe, Import i Eksport Bazy 💾
+
+Multibook daje Ci **100% kontroli nad Twoimi danymi**. Wszystkie dodane tematy, notatki, struktury klas i historia realizacji mogą być łatwo wyeksportowane do jednego bezpiecznego pliku lub przeniesione na inny komputer.
+
+---
+
+### 📦 Eksport Pełnej Kopii Zapasowej (Backup JSON)
+
+1. W menu bocznym kliknij przycisk **„💾 Kopia zapasowa”** lub przejdź do Centrum Zarządzania zakładki *Import / Eksport*.
+2. Możesz wyeksportować **Wszystkie przedmioty** lub przefiltrować bazę do konkretnego przedmiotu (np. tylko *Religia* lub *Biologia*).
+3. Kliknij **„Pobierz kopię zapasową (.json)”**.
+4. Plik zostanie natychmiast zapisany w Twoim folderze Pobrane. Możesz zachować go na dysku, pendrive lub przesłać innemu nauczycielowi!
+
+---
+
+### 📥 Selektywny Import i Przywracanie Materiałów
+
+Gdy otworzysz plik kopii zapasowej w programie, otrzymasz przejrzyste okno selekcji:
+*   **Wyszukiwanie i Filtrowanie**: możesz łatwo przejrzeć zawartość pliku przed wgraniem.
+*   **Wybór lekcji**: zaznacz tylko te tematy, które chcesz dodać (np. zaznacz tylko nowe rozdziały).
+*   **Tryb Scalania (Merge)**: dodaje nowe lekcje i aktualizuje istniejące – Twoje obecne dane nie zostaną skasowane!
+*   **Tryb Zastąpienia (Replace)**: czyści obecną bazę i zastępuje ją w 100% zawartością pliku.
+
+---
+
+### 📄 Przeciąganie Plików Markdown (.md i .txt)
+
+Jeśli posiadasz własne scenariusze lekcji przygotowane w programach Word lub Notatnik:
+1. Zapisz plik w formacie tekstowym '.txt' lub Markdown '.md'.
+2. Otwórz Centrum Zarządzania i przeciągnij pliki myszką (Drag & Drop) na wyznaczone pole.
+3. Multibook automatycznie wyodrębni tytuł, oszacuje czas czytania i utworzy z nich nowe tematy lekcji!
+
+---
+
+### 🔄 Odblokowanie Pełnego Programu Religii
+W oknie kopii zapasowej znajduje się specjalny przycisk **„Odblokuj kompletny program Religii (Klasy 1–8)”**, który jednym kliknięciem wgrywa ponad 400 szczegółowo opracowanych jednostek lekcyjnych wraz z quizami i podziałem na działy.`,
+    quizzes: [
+      {
+        id: 'guide-backup-q1',
+        question: 'Czym różni się tryb „Scalania (Merge)” od trybu „Zastąpienia (Replace)” podczas importu?',
+        options: [
+          'Nie ma żadnej różnicy',
+          'Scalanie dodaje nowe tematy bez kasowania Twoich dotychczasowych lekcji, a Zastąpienie nadpisuje całą bazę',
+          'Zastąpienie działa tylko na telefonach komórkowych',
+          'Scalanie usuwa wszystkie pytania quizowe'
+        ],
+        correctAnswer: 1,
+        explanation: 'Tryb scalania (Merge) jest bezpieczny: dodaje brakujące lekcje i aktualizuje zmodyfikowane, nie usuwając pozostałych tematów.'
+      },
+      {
+        id: 'guide-backup-q2',
+        question: 'Czy kopię zapasową Multibooka (.json) można wgrać na innym komputerze w szkole?',
+        options: [
+          'Nie, plik działa tylko na jednym urządzeniu',
+          'Tak, wystarczy przenieść plik .json i zaimportować go w przeglądarce na dowolnym komputerze',
+          'Tylko po wykupieniu specjalnej licencji',
+          'Tylko przez kabel USB podłączony do obu komputerów jednocześnie'
+        ],
+        correctAnswer: 1,
+        explanation: 'Plik JSON jest w pełni przenośny – możesz łatwo przekazać swoje przygotowane lekcje kolegom z pracy lub załadować je na komputerze w klasie.'
+      }
+    ]
+  },
+  {
+    id: 'guide-accessibility-and-themes',
+    title: 'Ułatwienia Dostępności, Lektor TTS i Motywy 👓',
+    subject: 'Podręcznik / Instrukcja',
+    schoolType: 'Ogólny / Pozostałe',
+    grade: 'Ogólny',
+    chapterGroup: 'Wprowadzenie',
+    educationLevel: 'Ogólny',
+    estimatedReadTime: 4,
+    isDefault: true,
+    lessonNumber: 7,
+    createdAt: Date.now() - 1000,
+    content: `# Ułatwienia Dostępności, Lektor TTS i Motywy 👓
+
+Edukacja włączająca i komfort pracy wzrokowej to fundament nowoczesnej szkoły. Multibook został wyposażony w zaawansowane narzędzia wspierające uczniów ze specjalnymi potrzebami edukacyjnymi (SPE), w tym z dysleksją i problemami ze wzrokiem.
+
+---
+
+### 🎨 5 Dopracowanych Motywów Kolorystycznych
+
+W górnym panelu personalizacji możesz wybrać motyw najlepiej pasujący do warunków oświetleniowych w sali:
+1. **Jasny (Szkolny)**: klasyczna, wysoka przejrzystość na ciepłym papierowym tle.
+2. **Ciemny (Dark Mode)**: ochrona wzroku i redukcja zmęczenia przy słabym świetle.
+3. **Ciepła Sepia (Papier książkowy)**: łagodne, kremowo-bursztynowe tony przypominające tradycyjną książkę.
+4. **Pastelowy Błękit**: kojące chłodne barwy sprzyjające skupieniu.
+5. **Specjalny Motyw Dyslektyczny**: żółtawo-kremowe tło o zoptymalizowanym kontraście niepowodującym olśnień.
+
+---
+
+### 📖 Czcionka OpenDyslexic i Regulacja Tekstu
+
+*   **Krój OpenDyslexic**: specjalnie zaprojektowana czcionka z dociążoną podstawą liter. Zapobiega wrażeniu „obracania się”, „falowania” i przestawiania znaków w percepcji wzrokowej osób z dysleksją.
+*   **Regulacja wielkości czcionki**: płynne skalowanie od 80% do 160% (tekst widoczny nawet z ostatnich ławek).
+*   **Wysokość linii (Interlinia)**: wybór między interlinią *standardową*, *zwiększoną* i *szeroką*, co ułatwia śledzenie wersów linijka po linijce.
+
+---
+
+### 🔊 Wbudowany Lektor Mowy (Text-To-Speech)
+
+Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim głosem syntezatora:
+*   **Czytanie całej lekcji**: kliknij przycisk **„🔊 Czytaj na głos”** w górnym pasku lekcji.
+*   **Czytanie pojedynczej sekcji**: kliknij małą ikonę głośniczka obok dowolnego akapitu lub nagłówka.
+*   **Sterowanie odtwarzaniem**: możliwość wstrzymania (pauza), wznowienia i natychmiastowego zatrzymania lektora.
+
+---
+
+### 🖥️ Tryb Pełnoekranowy i Tryb Skupienia (Zen)
+
+*   **Pełny ekran (F11)**: ukrywa paski przeglądarki, maksymalizując przestrzeń na rzutniku.
+*   **Zwijany pasek boczny**: jednym kliknięciem schowaj spis treści, aby skupić całą uwagę uczniów na treści bieżącego tematu.`,
+    quizzes: [
+      {
+        id: 'guide-access-q1',
+        question: 'W jaki sposób czcionka OpenDyslexic pomaga osobom ze specyficznymi trudnościami w czytaniu?',
+        options: [
+          'Zmienia język tekstu na łacinę',
+          'Posiada pogrubione dolne krawędzie liter, co ułatwia orientację przestrzenną znaków i zapobiega ich obracaniu w percepcji wzrokowej',
+          'Ukrywa trudne słowa',
+          'Zmniejsza kontrast tekstu do zera'
+        ],
+        correctAnswer: 1,
+        explanation: 'Krój OpenDyslexic wykorzystuje asymetrię i dociążenie dolnej części liter, dzięki czemu mózg łatwiej identyfikuje właściwy kierunek i kształt znaku.'
+      },
+      {
+        id: 'guide-access-q2',
+        question: 'Czy w Multibooku można odsłuchać pojedynczy akapit tekstu zamiast całej lekcji?',
+        options: [
+          'Nie, lektor zawsze czyta od początku do końca',
+          'Tak, klikając ikonę głośniczka znajdującą się przy wybranym fragmencie tekstu',
+          'Tylko jeśli nagramy własny plik audio',
+          'Tylko w trybie ciemnym'
+        ],
+        correctAnswer: 1,
+        explanation: 'Każda sekcja i akapit posiada własny przycisk lektora, umożliwiający odsłuchanie dokładnie tego fragmentu, który aktualnie omawiamy.'
       }
     ]
   },
