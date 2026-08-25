@@ -54,7 +54,8 @@ import {
   TrendingUp,
   CheckCircle2,
   ShieldCheck,
-  Scale
+  Scale,
+  Lock
 } from 'lucide-react';
 import {
   BarChart,
@@ -68,7 +69,7 @@ import {
   Pie,
   Legend
 } from 'recharts';
-import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student } from './types';
+import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student, isChapterProtected } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
 import DrawingOverlay from './components/DrawingOverlay';
 import ChapterManager from './components/ChapterManager';
@@ -1384,9 +1385,33 @@ export default function App() {
   });
   const [importMergeMode, setImportMergeMode] = useState<'merge' | 'replace'>('merge');
 
-  // Terms & License Modal states
+  // Terms & License Acceptance and Modal states
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(() => {
+    try {
+      return !!localStorage.getItem('multibook_terms_and_license_accepted_v1');
+    } catch {
+      return false;
+    }
+  });
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [termsTab, setTermsTab] = useState<'terms' | 'license'>('terms');
+  const [acceptedTermsCheckbox, setAcceptedTermsCheckbox] = useState(false);
+  const [acceptedLicenseCheckbox, setAcceptedLicenseCheckbox] = useState(false);
+
+  const handleAcceptTermsAndLicense = () => {
+    try {
+      localStorage.setItem('multibook_terms_and_license_accepted_v1', JSON.stringify({
+        acceptedAt: new Date().toISOString(),
+        version: '1.3',
+        author: 'mgr Krzysztof Jureczek'
+      }));
+    } catch (e) {
+      console.warn('LocalStorage error:', e);
+    }
+    setHasAcceptedTerms(true);
+    setIsTermsModalOpen(false);
+    showToast('Witamy w Cyfrowym Multibooku Edukacyjnym! Życzymy owocnej nauki i pracy.', 'success');
+  };
 
   // Teacher Panel State & Default Students list
   const DEFAULT_STUDENTS: Student[] = [
@@ -2919,27 +2944,39 @@ export default function App() {
                                           </div>
 
                                           <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                                            {/* Lesson Actions (Edit & Delete) */}
+                                            {/* Lesson Actions (Edit & Delete or Protected Badge) */}
                                             <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-3">
-                                              <button
-                                                type="button"
-                                                onClick={() => {
-                                                  setEditingChapter(ch);
-                                                  setIsCreatorOpen(true);
-                                                }}
-                                                className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 dark:hover:text-emerald-400"
-                                                title="Edytuj lekcję"
-                                              >
-                                                <Edit className="w-3.5 h-3.5" />
-                                              </button>
-                                              <button
-                                                type="button"
-                                                onClick={(e) => handleDeleteChapter(ch.id, e)}
-                                                className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-rose-600 hover:bg-rose-500/10 dark:hover:text-rose-400"
-                                                title="Usuń lekcję"
-                                              >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                              </button>
+                                              {isChapterProtected(ch) ? (
+                                                <div 
+                                                  className="p-1 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[10px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1"
+                                                  title="Temat systemowy: Regulamin / Licencja (Tylko do odczytu)"
+                                                >
+                                                  <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                                  <span>Chroniony</span>
+                                                </div>
+                                              ) : (
+                                                <>
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                      setEditingChapter(ch);
+                                                      setIsCreatorOpen(true);
+                                                    }}
+                                                    className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 dark:hover:text-emerald-400"
+                                                    title="Edytuj lekcję"
+                                                  >
+                                                    <Edit className="w-3.5 h-3.5" />
+                                                  </button>
+                                                  <button
+                                                    type="button"
+                                                    onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                                    className="p-1.5 rounded-lg cursor-pointer transition-colors text-slate-500 hover:text-rose-600 hover:bg-rose-500/10 dark:hover:text-rose-400"
+                                                    title="Usuń lekcję"
+                                                  >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                  </button>
+                                                </>
+                                              )}
                                             </div>
 
                                             {/* Toggle Assignment */}
@@ -4124,6 +4161,10 @@ export default function App() {
   };
 
   const handleUpdateChapter = (updatedChap: Chapter) => {
+    if (isChapterProtected(updatedChap)) {
+      showToast('Regulamin oraz Licencja WLPE są integralną częścią programu i nie podlegają edycji.', 'info');
+      return;
+    }
     setChapters((prev) => prev.map((c) => (c.id === updatedChap.id ? updatedChap : c)));
     showToast(`Zaktualizowano lekcję: ${updatedChap.title}`, 'success');
   };
@@ -4138,6 +4179,12 @@ export default function App() {
 
   const handleDeleteChapter = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const chapterToDelete = chapters.find((c) => c.id === id);
+    if (isChapterProtected(chapterToDelete)) {
+      showToast('Ten temat (Regulamin / Licencja WLPE) jest chroniony i nie może zostać usunięty.', 'error');
+      return;
+    }
+
     showConfirm(
       'Czy na pewno chcesz bezpowrotnie usunąć ten rozdział z Twojego multibooka?',
       () => {
@@ -4874,29 +4921,39 @@ export default function App() {
                                                       <span>⏱️ {ch.estimatedReadTime} min</span>
                                                       {hasNotes && <span title="Posiada notatki">📝</span>}
                                                       
-                                                      {/* Option to edit any chapter */}
-                                                      <button
-                                                        id={`edit-chapter-btn-${ch.id}`}
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          setEditingChapter(ch);
-                                                          setIsCreatorOpen(true);
-                                                        }}
-                                                        className="text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
-                                                        title="Edytuj treść lub quiz tego tematu"
-                                                      >
-                                                        <Edit3 className="w-3 h-3" />
-                                                      </button>
+                                                      {/* Option to edit or show protected lock */}
+                                                      {isChapterProtected(ch) ? (
+                                                        <span 
+                                                          title="Temat chroniony: Regulamin / Licencja WLPE (Tylko do odczytu)" 
+                                                          className="p-0.5 ml-1 text-emerald-600 dark:text-emerald-400 font-bold inline-flex items-center"
+                                                        >
+                                                          <Lock className="w-3 h-3" />
+                                                        </span>
+                                                      ) : (
+                                                        <>
+                                                          <button
+                                                            id={`edit-chapter-btn-${ch.id}`}
+                                                            onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              setEditingChapter(ch);
+                                                              setIsCreatorOpen(true);
+                                                            }}
+                                                            className="text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
+                                                            title="Edytuj treść lub quiz tego tematu"
+                                                          >
+                                                            <Edit3 className="w-3 h-3" />
+                                                          </button>
 
-                                                      {/* Option to delete any chapter */}
-                                                      <button
-                                                        id={`delete-chapter-btn-${ch.id}`}
-                                                        onClick={(e) => handleDeleteChapter(ch.id, e)}
-                                                        className="text-rose-400 hover:text-rose-600 dark:text-rose-500 dark:hover:text-rose-400 opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
-                                                        title="Usuń tę lekcję"
-                                                      >
-                                                        <Trash2 className="w-3 h-3" />
-                                                      </button>
+                                                          <button
+                                                            id={`delete-chapter-btn-${ch.id}`}
+                                                            onClick={(e) => handleDeleteChapter(ch.id, e)}
+                                                            className="text-rose-400 hover:text-rose-600 dark:text-rose-500 dark:hover:text-rose-400 opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity p-0.5 cursor-pointer ml-1"
+                                                            title="Usuń tę lekcję"
+                                                          >
+                                                            <Trash2 className="w-3 h-3" />
+                                                          </button>
+                                                        </>
+                                                      )}
                                                     </div>
                                                   </div>
                                                 </div>
@@ -5213,19 +5270,32 @@ export default function App() {
 
                     <div className="flex flex-wrap items-center gap-2 shrink-0">
 
-                      {/* Edit current chapter button */}
-                      <button
-                        id="chapter-edit-active-btn"
-                        onClick={() => {
-                          setEditingChapter(activeChapter);
-                          setIsCreatorOpen(true);
-                        }}
-                        className="px-3 py-2 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-                        title="Edytuj treść, klasę, dział lub quiz tego tematu"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Edytuj temat</span>
-                      </button>
+                      {/* Protected Chapter Badge OR Edit & Delete Buttons */}
+                      {isChapterProtected(activeChapter) ? (
+                        <div 
+                          className="px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs"
+                          title="Ten temat zawiera oficjalny Regulamin / Licencję WLPE i jest chroniony przed modyfikacją"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Oficjalny temat (Tylko do odczytu)</span>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Edit current chapter button */}
+                          <button
+                            id="chapter-edit-active-btn"
+                            onClick={() => {
+                              setEditingChapter(activeChapter);
+                              setIsCreatorOpen(true);
+                            }}
+                            className="px-3 py-2 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                            title="Edytuj treść, klasę, dział lub quiz tego tematu"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Edytuj temat</span>
+                          </button>
+                        </>
+                      )}
 
                       {/* Bookmark chapter toggler */}
                       <button
@@ -5264,15 +5334,17 @@ export default function App() {
                         )}
                       </button>
 
-                      {/* Delete current chapter */}
-                      <button
-                        id="chapter-delete-active-btn"
-                        onClick={(e) => handleDeleteChapter(activeChapter.id, e)}
-                        className="p-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-500 hover:text-white hover:bg-rose-500 dark:hover:bg-rose-600 transition-all cursor-pointer"
-                        title="Usuń tę lekcję"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {/* Delete current chapter (only if not protected) */}
+                      {!isChapterProtected(activeChapter) && (
+                        <button
+                          id="chapter-delete-active-btn"
+                          onClick={(e) => handleDeleteChapter(activeChapter.id, e)}
+                          className="p-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-500 hover:text-white hover:bg-rose-500 dark:hover:bg-rose-600 transition-all cursor-pointer"
+                          title="Usuń tę lekcję"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -7664,22 +7736,26 @@ export default function App() {
 
       {/* TERMS & LICENSE (WLPE) MODAL DIALOG */}
       <AnimatePresence>
-        {isTermsModalOpen && (
+        {(isTermsModalOpen || !hasAcceptedTerms) && (
           <div 
             id="terms-license-modal-backdrop" 
-            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
-            onClick={() => setIsTermsModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => {
+              if (hasAcceptedTerms) {
+                setIsTermsModalOpen(false);
+              }
+            }}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 16 }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              className={`w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden pointer-events-auto ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border}`}
+              className={`w-full max-w-4xl max-h-[94vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden pointer-events-auto ${activeThemeConfig.sidebarBg} ${activeThemeConfig.border}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Top Header */}
-              <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/50 via-transparent to-amber-50/30 dark:from-emerald-950/20 dark:to-slate-900">
+              <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 bg-gradient-to-r from-emerald-50/70 via-transparent to-amber-50/40 dark:from-emerald-950/30 dark:to-slate-900">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 rounded-2xl bg-emerald-700 text-white shadow-md shadow-emerald-700/20">
                     <ShieldCheck className="w-6 h-6" />
@@ -7687,7 +7763,7 @@ export default function App() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className={`font-serif font-extrabold text-base sm:text-lg tracking-tight ${activeThemeConfig.h1}`}>
-                        Regulamin, Prywatność & Licencja
+                        {!hasAcceptedTerms ? 'Regulamin & Licencja (Wymagana Akceptacja)' : 'Regulamin, Prywatność & Licencja WLPE'}
                       </h2>
                       <span className="px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800">
                         WLPE • 100% Free
@@ -7697,50 +7773,63 @@ export default function App() {
                       <span>Darmowy użytek prywatny i edukacyjny</span>
                       <span>•</span>
                       <span className="font-semibold text-slate-700 dark:text-slate-300">Autor: mgr Krzysztof Jureczek</span>
+                      {!hasAcceptedTerms && (
+                        <span className="text-rose-600 dark:text-rose-400 font-bold ml-1">• Wymagana akceptacja obu dokumentów przed rozpoczęciem</span>
+                      )}
                     </p>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  id="close-terms-modal-btn"
-                  onClick={() => setIsTermsModalOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                  title="Zamknij okno"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                {hasAcceptedTerms && (
+                  <button
+                    type="button"
+                    id="close-terms-modal-btn"
+                    onClick={() => setIsTermsModalOpen(false)}
+                    className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    title="Zamknij okno"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
               </div>
 
               {/* Document Switcher Tabs */}
-              <div className="px-4 pt-3 pb-2 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center gap-2 bg-slate-50/40 dark:bg-slate-900/40">
-                <button
-                  type="button"
-                  id="tab-terms-btn"
-                  onClick={() => setTermsTab('terms')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
-                    termsTab === 'terms'
-                      ? 'bg-emerald-700 text-white shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
-                  }`}
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>📜 Regulamin i Prywatność (RODO)</span>
-                </button>
+              <div className="px-4 pt-3 pb-2 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between gap-2 bg-slate-50/60 dark:bg-slate-900/60 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    id="tab-terms-btn"
+                    onClick={() => setTermsTab('terms')}
+                    className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
+                      termsTab === 'terms'
+                        ? 'bg-emerald-700 text-white shadow-sm'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>1. Regulamin & Prywatność (RODO)</span>
+                  </button>
 
-                <button
-                  type="button"
-                  id="tab-license-btn"
-                  onClick={() => setTermsTab('license')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
-                    termsTab === 'license'
-                      ? 'bg-emerald-700 text-white shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
-                  }`}
-                >
-                  <Scale className="w-4 h-4" />
-                  <span>⚖️ Wolna Licencja (WLPE)</span>
-                </button>
+                  <button
+                    type="button"
+                    id="tab-license-btn"
+                    onClick={() => setTermsTab('license')}
+                    className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all ${
+                      termsTab === 'license'
+                        ? 'bg-emerald-700 text-white shadow-sm'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Scale className="w-4 h-4" />
+                    <span>2. Wolna Licencja (WLPE)</span>
+                  </button>
+                </div>
+
+                {!hasAcceptedTerms && (
+                  <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    Krok 1 z 1: Zapoznaj się z treścią i zaznacz poniższe zgody
+                  </div>
+                )}
               </div>
 
               {/* Scrollable Document Content */}
@@ -7964,24 +8053,77 @@ export default function App() {
                 )}
               </div>
 
+              {/* Acceptance Checkbox Section (Shown when user has not yet accepted, or as status) */}
+              {!hasAcceptedTerms && (
+                <div className="p-4 sm:p-5 border-t border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/90 dark:bg-emerald-950/40 space-y-3 shrink-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-emerald-950 dark:text-emerald-200 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <span>Wymagane oświadczenia użytkownika przed startem:</span>
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAcceptedTermsCheckbox(true);
+                        setAcceptedLicenseCheckbox(true);
+                      }}
+                      className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 underline hover:text-emerald-900 cursor-pointer"
+                    >
+                      Zaznacz oba oświadczenia ✓
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-800 dark:text-slate-200 select-none">
+                      <input
+                        type="checkbox"
+                        id="agree-terms-checkbox"
+                        checked={acceptedTermsCheckbox}
+                        onChange={(e) => setAcceptedTermsCheckbox(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 rounded text-emerald-700 focus:ring-emerald-500 border-slate-300 dark:border-slate-700 cursor-pointer"
+                      />
+                      <span>
+                        <strong>1. Akceptuję Regulamin i Politykę Prywatności:</strong> Potwierdzam darmowy użytek prywatny/edukacyjny oraz przyjmuję do wiadomości, że dane są przechowywane w 100% lokalnie w mojej przeglądarce (RODO).
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-800 dark:text-slate-200 select-none">
+                      <input
+                        type="checkbox"
+                        id="agree-license-checkbox"
+                        checked={acceptedLicenseCheckbox}
+                        onChange={(e) => setAcceptedLicenseCheckbox(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 rounded text-emerald-700 focus:ring-emerald-500 border-slate-300 dark:border-slate-700 cursor-pointer"
+                      />
+                      <span>
+                        <strong>2. Akceptuję Wolną Licencję Prywatno-Edukacyjną (WLPE):</strong> Przyjmuję warunki licencji, w tym zakaz komercjalizacji, usuwania praw autorskich mgr Krzysztofa Jureczka oraz tworzenia modyfikacji bez pisemnej zgody.
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
               {/* Modal Footer Controls */}
-              <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900 flex flex-wrap items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Jump to Reader Chapter button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsTermsModalOpen(false);
-                      const targetId = termsTab === 'terms' ? 'guide-terms-and-privacy' : 'guide-license-wlpe';
-                      setCurrentChapterId(targetId);
-                      setActiveMainTab('lessons');
-                      showToast("Przejście do rozdziału w podręczniku 📖", "info");
-                    }}
-                    className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    <span>Otwórz jako lekcję w Multibooku</span>
-                  </button>
+                  {/* Jump to Reader Chapter button (only available if accepted) */}
+                  {hasAcceptedTerms && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsTermsModalOpen(false);
+                        const targetId = termsTab === 'terms' ? 'guide-terms-and-privacy' : 'guide-license-wlpe';
+                        setCurrentChapterId(targetId);
+                        setActiveMainTab('lessons');
+                        showToast("Przejście do rozdziału w podręczniku 📖", "info");
+                      }}
+                      className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <span>Otwórz jako lekcję w Multibooku</span>
+                    </button>
+                  )}
 
                   {/* Copy Text button */}
                   <button
@@ -8001,13 +8143,27 @@ export default function App() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsTermsModalOpen(false)}
-                    className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md shadow-emerald-700/20 transition-all cursor-pointer"
-                  >
-                    Rozumiem i Akceptuję ✓
-                  </button>
+                  {!hasAcceptedTerms ? (
+                    <button
+                      type="button"
+                      id="accept-and-start-btn"
+                      disabled={!acceptedTermsCheckbox || !acceptedLicenseCheckbox}
+                      onClick={handleAcceptTermsAndLicense}
+                      className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-700/20 transition-all flex items-center gap-2 cursor-pointer"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Zaakceptuj oba dokumenty i rozpocznij pracę ✓</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setIsTermsModalOpen(false)}
+                      className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-md shadow-emerald-700/20 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Rozumiem / Zaakceptowano ✓</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>

@@ -9,10 +9,20 @@ export interface Chapter {
   chapterGroup?: string;  // np. "Stworzenie świata", "Budowa komórki" (Rozdział/Dział nadrzędny)
   estimatedReadTime: number; // in minutes
   isDefault?: boolean;
+  isProtected?: boolean;  // np. niemodyfikowalny Regulamin i Licencja WLPE
   createdAt: number;
   quizzes?: QuizQuestion[];
   lessonNumber?: number;  // opcjonalny numer lekcji (np. do chronologicznego sortowania)
 }
+
+export const isChapterProtected = (chapter?: { id?: string; isProtected?: boolean } | null): boolean => {
+  if (!chapter) return false;
+  return Boolean(
+    chapter.isProtected ||
+    chapter.id === 'guide-terms-and-privacy' ||
+    chapter.id === 'guide-license-wlpe'
+  );
+};
 
 export interface QuizQuestion {
   id: string;

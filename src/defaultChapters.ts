@@ -586,6 +586,7 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
     educationLevel: 'Ogólny',
     estimatedReadTime: 4,
     isDefault: true,
+    isProtected: true,
     lessonNumber: 8,
     createdAt: Date.now() - 800,
     content: `# Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny” 📜
@@ -701,6 +702,7 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
     educationLevel: 'Ogólny',
     estimatedReadTime: 5,
     isDefault: true,
+    isProtected: true,
     lessonNumber: 9,
     createdAt: Date.now() - 600,
     content: `# LICENCJA UŻYTKOWANIA OPROGRAMOWANIA ⚖️
