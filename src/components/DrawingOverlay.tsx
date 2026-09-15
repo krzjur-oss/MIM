@@ -241,23 +241,112 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     };
   };
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (tool === 'pan') {
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
       const viewport = document.getElementById('multibook-reader-scroll-viewport');
       if (viewport) {
         isPanningRef.current = true;
         setIsCurrentlyPanning(true);
         panStartRef.current = {
-          clientX,
-          clientY,
+          clientX: e.clientX,
+          clientY: e.clientY,
           scrollTop: viewport.scrollTop,
           scrollLeft: viewport.scrollLeft,
         };
       }
       return;
     }
+
+    startDrawing(e);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') {
+      if (e.touches.length > 0) {
+        const viewport = document.getElementById('multibook-reader-scroll-viewport');
+        if (viewport) {
+          isPanningRef.current = true;
+          setIsCurrentlyPanning(true);
+          panStartRef.current = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY,
+            scrollTop: viewport.scrollTop,
+            scrollLeft: viewport.scrollLeft,
+          };
+        }
+      }
+      return;
+    }
+
+    startDrawing(e);
+  };
+
+  // Obsługa zdarzenia mouseMove:
+  // Warunek pozwala na przesuwanie tła / widoku TYLKO wtedy, gdy aktywne jest narzędzie 'rączka' (panning),
+  // a nie narzędzie do rysowania.
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') {
+      if (isPanningRef.current) {
+        const viewport = document.getElementById('multibook-reader-scroll-viewport');
+        if (viewport) {
+          const deltaY = e.clientY - panStartRef.current.clientY;
+          const deltaX = e.clientX - panStartRef.current.clientX;
+          viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
+          viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
+        }
+      }
+      return;
+    }
+
+    // Gdy aktywne jest narzędzie do rysowania (pen, highlighter, eraser), wykonaj wyłącznie rysowanie bez przesuwania
+    draw(e);
+  };
+
+  // Obsługa zdarzenia touchMove:
+  // Warunek pozwala na przesuwanie tła / widoku TYLKO wtedy, gdy aktywne jest narzędzie 'rączka' (panning),
+  // a nie narzędzie do rysowania.
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') {
+      if (isPanningRef.current && e.touches.length > 0) {
+        if (e.cancelable) e.preventDefault();
+        const touch = e.touches[0];
+        const viewport = document.getElementById('multibook-reader-scroll-viewport');
+        if (viewport) {
+          const deltaY = touch.clientY - panStartRef.current.clientY;
+          const deltaX = touch.clientX - panStartRef.current.clientX;
+          viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
+          viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
+        }
+      }
+      return;
+    }
+
+    // Gdy aktywne jest narzędzie do rysowania (pen, highlighter, eraser), wykonaj wyłącznie rysowanie bez przesuwania
+    draw(e);
+  };
+
+  const handleMouseUp = () => {
+    if (tool === 'pan') {
+      isPanningRef.current = false;
+      setIsCurrentlyPanning(false);
+      return;
+    }
+
+    stopDrawing();
+  };
+
+  const handleTouchEnd = () => {
+    if (tool === 'pan') {
+      isPanningRef.current = false;
+      setIsCurrentlyPanning(false);
+      return;
+    }
+
+    stopDrawing();
+  };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') return;
 
     const pt = getCoordinates(e);
     if (!pt) return;
@@ -295,20 +384,7 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (tool === 'pan') {
-      if (!isPanningRef.current) return;
-      if (e.cancelable) e.preventDefault();
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-      const viewport = document.getElementById('multibook-reader-scroll-viewport');
-      if (viewport) {
-        const deltaY = clientY - panStartRef.current.clientY;
-        const deltaX = clientX - panStartRef.current.clientX;
-        viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
-        viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
-      }
-      return;
-    }
+    if (tool === 'pan') return;
 
     if (!isDrawing) return;
     
@@ -334,11 +410,7 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
   };
 
   const stopDrawing = () => {
-    if (tool === 'pan') {
-      isPanningRef.current = false;
-      setIsCurrentlyPanning(false);
-      return;
-    }
+    if (tool === 'pan') return;
 
     if (!isDrawing) return;
     setIsDrawing(false);
@@ -717,13 +789,13 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
       <canvas
         id="multibook-drawing-canvas"
         ref={canvasRef}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseLeave={stopDrawing}
-        onTouchStart={startDrawing}
-        onTouchMove={draw}
-        onTouchEnd={stopDrawing}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className={`flex-1 w-full pointer-events-auto ${
           tool === 'pan'
             ? (isCurrentlyPanning ? 'cursor-grabbing' : 'cursor-grab')
