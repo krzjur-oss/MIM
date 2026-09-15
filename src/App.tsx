@@ -5478,7 +5478,7 @@ export default function App() {
                               ul: ({node, ...props}) => <ul className={`list-disc list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
                               ol: ({node, ...props}) => <ol className={`list-decimal list-outside mb-4 space-y-2 pl-6 transition-colors duration-300 ${activeThemeConfig.p}`} {...props} />,
                               li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                              blockquote: ({node, ...props}) => <blockquote className={`border-l-4 pl-4 italic my-6 py-3 pr-3 text-sm rounded-r-xl font-serif transition-colors duration-300 ${activeThemeConfig.blockquote}`} {...props} />,
+                              blockquote: ({node, ...props}) => <blockquote className={`border-l-4 pl-4 italic my-6 py-3 pr-3 rounded-r-xl font-serif transition-colors duration-300 [&>p]:text-inherit [&>p:last-child]:mb-0 ${activeThemeConfig.blockquote}`} style={{ fontSize: 'inherit' }} {...props} />,
                               table: ({node, ...props}) => <div className={`overflow-x-auto my-6 border rounded-xl transition-all duration-300 ${activeThemeConfig.border}`}><table className={`min-w-full divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} /></div>,
                               thead: ({node, ...props}) => <thead className={`${activeThemeConfig.thead}`} {...props} />,
                               tbody: ({node, ...props}) => <tbody className={`divide-y transition-all duration-300 ${activeThemeConfig.border}`} {...props} />,
