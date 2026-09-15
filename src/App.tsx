@@ -5227,6 +5227,7 @@ export default function App() {
             <DrawingOverlay 
               isActive={isDrawingModeActive} 
               onClose={() => setIsDrawingModeActive(false)} 
+              chapterId={activeChapter?.id}
             />
 
             {/* Scrolling Viewport wrapper for MD Content */}

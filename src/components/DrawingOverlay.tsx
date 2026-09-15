@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Pencil, Trash2, RotateCcw, Highlighter, Eraser, X } from 'lucide-react';
+import { Pencil, Trash2, RotateCcw, Highlighter, Eraser, X, Hand, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface DrawingOverlayProps {
   isActive: boolean;
   onClose: () => void;
+  chapterId?: string;
 }
 
 interface Point {
@@ -18,15 +19,124 @@ interface Stroke {
   type: 'pen' | 'highlighter' | 'eraser';
 }
 
-export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProps) {
+export default function DrawingOverlay({ isActive, onClose, chapterId }: DrawingOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const currentPointsRef = useRef<Point[]>([]);
+  const isPanningRef = useRef(false);
+  const panStartRef = useRef<{ clientX: number; clientY: number; scrollTop: number; scrollLeft: number }>({
+    clientX: 0,
+    clientY: 0,
+    scrollTop: 0,
+    scrollLeft: 0,
+  });
+
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isCurrentlyPanning, setIsCurrentlyPanning] = useState(false);
   const [color, setColor] = useState('#ef4444'); // default red
-  const [tool, setTool] = useState<'pen' | 'highlighter' | 'eraser'>('pen');
+  const [tool, setTool] = useState<'pen' | 'highlighter' | 'eraser' | 'pan'>('pen');
   const [lineWidth, setLineWidth] = useState(4);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
-  const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
+
+  // Clear drawings when switching chapters
+  useEffect(() => {
+    setStrokes([]);
+    currentPointsRef.current = [];
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }, [chapterId]);
+
+  // Scroll helper
+  const scrollViewport = (offset: number) => {
+    const viewport = document.getElementById('multibook-reader-scroll-viewport');
+    if (viewport) {
+      viewport.scrollBy({ top: offset, behavior: 'smooth' });
+    }
+  };
+
+  // Synchronize canvas redraw with viewport scrolling so annotations stay attached to text
+  useEffect(() => {
+    if (!isActive) return;
+
+    const viewport = document.getElementById('multibook-reader-scroll-viewport');
+    if (!viewport) return;
+
+    const handleScroll = () => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        redrawAll(canvas, strokes);
+      }
+      const maxScroll = viewport.scrollHeight - viewport.clientHeight;
+      if (maxScroll > 0) {
+        setScrollPercentage(Math.round((viewport.scrollTop / maxScroll) * 100));
+      } else {
+        setScrollPercentage(0);
+      }
+    };
+
+    viewport.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      viewport.removeEventListener('scroll', handleScroll);
+    };
+  }, [isActive, strokes]);
+
+  // Handle native mouse wheel events over canvas to scroll the lesson viewport underneath
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !isActive) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (viewport) {
+        viewport.scrollTop += e.deltaY;
+        viewport.scrollLeft += e.deltaX;
+      }
+    };
+
+    canvas.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => {
+      canvas.removeEventListener('wheel', handleNativeWheel);
+    };
+  }, [isActive]);
+
+  // Keyboard navigation while sketchpad is active (Arrow keys, PageUp/PageDown, Space)
+  useEffect(() => {
+    if (!isActive) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        return;
+      }
+
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (!viewport) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        viewport.scrollBy({ top: 100, behavior: 'smooth' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        viewport.scrollBy({ top: -100, behavior: 'smooth' });
+      } else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+        e.preventDefault();
+        viewport.scrollBy({ top: 350, behavior: 'smooth' });
+      } else if (e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+        e.preventDefault();
+        viewport.scrollBy({ top: -350, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isActive]);
 
   // Initialize canvas size based on content container
   const resizeCanvas = () => {
@@ -43,7 +153,6 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
 
   useEffect(() => {
     if (isActive) {
-      // Small timeout to ensure container is fully rendered and sized
       const timer = setTimeout(() => {
         resizeCanvas();
       }, 100);
@@ -60,16 +169,24 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const viewport = document.getElementById('multibook-reader-scroll-viewport');
+    const scrollTop = viewport ? viewport.scrollTop : 0;
+    const scrollLeft = viewport ? viewport.scrollLeft : 0;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     allStrokes.forEach((stroke) => {
       if (stroke.points.length === 0) return;
 
       ctx.beginPath();
-      ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      const startX = stroke.points[0].x - scrollLeft;
+      const startY = stroke.points[0].y - scrollTop;
+      ctx.moveTo(startX, startY);
 
       for (let i = 1; i < stroke.points.length; i++) {
-        ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+        const ptX = stroke.points[i].x - scrollLeft;
+        const ptY = stroke.points[i].y - scrollTop;
+        ctx.lineTo(ptX, ptY);
       }
 
       ctx.lineCap = 'round';
@@ -83,7 +200,6 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = stroke.color;
         ctx.lineWidth = stroke.width * 3;
-        // Make sure color is in rgba format for the highlighter feel
         ctx.globalAlpha = 0.35;
       } else {
         ctx.globalCompositeOperation = 'source-over';
@@ -94,7 +210,7 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
 
       ctx.stroke();
       ctx.globalAlpha = 1.0;
-      ctx.globalCompositeOperation = 'source-over'; // restore
+      ctx.globalCompositeOperation = 'source-over';
     });
   };
 
@@ -115,24 +231,49 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
       clientY = e.clientY;
     }
 
+    const viewport = document.getElementById('multibook-reader-scroll-viewport');
+    const scrollTop = viewport ? viewport.scrollTop : 0;
+    const scrollLeft = viewport ? viewport.scrollLeft : 0;
+
     return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
+      x: clientX - rect.left + scrollLeft,
+      y: clientY - rect.top + scrollTop,
     };
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') {
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (viewport) {
+        isPanningRef.current = true;
+        setIsCurrentlyPanning(true);
+        panStartRef.current = {
+          clientX,
+          clientY,
+          scrollTop: viewport.scrollTop,
+          scrollLeft: viewport.scrollLeft,
+        };
+      }
+      return;
+    }
+
     const pt = getCoordinates(e);
     if (!pt) return;
 
     setIsDrawing(true);
-    setCurrentPoints([pt]);
+    currentPointsRef.current = [pt];
 
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (canvas && ctx) {
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      const scrollTop = viewport ? viewport.scrollTop : 0;
+      const scrollLeft = viewport ? viewport.scrollLeft : 0;
+
       ctx.beginPath();
-      ctx.moveTo(pt.x, pt.y);
+      ctx.moveTo(pt.x - scrollLeft, pt.y - scrollTop);
       
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -154,9 +295,23 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan') {
+      if (!isPanningRef.current) return;
+      if (e.cancelable) e.preventDefault();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (viewport) {
+        const deltaY = clientY - panStartRef.current.clientY;
+        const deltaX = clientX - panStartRef.current.clientX;
+        viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
+        viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
+      }
+      return;
+    }
+
     if (!isDrawing) return;
     
-    // Prevent scrolling when drawing on touchscreen mobile devices
     if (e.cancelable) {
       e.preventDefault();
     }
@@ -164,24 +319,34 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
     const pt = getCoordinates(e);
     if (!pt) return;
 
-    const nextPoints = [...currentPoints, pt];
-    setCurrentPoints(nextPoints);
+    currentPointsRef.current.push(pt);
 
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (canvas && ctx) {
-      ctx.lineTo(pt.x, pt.y);
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      const scrollTop = viewport ? viewport.scrollTop : 0;
+      const scrollLeft = viewport ? viewport.scrollLeft : 0;
+
+      ctx.lineTo(pt.x - scrollLeft, pt.y - scrollTop);
       ctx.stroke();
     }
   };
 
   const stopDrawing = () => {
+    if (tool === 'pan') {
+      isPanningRef.current = false;
+      setIsCurrentlyPanning(false);
+      return;
+    }
+
     if (!isDrawing) return;
     setIsDrawing(false);
 
-    if (currentPoints.length > 0) {
+    const points = currentPointsRef.current;
+    if (points.length > 0) {
       const newStroke: Stroke = {
-        points: currentPoints,
+        points: [...points],
         color,
         width: lineWidth,
         type: tool,
@@ -189,11 +354,12 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
       const updated = [...strokes, newStroke];
       setStrokes(updated);
     }
-    setCurrentPoints([]);
+    currentPointsRef.current = [];
   };
 
   const clearCanvas = () => {
     setStrokes([]);
+    currentPointsRef.current = [];
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (canvas && ctx) {
@@ -246,7 +412,7 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
       {/* Drawing Toolbar */}
       <div className="bg-white/95 dark:bg-slate-900/95 shadow-lg border-b border-slate-200 dark:border-slate-800 p-2.5 pointer-events-auto flex flex-col gap-2 rounded-t-xl transition-all duration-200">
         
-        {/* Row 1: Tools, Preset sizes and brush preview */}
+        {/* Row 1: Tools, Preset sizes, Scroll actions and brush preview */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/60 pb-2.5">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {/* Tool selectors */}
@@ -292,47 +458,90 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
               <span>Gumka</span>
             </button>
 
+            {/* NEW: Pan / Move text tool */}
+            <button
+              id="tool-pan-btn"
+              onClick={() => { setTool(tool === 'pan' ? 'pen' : 'pan'); }}
+              className={`px-3 py-2 rounded-xl flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
+                tool === 'pan'
+                  ? 'bg-blue-600 text-white border border-blue-600 shadow-sm ring-2 ring-blue-400/30'
+                  : 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-900/50'
+              }`}
+              title="Przesuń tekst (Rączka) - przeciągnij myszką lub palcem, aby przewijać treść lekcji"
+            >
+              <Hand className="w-3.5 h-3.5" />
+              <span>Przesuń tekst</span>
+            </button>
+
             <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-800 mx-1 hidden md:block" />
 
             {/* Quick Thickness Presets */}
-            <div className="flex items-center gap-1">
-              <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold mr-1 uppercase hidden md:inline">Profile:</span>
-              {thicknessPresets.map((preset) => (
-                <button
-                  key={preset.value}
-                  id={`thickness-preset-${preset.value}`}
-                  onClick={() => setLineWidth(preset.value)}
-                  className={`px-2 py-1 text-[10px] font-extrabold rounded-lg border cursor-pointer transition-all ${
-                    lineWidth === preset.value
-                      ? 'bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 border-slate-800 dark:border-slate-100'
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:bg-slate-800'
-                  }`}
-                  title={preset.label}
-                >
-                  {preset.value}px
-                </button>
-              ))}
-            </div>
+            {tool !== 'pan' && (
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold mr-1 uppercase hidden md:inline">Profile:</span>
+                {thicknessPresets.map((preset) => (
+                  <button
+                    key={preset.value}
+                    id={`thickness-preset-${preset.value}`}
+                    onClick={() => setLineWidth(preset.value)}
+                    className={`px-2 py-1 text-[10px] font-extrabold rounded-lg border cursor-pointer transition-all ${
+                      lineWidth === preset.value
+                        ? 'bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 border-slate-800 dark:border-slate-100'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:bg-slate-800'
+                    }`}
+                    title={preset.label}
+                  >
+                    {preset.value}px
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Quick Actions (Undo, Clear, Close) */}
+          {/* Quick Actions (Scroll buttons, Undo, Clear, Close) */}
           <div className="flex items-center gap-1.5">
-            {/* Brush Live Preview (Beautiful Tip visualization) */}
-            <div className="flex items-center gap-2 px-2 py-1 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-xl shrink-0">
-              <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase font-sans hidden sm:inline">Ślad:</span>
-              <div className="w-7 h-7 flex items-center justify-center bg-white dark:bg-slate-950 rounded-lg border border-slate-200/60 dark:border-slate-800 shadow-inner">
-                <div 
-                  style={{ 
-                    width: `${Math.min(24, tool === 'eraser' ? lineWidth * 2 : tool === 'highlighter' ? lineWidth * 1.5 : lineWidth)}px`, 
-                    height: `${Math.min(24, tool === 'eraser' ? lineWidth * 2 : tool === 'highlighter' ? lineWidth * 1.5 : lineWidth)}px`,
-                    backgroundColor: tool === 'eraser' ? 'transparent' : color,
-                    border: tool === 'eraser' ? '2px dashed #f43f5e' : 'none',
-                    borderRadius: '50%',
-                    opacity: tool === 'highlighter' ? 0.45 : 1
-                  }} 
-                />
-              </div>
+            {/* Integrated Scroll Up/Down Buttons */}
+            <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800/90 p-1 rounded-xl">
+              <button
+                type="button"
+                id="toolbar-scroll-up-btn"
+                onClick={() => scrollViewport(-320)}
+                className="p-1 px-2 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                title="Przewiń tekst w górę"
+              >
+                <ChevronUp className="w-3.5 h-3.5" />
+                <span className="text-[10px] hidden sm:inline">Góra</span>
+              </button>
+              <button
+                type="button"
+                id="toolbar-scroll-down-btn"
+                onClick={() => scrollViewport(320)}
+                className="p-1 px-2 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                title="Przewiń tekst w dół"
+              >
+                <ChevronDown className="w-3.5 h-3.5" />
+                <span className="text-[10px] hidden sm:inline">Dół</span>
+              </button>
             </div>
+
+            {/* Brush Live Preview (Beautiful Tip visualization) */}
+            {tool !== 'pan' && (
+              <div className="flex items-center gap-2 px-2 py-1 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-xl shrink-0">
+                <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase font-sans hidden sm:inline">Ślad:</span>
+                <div className="w-7 h-7 flex items-center justify-center bg-white dark:bg-slate-950 rounded-lg border border-slate-200/60 dark:border-slate-800 shadow-inner">
+                  <div 
+                    style={{ 
+                      width: `${Math.min(24, tool === 'eraser' ? lineWidth * 2 : tool === 'highlighter' ? lineWidth * 1.5 : lineWidth)}px`, 
+                      height: `${Math.min(24, tool === 'eraser' ? lineWidth * 2 : tool === 'highlighter' ? lineWidth * 1.5 : lineWidth)}px`,
+                      backgroundColor: tool === 'eraser' ? 'transparent' : color,
+                      border: tool === 'eraser' ? '2px dashed #f43f5e' : 'none',
+                      borderRadius: '50%',
+                      opacity: tool === 'highlighter' ? 0.45 : 1
+                    }} 
+                  />
+                </div>
+              </div>
+            )}
 
             <button
               id="undo-draw-btn"
@@ -365,77 +574,144 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
           </div>
         </div>
 
-        {/* Row 2: Brush properties (Colors, Slider) */}
+        {/* Row 2: Brush properties OR Pan status */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Colors palette and Custom picker */}
-          <div className="flex items-center gap-2">
-            {tool !== 'eraser' ? (
-              <>
-                <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase mr-1">Kolor pisaka:</span>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {activeColors.map((c) => (
-                    <button
-                      key={c.value}
-                      id={`color-picker-${c.value.replace('#', '')}`}
-                      onClick={() => setColor(c.value)}
-                      style={{ backgroundColor: c.value }}
-                      className={`w-6.5 h-6.5 rounded-full border-2 transition-all cursor-pointer relative ${
-                        color === c.value
-                          ? 'border-slate-900 dark:border-white scale-110 shadow-md ring-2 ring-slate-400/20'
-                          : 'border-transparent hover:scale-105 hover:border-slate-200 dark:hover:border-slate-700'
-                      }`}
-                      title={c.label}
-                    >
-                      {color === c.value && (
-                        <span className="absolute inset-0 flex items-center justify-center text-[8px] text-white mix-blend-difference font-black">✓</span>
-                      )}
-                    </button>
-                  ))}
+          {tool === 'pan' ? (
+            <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 px-3 py-1.5 rounded-xl border border-blue-200/70 dark:border-blue-900/50">
+              <Hand className="w-4 h-4 text-blue-600 animate-pulse" />
+              <span>Tryb przesuwania aktywny: przeciągaj myszką lub palcem po ekranie, aby przesuwać tekst lekcji. Możesz również używać kółka myszy lub strzałek klawiatury.</span>
+            </div>
+          ) : (
+            <>
+              {/* Colors palette and Custom picker */}
+              <div className="flex items-center gap-2">
+                {tool !== 'eraser' ? (
+                  <>
+                    <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase mr-1">Kolor pisaka:</span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {activeColors.map((c) => (
+                        <button
+                          key={c.value}
+                          id={`color-picker-${c.value.replace('#', '')}`}
+                          onClick={() => setColor(c.value)}
+                          style={{ backgroundColor: c.value }}
+                          className={`w-6.5 h-6.5 rounded-full border-2 transition-all cursor-pointer relative ${
+                            color === c.value
+                              ? 'border-slate-900 dark:border-white scale-110 shadow-md ring-2 ring-slate-400/20'
+                              : 'border-transparent hover:scale-105 hover:border-slate-200 dark:hover:border-slate-700'
+                          }`}
+                          title={c.label}
+                        >
+                          {color === c.value && (
+                            <span className="absolute inset-0 flex items-center justify-center text-[8px] text-white mix-blend-difference font-black">✓</span>
+                          )}
+                        </button>
+                      ))}
 
-                  <div className="w-[1px] h-4 bg-slate-200 dark:bg-slate-800 mx-1" />
+                      <div className="w-[1px] h-4 bg-slate-200 dark:bg-slate-800 mx-1" />
 
-                  {/* Custom Palette HTML5 Color Picker */}
-                  <div className="relative flex items-center group/picker cursor-pointer">
-                    <input
-                      id="custom-color-html-picker"
-                      type="color"
-                      value={color}
-                      onChange={(e) => setColor(e.target.value)}
-                      className="w-7 h-7 rounded-full border border-slate-300 dark:border-slate-600 cursor-pointer overflow-hidden opacity-0 absolute inset-0 z-10"
-                      title="Własny kolor..."
-                    />
-                    <div 
-                      style={{ backgroundColor: color }}
-                      className="w-7 h-7 rounded-full border-2 border-dashed border-slate-300 hover:border-slate-500 dark:border-slate-700 dark:hover:border-slate-500 flex items-center justify-center text-[10px] shadow-sm transition-all"
-                      title="Wybierz własny kolor..."
-                    >
-                      🎨
+                      {/* Custom Palette HTML5 Color Picker */}
+                      <div className="relative flex items-center group/picker cursor-pointer">
+                        <input
+                          id="custom-color-html-picker"
+                          type="color"
+                          value={color}
+                          onChange={(e) => setColor(e.target.value)}
+                          className="w-7 h-7 rounded-full border border-slate-300 dark:border-slate-600 cursor-pointer overflow-hidden opacity-0 absolute inset-0 z-10"
+                          title="Własny kolor..."
+                        />
+                        <div 
+                          style={{ backgroundColor: color }}
+                          className="w-7 h-7 rounded-full border-2 border-dashed border-slate-300 hover:border-slate-500 dark:border-slate-700 dark:hover:border-slate-500 flex items-center justify-center text-[10px] shadow-sm transition-all"
+                          title="Wybierz własny kolor..."
+                        >
+                          🎨
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase">Gumka usuwa narysowane ścieżki</span>
-            )}
-          </div>
+                  </>
+                ) : (
+                  <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase">Gumka usuwa narysowane ścieżki</span>
+                )}
+              </div>
 
-          {/* Slider for fine tuning */}
-          <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-850 px-2.5 py-1 rounded-xl border border-slate-150 dark:border-slate-800/80">
-            <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase">Grubość suwakiem:</span>
-            <input
-              id="line-width-slider"
-              type="range"
-              min="2"
-              max="24"
-              value={lineWidth}
-              onChange={(e) => setLineWidth(Number(e.target.value))}
-              className="w-24 sm:w-32 accent-rose-500 cursor-pointer h-1.5 rounded-lg bg-slate-200 dark:bg-slate-800"
-            />
-            <span className="text-[11px] font-mono font-extrabold text-rose-500 dark:text-rose-400 min-w-[28px] text-right">{lineWidth}px</span>
+              {/* Slider for fine tuning */}
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-850 px-2.5 py-1 rounded-xl border border-slate-150 dark:border-slate-800/80">
+                <span className="text-[10px] font-sans text-slate-400 dark:text-slate-500 font-extrabold uppercase">Grubość suwakiem:</span>
+                <input
+                  id="line-width-slider"
+                  type="range"
+                  min="2"
+                  max="24"
+                  value={lineWidth}
+                  onChange={(e) => setLineWidth(Number(e.target.value))}
+                  className="w-24 sm:w-32 accent-rose-500 cursor-pointer h-1.5 rounded-lg bg-slate-200 dark:bg-slate-800"
+                />
+                <span className="text-[11px] font-mono font-extrabold text-rose-500 dark:text-rose-400 min-w-[28px] text-right">{lineWidth}px</span>
+              </div>
+            </>
+          )}
+
+          {/* Quick info tip */}
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 hidden lg:flex items-center gap-1.5">
+            <span>💡 Wskazówka: możesz przewijać lekcję kółkiem myszy w każdym trybie!</span>
           </div>
         </div>
 
       </div>
+
+      {/* Floating Quick Scroll & Pan Controls on the right side */}
+      <div className="absolute right-4 top-32 z-50 pointer-events-auto flex flex-col items-center gap-1.5 bg-white/95 dark:bg-slate-900/95 p-1.5 rounded-2xl shadow-xl border border-slate-200/90 dark:border-slate-800 backdrop-blur-xs">
+        <button
+          type="button"
+          id="floating-scroll-up-btn"
+          onClick={() => scrollViewport(-320)}
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 transition-all cursor-pointer"
+          title="Przewiń lekcję w górę (strona wyżej)"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+
+        <button
+          type="button"
+          id="floating-tool-pan-btn"
+          onClick={() => setTool(tool === 'pan' ? 'pen' : 'pan')}
+          className={`p-2 rounded-xl transition-all cursor-pointer ${
+            tool === 'pan'
+              ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400/30'
+              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+          title={tool === 'pan' ? 'Wróć do rysowania pisakiem' : 'Rączka: Włącz przesuwanie tekstu'}
+        >
+          <Hand className="w-4 h-4" />
+        </button>
+
+        <div className="w-5 h-[1px] bg-slate-200 dark:bg-slate-800" />
+
+        <span className="text-[9px] font-mono font-extrabold text-slate-500 dark:text-slate-400 select-none py-0.5">
+          {scrollPercentage}%
+        </span>
+
+        <div className="w-5 h-[1px] bg-slate-200 dark:bg-slate-800" />
+
+        <button
+          type="button"
+          id="floating-scroll-down-btn"
+          onClick={() => scrollViewport(320)}
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 transition-all cursor-pointer"
+          title="Przewiń lekcję w dół (strona niżej)"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Floating Status Notification when Pan Mode is Active */}
+      {tool === 'pan' && (
+        <div className="absolute top-28 left-1/2 -translate-x-1/2 z-40 bg-blue-600/90 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg pointer-events-none flex items-center gap-2">
+          <Hand className="w-4 h-4" />
+          <span>Tryb przesuwania aktywny — przeciągnij w dowolnym miejscu, aby przewijać treść</span>
+        </div>
+      )}
 
       {/* Drawing Canvas */}
       <canvas
@@ -448,7 +724,13 @@ export default function DrawingOverlay({ isActive, onClose }: DrawingOverlayProp
         onTouchStart={startDrawing}
         onTouchMove={draw}
         onTouchEnd={stopDrawing}
-        className="flex-1 w-full pointer-events-auto cursor-crosshair"
+        className={`flex-1 w-full pointer-events-auto ${
+          tool === 'pan'
+            ? (isCurrentlyPanning ? 'cursor-grabbing' : 'cursor-grab')
+            : tool === 'eraser'
+              ? 'cursor-cell'
+              : 'cursor-crosshair'
+        }`}
         style={{ touchAction: 'none' }}
       />
     </div>
