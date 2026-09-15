@@ -43,14 +43,29 @@ function pwaPrecachePlugin(): Plugin {
         }
       }
 
-      // Complete precache manifest
-      const precacheAssets = [
+      // Split assets into critical CORE_ASSETS and non-critical CONTENT_ASSETS
+      const coreAssets: string[] = [
         './',
         './index.html',
         './manifest.json',
         './icon.svg',
-        ...assetFiles,
       ];
+      const contentAssets: string[] = [];
+
+      for (const file of assetFiles) {
+        const basename = path.basename(file);
+        const isSecondary =
+          basename.startsWith('vendor-') ||
+          basename.startsWith('curriculum-') ||
+          basename.startsWith('component-') ||
+          basename.startsWith('default-chapters');
+
+        if (isSecondary) {
+          contentAssets.push(file);
+        } else {
+          coreAssets.push(file);
+        }
+      }
 
       // Compute content-based build hash from output assets
       const hash = crypto.createHash('sha256');
@@ -72,14 +87,20 @@ function pwaPrecachePlugin(): Plugin {
         `const BUILD_HASH = '${buildHash}';\nconst CACHE_NAME = 'multibook-mim-${buildHash}';`
       );
 
-      // 2. Inject precache assets array
+      // 2. Inject CORE_ASSETS array
       swContent = swContent.replace(
-        /\/\* __PRECACHE_ASSETS_START__ \*\/[\s\S]*?\/\* __PRECACHE_ASSETS_END__ \*\//,
-        `/* __PRECACHE_ASSETS_START__ */ ${JSON.stringify(precacheAssets, null, 2)} /* __PRECACHE_ASSETS_END__ */`
+        /\/\* __CORE_ASSETS_START__ \*\/[\s\S]*?\/\* __CORE_ASSETS_END__ \*\//,
+        `/* __CORE_ASSETS_START__ */ ${JSON.stringify(coreAssets, null, 2)} /* __CORE_ASSETS_END__ */`
+      );
+
+      // 3. Inject CONTENT_ASSETS array
+      swContent = swContent.replace(
+        /\/\* __CONTENT_ASSETS_START__ \*\/[\s\S]*?\/\* __CONTENT_ASSETS_END__ \*\//,
+        `/* __CONTENT_ASSETS_START__ */ ${JSON.stringify(contentAssets, null, 2)} /* __CONTENT_ASSETS_END__ */`
       );
 
       fs.writeFileSync(distSwPath, swContent, 'utf-8');
-      console.log(`[PWA Plugin] Injected build hash "${buildHash}" and ${precacheAssets.length} precache assets into dist/sw.js`);
+      console.log(`[PWA Plugin] Injected build hash "${buildHash}" (Core: ${coreAssets.length}, Content: ${contentAssets.length}) into dist/sw.js`);
     },
   };
 }
