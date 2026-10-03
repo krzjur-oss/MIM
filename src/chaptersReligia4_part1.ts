@@ -71,24 +71,24 @@ Pan Jezus jest naszym najlepszym Przyjacielem i pragnie, abyśmy swoim postępow
         id: 'r4-l1-q1',
         question: 'Czym jest katecheza?',
         options: [
-          'Zwykłą lekcją historii',
           'Spotkaniem się z Panem Bogiem i nauczaniem zasad wiary chrześcijańskiej',
-          'Kółkiem zainteresowań plastycznych',
-          'Tylko nauczaniem śpiewu'
+          'Tylko nauczaniem śpiewu',
+          'Zwykłą lekcją historii',
+          'Kółkiem zainteresowań plastycznych'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Katecheza to spotkanie z Panem Bogiem oraz poznawanie i nauczanie zasad wiary chrześcijańskiej.'
       },
       {
         id: 'r4-l1-q2',
         question: 'Według Ewangelii św. Jana, kim jesteśmy dla Jezusa, jeśli zachowujemy Jego nauki?',
         options: [
-          'Uczniami',
-          'Sługami',
           'Przyjaciółmi',
-          'Obcymi'
+          'Obcymi',
+          'Uczniami',
+          'Sługami'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Jezus powiedział: „Wy jesteście przyjaciółmi moimi, jeżeli czynicie to, co vam nakazuję” (J 15,14).'
       }
     ]
@@ -164,24 +164,24 @@ Pan Bóg jest źródłem miłości, bo od Niego pochodzi wszelka miłość. Jezu
         id: 'r4-l2-q1',
         question: 'Kto jest źródłem wszelkiej prawdziwej miłości?',
         options: [
-          'Pan Bóg',
+          'Nauka',
           'Przypadek',
-          'Sami ludzie bez pomocy Boga',
-          'Nauka'
+          'Pan Bóg',
+          'Sami ludzie bez pomocy Boga'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Pan Bóg jest źródłem miłości, bo od Niego pochodzi wszelka miłość (1 J 4,16).'
       },
       {
         id: 'r4-l2-q2',
         question: 'Jaka jest najważniejsza cnota chrześcijańska?',
         options: [
-          'Odwaga',
           'Miłość',
-          'Sława',
-          'Mądrość ludzka'
+          'Mądrość ludzka',
+          'Odwaga',
+          'Sława'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Miłość to najważniejsza cnota chrześcijańska, realizowana przez okazywanie dobra Bogu i bliźniemu.'
       }
     ]
@@ -256,22 +256,22 @@ W czasie każdej Mszy Świętej Pan Jezus uczy swoim słowem i karmi swoim Ciał
         options: [
           'Z dwóch',
           'Z trzech',
-          'Z czterech',
-          'Z sześciu'
+          'Z sześciu',
+          'Z czterech'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Msza Święta składa się z 4 części: obrzędów wstępnych, liturgii słowa, liturgii eucharystycznej oraz obrzędów zakończenia.'
       },
       {
         id: 'r4-l3-q2',
         question: 'Jaki powinien być nasz udział we Mszy Świętej?',
         options: [
-          'Bierny i obojętny',
           'Świadomy, czynny, pełny i owocny',
-          'Tylko jako obserwator z daleka',
-          'Dowolny bez skupienia'
+          'Dowolny bez skupienia',
+          'Bierny i obojętny',
+          'Tylko jako obserwator z daleka'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Udział we Mszy Świętej powinien być świadomy, czynny, pełny i owocny.'
       }
     ]
@@ -346,10 +346,10 @@ W czasie Mszy Świętej słuchamy słowa Bożego podczas **Liturgii słowa**, kt
         id: 'r4-l4-q1',
         question: 'Kogo oznacza Siewca w przypowieści Pana Jezusa?',
         options: [
-          'Apostoła Piotra',
+          'Anioła Stróża',
           'Pana Jezusa',
           'Rolnika z Galilei',
-          'Anioła Stróża'
+          'Apostoła Piotra'
         ],
         correctAnswer: 1,
         explanation: 'Siewcą w przypowieści jest Pan Jezus, a ziarnem – Słowo Boże.'
@@ -358,12 +358,12 @@ W czasie Mszy Świętej słuchamy słowa Bożego podczas **Liturgii słowa**, kt
         id: 'r4-l4-q2',
         question: 'Co oznacza „żyzna ziemia” z przypowieści o siewcy?',
         options: [
-          'Człowieka, który słucha słowa Bożego i wprowadza je w życie',
           'Osobę, która zapomina o Bogu',
-          'Glebę w Ogrodzie Oliwnym',
-          'Osobę, która odrzuca naukę Jezusa'
+          'Osobę, która odrzuca naukę Jezusa',
+          'Człowieka, który słucha słowa Bożego i wprowadza je w życie',
+          'Glebę w Ogrodzie Oliwnym'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Żyzna ziemia oznacza człowieka, który słucha słowa Bożego i wydaje dobre owoce w swoim życiu.'
       }
     ]
@@ -432,23 +432,23 @@ Tylko ten, kto dobrze przyjmuje słowo Boże i postępuje według niego, wytrwa 
         question: 'Gdzie człowiek roztropny zbudował swój dom w przypowieści Jezusa?',
         options: [
           'Na piasku przy brzegu',
-          'Na skale',
           'Na polanie',
+          'Na skale',
           'Na drewnie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Człowiek roztropny zbudował dom na skale, co oznacza słuchanie i wypełnianie słowa Bożego.'
       },
       {
         id: 'r4-l5-q2',
         question: 'Co jest trwałym fundamentem życia każdego chrześcijanina?',
         options: [
-          'Słowo Boże i nauka Jezusa',
-          'Bogactwo materialne',
           'Sława w internecie',
+          'Bogactwo materialne',
+          'Słowo Boże i nauka Jezusa',
           'Przypadek'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Słowo Boże i postępowanie zgodne z nauką Chrystusa to fundament trwałości i pokoju w życiu.'
       }
     ]
@@ -524,23 +524,23 @@ W cykl roku liturgicznego wpisane są następujące okresy:
         question: 'Kiedy rozpoczyna się rok liturgiczny w Kościele?',
         options: [
           '1 stycznia w Nowy Rok',
-          'W pierwszą niedzielę Adwentu',
           'W Niedzielę Palmową',
+          'W pierwszą niedzielę Adwentu',
           '1 września'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Rok liturgiczny rozpoczyna się w pierwszą niedzielę Adwentu.'
       },
       {
         id: 'r4-l6-q2',
         question: 'Jakie święto kończy rok liturgiczny?',
         options: [
-          'Uroczystość Chrystusa Króla Wszechświata',
           'Boże Ciało',
           'Wniebowstąpienie Pańskie',
+          'Uroczystość Chrystusa Króla Wszechświata',
           'Zielone Świątki'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Rok liturgiczny kończy się uroczystością Jezusa Chrystusa Króla Wszechświata.'
       }
     ]
@@ -605,12 +605,12 @@ Fundamentem prawdziwej przyjaźni jest miłość. Podstawą przyjaźni z Jezusem
         id: 'r4-l7-q1',
         question: 'Jak brzmi pierwsze i największe przykazanie w nauczaniu Jezusa?',
         options: [
+          'Nie zabijaj',
           'Będziesz miłował Pana Boga twego całym swoim sercem, całą swoją duszą i całym swoim umysłem',
           'Pamiętaj, abyś dzień święty święcił',
-          'Nie zabijaj',
           'Szanuj starszych od siebie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Pierwsze i największe przykazanie to miłowanie Boga całym sercem, duszą i umysłem (Mt 22,37b).'
       },
       {
@@ -619,8 +619,8 @@ Fundamentem prawdziwej przyjaźni jest miłość. Podstawą przyjaźni z Jezusem
         options: [
           'Szuka własnej korzyści',
           'Jest bezinteresowny, szczery, cierpliwy i troskliwy',
-          'Pamięta tylko w dobrych chwilach',
-          'Unika odpowiedzialności'
+          'Unika odpowiedzialności',
+          'Pamięta tylko w dobrych chwilach'
         ],
         correctAnswer: 1,
         explanation: 'Prawdziwy przyjaciel jest bezinteresowny, oddany, szczery, cierpliwy i troskliwy.'
@@ -688,8 +688,8 @@ Pan Jezus przekazał św. Małgorzacie obietnicę: *„Serce moje wyleje hojne �
         options: [
           'Św. Faustynie Kowalskiej',
           'Św. Małgorzacie Marii Alacoque',
-          'Św. Teresie od Dzieciątka Jezus',
-          'Św. Joannie d’Arc'
+          'Św. Joannie d’Arc',
+          'Św. Teresie od Dzieciątka Jezus'
         ],
         correctAnswer: 1,
         explanation: 'Pan Jezus objawił nabożeństwo do Najświętszego Serca św. Małgorzacie Marii Alacoque w XVII wieku.'
@@ -698,12 +698,12 @@ Pan Jezus przekazał św. Małgorzacie obietnicę: *„Serce moje wyleje hojne �
         id: 'r4-l8-q2',
         question: 'Co jest warunkiem owocnego przeżycia Pierwszego Piątku Miesiąca?',
         options: [
-          'Obecność w stanie łaski uświęcającej i przyjęcie Komunii Świętej wynagradzającej',
           'Tylko podpis na liście w szkole',
+          'Obecność w stanie łaski uświęcającej i przyjęcie Komunii Świętej wynagradzającej',
           'Złożenie ofiary pieniężnej',
           'Przeczytanie całej Biblii'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Warunkiem jest spowiedź (łaska uświęcająca) oraz przyjęcie Komunii Świętej jako wynagrodzenie Najświętszemu Sercu Jezusa.'
       }
     ]
@@ -771,24 +771,24 @@ Pan Jezus nas kocha i pragnie, abyśmy i my kochali Go ze wszystkich sił. Pomag
         id: 'r4-l9-q1',
         question: 'Czym odpowiedział setnik z Kafarnaum, gdy Jezus chciał przyjść do jego domu?',
         options: [
+          '„Nie trzeba, sam sobie poradzę”',
           '„Panie, nie jestem godzien, abyś wszedł pod dach mój, ale powiedz tylko słowo...”',
           '„Czekam na Ciebie z całym domem”',
-          '„Przyjdź jutro rano”',
-          '„Nie trzeba, sam sobie poradzę”'
+          '„Przyjdź jutro rano”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Setnik wypowiedział słynne słowa pokory i głębokiej wiary, które do dziś powtarzamy przed Komunią Świętą.'
       },
       {
         id: 'r4-l9-q2',
         question: 'Czym jest cud?',
         options: [
-          'Nadzwyczajnym zjawiskiem, którego dokonuje sam Bóg',
+          'Zwykłym zbiegiem okoliczności',
           'Sztuczką cyrkową',
           'Odkryciem naukowym',
-          'Zwykłym zbiegiem okoliczności'
+          'Nadzwyczajnym zjawiskiem, którego dokonuje sam Bóg'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Cud to nadzwyczajne zjawisko przekraczające siły natury, którego dokonać może jedynie Bóg.'
       }
     ]
@@ -857,12 +857,12 @@ Jezus chce, abyśmy Mu ufali i powierzali swoje sprawy w modlitwie.
         id: 'r4-l10-q1',
         question: 'Co stało się z Piotrem, kiedy kroczył po wodzie do Jezusa i przestraszył się silnego wiatru?',
         options: [
-          'Zaczął tonąć, ale Jezus natychmiast podał mu rękę i go uratował',
+          'Nic się nie stało',
           'Wrócił szybko do łodzi o własnych siłach',
-          'Zamienił się w rybę',
-          'Nic się nie stało'
+          'Zaczął tonąć, ale Jezus natychmiast podał mu rękę i go uratował',
+          'Zamienił się w rybę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Piotr zaczął tonąć ze strachu, lecz zawołał „Panie, ratuj mnie!” i Jezus go uratował.'
       },
       {
@@ -870,9 +870,9 @@ Jezus chce, abyśmy Mu ufali i powierzali swoje sprawy w modlitwie.
         question: 'Jak brzmią pokrzepiające słowa Jezusa wypowiedziane do przestraszonych uczniów w łodzi?',
         options: [
           '„Odwagi! Ja jestem, nie bójcie się!”',
-          '„Uciekajcie gdzie pieprz rośnie”',
           '„Wracajcie do brzegów”',
-          '„Nie ma dla was ratunku”'
+          '„Nie ma dla was ratunku”',
+          '„Uciekajcie gdzie pieprz rośnie”'
         ],
         correctAnswer: 0,
         explanation: 'Jezus powiedział: „Odwagi! Ja jestem, nie bójcie się!” (Mt 14,27).'

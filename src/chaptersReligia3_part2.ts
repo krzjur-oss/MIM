@@ -75,9 +75,9 @@ Przez sakramenty Jezus spotyka się z nami, gładzi grzechy, jednoczy ze sobą i
         question: 'Czym jest sakrament?',
         options: [
           'Widzialnym znakiem niewidzialnej łaski Bożej ustanowionym przez Pana Jezusa',
-          'Zwykłym zwyczajem ludowym',
+          'Tradycyjną uroczystością rodzinną',
           'Modlitwą odmawianą wyłącznie przez kapłana',
-          'Tradycyjną uroczystością rodzinną'
+          'Zwykłym zwyczajem ludowym'
         ],
         correctAnswer: 0,
         explanation: 'Sakrament to ustanowiony przez Chrystusa skuteczny znak łaski, w którym sam Jezus działa dla naszego uświęcenia.'
@@ -86,12 +86,12 @@ Przez sakramenty Jezus spotyka się z nami, gładzi grzechy, jednoczy ze sobą i
         id: 'r3-l21-q2',
         question: 'Ile jest Sakramentów Świętych w Kościele katolickim?',
         options: [
+          '10',
           '7',
           '5',
-          '10',
           '12'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Kościół sprawuje 7 sakramentów świętych: Chrzest, Bierzmowanie, Eucharystię, Pokutę, Namaszczenie chorych, Kapłaństwo i Małżeństwo.'
       }
     ]
@@ -154,12 +154,12 @@ Jezus dostrzegł w paralityku najpierw potrzebę uzdrowienia duszy, dlatego odpu
         id: 'r3-l22-q1',
         question: 'Co jest największym nieszczęściem i chorobą duszy człowieka?',
         options: [
-          'Grzech – czyli świadome nieposłuszeństwo woli Bożej',
-          'Zwykłe przeziębienie',
           'Brak kieszonkowego',
-          'Zła ocena ze sprawdzianu'
+          'Zła ocena ze sprawdzianu',
+          'Grzech – czyli świadome nieposłuszeństwo woli Bożej',
+          'Zwykłe przeziębienie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Grzech osłabia lub niszczy naszą relację z Panem Bogiem i bliźnimi, dlatego jest chorobą duszy.'
       },
       {
@@ -167,8 +167,8 @@ Jezus dostrzegł w paralityku najpierw potrzebę uzdrowienia duszy, dlatego odpu
         question: 'Co Jezus uczynił najpierw dla paralityka zanim przywrócił mu sprawność ciała?',
         options: [
           'Odpuścił mu grzechy',
-          'Dał mu chleb',
           'Kazał mu opuścić miasto',
+          'Dał mu chleb',
           'Zapytaj o jego majątek'
         ],
         correctAnswer: 0,
@@ -236,12 +236,12 @@ Gdy żałujemy za swoje złe postępowanie i z pokorą wracamy w sakramencie pok
         id: 'r3-l23-q1',
         question: 'Kogo symbolizuje postać miłosiernego ojca w przypowieści Jezusa?',
         options: [
+          'Sąsiada z wioski',
           'Pana Boga, który kocha grzesznika i zawsze wyczekuje jego powrotu',
           'Surowego sędziego miejskiego',
-          'Sąsiada z wioski',
           'Przełożonego robotników'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Ojciec z przypowieści reprezentuje Boga, który przebacza i raduje się z nawrócenia każdego człowieka.'
       },
       {
@@ -249,9 +249,9 @@ Gdy żałujemy za swoje złe postępowanie i z pokorą wracamy w sakramencie pok
         question: 'Co zrobił ojciec, gdy zobaczył wracającego syna z daleka?',
         options: [
           'Wzruszył się głęboko, wybiegł mu naprzeciw i rzucił mu się na szyję',
+          'Kazał mu zapłacić odszkodowanie',
           'Zamknął przed nim drzwi domu',
-          'Odesłał go do pracy najemnika bez przebaczenia',
-          'Kazał mu zapłacić odszkodowanie'
+          'Odesłał go do pracy najemnika bez przebaczenia'
         ],
         correctAnswer: 0,
         explanation: 'Ojciec nie czekał na chłodno, ale pełen wzruszenia wybiegł naprzeciw syna i powitał go z wielką miłością.'
@@ -322,9 +322,9 @@ Rachunek sumienia warto robić nie tylko przed spowiedzią, ale każdego wieczor
         question: 'Czym jest rachunek sumienia?',
         options: [
           'Zastanowieniem się nad swoimi myślami, słowami i uczynkami w świetle Bożej miłości',
-          'Liczebnym podsumowaniem ocen ze szkoły',
+          'Czytaniem książek historycznych',
           'Sprawdzaniem wydatków domowych',
-          'Czytaniem książek historycznych'
+          'Liczebnym podsumowaniem ocen ze szkoły'
         ],
         correctAnswer: 0,
         explanation: 'Rachunek sumienia polega na przypomnieniu sobie zrobionego zła i zaniedbanego dobra przed Bogiem.'
@@ -333,12 +333,12 @@ Rachunek sumienia warto robić nie tylko przed spowiedzią, ale każdego wieczor
         id: 'r3-l24-q2',
         question: 'Który to warunek sakramentu pokuty i pojednania?',
         options: [
-          'Pierwszy warunek',
           'Drugi warunek',
-          'Trzeci warunek',
-          'Ostatni warunek'
+          'Ostatni warunek',
+          'Pierwszy warunek',
+          'Trzeci warunek'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Rachunek sumienia jest pierwszym z pięciu warunków dobrej spowiedzi.'
       }
     ]
@@ -402,12 +402,12 @@ Piotr Apostoł bardzo kochał Pana Jezusa, jednak z lęku wyparł się Go trzy r
         id: 'r3-l25-q1',
         question: 'Który warunek sakramentu pokuty i pojednania uważa się za najważniejszy?',
         options: [
-          'Żal za grzechy',
+          'Ładny ubiór',
           'Zakup pamiątek',
-          'Zapamiętanie imienia kapłana',
-          'Ładny ubiór'
+          'Żal za grzechy',
+          'Zapamiętanie imienia kapłana'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Bez szczerego żalu za grzechy spowiedź jest nieważna, ponieważ to żal otwiera serce na Boże miłosierdzie.'
       },
       {
@@ -488,9 +488,9 @@ Pan Jezus powiedział do św. Faustyny Kowalskiej: *„Moje serce przepełnione 
         question: 'Na czym polega trzeci warunek sakramentu pokuty – mocne postanowienie poprawy?',
         options: [
           'Na szczerej woli i konkretnej decyzji unikania grzechu oraz stawania się lepszym człowiekiem',
-          'Na zaplanowaniu zakupu prezentów',
+          'Na milczeniu przed rodzicami',
           'Na obietnicy dobrej zabawy',
-          'Na milczeniu przed rodzicami'
+          'Na zaplanowaniu zakupu prezentów'
         ],
         correctAnswer: 0,
         explanation: 'Mocne postanowienie poprawy polega na podjęciu zdecydowanej walki ze słabościami przy pomocy łaski Bożej.'
@@ -499,12 +499,12 @@ Pan Jezus powiedział do św. Faustyny Kowalskiej: *„Moje serce przepełnione 
         id: 'r3-l26-q2',
         question: 'Co Pan Jezus powiedział do kobiety, której odpuścił grzechy w Ewangelii wg św. Jana?',
         options: [
+          '„Nie rozmawiaj z nikim”',
           '„I Ja ciebie nie potępiam. Idź, a od tej chwili już nie grzesz!”',
           '„Nie wracaj do domu”',
-          '„Przestań się modlić”',
-          '„Nie rozmawiaj z nikim”'
+          '„Przestań się modlić”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus nie potępił kobiety, ale nakazał jej zmienić życie słowami: „Idź, a od tej chwili już nie grzesz!”'
       }
     ]
@@ -580,12 +580,12 @@ Jezus przekazuje Apostołom i ich następcom władzę odpuszczania grzechów:
         id: 'r3-l27-q1',
         question: 'Kogo zastępuje kapłan siedzący w konfesjonale podczas spowiedzi?',
         options: [
-          'Sama Pana Jezusa Chrystusa',
           'Sędziego państwowego',
+          'Autora podręcznika',
           'Dyrektora szkoły',
-          'Autora podręcznika'
+          'Sama Pana Jezusa Chrystusa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Kapłan działa w osobie Chrystusa (in persona Christi), stąd rozgrzeszenie udzielane przez księdza jest odpuszczeniem grzechów przez samego Boga.'
       },
       {
@@ -593,9 +593,9 @@ Jezus przekazuje Apostołom i ich następcom władzę odpuszczania grzechów:
         question: 'Jak dziecko odpowiada na słowa kapłana: „Wysławiajmy Boga, bo jest dobry”?',
         options: [
           '„Bo Jego miłosierdzie trwa na wieki”',
+          '„Robię postanowienie poprawy”',
           '„Niech będzie pochwalony Jezus Chrystus”',
-          '„Bogu niech będą dzięki”',
-          '„Robię postanowienie poprawy”'
+          '„Bogu niech będą dzięki”'
         ],
         correctAnswer: 0,
         explanation: 'Odpowiedź brzmi: „Bo Jego miłosierdzie trwa na wieki”.'
@@ -664,24 +664,24 @@ Przykład Zacheusza uczy nas, że prawdziwa radość z przebaczenia objawia się
         id: 'r3-l28-q1',
         question: 'Co obiecał Zacheusz po spotkaniu z Chrystusem w swoim domu?',
         options: [
-          'Oddać połowę majątku ubogim, a skrzywdzonym zwrócić poczwórnie',
-          'Kupić nowy dom w Jerozolimie',
           'Zamknąć się w domu na tydzień',
-          'Uciec z miasta'
+          'Kupić nowy dom w Jerozolimie',
+          'Uciec z miasta',
+          'Oddać połowę majątku ubogim, a skrzywdzonym zwrócić poczwórnie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Zacheusz pragnął całkowicie wynagrodzić zło, oddając połowę majątku ubogim i zwracając poczwórnie pokrzywdzonym.'
       },
       {
         id: 'r3-l28-q2',
         question: 'Jak nazywa się odmówienie modlitwy zadanej przez spowiednika oraz naprawienie krzywd bliźnim?',
         options: [
-          'Zadośćuczynieniem Panu Bogu i bliźniemu',
           'Rachunkiem sumienia',
-          'Mocnym postanowieniem poprawy',
-          'Formułą spowiedzi'
+          'Formułą spowiedzi',
+          'Zadośćuczynieniem Panu Bogu i bliźniemu',
+          'Mocnym postanowieniem poprawy'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Piąty warunek sakramentu pokuty to zadośćuczynienie – wypełnienie pokuty i naprawa wyrządzonych szkód.'
       }
     ]

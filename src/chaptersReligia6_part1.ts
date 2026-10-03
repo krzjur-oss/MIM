@@ -156,24 +156,24 @@ Wypisz w zeszycie pięć haseł określających, jak w codziennym życiu możemy
         id: 'rel6-3-q1',
         question: 'Co wyróżnia człowieka spośród innych stworzeń na ziemi?',
         options: [
-          'Umiejętność szybkiego biegania',
           'Stworzenie na obraz i podobieństwo Boga, posiadanie wolnej woli, rozumu i duszy nieśmiertelnej',
-          'Konieczność jedzenia i spania',
-          'Zdolność do budowania domów z piasku'
+          'Zdolność do budowania domów z piasku',
+          'Umiejętność szybkiego biegania',
+          'Konieczność jedzenia i spania'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Tylko człowiek został obdarowany przez Boga duszę rozumną i nieśmiertelną, co czyni go obrazem samego Stwórcy.'
       },
       {
         id: 'rel6-3-q2',
         question: 'Z czego wynika nienaruszalna godność człowieka?',
         options: [
-          'Z ilości posiadanych pieniędzy',
           'Z faktu, że został stworzony przez Boga z miłości i na Jego obraz',
-          'Z opinii innych ludzi na jego temat',
-          'Z przynależności do wybranego klubu sportowego'
+          'Z przynależności do wybranego klubu sportowego',
+          'Z ilości posiadanych pieniędzy',
+          'Z opinii innych ludzi na jego temat'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Godność człowieka nie zależy od jego zasług czy stanu posiadania, lecz od tego, że jest dzieckiem Bożym powołanym do wiecznej miłości.'
       }
     ]
@@ -247,22 +247,22 @@ Napisz krótką refleksję na temat tego, co dla współczesnego młodego chrze�
         id: 'rel6-4-q1',
         question: 'Kim według słów Jezusa z Ewangelii Jana są chrześcijanie w relacji do Niego?',
         options: [
-          'Tylko dalekimi sługami',
           'Latoroślami, które czerpią soki i życie z Chrystusa – Winnego Krzewu',
-          'Obcymi przechodniami',
-          'Najemnikami do pracy w polu'
+          'Tylko dalekimi sługami',
+          'Najemnikami do pracy w polu',
+          'Obcymi przechodniami'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Jezus porównuje Siebie do krzewu winnego, a nas do latorośli. Bez trwania w Nim przez łaskę nie możemy uczynić niczego dobrego.'
       },
       {
         id: 'rel6-4-q2',
         question: 'W jakim potrójnym posłannictwie Chrystusa uczestniczymy od momentu chrztu?',
         options: [
-          'Urzędniczym, nauczycielskim i sędziowskim',
-          'Kapłańskim, prorockim i królewskim',
           'Historycznym, literackim i muzycznym',
-          'Wojskowym, dyplomatycznym i gospodarczym'
+          'Kapłańskim, prorockim i królewskim',
+          'Wojskowym, dyplomatycznym i gospodarczym',
+          'Urzędniczym, nauczycielskim i sędziowskim'
         ],
         correctAnswer: 1,
         explanation: 'Ochrzczony ma udział w kapłańskiej, prorockiej i pasterskiej (królewskiej) misji Chrystusa, budując królestwo Boże.'
@@ -336,23 +336,23 @@ Zastanów się i napisz w zeszycie, w jaki konkretny sposób możesz w tym tygod
         question: 'Która wspólnota jest dla człowieka pierwszą, podstawową i najważniejszą?',
         options: [
           'Klasa szkolna',
-          'Rodzina',
+          'Wirtualna społeczność internetowa',
           'Klub sportowy',
-          'Wirtualna społeczność internetowa'
+          'Rodzina'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Rodzina jest podstawową komórką życia społecznego i pierwszą wspólnotą, w której człowiek uczy się miłości, wiary i relacji z ludźmi.'
       },
       {
         id: 'rel6-5-q2',
         question: 'Jak brzmią słynne słowa Pana Jezusa przytoczone w Dziejach Apostolskich o dzieleniu się z innymi?',
         options: [
+          '„Każdy dba tylko o siebie”',
           '„Kto pierwszy, ten lepszy”',
-          '„Więcej szczęścia jest w dawaniu aniżeli w braniu”',
           '„Brać ile wlezie”',
-          '„Każdy dba tylko o siebie”'
+          '„Więcej szczęścia jest w dawaniu aniżeli w braniu”'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus uczy, że prawdziwa radość i błogosławieństwo płyną z bezinteresownego obdarowywania i pomagania bliźnim.'
       }
     ]
@@ -427,11 +427,11 @@ Wybierz jednego z patriarchów (Abraham, Izaak, Jakub lub Józef Egipski) i kró
         question: 'Kto jest nazywany „Ojcem naszej wiary” w Biblii?',
         options: [
           'Król Dawid',
-          'Abraham',
+          'Święty Piotr',
           'Mojżesz',
-          'Święty Piotr'
+          'Abraham'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Abraham jest nazywany Ojcem naszej wiary, ponieważ jako pierwszy uwierzył Bogu bezgranicznie i wyruszył do ziemi Kanaan.'
       },
       {
@@ -439,11 +439,11 @@ Wybierz jednego z patriarchów (Abraham, Izaak, Jakub lub Józef Egipski) i kró
         question: 'Ilu synów miał Jakub, od których pochodzą szczepy Izraela?',
         options: [
           '3',
-          '7',
+          '12',
           '10',
-          '12'
+          '7'
         ],
-        correctAnswer: 3,
+        correctAnswer: 1,
         explanation: 'Jakub (Izrael) miał 12 synów, którzy stali się protoplastami 12 plemion (szczepów) narodu wybranego.'
       }
     ]
@@ -515,12 +515,12 @@ Napisz w zeszycie, jak rozumiesz słowa św. Pawła: *„Wszystko wolno, ale nie
         id: 'rel6-7-q1',
         question: 'Kogo Bóg powołał, aby wyprowadził naród wybrany z niewoli egipskiej?',
         options: [
+          'Jozuego',
           'Abrahama',
-          'Mojżesza',
           'Króla Dawida',
-          'Jozuego'
+          'Mojżesza'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Bóg powołał Mojżesza, rozmawiając z nim w krzewie gorejącym, i uczynił go wodzem oraz pośrednikiem przymierza.'
       },
       {
@@ -528,11 +528,11 @@ Napisz w zeszycie, jak rozumiesz słowa św. Pawła: *„Wszystko wolno, ale nie
         question: 'Jak nazywał się pokarm, którym Bóg cudownie karmił Izraelitów na pustyni?',
         options: [
           'Chleb świętojański',
-          'Manna',
+          'Nektar',
           'Owoce figowe',
-          'Nektar'
+          'Manna'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Manna była chlebem z nieba, który opadał na obóz Izraelitów każdego poranka podczas ich czterdziestoletniej wędrówki.'
       }
     ]
@@ -604,24 +604,24 @@ Zaprojektuj i wykonaj w zeszycie krótki plakat lub rysunek symbolizujący jedno
         id: 'rel6-8-q1',
         question: 'Gdzie Mojżesz otrzymał od Boga kamienne tablice z Dziesięcioma Przykazaniami?',
         options: [
-          'Na pustyni Syn',
-          'Na górze Synaj (Horeb)',
           'W świątyni jerozolimskiej',
-          'W pałacu faraona'
+          'W pałacu faraona',
+          'Na pustyni Syn',
+          'Na górze Synaj (Horeb)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Bóg objawił się Mojżeszowi w dymie i ogniu na szczycie góry Synaj i przekazał mu tablice Przymierza.'
       },
       {
         id: 'rel6-8-q2',
         question: 'Ile przykazań Dekalogu dotyczy bezpośrednio naszej relacji do samego Boga?',
         options: [
-          'Wszystkie 10',
           'Pierwsze trzy przykazania',
+          'Wszystkie 10',
           'Ostatnie siedem przykazań',
           'Żadne z nich'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Pierwsze trzy przykazania Dekalogu (czczenie Boga, szacunek dla Jego Imienia, świętowanie dnia świętego) określają bezpośredni kult i miłość do Stwórcy.'
       }
     ]
@@ -692,22 +692,22 @@ Przeczytaj uważnie Psalm 23 w Biblii i wypisz do zeszytu 3 obrazy Boga, jakie w
         id: 'rel6-10-q1',
         question: 'Który prorok namaścił młodego Dawida na króla w Betlejem?',
         options: [
+          'Mojżesz',
           'Prorok Eliasz',
-          'Prorok Samuel',
           'Prorok Natan',
-          'Mojżesz'
+          'Prorok Samuel'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Bóg posłał proroka Samuela do domu Jessego w Betlejem, aby pośród jego synów odnalazł i namaścił przyszłego króla – Dawida.'
       },
       {
         id: 'rel6-10-q2',
         question: 'Do jakiego zwierzęcia lub profesji nawiązuje najsłynniejszy psalm Dawidowy (Psalm 23)?',
         options: [
-          'Do wojownika i tarczy',
-          'Do pasterza dbającego o swoje owce',
           'Do rybaka zarzucającego sieci',
-          'Do rolnika siejącego ziarno'
+          'Do pasterza dbającego o swoje owce',
+          'Do rolnika siejącego ziarno',
+          'Do wojownika i tarczy'
         ],
         correctAnswer: 1,
         explanation: 'Psalm 23 zaczyna się od słów „Pan jest moim pasterzem”, ukazując troskliwą i pełną miłości opiekę Boga nad każdym człowiekiem.'
@@ -779,24 +779,24 @@ Napisz w kilku zdaniach, dlaczego kościół (świątynia) jest miejscem szczeg�
         id: 'rel6-11-q1',
         question: 'O jaki dar poprosił Salomon Boga na początku swojego panowania?',
         options: [
+          'O długie i beztroskie życie',
           'O bogactwo i złoto',
-          'O mądrość serca do rozróżniania dobra i zła oraz rządzenia ludem',
           'O zwycięstwo nad wszystkimi wrogami',
-          'O długie i beztroskie życie'
+          'O mądrość serca do rozróżniania dobra i zła oraz rządzenia ludem'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Salomon poprosił Boga o mądrość i umiejętność sprawiedliwego sądzenia, co bardzo podobało się Panu Bogu, który dodał mu także sławę i bogactwo.'
       },
       {
         id: 'rel6-11-q2',
         question: 'Co Salomon umieścił w Miejscu Najświętszym wybudowanej przez siebie Świątyni?',
         options: [
+          'Swoją koronę królewską',
           'Złoty posąg faraona',
           'Arkę Przymierza z tablicami Dekalogu',
-          'Swoją koronę królewską',
           'Kolekcję starożytnych instrumentów'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Arka Przymierza, zawierająca kamienne tablice Przymierza z Synaju, była najświętszym przedmiotem Izraela i została umieszczona w sercu Świątyni.'
       }
     ]
@@ -870,24 +870,24 @@ Napisz w zeszycie, jakie zadania stały przed prorokami Starego Testamentu i jak
         id: 'rel6-12-q1',
         question: 'Który z proroków odpowiedział Bogu słowami: „Oto ja, poślij mnie!”?',
         options: [
-          'Jeremiasz',
           'Izajasz',
           'Daniel',
+          'Jeremiasz',
           'Jonasz'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Izajasz, po ujrzeniu chwały Bożej w świątyni i oczyszczeniu jego warg żarzącym się węglem, z gotowością przyjął Boże posłannictwo.'
       },
       {
         id: 'rel6-12-q2',
         question: 'O co martwił się młody Jeremiasz, gdy Bóg powołał go na proroka?',
         options: [
-          'Że nie ma pieniędzy na podróże',
-          'Że jest zbyt młody i nie umie przemawiać',
+          'Że król nie będzie chciał go słuchać',
           'Że nie zna języków obcych',
-          'Że król nie będzie chciał go słuchać'
+          'Że nie ma pieniędzy na podróże',
+          'Że jest zbyt młody i nie umie przemawiać'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jeremiasz odpowiedział Bogu: „Ach, Panie Boże, przecież nie umiem mówić, bo jestem młodzieńcem!”. Bóg jednak uspokoił go, obiecując swoją stałą obecność.'
       }
     ]

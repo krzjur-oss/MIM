@@ -70,8 +70,8 @@ Wypisz do zeszytu trzech starożytnych autorów pozachrześcijańskich, którzy 
         options: [
           'Pliniusz Młodszy',
           'Tacyt',
-          'Swetoniusz',
-          'Józef Flawiusz'
+          'Józef Flawiusz',
+          'Swetoniusz'
         ],
         correctAnswer: 1,
         explanation: 'Tacyt w swoich „Rocznikach” (116 r.) wprost wymienia Chrystusa i wspomina o Jego śmierci z wyroku Poncjusza Piłata za panowania cesarza Tyberiusza.'
@@ -80,12 +80,12 @@ Wypisz do zeszytu trzech starożytnych autorów pozachrześcijańskich, którzy 
         id: 'rel6-18-q2',
         question: 'Jakie wydarzenie stanowi punkt zwrotny w historii i początek naszej ery (rachuby lat)?',
         options: [
+          'Zburzenie Świątyni Jerozolimskiej',
           'Założenie Rzymu',
-          'Narodzenie Jezusa Chrystusa',
           'Chrzest Polski',
-          'Zburzenie Świątyni Jerozolimskiej'
+          'Narodzenie Jezusa Chrystusa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Nasza era (rok Pański / Anno Domini) jest liczona na całym świecie od tradycyjnej daty narodzenia Jezusa Chrystusa.'
       }
     ]
@@ -159,24 +159,24 @@ Wyjaśnij krótko w zeszycie znaczenie greckiego słowa *Christos* (Chrystus) i 
         id: 'rel6-19-q1',
         question: 'Co oznacza słowo „Mesjasz” w języku hebrajskim?',
         options: [
-          'Nauczyciel',
           'Namaszczony (Pomazaniec)',
-          'Sędzia sprawiedliwy',
-          'Przewodnik pustynny'
+          'Nauczyciel',
+          'Przewodnik pustynny',
+          'Sędzia sprawiedliwy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Słowo Mesjasz oznacza Namaszczonego Duchem Świętym do pełnienia potrójnej misji zbawczej. Jego greckim odpowiednikiem jest słowo Chrystus.'
       },
       {
         id: 'rel6-19-q2',
         question: 'Co zapowiada fragment Księgi Rodzaju zwany Protoewangelią (Rdz 3,15)?',
         options: [
-          'Potop za czasów Noego',
-          'Ostateczne zwycięstwo Zbawiciela (potomstwa Niewiasty) nad szatanem i grzechem',
+          'Wyjście Abrahama z Ur Chaldejskiego',
           'Budowę wieży Babel',
-          'Wyjście Abrahama z Ur Chaldejskiego'
+          'Ostateczne zwycięstwo Zbawiciela (potomstwa Niewiasty) nad szatanem i grzechem',
+          'Potop za czasów Noego'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Protoewangelia (Pierwsza Dobra Nowina) to zapowiedź walki ze złem, w której potomek Niewiasty (Chrystus) ostatecznie zmiażdży głowę węża (szatana).'
       }
     ]
@@ -247,12 +247,12 @@ Ułóż w zeszycie krzyżówkę, w której głównym hasłem będzie słowo **WC
         id: 'rel6-20-q1',
         question: 'W jaką wielką uroczystość liturgiczną wspominamy i świętujemy Wcielenie Syna Bożego?',
         options: [
-          'W uroczystość Zmartwychwstania Pańskiego',
-          'W uroczystość Narodzenia Pańskiego (Boże Narodzenie)',
+          'W Boże Ciało',
           'W uroczystość Zesłania Ducha Świętego',
-          'W Boże Ciało'
+          'W uroczystość Zmartwychwstania Pańskiego',
+          'W uroczystość Narodzenia Pańskiego (Boże Narodzenie)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'W uroczystość Bożego Narodzenia (25 grudnia) świętujemy historyczne narodzenie Chrystusa i fakt, że Boże Słowo stało się Ciałem.'
       },
       {
@@ -338,23 +338,23 @@ Zapisz w zeszycie krótką modlitwę dziękczynną Bogu za dar chrztu świętego
         question: 'W jakiej postaci objawił się Duch Święty podczas chrztu Jezusa?',
         options: [
           'Ognistego płomienia',
-          'Gołębicy zstępującej z nieba',
+          'Jasnego obłoku',
           'Silnego wiatru',
-          'Jasnego obłoku'
+          'Gołębicy zstępującej z nieba'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ewangelista Łukasz notuje, że Duch Święty zstąpił nad modlącego się Jezusa w postaci cielesnej niby gołębica.'
       },
       {
         id: 'rel6-21-q2',
         question: 'Jakie słowa wypowiedział głos Boga Ojca z nieba po chrzcie Jezusa?',
         options: [
+          '„Słuchajcie mojego proroka”',
           '„Oto wasz król”',
-          '„Ty jesteś mój Syn umiłowany, w Tobie mam upodobanie”',
           '„Idźcie i nauczajcie wszystkie narody”',
-          '„Słuchajcie mojego proroka”'
+          '„Ty jesteś mój Syn umiłowany, w Tobie mam upodobanie”'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Głos Ojca z nieba potwierdził Boskie synostwo Jezusa i wyraził miłość Ojca do Syna stojącego nad Jordanem.'
       }
     ]
@@ -425,10 +425,10 @@ Napisz w zeszycie, jak powinien postępować i czym powinien wyróżniać się w
         id: 'rel6-22-q1',
         question: 'Jaką decyzję podjęli rybacy, gdy przyciągnęli łodzie do brzegu po cudownym połowie ryb?',
         options: [
-          'Poszli sprzedać ryby na targu',
-          'Zostawili wszystko i poszli za Jezusem',
           'Zaczęli naprawiać podarte sieci',
-          'Wrócili do spania w domach'
+          'Zostawili wszystko i poszli za Jezusem',
+          'Wrócili do spania w domach',
+          'Poszli sprzedać ryby na targu'
         ],
         correctAnswer: 1,
         explanation: 'Ewangelia mówi, że rybacy (Piotr, Andrzej, Jakub i Jan) zostawili swoje dotychczasowe źródło utrzymania, łodzie i rodziny, by bezgranicznie pójść za Chrystusem.'
@@ -439,8 +439,8 @@ Napisz w zeszycie, jak powinien postępować i czym powinien wyróżniać się w
         options: [
           'Że Piotr będzie uczył ludzi pływać',
           'Że misją uczniów będzie pozyskiwanie ludzi dla Boga i ratowanie ich przed grzechem',
-          'Że Apostołowie będą organizować zawody sportowe',
-          'Że będą budować duże sieci na ludzi'
+          'Że będą budować duże sieci na ludzi',
+          'Że Apostołowie będą organizować zawody sportowe'
         ],
         correctAnswer: 1,
         explanation: '„Łowienie ludzi” to metafora ratowania dusz ludzkich, wyciągania ich z toni grzechu i niewiary do światłości Bożej prawdy.'
@@ -516,22 +516,22 @@ Opisz w zeszycie jedno wybrane wydarzenie ewangeliczne, w którym Jezus dokonał
         id: 'rel6-24-q1',
         question: 'Który z poniższych cudów Jezusa należy do kategorii „cudów nad naturą”?',
         options: [
-          'Uzdrowienie paralityka w Kafarnaum',
           'Uciszenie burzy na Jeziorze Genezaret',
+          'Oczyszczenie trędowatego',
           'Wskrzeszenie córki Jaira',
-          'Oczyszczenie trędowatego'
+          'Uzdrowienie paralityka w Kafarnaum'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Uciszenie burzy na jeziorze, zamiana wody w wino i rozmnożenie chleba to cuda, w których Jezus objawił swoją władzę nad prawami natury i fizyki.'
       },
       {
         id: 'rel6-24-q2',
         question: 'Co było warunkiem koniecznym, aby Jezus mógł dokonać cudu w życiu danej osoby?',
         options: [
-          'Zapłata materialna',
+          'Znajomość trudnych formuł modlitewnych',
           'Wiara i całkowite zaufanie pokładane w Jego mocy',
           'Złożenie ofiary ze zwierząt',
-          'Znajomość trudnych formuł modlitewnych'
+          'Zapłata materialna'
         ],
         correctAnswer: 1,
         explanation: 'Jezus wielokrotnie powtarzał uzdrowionym: „Twoja wiara cię uzdrowiła”. Wiara była kluczem otwierającym serce na uzdrawiającą łaskę Boga.'
@@ -603,9 +603,9 @@ Odszukaj w Piśmie Świętym i przeczytaj fragment **Łk 16,19-31** (Przypowieś
         id: 'rel6-26-q1',
         question: 'Co w przypowieści o budowie domu oznacza skała, na której mądry człowiek stawia dom?',
         options: [
-          'Bogactwo materialne',
-          'Słuchanie słów Jezusa i wprowadzanie ich w czyn',
           'Własną siłę fizyczną',
+          'Słuchanie słów Jezusa i wprowadzanie ich w czyn',
+          'Bogactwo materialne',
           'Trudne warunki pogodowe'
         ],
         correctAnswer: 1,
@@ -615,12 +615,12 @@ Odszukaj w Piśmie Świętym i przeczytaj fragment **Łk 16,19-31** (Przypowieś
         id: 'rel6-26-q2',
         question: 'Która przypowieść ukazuje nieskończone miłosierdzie Boga Ojca wobec nawracającego się grzesznika?',
         options: [
-          'O siewcy',
           'O synu marnotrawnym (miłosiernym ojcu)',
           'O talentach',
-          'O obolu wdowy'
+          'O obolu wdowy',
+          'O siewcy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Przypowieść o synu marnotrawnym wspaniale ukazuje postawę kochającego Ojca (Boga), który z radością wybiega naprzeciw i przebacza dziecku żałującemu za grzechy.'
       }
     ]
@@ -691,10 +691,10 @@ Wypisz do zeszytu cztery dogmaty maryjne i podaj daty ich uroczystego ogłoszeni
         id: 'rel6-27-q1',
         question: 'Na którym soborze powszechnym uroczyście ogłoszono dogmat o Bożym Macierzyństwie Maryi (Theotokos)?',
         options: [
-          'Na Soborze Watykańskim II',
+          'Na Soborze w Nicei',
           'Na Soborze w Efezie w 431 roku',
-          'Na Soborze Trydenckim',
-          'Na Soborze w Nicei'
+          'Na Soborze Watykańskim II',
+          'Na Soborze Trydenckim'
         ],
         correctAnswer: 1,
         explanation: 'Sobór w Efezie w 431 r. potwierdził, że Maryja jest prawdziwie Matką Boga (Theotokos), a nie tylko matką człowieka Jezusa.'
@@ -703,10 +703,10 @@ Wypisz do zeszytu cztery dogmaty maryjne i podaj daty ich uroczystego ogłoszeni
         id: 'rel6-27-q2',
         question: 'Czego dotyczy dogmat o Wniebowzięciu Maryi ogłoszony w 1950 roku?',
         options: [
-          'Tego, że Maryja umarła na krzyżu',
-          'Tego, że po zakończeniu ziemskiego życia Maryja została z duszą i ciałem wzięta do nieba',
           'Objawień maryjnych w Lourdes',
-          'Wyboru Maryi na królową Polski'
+          'Tego, że po zakończeniu ziemskiego życia Maryja została z duszą i ciałem wzięta do nieba',
+          'Wyboru Maryi na królową Polski',
+          'Tego, że Maryja umarła na krzyżu'
         ],
         correctAnswer: 1,
         explanation: 'Dogmat ten głosi, że Niepokalana Matka Boga nie podlegała skażeniu grobu i została z ciałem oraz duszą wprowadzona do wiecznej chwały nieba.'
@@ -784,12 +784,12 @@ Zapisz w zeszycie pięć najważniejszych postaw lub gestów liturgicznych, jaki
         id: 'rel6-28-q1',
         question: 'Która postawa liturgiczna jest wyrazem gotowości do działania, szacunku oraz symbolem zmartwychwstania?',
         options: [
-          'Postawa leżąca (prostracja)',
           'Postawa stojąca',
+          'Postawa leżąca (prostracja)',
           'Postawa siedząca',
           'Klęczenie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Postawa stojąca to postawa szacunku i czujności. Stoimy m.in. podczas czytania Ewangelii, wyznania wiary oraz modlitwy powszechnej.'
       },
       {
@@ -797,11 +797,11 @@ Zapisz w zeszycie pięć najważniejszych postaw lub gestów liturgicznych, jaki
         question: 'Co zaliczamy do sakramentaliów ustanowionych przez Kościół?',
         options: [
           'Chrzest i bierzmowanie',
+          'Czytanie gazet katolickich',
           'Błogosławieństwa (np. pokarmów w Wielką Sobotę), poświęcenie różańca czy pogrzeb chrześcijański',
-          'Tylko sakrament małżeństwa',
-          'Czytanie gazet katolickich'
+          'Tylko sakrament małżeństwa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Sakramentalia to święte znaki ustanowione przez Kościół (nie bezpośrednio przez Chrystusa), które przygotowują nas do przyjęcia łaski.'
       }
     ]
@@ -880,22 +880,22 @@ Przerysuj do zeszytu tabelę z podziałem siedmiu sakramentów na: sakramenty wt
         id: 'rel6-29-q1',
         question: 'Które sakramenty należą do grupy sakramentów wtajemniczenia chrześcijańskiego?',
         options: [
-          'Chrzest, Pokuta, Małżeństwo',
           'Chrzest, Bierzmowanie, Eucharystia',
+          'Eucharystia, Pokuta, Kapłaństwo',
           'Bierzmowanie, Kapłaństwo, Namaszczenie chorych',
-          'Eucharystia, Pokuta, Kapłaństwo'
+          'Chrzest, Pokuta, Małżeństwo'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Te trzy sakramenty stanowią fundament chrześcijańskiego wtajemniczenia i wprowadzają wierzącego w pełnię życia z Chrystusem w Kościele.'
       },
       {
         id: 'rel6-29-q2',
         question: 'Które z sakramentów wyciskają na duszy charakterystyczne, niezatarte znamię i można je przyjąć tylko raz?',
         options: [
-          'Chrzest, Eucharystia, Pokuta',
+          'Pokuta, Eucharystia, Małżeństwo',
           'Chrzest, Bierzmowanie, Kapłaństwo',
           'Małżeństwo, Bierzmowanie, Namaszczenie chorych',
-          'Pokuta, Eucharystia, Małżeństwo'
+          'Chrzest, Eucharystia, Pokuta'
         ],
         correctAnswer: 1,
         explanation: 'Sakrament chrztu, bierzmowania oraz kapłaństwa wyciskają niezatarte, wieczne znamię przynależności do Boga i nie mogą być powtórzone.'

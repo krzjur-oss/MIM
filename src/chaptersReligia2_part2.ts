@@ -66,24 +66,24 @@ Modlić się – to myśleć o Bogu z miłością, spotkać się z Nim i rozmawi
         id: 'r2-l14-q1',
         question: 'Czym jest modlitwa chrześcijańska?',
         options: [
-          'Rozmową z Panem Bogiem pełną miłości, jak z najlepszym przyjacielem',
+          'Głośnym czytaniem starych podręczników',
           'Recytowaniem trudnych formułek bez myślenia',
-          'Obowiązkiem zarezerwowanym tylko dla księży',
-          'Głośnym czytaniem starych podręczników'
+          'Rozmową z Panem Bogiem pełną miłości, jak z najlepszym przyjacielem',
+          'Obowiązkiem zarezerwowanym tylko dla księży'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Modlitwa to spotkanie serca człowieka z miłującym Bogiem i rozmowa z Nim.'
       },
       {
         id: 'r2-l14-q2',
         question: 'Co obiecał Jezus odnośnie wspólnej modlitwy wiernych?',
         options: [
-          '„Gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
           'Że wysłucha tylko modlitw w niedzielę',
+          '„Gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
           'Że modlitwa wspólna jest mniej ważna niż osobista',
           'Że wysłucha tylko dorosłych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus żyje i jest specjalnie obecny wśród tych, którzy gromadzą się na modlitwie w Jego imię.'
       }
     ]
@@ -150,24 +150,24 @@ Umarł na krzyżu za grzechy wszystkich ludzi dla ich zbawienia. Pan Jezus dał 
         id: 'r2-l16-q1',
         question: 'W jaki dzień tygodnia Kościół wspomina mękę i śmierć Pana Jezusa na krzyżu?',
         options: [
-          'W Wielki Piątek',
           'W Niedzielę Palmową',
-          'W Wielką Sobotę',
-          'W Poniedziałek Wielkanocny'
+          'W Poniedziałek Wielkanocny',
+          'W Wielki Piątek',
+          'W Wielką Sobotę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Wielki Piątek to dzień pokuty i skupienia, w którym wspominamy zbawczą śmierć Chrystusa na Golgocie.'
       },
       {
         id: 'r2-l16-q2',
         question: 'Dlaczego Pan Jezus oddał swoje życie na krzyżu?',
         options: [
-          'Z miłości do nas, za grzechy wszystkich ludzi i dla naszego zbawienia',
+          'Aby pokazać swoją ziemską wyższość',
           'Bo nie miał siły uciekać przed żołnierzami',
-          'Przez przypadek w wyniku zamieszek',
-          'Aby pokazać swoją ziemską wyższość'
+          'Z miłości do nas, za grzechy wszystkich ludzi i dla naszego zbawienia',
+          'Przez przypadek w wyniku zamieszek'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Śmierć Chrystusa na krzyżu była dobrowolną ofiarą miłości podjętą dla zgładzenia grzechów świata.'
       }
     ]
@@ -234,24 +234,24 @@ Pan Jezus stał się Człowiekiem dla naszego zbawienia. Swoją śmiercią i zma
         id: 'r2-l17-q1',
         question: 'Którego dnia po swojej śmierci Pan Jezus powstał z martwych?',
         options: [
-          'Trzeciego dnia',
           'Siódmego dnia',
-          'Po miesiącu',
-          'Następnego dnia rano'
+          'Trzeciego dnia',
+          'Następnego dnia rano',
+          'Po miesiącu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus zmartwychwstał trzeciego dnia po ukrzyżowaniu (w Niedzielę Zmartwychwstania).'
       },
       {
         id: 'r2-l17-q2',
         question: 'Co jest najważniejszym świętem chrześcijańskim i podstawą naszej wiary?',
         options: [
-          'Wielkanoc – Uroczystość Zmartwychwstania Pańskiego',
           'Święto Trzech Króli',
-          'Dożynki',
-          'Święto Mikołaja'
+          'Święto Mikołaja',
+          'Wielkanoc – Uroczystość Zmartwychwstania Pańskiego',
+          'Dożynki'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Zmartwychwstanie Chrystusa jest fundamentem chrześcijaństwa i nadziei na życie wieczne.'
       }
     ]
@@ -321,24 +321,24 @@ Pan Jezus dał moc Ducha Świętego Apostołom, aby mogli odpuszczać grzechy. D
         id: 'r2-l18-q1',
         question: 'Kiedy Pan Jezus ustanowił Sakrament Pokuty i Pojednania?',
         options: [
+          'Podczas wjazdu do Jerozolimy',
           'W dniu zmartwychwstania, ukazując się Apostołom w Wieczerniku',
           'Podczas chrztu w Jordanie',
-          'Na weselu w Kanie',
-          'Podczas wjazdu do Jerozolimy'
+          'Na weselu w Kanie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Zmartwychwstały Jezus tchnął na Apostołów Ducha Świętego i dał im władzę odpuszczania grzechów.'
       },
       {
         id: 'r2-l18-q2',
         question: 'Przez kogo Pan Jezus przebacza nam dzisiaj grzechy w Kościele?',
         options: [
-          'Przez kapłanów w sakramencie pokuty i pojednania',
           'Przez aniołów na niebie',
           'Przez samodzielne wpisy w pamiętniku',
+          'Przez kapłanów w sakramencie pokuty i pojednania',
           'Przez królów i władców'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Kapłani są szafarzami miłosierdzia Bożego działającymi w zastępstwie i imieniu Chrystusa.'
       }
     ]
@@ -402,24 +402,24 @@ Pan Jezus wyjaśnił, co może stać się z Bożym słowem, które słyszymy. S�
         id: 'r2-l19-q1',
         question: 'Co w Przypowieści o siewcy symbolizuje żyzna ziemia, na którą padło ziarno?',
         options: [
-          'Człowieka o otwartym sercu, który słucha słowa Bożego i wciela je w życie',
-          'Duży ogród warzywny',
           'Człowieka leniwego i obojętnego',
+          'Duży ogród warzywny',
+          'Człowieka o otwartym sercu, który słucha słowa Bożego i wciela je w życie',
           'Górska skałę bez roślin'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Żyzna ziemia symbolizuje dobre i otwarte serce, które wydaje plony dobrych uczynków.'
       },
       {
         id: 'r2-l19-q2',
         question: 'Gdzie w szczególności słuchamy żywego Słowa Bożego podczas tygodnia?',
         options: [
-          'Podczas Mszy Świętej w kościele oraz na lekcji religii z Pisma Świętego',
-          'Tylko w telewizorze',
           'W wiadomościach prasowych',
-          'W bajkach animowanych'
+          'Tylko w telewizorze',
+          'W bajkach animowanych',
+          'Podczas Mszy Świętej w kościele oraz na lekcji religii z Pisma Świętego'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Słowo Boże czytane jest podczas Liturgii Słowa we Mszy Świętej oraz rozważane na katechezie.'
       }
     ]
@@ -494,24 +494,24 @@ Pan Jezus porównuje siebie do winnego krzewu, a nas do latorośli. Jesteśmy z�
         id: 'r2-l22-q1',
         question: 'Ile jest sakramentów świętych ustanowionych przez Pana Jezusa w Kościele?',
         options: [
-          '7 sakramentów świętych',
           '10 sakramentów',
           '3 sakramenty',
+          '7 sakramentów świętych',
           '12 sakramentów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Kościół katolicki sprawuje 7 sakramentów świętych będących źródłem łaski Bożej.'
       },
       {
         id: 'r2-l22-q2',
         question: 'Do czego Pan Jezus porównał siebie i swoich uczniów w Ewangelii wg św. Jana?',
         options: [
-          'Do krzewu winnego i jego latorośli (gałązek)',
           'Do drzewa dębowego i liści',
-          'Do rzeki i wody',
-          'Do słońca i gwiazd'
+          'Do słońca i gwiazd',
+          'Do krzewu winnego i jego latorośli (gałązek)',
+          'Do rzeki i wody'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus pouczył: „Ja jestem krzewem winnym, wy – latoroślami” – wskazując na naszą ścisłą więź z Nim.'
       }
     ]
@@ -573,24 +573,24 @@ Podczas Mszy Świętej wyznajemy: *„Głosimy śmierć Twoją, Panie Jezu, wyzn
         id: 'r2-l23-q1',
         question: 'Jak w Kościele nazywamy ponowne przyjście Pana Jezusa na ziemię pod koniec czasów?',
         options: [
-          'Paruzją',
-          'Eucharystią',
           'Apokalipsą',
-          'Paschą'
+          'Paschą',
+          'Eucharystią',
+          'Paruzją'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Paruzja to powtórne, chwalebne przyjście Chrystusa Króla na ziemię.'
       },
       {
         id: 'r2-l23-q2',
         question: 'Według Ewangelii św. Mateusza, po czym Chrystus Król rozpozna swoich wiernych uczniów?',
         options: [
-          'Po dobrych uczynkach spełnianych wobec bliźnich („Mnieście uczynili”)',
-          'Po ilości zgromadzonych majątków',
+          'Po znajomości języków obcych',
           'Po pięknych strojach',
-          'Po znajomości języków obcych'
+          'Po dobrych uczynkach spełnianych wobec bliźnich („Mnieście uczynili”)',
+          'Po ilości zgromadzonych majątków'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus powiedział, że to, co uczyniliśmy jednemu z najmniejszych naszych braci, zrobiliśmy samemu Chrystusowi.'
       }
     ]
@@ -654,24 +654,24 @@ Pan Jezus jest naszym Dobrym Pasterzem. Oddał za nas życie na krzyżu dla nasz
         id: 'r2-l26-q1',
         question: 'Kogo Pan Jezus nazywa w Ewangelii swoim stadem owiec?',
         options: [
-          'Wszystkich ludzi, którzy słuchają Jego głosu i idą za Nim',
+          'Mieszkańców Rzymu',
           'Tylko starożytnych rybaków',
-          'Aniołów w niebie',
-          'Mieszkańców Rzymu'
+          'Wszystkich ludzi, którzy słuchają Jego głosu i idą za Nim',
+          'Aniołów w niebie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Owce Dobrego Pasterza to wierni, którzy znają Jego głos i naśladują Jego miłość.'
       },
       {
         id: 'r2-l26-q2',
         question: 'Co uczynił Dobry Pasterz – Jezus dla ochrony i zbawienia swoich owiec?',
         options: [
-          'Oddał za nie swoje życie na krzyżu',
-          'Uciekł przed wilkami',
           'Zamknął je w ogrodzeniu',
-          'Odszedł w dalekie kraje'
+          'Uciekł przed wilkami',
+          'Odszedł w dalekie kraje',
+          'Oddał za nie swoje życie na krzyżu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus dał najwyższy dowód miłości pasterza: „Życie moje oddaję za owce” (J 10,15).'
       }
     ]
@@ -739,8 +739,8 @@ Pan Jezus, wypowiadając słowa „Paś owce moje”, uczynił Piotra swoim zast
         options: [
           'Świętego Szymona Piotra',
           'Świętego Jana Ewangelistę',
-          'Świętego Tomasza',
-          'Świętego Andrzeja'
+          'Świętego Andrzeja',
+          'Świętego Tomasza'
         ],
         correctAnswer: 0,
         explanation: 'Jezus rzekł do Piotra: „Ty jesteś Piotr [czyli Skała], i na tej Skale zbuduję Kościół mój”.'
@@ -751,8 +751,8 @@ Pan Jezus, wypowiadając słowa „Paś owce moje”, uczynił Piotra swoim zast
         options: [
           'Następcą św. Piotra, Ojcem Świętym i pasterzem całego Kościoła',
           'Zwykłym nauczycielem historii',
-          'Władcą politycznym jednego miasta',
-          'Przewodniczącym chóru'
+          'Przewodniczącym chóru',
+          'Władcą politycznym jednego miasta'
         ],
         correctAnswer: 0,
         explanation: 'Papież kontynuuje misję św. Piotra, przewodząc i służąc wspólnocie wiernych na całym świecie.'
@@ -819,24 +819,24 @@ Gdy Duch Święty zstąpił na Apostołów, poczuli w sobie siłę i odwagę ora
         id: 'r2-l29-q1',
         question: 'W jakich widzialnych znakach Duch Święty zstąpił na Apostołów w dniu Pięćdziesiątnicy?',
         options: [
+          'Trzęsienie ziemi i mgła',
           'Szum gwałtownego wiatru oraz języki ognia nad głowami',
           'Śnieżyca i błyskawice',
-          'Słoneczna tęcza na niebie',
-          'Trzęsienie ziemi i mgła'
+          'Słoneczna tęcza na niebie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Dzieje Apostolskie opisują szum wiatru i języki ognia jako widzialne znaki zstąpienia Ducha Świętego.'
       },
       {
         id: 'r2-l29-q2',
         question: 'Co sprawiło zstąpienie Ducha Świętego w sercach strwożonych dotąd Apostołów?',
         options: [
-          'Dodało im odwagi, mądrości i siły do odważnego głoszenia Ewangelii światu',
-          'Skłoniło ich do powrotu do dawnych zajęć rybackich',
           'Sprawiło, że ukryli się na stałe',
+          'Skłoniło ich do powrotu do dawnych zajęć rybackich',
+          'Dodało im odwagi, mądrości i siły do odważnego głoszenia Ewangelii światu',
           'Zatrzymało ich w Wieczerniku'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Duch Święty napełnił Apostołów męstwem i gorliwością, dając początek publicznej misji Kościoła.'
       }
     ]

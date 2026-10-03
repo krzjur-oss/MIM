@@ -79,24 +79,24 @@ Napisz, jakimi wartościami powinniśmy kierować się w swoim życiu, aby owocn
         id: 'rel7-1-q1',
         question: 'Co wyróżnia człowieka spośród innych ziemskich stworzeń?',
         options: [
-          'Rozum, wolna wola i nieśmiertelna dusza',
-          'Siła fizyczna i umiejętność przetrwania',
           'Długość ziemskiego życia',
+          'Siła fizyczna i umiejętność przetrwania',
+          'Rozum, wolna wola i nieśmiertelna dusza',
           'Zasobność posiadanych dóbr materialnych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Człowiek, jako jedyne ziemskie stworzenie uczynione na obraz i podobieństwo Boże, posiada rozum, wolną wolę i nieśmiertelną duszę.'
       },
       {
         id: 'rel7-1-q2',
         question: 'O co bogaty młodzieniec z Ewangelii zapytał Jezusa?',
         options: [
-          'Jak stać się najbogatszym człowiekiem w kraju',
           'Co dobrego ma czynić, aby otrzymać życie wieczne',
           'Jak zbudować nową świątynię',
+          'Jak stać się najbogatszym człowiekiem w kraju',
           'Czy powinien opuścić swoich bliskich'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Młodzieniec zbliżył się do Jezusa i zapytał: „Nauczycielu, co dobrego mam czynić, aby otrzymać życie wieczne?” (Mt 19,16).'
       }
     ]
@@ -181,24 +181,24 @@ Zilustruj lub opisz hasło: „Moje drogowskazy na drodze wiary”.
         id: 'rel7-3-q1',
         question: 'Co oznacza dosłownie greckie słowo „Dekalog”?',
         options: [
-          'Dziesięć słów',
           'Boże przymierze',
+          'Kamienne tablice',
           'Święte prawo',
-          'Kamienne tablice'
+          'Dziesięć słów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Słowo Dekalog pochodzi z greckiego „deka” (dziesięć) i „logos” (słowo) i oznacza dosłownie „dziesięć słów”.'
       },
       {
         id: 'rel7-3-q2',
         question: 'Czy Dekalog według nauczania Kościoła i YOUCAT jest przestarzały?',
         options: [
-          'Tak, odnosi się tylko do czasów Starego Testamentu',
           'Nie, wyraża niezmienne, trwale obowiązujące obowiązki człowieka względem Boga i bliźniego',
-          'Zależy od kraju i panującej kultury',
-          'Obowiązuje tylko duchownych i zakonników'
+          'Tak, odnosi się tylko do czasów Starego Testamentu',
+          'Obowiązuje tylko duchownych i zakonników',
+          'Zależy od kraju i panującej kultury'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Dekalog w żadnym wypadku nie jest uwarunkowany czasowo; wyraża trwale obowiązujące i niezmienne obowiązki człowieka względem Boga i bliźniego.'
       }
     ]
@@ -275,24 +275,24 @@ Napisz, o co prosisz Boga w Modlitwie Pańskiej (Ojcze nasz) słowami: „świę
         id: 'rel7-5-q1',
         question: 'Jak brzmi święte imię Boga objawione Mojżeszowi przy krzewie gorejącym?',
         options: [
-          'Jahwe (Jestem, Który Jestem)',
-          'Mesjasz',
           'Słowo Przedwieczne',
+          'Mesjasz',
+          'Jahwe (Jestem, Który Jestem)',
           'Stwórca Niebios'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Bóg objawił Mojżeszowi swoje imię jako JAHWE, co oznacza: „JESTEM, KTÓRY JESTEM” (Wj 3,14).'
       },
       {
         id: 'rel7-5-q2',
         question: 'Czego zabrania drugie przykazanie Boże?',
         options: [
-          'Rozmawiania z niewierzącymi',
-          'Nadużywania imienia Bożego i nieodpowiedniego go wypowiadania',
+          'Modlenia się własnymi słowami',
           'Śpiewania pieśni religijnych poza kościołem',
-          'Modlenia się własnymi słowami'
+          'Rozmawiania z niewierzącymi',
+          'Nadużywania imienia Bożego i nieodpowiedniego go wypowiadania'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Drugie przykazanie zabrania nadużywania imienia Bożego, czyli wszelkiego nieodpowiedniego używania imienia Boga, Jezusa Chrystusa, Maryi i świętych.'
       }
     ]
@@ -377,23 +377,23 @@ Napisz krótko, w jaki sposób współczesny młody chrześcijanin powinien owoc
         question: 'Który dzień tygodnia jest chrześcijańskim dniem świętym i dlaczego?',
         options: [
           'Piątek, na pamiątkę śmierci Jezusa',
+          'Poniedziałek, jako początek tygodnia pracy',
           'Sobota (szabat), na pamiątkę odpoczynku Boga',
-          'Niedziela, na pamiątkę zmartwychwstania Jezusa Chrystusa',
-          'Poniedziałek, jako początek tygodnia pracy'
+          'Niedziela, na pamiątkę zmartwychwstania Jezusa Chrystusa'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Dla chrześcijan dniem świętym jest niedziela, ponieważ upamiętnia ona chwalebne zmartwychwstanie Jezusa Chrystusa.'
       },
       {
         id: 'rel7-6-q2',
         question: 'Które z wymienionych świąt jest świętem nakazanym w Kościele w Polsce?',
         options: [
+          'Wielki Piątek',
           'Święto Trzech Króli (6 stycznia) oraz Boże Ciało',
           'Środa Popielcowa',
-          'Wielki Piątek',
           'Uroczystość św. Józefa (19 marca)'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Zarówno Objawienie Pańskie (Trzech Króli - 6 stycznia), jak i Boże Ciało należą do świąt nakazanych w Polsce.'
       }
     ]
@@ -469,24 +469,24 @@ Napisz, jakiej rady udzieliłbyś swojemu koledze lub koleżance, którzy mają 
         id: 'rel7-7-q1',
         question: 'Jak Jezus zaleca modlić się w Ewangelii wg św. Mateusza?',
         options: [
+          'Używając trudnych, skomplikowanych formuł',
           'Głośno na rogach ulic, aby wszyscy słyszeli',
-          'W izdebce, w ukryciu, bez obłudy i zbędnego wielomówstwa',
           'Tylko w obecności kapłana',
-          'Używając trudnych, skomplikowanych formuł'
+          'W izdebce, w ukryciu, bez obłudy i zbędnego wielomówstwa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus pouczał: „Ty zaś, gdy chcesz się modlić, wejdź do swej izdebki, zamknij drzwi i módl się do Ojca twego, który jest w ukryciu” (Mt 6,6).'
       },
       {
         id: 'rel7-7-q2',
         question: 'Czym jest modlitwa według Katechizmu Kościoła Katolickiego?',
         options: [
+          'Rodzajem medytacji wykluczającej myślenie',
           'Obowiązkiem recytowania tekstów w obcym języku',
           'Żywym związkiem dzieci Bożych z nieskończenie dobrym Ojcem, Synem i Duchem Świętym',
-          'Sposobem na pokazanie swojej wyższości nad innymi',
-          'Rodzajem medytacji wykluczającej myślenie'
+          'Sposobem na pokazanie swojej wyższości nad innymi'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'KKK 2565 definiuje modlitwę jako żywy związek dzieci Bożych z Trójcą Świętą.'
       }
     ]
@@ -558,10 +558,10 @@ Uzasadnij, jaką wartość ma dla Ciebie prawda wiary, że Syn Boży stał się 
         id: 'rel7-8-q1',
         question: 'Kim jest odwieczne Słowo, o którym pisze św. Jan w Prologu swojej Ewangelii?',
         options: [
-          'Jednym z proroków Starego Testamentu',
+          'Pismem Świętym spisanym na papirusie',
           'Jezusem Chrystusem – Synem Bożym, który stał się ciałem',
-          'Archaniołem Gabrielem niosącym nowinę',
-          'Pismem Świętym spisanym na papirusie'
+          'Jednym z proroków Starego Testamentu',
+          'Archaniołem Gabrielem niosącym nowinę'
         ],
         correctAnswer: 1,
         explanation: 'Święty Jan w Prologu utożsamia Słowo z Bogiem, które stało się ciałem (przybrało ludzką naturę) w osobie Jezusa Chrystusa.'
@@ -570,12 +570,12 @@ Uzasadnij, jaką wartość ma dla Ciebie prawda wiary, że Syn Boży stał się 
         id: 'rel7-8-q2',
         question: 'Z czyją pomocą i mocą dokonało się Wcielenie w łonie Maryi Panny?',
         options: [
-          'Mocą Ducha Świętego',
-          'Dzięki ludzkiej medycynie tamtych czasów',
           'Decyzją władz rzymskich',
-          'Mocą samego Mojżesza'
+          'Mocą samego Mojżesza',
+          'Mocą Ducha Świętego',
+          'Dzięki ludzkiej medycynie tamtych czasów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Tajemnica Wcielenia dokonała się z mocy Ducha Świętego w łonie Maryi Dziewicy, jak wyznajemy w Credo.'
       }
     ]
@@ -654,24 +654,24 @@ Wyjaśnij własnymi słowami, jak rozumiesz słowa św. Augustyna: *„Bóg stwo
         id: 'rel7-9-q1',
         question: 'Czym jest Odkupienie w chrześcijaństwie?',
         options: [
+          'Spisywaniem nowych ksiąg prorockich',
           'Wykupieniem niewolników z rąk rzymskich',
           'Ofiarą Jezusa złożoną za grzechy ludzi na krzyżu i Jego zmartwychwstaniem dla naszego zbawienia',
-          'Budowaniem nowych świątyń w Jerozolimie',
-          'Spisywaniem nowych ksiąg prorockich'
+          'Budowaniem nowych świątyń w Jerozolimie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Odkupienie to ofiara Jezusa Chrystusa za grzechy ludzi, dokonana przez Jego mękę, śmierć na krzyżu i zmartwychwstanie.'
       },
       {
         id: 'rel7-9-q2',
         question: 'Które wydarzenie jest kulminacyjną prawdą naszej wiary i centralnym punktem zbawczym?',
         options: [
-          'Pokłon trzech mędrców ze Wschodu',
-          'Zmartwychwstanie Jezusa Chrystusa',
+          'Wjazd do Jerozolimy na osiołku',
           'Kuszenie na pustyni',
-          'Wjazd do Jerozolimy na osiołku'
+          'Pokłon trzech mędrców ze Wschodu',
+          'Zmartwychwstanie Jezusa Chrystusa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Zgodnie z KKK 638, Zmartwychwstanie Chrystusa jest kulminacyjną prawdą naszej wiary i zwycięstwem nad śmiercią.'
       }
     ]
@@ -739,24 +739,24 @@ Opisz krótko jeden wybrany cud uzdrowienia dokonany przez Pana Jezusa i wyjaśn
         id: 'rel7-10-q1',
         question: 'Które z sakramentów nazywamy sakramentami uzdrowienia?',
         options: [
-          'Chrzest i Bierzmowanie',
           'Pokuta i pojednanie (spowiedź) oraz Namaszczenie chorych',
+          'Małżeństwo i Chrzest',
           'Eucharystia i Kapłaństwo',
-          'Małżeństwo i Chrzest'
+          'Chrzest i Bierzmowanie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Zgodnie z KKK 1421 sakramentami uzdrowienia są sakrament pokuty i pojednania oraz sakrament namaszczenia chorych.'
       },
       {
         id: 'rel7-10-q2',
         question: 'Co Jezus najpierw uczynił paralitykowi w Kafarnaum przed uzdrowieniem jego ciała?',
         options: [
-          'Dał mu pieniądze na lekarstwa',
           'Odpuścił mu grzechy',
+          'Dał mu pieniądze na lekarstwa',
           'Kazał mu zbudować nowy dom',
           'Zganił go za brak wiary'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Jezus, widząc wiarę paralityka i jego przyjaciół, rzekł najpierw: „Dziecko, odpuszczone są twoje grzechy”, pokazując, że uzdrowienie duchowe jest najważniejsze.'
       }
     ]

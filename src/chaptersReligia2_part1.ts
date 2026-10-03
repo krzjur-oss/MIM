@@ -67,24 +67,24 @@ Bóg z miłości powołał świat do istnienia. Stworzył człowieka – mężcz
         id: 'r2-l01-q1',
         question: 'Co to znaczy stworzyć?',
         options: [
-          'Uczynić coś z niczego',
           'Kupić coś w sklepie',
           'Przerysować z obrazka',
+          'Uczynić coś z niczego',
           'Zbudować z gotowych klocków'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Stworzyć oznacza powołać coś do istnienia z niczego – tak Bóg stworzył cały wszechświat.'
       },
       {
         id: 'r2-l01-q2',
         question: 'Czym Bóg obdarzył człowieka jako najdoskonalsze stworzenie?',
         options: [
-          'Rozumem, wolną wolą i duszą nieśmiertelną',
-          'Niezwykłą siłą fizyczną i szybkością',
           'Skrzydłami do latania',
-          'Brakem potrzeby odpoczynku'
+          'Niezwykłą siłą fizyczną i szybkością',
+          'Brakem potrzeby odpoczynku',
+          'Rozumem, wolną wolą i duszą nieśmiertelną'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Człowiek otrzymał od Boga rozum, wolną wolę, nieśmiertelną duszę oraz łaskę uświęcającą.'
       }
     ]
@@ -155,24 +155,24 @@ Pan Bóg pragnie dobra każdego człowieka. Nie przestaje go kochać, nawet wted
         id: 'r2-l02-q1',
         question: 'Na czym polegał grzech pierwszych Rodziców (Adama i Ewy)?',
         options: [
+          'Na kłótni ze zwierzętami',
           'Na nieposłuszeństwie względem Pana Boga',
-          'Na braku umiejętności budowania domu',
           'Na lenistwie w rajskim ogrodzie',
-          'Na kłótni ze zwierzętami'
+          'Na braku umiejętności budowania domu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Grzech pierwszych rodziców polegał na złamaniu zakazu Bożego i nieposłuszeństwie wobec Stwórcy.'
       },
       {
         id: 'r2-l02-q2',
         question: 'Co Pan Bóg obiecał ludziom pomimo ich grzechu?',
         options: [
-          'Że ześle na ziemię Zbawiciela – swojego Syna',
           'Że zniszczy cały świat',
-          'Że zapomni o ludziach',
-          'Że stworzy nowych aniołów'
+          'Że stworzy nowych aniołów',
+          'Że ześle na ziemię Zbawiciela – swojego Syna',
+          'Że zapomni o ludziach'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Bóg z miłości obiecał przysłać Zbawiciela, który odkupi grzechy ludzi i przywróci im łączność z Bogiem.'
       }
     ]
@@ -239,12 +239,12 @@ Jan Chrzciciel zachęca nas do dobrego postępowania i zerwania z grzechem. Wypr
         id: 'r2-l04-q1',
         question: 'Kim był św. Jan Chrzciciel?',
         options: [
-          'Prorokiem i wysłannikiem Bożym przygotowującym ludzi na przyjście Zbawiciela',
           'Królem Izraela',
+          'Prorokiem i wysłannikiem Bożym przygotowującym ludzi na przyjście Zbawiciela',
           'Rzymskim żołnierzem',
           'Uczonym w Piśmie z Jerozolimy'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jan Chrzciciel był ostatnim prorokiem Starego Testamentu, zapowiadającym nadejście Jezusa Chrystusa.'
       },
       {
@@ -252,9 +252,9 @@ Jan Chrzciciel zachęca nas do dobrego postępowania i zerwania z grzechem. Wypr
         question: 'Co oznaczają słowa: „Przygotujcie drogę Panu, prostujcie ścieżki dla Niego”?',
         options: [
           'Nawracanie się, zerwanie z grzechem i życie w prawdzie i miłości',
+          'Sprzątanie kościoła przed świętami',
           'Budowanie prawdziwych dróg z kamienia',
-          'Bieganie po pustyni',
-          'Sprzątanie kościoła przed świętami'
+          'Bieganie po pustyni'
         ],
         correctAnswer: 0,
         explanation: 'Prostowanie ścieżek oznacza przygotowanie swojego serca poprzez dobre uczynki, prawdę i miłość.'
@@ -336,12 +336,12 @@ Anioł Gabriel został posłany przez Pana Boga, aby powiedzieć Maryi, że zost
         id: 'r2-l05-q2',
         question: 'Co odpowiedziała Maryja na słowa Archanioła Gabriela?',
         options: [
-          '„Oto Ja służebnica Pańska, niech mi się stanie według twego słowa!”',
           '„Chcę jeszcze przemyśleć tę decyzję”',
-          '„Proszę poszukać kogoś innego”',
-          '„Nie jestem na to przygotowana”'
+          '„Oto Ja służebnica Pańska, niech mi się stanie według twego słowa!”',
+          '„Nie jestem na to przygotowana”',
+          '„Proszę poszukać kogoś innego”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Maryja wypowiedziała pełne zaufania słowa wypowiadające posłuszeństwo woli Bożej: „Oto Ja służebnica Pańska...”.'
       }
     ]
@@ -407,24 +407,24 @@ Jest to wielka tajemnica naszej wiary i wypełnienie obietnic danych przez Pana 
         id: 'r2-l06-q1',
         question: 'Co oznacza imię Emmanuel zapowiedziane przez proroków?',
         options: [
-          'Bóg z nami',
-          'Król świata',
           'Światłość w ciemności',
-          'Moc chwały'
+          'Moc chwały',
+          'Bóg z nami',
+          'Król świata'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Imię Emmanuel oznacza dokładnie: „Bóg z nami” – Bóg przyszedł żyć pośród ludzi.'
       },
       {
         id: 'r2-l06-q2',
         question: 'Dlaczego Syn Boży stał się człowiekiem?',
         options: [
-          'Dla zbawienia ludzi i odkupienia naszych grzechów',
+          'Aby uczyć ludzi rzemiosła',
           'Aby stać się ziemskim władcą politycznym',
-          'Aby budować wielkie pałace',
-          'Aby uczyć ludzi rzemiosła'
+          'Dla zbawienia ludzi i odkupienia naszych grzechów',
+          'Aby budować wielkie pałace'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus stał się człowiekiem z miłości, aby przez swoją śmierć i zmartwychwstanie zbawić ludzkość.'
       }
     ]
@@ -489,24 +489,24 @@ Pan Jezus, który jest naszym Najlepszym Przyjacielem, zaprasza nas do przyjaźn
         id: 'r2-l07-q1',
         question: 'Kogo Pan Jezus nazywa swoimi przyjaciółmi?',
         options: [
-          'Tych, którzy wypełniają Jego przykazania i miłują się wzajemnie',
-          'Tylko dorosłych królów',
           'Tylko bogatych ludzi',
-          'Tych, którzy nigdy nie popełniają błędów'
+          'Tych, którzy nigdy nie popełniają błędów',
+          'Tych, którzy wypełniają Jego przykazania i miłują się wzajemnie',
+          'Tylko dorosłych królów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus powiedział: „Wy jesteście przyjaciółmi moimi, jeżeli czynicie to, co wam przykazuję” (J 15,14).'
       },
       {
         id: 'r2-l07-q2',
         question: 'Jak zachowuje się przyjaciel Pana Jezusa wobec innych ludzi?',
         options: [
-          'Jest dobry, pomocny i okazuje im miłość',
-          'Myśli tylko o sobie',
           'Pomaga tylko wybranym bogatym kolegom',
+          'Myśli tylko o sobie',
+          'Jest dobry, pomocny i okazuje im miłość',
           'Unika pomagania potrzebującym'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Przyjaciel Jezusa naśladuje Jego miłość, pomagając bliźnim i dzieląc się życzliwością.'
       }
     ]
@@ -575,24 +575,24 @@ Pan Jezus nauczał o królestwie Bożym w przypowieściach, aby ci, którzy przy
         id: 'r2-l09-q1',
         question: 'Czym są przypowieści, którymi posługiwał się Pan Jezus?',
         options: [
-          'Opowiadaniami z życia codziennego ułatwiającymi zrozumienie nauki o Bogu',
-          'Trudnymi zagadkami bez odpowiedzi',
           'Zmyślonymi bajkami o zwierzętach',
-          'Przepisami prawnymi rzymskimi'
+          'Przepisami prawnymi rzymskimi',
+          'Opowiadaniami z życia codziennego ułatwiającymi zrozumienie nauki o Bogu',
+          'Trudnymi zagadkami bez odpowiedzi'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Przypowieści to proste i głębokie opowiadania obrazowe tłumaczące prawdy wiary.'
       },
       {
         id: 'r2-l09-q2',
         question: 'Ilu głównych Apostołów wybrał Pan Jezus jako swoich najbliższych towarzyszy?',
         options: [
-          'Dwunastu Apostołów',
-          'Siedmiu Apostołów',
           'Sto osób',
-          'Czterech Ewangelistów'
+          'Siedmiu Apostołów',
+          'Czterech Ewangelistów',
+          'Dwunastu Apostołów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus powołał dwunastu Apostołów, aby byli z Nim i głosili Ewangelię.'
       }
     ]
@@ -662,8 +662,8 @@ Jezus dokonał pierwszego cudu, zamieniając wodę w wino. Pan Jezus pomógł m�
         question: 'Gdzie Pan Jezus dokonał swojego pierwszego cudu?',
         options: [
           'Na weselu w Kanie Galilejskiej',
-          'W świątyni w Jerozolimie',
           'Nad rzeką Jordan',
+          'W świątyni w Jerozolimie',
           'W Betlejem'
         ],
         correctAnswer: 0,
@@ -673,12 +673,12 @@ Jezus dokonał pierwszego cudu, zamieniając wodę w wino. Pan Jezus pomógł m�
         id: 'r2-l10-q2',
         question: 'Kto zauważył brak wina i zwrócił się do Jezusa o pomoc?',
         options: [
-          'Maryja, Matka Jezusa',
           'Apostoł Piotr',
+          'Starosta weselny',
           'Pan młody',
-          'Starosta weselny'
+          'Maryja, Matka Jezusa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Maryja z wrażliwością dostrzegła potrzebę gospodarzy i przedstawiła ją swojemu Synowi.'
       }
     ]
@@ -744,12 +744,12 @@ Pan Jezus, który jest dobry i miłosierny, widząc ufność i wiarę trędowaty
         id: 'r2-l11-q1',
         question: 'Ilu uzdrowionych trędowatych wróciło do Jezusa, aby Mu podziękować za cud?',
         options: [
-          'Tylko jeden (Samarytanin)',
           'Wszyscy dziesięciu',
-          'Pięciu trędowatych',
-          'Żaden z nich nie wrócił'
+          'Żaden z nich nie wrócił',
+          'Tylko jeden (Samarytanin)',
+          'Pięciu trędowatych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Spośród dziesięciu uzdrowionych tylko jeden wrócił z dziękczynieniem – Jezus pochwalił jego żywą wiarę.'
       },
       {
@@ -757,9 +757,9 @@ Pan Jezus, który jest dobry i miłosierny, widząc ufność i wiarę trędowaty
         question: 'Co oprócz uzdrowienia ciała dał Pan Jezus wdzięcznemu Samarytaninowi?',
         options: [
           'Uzdrowienie i zbawienie duszy dzięki jego wierze',
-          'Cenne prezenty',
           'Nowe ubranie',
-          'Domek nad rzeką'
+          'Domek nad rzeką',
+          'Cenne prezenty'
         ],
         correctAnswer: 0,
         explanation: 'Jezus rzekł: „Wstań, idź, twoja wiara cię uzdrowiła” – przemieniając także jego duszę.'
@@ -824,24 +824,24 @@ Szymon, choć był pełen obaw, zaufał Panu Jezusowi. Wypłynął na jezioro i 
         id: 'r2-l13-q1',
         question: 'Co odpowiedział Szymon Piotr, gdy Jezus polecił mu zarzucić sieci po nieudanej nocy?',
         options: [
-          '„Mistrzu, całą noc pracowaliśmy i niceśmy nie ułowili. Lecz na Twoje słowo zarzucę sieci”',
           '„Jestem zbyt zmęczony, by znowu płynąć”',
-          '„Sieci są zniszczone i nie nadają się do użytku”',
-          '„Trzeba poczekać na następy wieczór”'
+          '„Trzeba poczekać na następy wieczór”',
+          '„Mistrzu, całą noc pracowaliśmy i niceśmy nie ułowili. Lecz na Twoje słowo zarzucę sieci”',
+          '„Sieci są zniszczone i nie nadają się do użytku”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Szymon okazał zaufanie i posłuszeństwo słowu Jezusa mimo ludzkiego zmęczenia i zniechęcenia.'
       },
       {
         id: 'r2-l13-q2',
         question: 'Co oznacza wezwanie Jezusa: „Wypłyń na głębię”?',
         options: [
-          'Wezwanie do odwagi, zaufania Bogu i głębokiej wiary',
           'Nakaz nauki pływania wpław',
+          'Ostrzeżenie przed burzą na jeziorze',
           'Zakaz podchodzenia do brzegu',
-          'Ostrzeżenie przed burzą na jeziorze'
+          'Wezwanie do odwagi, zaufania Bogu i głębokiej wiary'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: '„Wypłyń na głębię” to duchowe wezwanie do przełamania strachu i oparcia życia na zawierzeniu Chrystusowi.'
       }
     ]

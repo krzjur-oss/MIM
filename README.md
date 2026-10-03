@@ -19,7 +19,7 @@ Działa w całości w przeglądarce i nie wymaga zewnętrznego zaplecza serwerow
 
 ### 3. Zaawansowane Notatki i Przedmiotowa Galeria Obrazów 📝🖼️
 * Każda lekcja posiada własny autozapisywalny brudnopis/notatnik.
-* Wbudowane galerie dostosowane do przedmiotu (np. biologia – mikroskop, geografia – mapy, matematyka – wzory).
+* Wbudowane galerie dostosowane do przedmiotu (np. biologia – mikroskop, geografia – mapy, matematyka – wzory) z oznaczeniem zasobów wymagających połączenia internetowego (pobieranie miniatur z sieci).
 * Automatyczne wykrywanie linków graficznych w notatkach z obsługą powiększania w oknie modalnym (Lightbox) oraz kopiowania adresów URL.
 
 ### 4. Dynamiczne Dopasowanie Kolorystyki Przedmiotowej 🎨 *(Nowość!)*

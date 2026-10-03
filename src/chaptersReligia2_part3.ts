@@ -74,24 +74,24 @@ Bóg kocha każdego człowieka i pragnie jego zbawienia. Dlatego dał nam przyka
         id: 'r2-l30-q1',
         question: 'Gdzie i przez kogo Bóg przekazał ludziom Dekalog (Dziesięć Przykazań Bożych)?',
         options: [
+          'W Jerozolimie przez Salomona',
           'Na Górze Synaj przez Mojżesza',
           'W Betlejem przez Króla Dawida',
-          'W Jerozolimie przez Salomona',
           'Nad Jeziorem Galilejskim przez Apostołów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Bóg objawił Dziesięć Przykazań na Górze Synaj, przekazując je ludowi przez Mojżesza.'
       },
       {
         id: 'r2-l30-q2',
         question: 'Czym są przykazania Boże w naszym życiu?',
         options: [
+          'Przepisami państwowymi',
           'Drogowskazami wskazującymi bezpieczną drogę do nieba i uczącymi miłości',
-          'Trudnym ciężarem bez znaczenia',
           'Zasadami tylko dla dorosłych',
-          'Przepisami państwowymi'
+          'Trudnym ciężarem bez znaczenia'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Dekalog jest zbiorem Bożych wskazówek, które chronią nas przed złem i prowadzą do zbawienia.'
       }
     ]
@@ -157,12 +157,12 @@ Pan Jezus, przebywając w świątyni – domu swego Ojca, daje nam przykład pra
         id: 'r2-l38-q1',
         question: 'Gdzie Maryja i Józef odnaleźli dwunastoletniego Jezusa po trzech dniach poszukiwań?',
         options: [
-          'W świątyni w Jerozolimie wśród nauczycieli',
           'Na rynku miejskim',
+          'W świątyni w Jerozolimie wśród nauczycieli',
           'W Betlejem u krewnych',
           'Nad rzeką Jordan'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus przebywał w domu swego Ojca – w świątyni jerozolimskiej, słuchając i rozmawiając z uczonymi.'
       },
       {
@@ -171,8 +171,8 @@ Pan Jezus, przebywając w świątyni – domu swego Ojca, daje nam przykład pra
         options: [
           'Że Bóg Ojciec i Jego dom są dla nas najważniejsze',
           'Że zwiedzanie wielkich miast jest najważniejsze',
-          'Że należy unikać nauki w szkole',
-          'Że modlitwa w domu wystarczy'
+          'Że modlitwa w domu wystarczy',
+          'Że należy unikać nauki w szkole'
         ],
         correctAnswer: 0,
         explanation: 'Jezus pokazał, że miłość do Boga Ojca stawia na pierwszym miejscu w swoim życiu.'
@@ -239,24 +239,24 @@ Pan Jezus dostrzegł go i wstąpił do jego domu. Po spotkaniu z Jezusem Zacheus
         id: 'r2-l39-q1',
         question: 'Co zrobił bogaty celnik Zacheusz, aby zobaczyć przechodzącego Jezusa?',
         options: [
-          'Wspiął się na drzewo sykomory przy drodze',
-          'Wsiadł na konia',
           'Przepychał się siłą przez tłum',
+          'Wsiadł na konia',
+          'Wspiął się na drzewo sykomory przy drodze',
           'Krzyczał z dachu domu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Zacheusz był niskiego wzrostu, dlatego wszedł na drzewo sykomory, by dostrzec Chrystusa.'
       },
       {
         id: 'r2-l39-q2',
         question: 'Jak Zacheusz postanowił naprawić swoje dawne złe postępowanie po wizycie Jezusa?',
         options: [
-          'Oddał połowę majątku ubogim, a skrzywdzonym zwrócił poczwórnie',
           'Uciekł z miasta Jerycho',
-          'Założył nową firmę',
-          'Przeprosił tylko słownie bez czynów'
+          'Przeprosił tylko słownie bez czynów',
+          'Oddał połowę majątku ubogim, a skrzywdzonym zwrócił poczwórnie',
+          'Założył nową firmę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Prawdziwe nawrócenie Zacheusza objawiło się w hojnym zadośćuczynieniu skrzywdzonym i ubogim.'
       }
     ]
@@ -327,24 +327,24 @@ Kiedy człowiek popełni zło, powinien zwrócić się do Boga, przeprosić Go z
         id: 'r2-l41-q1',
         question: 'Czym różniła się modlitwa celnika od modlitwy faryzeusza w przypowieści Jezusa?',
         options: [
-          'Celnik z pokorą bije się w piersi i prosi o miłosierdzie za swoje grzechy',
+          'Celnik głośno śpiewa pieśni',
           'Celnik chwali się swoimi zasługami',
-          'Celnik krytykuje innych modlących się',
-          'Celnik głośno śpiewa pieśni'
+          'Celnik z pokorą bije się w piersi i prosi o miłosierdzie za swoje grzechy',
+          'Celnik krytykuje innych modlących się'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Pokorna modlitwa celnika proszącego o przebaczenie zyskała usprawiedliwienie w oczach Boga.'
       },
       {
         id: 'r2-l41-q2',
         question: 'Który z warunków sakramentu pokuty polega na naprawieniu wyrządzonego zła i skrzywdzenia?',
         options: [
-          'Zadośćuczynienie Panu Bogu i bliźniemu',
           'Rachunek sumienia',
+          'Zadośćuczynienie Panu Bogu i bliźniemu',
           'Żał za grzechy',
           'Mocne postanowienie poprawy'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Zadośćuczynienie to 5. warunek spowiedzi – naprawienie szkód i modlitwa za skrzywdzonych.'
       }
     ]
@@ -416,24 +416,24 @@ Pan Jezus wskazuje, jak ważna jest troska o swoje życie duchowe. We wzrastaniu
         id: 'r2-l42-q1',
         question: 'Jak brzmi 1. Przykazanie Kościelne?',
         options: [
-          'W niedziele i święta nakazane uczestniczyć we Mszy Świętej i powstrzymać się od prac niekoniecznych',
           'Pamiętaj o dniu świętym',
+          'Przynajmniej raz w roku przystąpić do spowiedzi',
           'Czcij ojca swego i matkę swoją',
-          'Przynajmniej raz w roku przystąpić do spowiedzi'
+          'W niedziele i święta nakazane uczestniczyć we Mszy Świętej i powstrzymać się od prac niekoniecznych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Pierwsze przykazanie kościelne nakazuje wiernym udział w niedzielnej i świątecznej Eucharystii.'
       },
       {
         id: 'r2-l42-q2',
         question: 'Jak często przykazania kościelne nakazują przystąpić przynajmniej raz do spowiedzi i przyjść do Komunii Świętej?',
         options: [
-          'Przynajmniej raz w roku (Komunię w okresie wielkanocnym)',
           'Co miesiąc w piątek',
+          'Przynajmniej raz w roku (Komunię w okresie wielkanocnym)',
           'Co pięć lat',
           'Tylko w dzieciństwie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Przykazania kościelne nakazują przystąpienie do sakramentu pokuty min. raz w roku oraz przyjęcie Komunii św. w okresie wielkanocnym.'
       }
     ]
@@ -505,9 +505,9 @@ Duch Święty pociesza nas, oświeca i prowadzi. Obdarza nas **siedmioma darami*
         question: 'Jak Pan Jezus nazywa Ducha Świętego w Ewangelii wg św. Jana?',
         options: [
           'Pocieszycielem i Duchem Prawdy',
-          'Sędzią sprawiedliwym',
+          'Królem narodów',
           'Aniołem światłości',
-          'Królem narodów'
+          'Sędzią sprawiedliwym'
         ],
         correctAnswer: 0,
         explanation: 'Jezus obiecał Apostołom: „Ojciec da wam innego Pocieszyciela – Ducha Prawdy”.'
@@ -516,12 +516,12 @@ Duch Święty pociesza nas, oświeca i prowadzi. Obdarza nas **siedmioma darami*
         id: 'r2-l48-q2',
         question: 'Ile darów przynosi Duch Święty wspierający chrześcijanina?',
         options: [
-          'Siedem darów Ducha Świętego (m.in. mądrość, rozum, męstwo)',
+          'Dwanaście darów',
           'Dziesięć darów',
-          'Trzy dary',
-          'Dwanaście darów'
+          'Siedem darów Ducha Świętego (m.in. mądrość, rozum, męstwo)',
+          'Trzy dary'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Tradycja Kościoła wymienia 7 Darów Ducha Świętego wspierających nasze życie duchowe.'
       }
     ]
@@ -586,24 +586,24 @@ Teraz mieszkają w niebie i są bardzo szczęśliwi. Pan Bóg zachęca nas, aby�
         id: 'r2-l58-q1',
         question: 'Kiedy obchodzimy w Kościele radosną uroczystość Wszystkich Świętych?',
         options: [
-          '1 listopada',
           '2 listopada',
+          '1 listopada',
           '25 grudnia',
           '15 sierpnia'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: '1 listopada czcimy pamięć wszystkich zbawionych przebywających w niebie.'
       },
       {
         id: 'r2-l58-q2',
         question: 'Kto może zostać świętym według nauczania Kościoła?',
         options: [
-          'Każdy człowiek, który kocha Boga i wypełnia Jego naukę w swoim życiu',
           'Tylko starożytni męczennicy',
-          'Tylko biskupi i papieże',
-          'Tylko dawne królówki'
+          'Każdy człowiek, który kocha Boga i wypełnia Jego naukę w swoim życiu',
+          'Tylko dawne królówki',
+          'Tylko biskupi i papieże'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Powołanie do świętości jest powszechne – Bóg wzywa każdego z nas do miłości i nieba.'
       }
     ]
@@ -673,9 +673,9 @@ Kościół modli się o to wraz z Maryją podczas Mszy Świętej, nazywanej **Ro
         question: 'Jak nazywa się poranna Msza Święta sprawowana w Adwencie ku czci Najświętszej Maryi Panny?',
         options: [
           'Roraty',
-          'Pasterka',
           'Gorzkie Żale',
-          'Nieszpory'
+          'Nieszpory',
+          'Pasterka'
         ],
         correctAnswer: 0,
         explanation: 'Roraty to adwentowa Msza św. ku czci Maryi, Jutrzenki zapowiadającej przyjście Chrystusa.'
@@ -684,12 +684,12 @@ Kościół modli się o to wraz z Maryją podczas Mszy Świętej, nazywanej **Ro
         id: 'r2-l59-q2',
         question: 'Ile świec umieszcza się tradycyjnie na wieńcu adwentowym?',
         options: [
-          '4 świece (na 4 niedziele Adwentu)',
           '7 świec',
+          '2 świece',
           '12 świec',
-          '2 świece'
+          '4 świece (na 4 niedziele Adwentu)'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Cztery świece symbolizują cztery niedziele radosnego oczekiwania na Boże Narodzenie.'
       }
     ]
@@ -758,12 +758,12 @@ Odnawiamy przyjaźń i miłość z Panem Bogiem poprzez udział w rekolekcjach o
         id: 'r2-l61-q1',
         question: 'W jaki dzień rozpoczyna się okres Wielkiego Postu?',
         options: [
-          'W Środę Popielcową',
-          'W Wielki Czwartek',
           'W Niedzielę Palmową',
+          'W Wielki Czwartek',
+          'W Środę Popielcową',
           'W Zielone Świątki'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Środa Popielcowa z gestem posypania głów popiołem rozpoczyna okres Wielkiego Postu.'
       },
       {
@@ -771,9 +771,9 @@ Odnawiamy przyjaźń i miłość z Panem Bogiem poprzez udział w rekolekcjach o
         question: 'Ile dni trwa okres Wielkiego Postu w Kościele?',
         options: [
           '40 dni (na pamiątkę postu Jezusa na pustyni)',
-          '12 dni',
           '7 dni',
-          '50 dni'
+          '50 dni',
+          '12 dni'
         ],
         correctAnswer: 0,
         explanation: 'Wielki Post trwa 40 dni, nawiązując do 40-dniowej modlitwy i postu Pana Jezusa na pustyni.'
@@ -839,24 +839,24 @@ Zmartwychwstanie Jezusa jest najważniejszą prawdą i podstawą naszej wiary or
         id: 'r2-l62-q1',
         question: 'Kto pierwszy przyniósł niewiastom wiadomość przy pustym grobie, że Jezus zmartwychwstał?',
         options: [
-          'Anioł Pański',
-          'Żołnierze rzymscy',
           'Faryzeusze',
+          'Żołnierze rzymscy',
+          'Anioł Pański',
           'Mieszkańcy Betlejem'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Anioł powiedział niewiastom: „Nie ma Go tu, bo zmartwychwstał, jak powiedział”.'
       },
       {
         id: 'r2-l62-q2',
         question: 'Pamiątką jakiego wydarzenia jest każda niedzielna Msza Święta?',
         options: [
-          'Zmartwychwstania Pana Jezusa',
-          'Wjazdu do Betlejem',
+          'Pracy w ogrodzie',
           'Połowu ryb',
-          'Pracy w ogrodzie'
+          'Zmartwychwstania Pana Jezusa',
+          'Wjazdu do Betlejem'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Niedziela jest Dniem Pańskim na pamiątkę zmartwychwstania Chrystusa w pierwszy dzień tygodnia.'
       }
     ]

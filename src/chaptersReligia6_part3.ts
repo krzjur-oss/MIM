@@ -77,23 +77,23 @@ Wypisz do zeszytu siedem darów Ducha Świętego i zaznacz ten, który Twoim zda
         question: 'Kto jest najczęściej zwyczajnym szafarzem (osobą udzielającą) sakramentu bierzmowania?',
         options: [
           'Papież',
-          'Ksiądz Biskup',
+          'Rodzice chrzestni',
           'Proboszcz parafii',
-          'Rodzice chrzestni'
+          'Ksiądz Biskup'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Zwyczajnym szafarzem bierzmowania jest biskup, co podkreśla jedność bierzmowanych z całym Kościołem powszechnym.'
       },
       {
         id: 'rel6-31-q2',
         question: 'Jak nazywa się wonny olej używany do namaszczania czoła podczas bierzmowania?',
         options: [
-          'Olej rzepakowy',
           'Krzyżmo święte',
-          'Olej rycynowy',
-          'Olej lniany'
+          'Olej rzepakowy',
+          'Olej lniany',
+          'Olej rycynowy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Krzyżmo święte to oliwa z oliwek zmieszana z balsamem, uroczyście poświęcona przez biskupa w Wielki Czwartek podczas Mszy Krzyżma.'
       }
     ]
@@ -171,24 +171,24 @@ Zapisz w zeszycie i zapamiętaj pięć warunków sakramentu pokuty.
         id: 'rel6-32-q1',
         question: 'Który z warunków sakramentu pokuty uważany jest za najważniejszy i stanowi o duchowej przemianie serca?',
         options: [
-          'Szczera spowiedź',
-          'Żal za grzechy',
           'Rachunek sumienia',
-          'Zadośćuczynienie'
+          'Zadośćuczynienie',
+          'Żal za grzechy',
+          'Szczera spowiedź'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Żal za grzechy jest duszą i najważniejszym elementem pokuty. Bez szczerego żalu i skruchy spowiedź jest nieważna.'
       },
       {
         id: 'rel6-32-q2',
         question: 'Co nałożył ojciec marnotrawnemu synowi po jego powrocie jako symbol przywrócenia mu godności i synostwa?',
         options: [
+          'Nic, kazał mu od razu pracować',
           'Złotą koronę',
-          'Najlepszą szatę, pierścień na rękę i sandały',
           'Ciężki łańcuch jako pokutę',
-          'Nic, kazał mu od razu pracować'
+          'Najlepszą szatę, pierścień na rękę i sandały'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ojciec kazał ubrać syna w najlepszą szatę, założyć mu pierścień (symbol władzy i przynależności rodzinnej) oraz sandały, świętując jego powrót do życia.'
       }
     ]
@@ -264,24 +264,24 @@ Zaprojektuj w zeszycie okładkę do książeczki pierwszokomunijnej lub śpiewni
         id: 'rel6-33-q1',
         question: 'W który dzień Triduum Paschalnego Kościół uroczyście wspomina ustanowienie Eucharystii i Kapłaństwa?',
         options: [
-          'W Wielki Piątek',
           'W Wielki Czwartek podczas Mszy Wieczerzy Pańskiej',
           'W Wielką Sobotę wieczorem',
+          'W Wielki Piątek',
           'W Poniedziałek Wielkanocny'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'W Wielki Czwartek wieczorem celebruje się Mszę Wieczerzy Pańskiej, dziękując za dary Eucharystii i sakramentu kapłaństwa.'
       },
       {
         id: 'rel6-33-q2',
         question: 'Co dzieje się na ołtarzu podczas Modlitwy Eucharystycznej w momencie Przeistoczenia (Konsekracji)?',
         options: [
-          'Chleb i wino stają się jedynie symbolem',
-          'Mocą Ducha Świętego chleb i wino stają się rzeczywistym Ciałem i Krwią Jezusa',
+          'Nic się nie zmienia, to tylko teatr',
           'Kapłan opowiada bajkę o chlebie',
-          'Nic się nie zmienia, to tylko teatr'
+          'Mocą Ducha Świętego chleb i wino stają się rzeczywistym Ciałem i Krwią Jezusa',
+          'Chleb i wino stają się jedynie symbolem'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Podczas Konsekracji dokonuje się przeistoczenie (transsubstancjacja) – substancja chleba i wina mocą Ducha Świętego staje się prawdziwym Ciałem i Krwią Chrystusa.'
       }
     ]
@@ -358,10 +358,10 @@ Zredaguj i zapisz w zeszycie krótką, własną modlitwę w intencji swojego ksi
         id: 'rel6-35-q1',
         question: 'Który ze stopni sakramentu święceń oznacza pełnię kapłaństwa i sukcesję apostolską?',
         options: [
-          'Prezbiterat (ksiądz)',
+          'Kardynalat',
           'Episkopat (biskup)',
           'Diakonat',
-          'Kardynalat'
+          'Prezbiterat (ksiądz)'
         ],
         correctAnswer: 1,
         explanation: 'Biskupi, jako następcy Apostołów, posiadają pełnię sakramentu święceń i są odpowiedzialni za nauczanie i pasterzowanie w przydzielonych diecezjach.'
@@ -370,12 +370,12 @@ Zredaguj i zapisz w zeszycie krótką, własną modlitwę w intencji swojego ksi
         id: 'rel6-35-q2',
         question: 'Kto może udzielić sakramentu święceń kapłańskich?',
         options: [
-          'Dowolny ksiądz proboszcz',
-          'Tylko i wyłącznie Biskup',
+          'Rodzice kandydata',
           'Prezydent państwa',
-          'Rodzice kandydata'
+          'Dowolny ksiądz proboszcz',
+          'Tylko i wyłącznie Biskup'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Tylko biskup, na mocy sukcesji apostolskiej, ma uprawnienie do nakładania rąk i udzielania święceń diakonatu, prezbiteratu oraz sakry biskupiej.'
       }
     ]
@@ -449,23 +449,23 @@ Zapisz w zeszycie słowa przysięgi małżeńskiej, którą mąż i żona wypowi
         question: 'Kto wypowiada słowa przysięgi małżeńskiej i jest rzeczywistym szafarzem (udzielającym) sakramentu małżeństwa?',
         options: [
           'Ksiądz, który błogosławi ślub',
+          'Urzędnik stanu cywilnego',
           'Sami narzeczeni (mężczyzna i kobieta) składający sobie nawzajem przysięgę',
-          'Świadkowie ślubu',
-          'Urzędnik stanu cywilnego'
+          'Świadkowie ślubu'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'W Kościele rzymskokatolickim to sami małżonkowie udzielają sobie sakramentu, wypowiadając słowa przysięgi. Kapłan jest jedynie urzędowym świadkiem Kościoła i błogosławi ich związek.'
       },
       {
         id: 'rel6-36-q2',
         question: 'Co oznacza cecha nierozerwalności sakramentu małżeństwa?',
         options: [
-          'Że można wziąć rozwód w każdej chwili',
-          'Że ważne, sakramentalne małżeństwo nie może być rozwiązane przez żadną ludzką władzę i trwa aż do śmierci małżonków',
           'Że małżonkowie muszą być związani sznurkiem',
-          'Że trwa tylko 5 lat'
+          'Że można wziąć rozwód w każdej chwili',
+          'Że trwa tylko 5 lat',
+          'Że ważne, sakramentalne małżeństwo nie może być rozwiązane przez żadną ludzką władzę i trwa aż do śmierci małżonków'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus powiedział: „Co Bóg złączył, człowiek niech nie rozdziela”. Sakramentalne małżeństwo jest nierozerwalne i trwa do śmierci jednego z nich.'
       }
     ]
@@ -541,24 +541,24 @@ Zilustruj w zeszycie jeden, wybrany artykuł ze Składu Apostolskiego (np. Stwor
         id: 'rel6-38-q1',
         question: 'Z ilu głównych artykułów (zdań wiary) składa się tradycyjny Skład Apostolski?',
         options: [
-          '3',
-          '7',
           '10',
-          '12'
+          '12',
+          '7',
+          '3'
         ],
-        correctAnswer: 3,
+        correctAnswer: 1,
         explanation: 'Skład Apostolski tradycyjnie składa się z 12 artykułów, co symbolicznie nawiązuje do nauki 12 Apostołów.'
       },
       {
         id: 'rel6-38-q2',
         question: 'Co oznacza łacińskie słowo „Credo”, od którego zaczynamy wyznanie wiary?',
         options: [
-          'Dziękuję',
           'Wierzę',
-          'Przepraszam',
-          'Amen'
+          'Amen',
+          'Dziękuję',
+          'Przepraszam'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Słowo „Credo” oznacza po łacinie „Wierzę”. Jest to wyznanie osobistego zaufania i przylgnięcia do Boga.'
       }
     ]
@@ -629,24 +629,24 @@ Zapisz w zeszycie imię swojego świętego patrona (z chrztu lub wybranego) i wy
         id: 'rel6-51-q1',
         question: 'Kiedy w Kościele katolickim obchodzimy radosną Uroczystość Wszystkich Świętych?',
         options: [
-          '2 listopada',
           '1 listopada',
+          '2 listopada',
           '25 grudnia',
           'W Wielką Sobotę'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Uroczystość Wszystkich Świętych obchodzimy 1 listopada. Jest to dzień radosnego świętowania pamięci o wszystkich zbawionych w niebie.'
       },
       {
         id: 'rel6-51-q2',
         question: 'Kto według nauczania Kościoła jest wezwany do świętości?',
         options: [
-          'Tylko księża, zakonnice i biskupi',
-          'Tylko ludzie, którzy żyli w starożytności',
           'Każdy ochrzczony chrześcijanin powołany do miłości Boga i bliźniego',
-          'Tylko osoby bardzo bogate'
+          'Tylko ludzie, którzy żyli w starożytności',
+          'Tylko osoby bardzo bogate',
+          'Tylko księża, zakonnice i biskupi'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Sobór Watykański II ogłosił „powszechne powołanie do świętości” – każdy człowiek, niezależnie od swojego stanu i zawodu, ma dążyć do świętości tam, gdzie żyje.'
       }
     ]
@@ -726,11 +726,11 @@ Zilustruj w zeszycie wybraną stację Drogi Krzyżowej i zapisz pod nią krótk�
         question: 'W jaki dzień rozpoczyna się okres Wielkiego Postu, podczas którego dokonuje się posypania głów popiołem?',
         options: [
           'W Wielki Czwartek',
-          'W Środę Popielcową',
           'W Niedzielę Palmową',
-          'W uroczystość Wszystkich Świętych'
+          'W uroczystość Wszystkich Świętych',
+          'W Środę Popielcową'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Środa Popielcowa rozpoczyna okres Wielkiego Postu. Tradycyjny gest posypania głów popiołem przypomina o przemijalności życia i wzywa: „Nawracajcie się i wierzcie w Ewangelię”.'
       },
       {
@@ -738,11 +738,11 @@ Zilustruj w zeszycie wybraną stację Drogi Krzyżowej i zapisz pod nią krótk�
         question: 'Jakie dwa nabożeństwa pasyjne są odprawiane w kościołach w okresie Wielkiego Postu?',
         options: [
           'Roraty i Majowe',
-          'Droga Krzyżowa i Gorzkie Żale',
           'Różaniec i Nowenna do św. Józefa',
-          'Godzinki i Nieszpory'
+          'Godzinki i Nieszpory',
+          'Droga Krzyżowa i Gorzkie Żale'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'W Wielkim Poście odprawia się nabożeństwo Drogi Krzyżowej (rozważanie męki Jezusa stacja po stacji) oraz Gorzkie Żale (śpiewane rozmyślania o męce Pańskiej).'
       }
     ]
@@ -815,24 +815,24 @@ Ułóż i rozwiąż w zeszycie krzyżówkę, której hasłem głównym będzie s
         id: 'rel6-58-q1',
         question: 'W który dzień Triduum Paschalnego nie odprawia się Mszy Świętej, a w centrum stoi adoracja Krzyża?',
         options: [
-          'W Wielki Czwartek',
           'W Wielki Piątek',
+          'W Wielki Czwartek',
           'W Wielką Sobotę rano',
           'W Poniedziałek Wielkanocny'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'W Wielki Piątek Kościół nie sprawuje Ofiary Mszy Świętej. Zamiast tego odprawiana jest uroczysta Liturgia Męki Pańskiej z adoracją Krzyża i Komunią.'
       },
       {
         id: 'rel6-58-q2',
         question: 'Która część Triduum Paschalnego, odprawiana po zachodzie słońca w Wielką Sobotę, jest najważniejszą liturgią roku?',
         options: [
+          'Pasterka',
           'Droga Krzyżowa',
           'Wigilia Paschalna',
-          'Gorzkie Żale',
-          'Pasterka'
+          'Gorzkie Żale'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Wigilia Paschalna, choć celebrowana w nocy z soboty na niedzielę, należy już do Niedzieli Zmartwychwstania i stanowi szczyt całego Roku Liturgicznego.'
       }
     ]
@@ -908,24 +908,24 @@ Narysuj lub wklej do zeszytu wybrany tradycyjny symbol Wielkanocy (np. Baranek w
         id: 'rel6-60-q1',
         question: 'Co oznacza radosne hebrajskie zawołanie „Alleluja” śpiewane szczególnie obficie w okresie wielkanocnym?',
         options: [
-          '„Przepraszam Cię, Panie”',
-          '„Chwalcie Pana (Jahwe)!”',
+          '„Zmiłuj się nad nami”',
           '„Idźcie w pokoju”',
-          '„Zmiłuj się nad nami”'
+          '„Przepraszam Cię, Panie”',
+          '„Chwalcie Pana (Jahwe)!”'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Słowo Alleluja (Hallelujah) to hebrajski okrzyk uwielbienia i radości oznaczający „Chwalcie Pana!”.'
       },
       {
         id: 'rel6-60-q2',
         question: 'Który Apostoł jako pierwszy dotarł do grobu po usłyszeniu nowiny od niewiast (choć wszedł do niego jako drugi, po Janie)?',
         options: [
-          'Święty Tomasz',
-          'Święty Piotr',
+          'Święty Mateusz',
           'Święty Andrzej',
-          'Święty Mateusz'
+          'Święty Piotr',
+          'Święty Tomasz'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Ewangelia Jana mówi, że Jan przybiegł pierwszy do grobu, lecz poczekał na Piotra, który wszedł do grobu jako pierwszy i ujrzał leżące płótna.'
       }
     ]

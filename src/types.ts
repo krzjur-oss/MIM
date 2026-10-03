@@ -10,6 +10,7 @@ export interface Chapter {
   estimatedReadTime: number; // in minutes
   isDefault?: boolean;
   isProtected?: boolean;  // np. niemodyfikowalny Regulamin i Licencja WLPE
+  userEdited?: boolean;   // flaga oznaczająca ręczną edycję lekcji przez użytkownika
   createdAt: number;
   quizzes?: QuizQuestion[];
   lessonNumber?: number;  // opcjonalny numer lekcji (np. do chronologicznego sortowania)
@@ -38,6 +39,7 @@ export interface StudentProgress {
   completedChapters: string[];
   bookmarkedChapters: string[];
   chapterNotes: Record<string, string>; // chapterId -> notes text
+  quizAttempts?: Record<string, { correct: number; total: number; timestamp?: number }>;
 }
 
 export const SCHOOL_TYPES = [

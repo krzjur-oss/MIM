@@ -74,23 +74,23 @@ Napisz krótką refleksję na temat tego, czym jest sumienie i jak młody człow
         question: 'Gdzie według biblijnej terminologii oraz KKK znajduje się „najtajniejszy ośrodek i sanktuarium człowieka, gdzie przebywa on sam z Bogiem”?',
         options: [
           'W rozumie człowieka',
-          'W sumieniu (sercu)',
           'W świątyni jerozolimskiej',
-          'W księgach prawa'
+          'W księgach prawa',
+          'W sumieniu (sercu)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'KKK 1776 nazywa sumienie „najtajniejszym ośrodkiem i sanktuarium człowieka, gdzie przebywa on sam z Bogiem, którego głos w jego wnętrzu rozbrzmiewa”.'
       },
       {
         id: 'rel7-26-q2',
         question: 'Który rodzaj sumienia ocenia czyny moralne zgodnie z obiektywnymi zasadami, bez lekceważenia grzechu ani chorobliwego dopatrywania się zła?',
         options: [
-          'Sumienie szerokie',
-          'Sumienie faryzejskie',
           'Sumienie pewne, prawdziwe i prawe',
-          'Sumienie skrupulatne'
+          'Sumienie faryzejskie',
+          'Sumienie skrupulatne',
+          'Sumienie szerokie'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Sumienie pewne, prawdziwe i prawe ocenia czyny rzetelnie i zgodnie z obiektywnym dobrem i złem.'
       }
     ]
@@ -168,12 +168,12 @@ Napisz krótki list z podziękowaniem dla swoich rodziców za trud ich miłości
         id: 'rel7-27-q1',
         question: 'Które z przykazań Dekalogu nakazuje szacunek i cześć dla rodziców?',
         options: [
-          'Drugie',
+          'Piąte',
           'Trzecie',
-          'Czwarte',
-          'Piąte'
+          'Drugie',
+          'Czwarte'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Czwarte przykazanie Boże brzmi: „Czcij ojca swego i matkę swoją”.'
       },
       {
@@ -181,11 +181,11 @@ Napisz krótki list z podziękowaniem dla swoich rodziców za trud ich miłości
         question: 'Czy obowiązek posłuszeństwa i szacunku wobec rodziców kończy się w momencie osiągnięcia pełnoletności?',
         options: [
           'Tak, dorosły człowiek nie musi w ogóle dbać o rodziców',
-          'Posłuszeństwo wobec decyzji ustępuje, ale szacunek, wdzięczność i opieka w starości obowiązują przez całe życie',
           'Obowiązek ten znika z chwilą zawarcia małżeństwa',
+          'Posłuszeństwo wobec decyzji ustępuje, ale szacunek, wdzięczność i opieka w starości obowiązują przez całe życie',
           'Zależy to od woli biskupa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Chociaż dorosłe dzieci nie podlegają już posłuszeństwu rodziców w sprawach życiowych decyzji, to szacunek, miłość oraz pomoc w starości i chorobie trwają do końca ich życia.'
       }
     ]
@@ -269,10 +269,10 @@ Napisz w zeszycie krótką refleksję na temat: „Dlaczego zdrowie i życie lud
         id: 'rel7-28-q1',
         question: 'Jakie jest pełne znaczenie piątego przykazania „Nie będziesz zabijał”?',
         options: [
-          'Zabrania tylko fizycznego pozbawienia życia drugiego człowieka',
+          'Zabrania pracy w niedzielę',
           'Zobowiązuje do ochrony życia od poczęcia do naturalnej śmierci, zakazuje przemocy, nienawiści oraz niszczenia własnego zdrowia',
-          'Odnosi się wyłącznie do zakazu polowań na zwierzęta',
-          'Zabrania pracy w niedzielę'
+          'Zabrania tylko fizycznego pozbawienia życia drugiego człowieka',
+          'Odnosi się wyłącznie do zakazu polowań na zwierzęta'
         ],
         correctAnswer: 1,
         explanation: 'Piąte przykazanie chroni życie ludzkie na każdym etapie oraz nakazuje dbałość o zdrowie własne i innych, zakazując gniewu i nienawiści.'
@@ -281,12 +281,12 @@ Napisz w zeszycie krótką refleksję na temat: „Dlaczego zdrowie i życie lud
         id: 'rel7-28-q2',
         question: 'Kim była św. Joanna Beretta Molla?',
         options: [
-          'Pierwszą zakonnicą w Polsce',
           'Lekarką i matką, która oddała swoje życie, aby mogło narodzić się jej nienarodzone dziecko',
-          'Królową Francji wspierającą ubogich',
-          'Autorką tekstów liturgicznych o Duchu Świętym'
+          'Pierwszą zakonnicą w Polsce',
+          'Autorką tekstów liturgicznych o Duchu Świętym',
+          'Królową Francji wspierającą ubogich'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Święta Joanna Beretta Molla ofiarowała swoje życie jako lekarka i kochająca matka, odmawiając leczenia niszczącego jej nienarodzone dziecko.'
       }
     ]
@@ -364,24 +364,24 @@ Napisz krótko w zeszycie, jakie znasz sposoby na codzienne kształtowanie w sob
         id: 'rel7-29-q1',
         question: 'Do czego wzywa chrześcijanina cnota czystości?',
         options: [
-          'Do całkowitego odrzucenia miłości i ucieczki od ludzi',
           'Do szacunku dla własnego ciała i płciowości oraz kierowania nimi zgodnie z wolą Bożą i stanem życia',
-          'Do rezygnacji z dbania o higienę osobistą',
-          'Do nienawiści wobec osób innej płci'
+          'Do nienawiści wobec osób innej płci',
+          'Do całkowitego odrzucenia miłości i ucieczki od ludzi',
+          'Do rezygnacji z dbania o higienę osobistą'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Czystość to zintegrowanie płciowości w osobie, oparte na szacunku do siebie i innych jako stworzeń Bożych.'
       },
       {
         id: 'rel7-29-q2',
         question: 'Który sakrament jest szczególnym wsparciem i lekarstwem dla zachowania czystości serca?',
         options: [
-          'Sakrament chorych',
           'Sakrament pokuty i pojednania oraz Eucharystia',
+          'Śluby zakonne',
           'Sakrament kapłaństwa',
-          'Śluby zakonne'
+          'Sakrament chorych'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Częsta spowiedź święta oraz przyjmowanie Komunii Świętej dają łaskę i duchową siłę do walki z pokusami i dbania o czystość serca.'
       }
     ]
@@ -458,24 +458,24 @@ Wyjaśnij w zeszycie, dlaczego w chrześcijaństwie warunkiem owocnego sakrament
         id: 'rel7-3-q1-l30',
         question: 'Które z zachowań jest grzechem przeciwko VII przykazaniu „Nie będziesz kradł”?',
         options: [
-          'Praca w ogrodzie w sobotę',
           'Ściąganie na klasówce, piractwo internetowe i niszczenie wspólnego mienia',
           'Kupowanie używanych książek',
+          'Praca w ogrodzie w sobotę',
           'Głośne śpiewanie w kościele'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Ściąganie, oszustwa, niszczenie cudzych rzeczy czy nielegalne kopiowanie własności intelektualnej (piractwo) to formy kradzieży i nieuczciwości.'
       },
       {
         id: 'rel7-3-q2-l30',
         question: 'Co jest koniecznym warunkiem rozgrzeszenia po grzechu kradzieży?',
         options: [
+          'Spalenie skradzionego przedmiotu',
           'Złożenie obietnicy, że nikomu o tym nie powiemy',
-          'Naprawienie wyrządzonej szkody i zwrot skradzionej własności (jeśli to możliwe)',
           'Zbudowanie kapliczki przydrożnej',
-          'Spalenie skradzionego przedmiotu'
+          'Naprawienie wyrządzonej szkody i zwrot skradzionej własności (jeśli to możliwe)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Sprawiedliwość moralna wymaga, aby skradzione mienie zostało zwrócone prawowitemu właścicielowi, a wyrządzona szkoda naprawiona.'
       }
     ]
@@ -555,10 +555,10 @@ Opisz w zeszycie, na czym polega różnica między obmową a oszczerstwem, i wyj
         id: 'rel7-31-q1',
         question: 'Czym różni się obmowa od oszczerstwa?',
         options: [
-          'Obmowa to mówienie nieprawdy, a oszczerstwo to mówienie prawdy w złych celach',
-          'Obmowa to ujawnianie prawdziwych wad bliźniego bez ważnej przyczyny, a oszczerstwo to przypisywanie mu zmyślonych wad i czynów',
           'Niczym się nie różnią – to dokładnie to samo słowo',
-          'Obmowa dotyczy spraw sądowych, a oszczerstwo spraw domowych'
+          'Obmowa to ujawnianie prawdziwych wad bliźniego bez ważnej przyczyny, a oszczerstwo to przypisywanie mu zmyślonych wad i czynów',
+          'Obmowa dotyczy spraw sądowych, a oszczerstwo spraw domowych',
+          'Obmowa to mówienie nieprawdy, a oszczerstwo to mówienie prawdy w złych celach'
         ],
         correctAnswer: 1,
         explanation: 'Obmowa polega na rozgłaszaniu prawdziwych wad bliźniego bez potrzeby, natomiast oszczerstwo to kłamliwe oskarżanie go o rzeczy, których nie zrobił.'
@@ -567,8 +567,8 @@ Opisz w zeszycie, na czym polega różnica między obmową a oszczerstwem, i wyj
         id: 'rel7-31-q2',
         question: 'Co Jezus nakazał w Kazaniu na Górze odnośnie naszej codziennej mowy?',
         options: [
-          'Mówić jak najwięcej, by zagadać innych',
           'Używać uroczystych przysiąg przy każdej okazji',
+          'Mówić jak najwięcej, by zagadać innych',
           'Niech wasza mowa będzie: „Tak, tak; nie, nie”',
           'Mówić tylko w językach obcych'
         ],
@@ -650,9 +650,9 @@ Wypisz do zeszytu różnice i podobieństwa między Przymierzem Synajskim (Mojż
         id: 'rel7-33-q1',
         question: 'Czym Jezus przypieczętował i ustanowił zapowiadane Nowe Przymierze?',
         options: [
-          'Złotą koroną',
-          'Swoją własną Krwią przelaną na krzyżu i ofiarowaną w Eucharystii',
           'Pisemnym dekretem dla Cezara',
+          'Swoją własną Krwią przelaną na krzyżu i ofiarowaną w Eucharystii',
+          'Złotą koroną',
           'Kamiennymi tablicami prawa'
         ],
         correctAnswer: 1,
@@ -662,12 +662,12 @@ Wypisz do zeszytu różnice i podobieństwa między Przymierzem Synajskim (Mojż
         id: 'rel7-33-q2',
         question: 'Jak brzmi słynne zdanie św. Augustyna o relacji między Starym a Nowym Testamentem?',
         options: [
-          'Nowy Testament niszczy całkowicie Stary Testament',
-          'Nowy Testament jest ukryty w Starym, a Stary wyjaśnia się w Nowym',
           'Stary Testament przeznaczony jest tylko dla kapłanów',
-          'Oba Testamenty nie mają ze sobą żadnego związku'
+          'Oba Testamenty nie mają ze sobą żadnego związku',
+          'Nowy Testament niszczy całkowicie Stary Testament',
+          'Nowy Testament jest ukryty w Starym, a Stary wyjaśnia się w Nowym'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Święty Augustyn podkreślił harmonię Biblii: Stary Testament przygotowuje i zapowiada Nowy, a Nowy wyjaśnia i wypełnia proroctwa Starego.'
       }
     ]
@@ -745,24 +745,24 @@ Wypisz do zeszytu trzy wspólne elementy łączące judaizm z chrześcijaństwem
         id: 'rel7-35-q1',
         question: 'Który papież jako pierwszy w historii odwiedził synagogę i nazwał Żydów „starszymi braćmi w wierze”?',
         options: [
-          'Papież Franciszek',
-          'Święty Jan Paweł II',
           'Benedykt XVI',
-          'Jan XXIII'
+          'Jan XXIII',
+          'Święty Jan Paweł II',
+          'Papież Franciszek'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Święty Jan Paweł II odbył tę historyczną wizytę w rzymskiej synagodze 13 kwietnia 1986 r., kładąc fundamenty pod braterski dialog.'
       },
       {
         id: 'rel7-35-q2',
         question: 'Co stanowi główną różnicę w wierze pomiędzy Żydami a chrześcijanami?',
         options: [
-          'Wiara w stworzenie świata przez Boga',
-          'Szacunek dla Dziesięciu Przykazań',
+          'Uznawanie Starego Testamentu',
           'Wiara w Boskość Jezusa Chrystusa i Jego status jako obiecanego Mesjasza',
-          'Uznawanie Starego Testamentu'
+          'Szacunek dla Dziesięciu Przykazań',
+          'Wiara w stworzenie świata przez Boga'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Dla chrześcijan Jezus jest Synem Bożym i Mesjaszem, który już przyszedł, podczas gdy wyznawcy judaizmu nie uznają Jezusa za Mesjasza i wciąż czekają na Jego przyjście.'
       }
     ]
@@ -845,22 +845,22 @@ Wypisz w zeszycie nazwy 5 głównych religii świata i przyporządkuj im odpowie
         id: 'rel7-38-q1',
         question: 'Które z wymienionych religii zaliczamy do religii monoteistycznych?',
         options: [
-          'Chrześcijaństwo, Judaizm i Islam',
-          'Hinduizm i Buddyzm',
           'Buddyzm i Shinto',
-          'Wszystkie religie świata są monoteistyczne'
+          'Wszystkie religie świata są monoteistyczne',
+          'Chrześcijaństwo, Judaizm i Islam',
+          'Hinduizm i Buddyzm'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Chrześcijaństwo, judaizm oraz islam to wielkie religie monoteistyczne, wyznające wiarę w Jednego Boga (Boga Abrahama).'
       },
       {
         id: 'rel7-38-q2',
         question: 'Co jest ostatecznym celem wyznawcy buddyzmu?',
         options: [
-          'Złożenie ofiary na rzece Ganges',
+          'Świętowanie szabatu',
           'Osiągnięcie stanu nirwany (wyzwolenia od cierpienia i ponownych narodzin)',
           'Pielgrzymka do Mekki',
-          'Świętowanie szabatu'
+          'Złożenie ofiary na rzece Ganges'
         ],
         correctAnswer: 1,
         explanation: 'Ostatecznym celem w buddyzmie jest wejście w stan nirwany, co oznacza wygaszenie wszelkich pragnień i wyzwolenie z kręgu reinkarnacji.'
@@ -942,24 +942,24 @@ Wyjaśnij własnymi słowami w zeszycie, jaka jest różnica między bezgrzeszno
         id: 'rel7-43-q1',
         question: 'Jak nazywa się uroczyste nauczanie papieża, które korzysta z charyzmatu nieomylności?',
         options: [
+          'Urbi et Orbi',
           'Ex cathedra (z katedry)',
-          'Sub silentio (w ciszy)',
           'Ad limina apostolorum',
-          'Urbi et Orbi'
+          'Sub silentio (w ciszy)'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Pojęcie „ex cathedra” oznacza uroczyste ogłoszenie przez papieża dogmatu wiary lub moralności jako najwyższego pasterza Kościoła.'
       },
       {
         id: 'rel7-43-q2',
         question: 'Czy nieomylność papieża oznacza, że nie może on popełnić żadnego grzechu i jest bezgrzeszny?',
         options: [
+          'Tak, ale tylko w niedziele i święta',
           'Tak, papież rodzi się bez grzechu i nigdy nie grzeszy',
-          'Nie, nieomylność nie oznacza bezgrzeszności; papież jest człowiekiem grzesznym i również potrzebuje spowiedzi',
           'Papież jest bezgrzeszny tylko wtedy, gdy przebywa w Watykanie',
-          'Tak, ale tylko w niedziele i święta'
+          'Nie, nieomylność nie oznacza bezgrzeszności; papież jest człowiekiem grzesznym i również potrzebuje spowiedzi'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Nieomylność dotyczy wyłącznie oficjalnego nauczania wiary i moralności, nie oznacza natomiast braku osobistych grzechów ani nieomylności w innych dziedzinach.'
       }
     ]
@@ -1037,12 +1037,12 @@ Ułóż modlitwę lub napisz listę konkretnych postanowień o dobrym przeżyciu
         id: 'rel7-55-q1',
         question: 'Co oznacza słowo „Paruzja”?',
         options: [
-          'Okres postu i pokuty',
           'Ponowne, chwalebne przyjście Chrystusa na końcu świata',
+          'Okres postu i pokuty',
           'Uroczystość Narodzenia Pańskiego',
           'Trzy dni przed Wielkanocą'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Paruzja to pojęcie teologiczne oznaczające ponowne przyjście Chrystusa na ziemię przy końcu świata, jako Sędziego.'
       },
       {
@@ -1051,8 +1051,8 @@ Ułóż modlitwę lub napisz listę konkretnych postanowień o dobrym przeżyciu
         options: [
           'Przygotowanie do Bożego Narodzenia i pamiątka chrztu Jezusa',
           'Przygotowanie do Narodzenia Pańskiego oraz oczekiwanie na drugie przyjście Chrystusa na końcu czasów',
-          'Pamiątka potopu i przejścia przez Morze Czerwone',
-          'Wylanie Ducha Świętego i pamiątka powołania Apostołów'
+          'Wylanie Ducha Świętego i pamiątka powołania Apostołów',
+          'Pamiątka potopu i przejścia przez Morze Czerwone'
         ],
         correctAnswer: 1,
         explanation: 'Adwent ma podwójny charakter: jest czasem przygotowania do uroczystości Narodzenia Pańskiego oraz czasem, w którym kieruje się dusze ku oczekiwaniu drugiego przyjścia Chrystusa.'
@@ -1133,22 +1133,22 @@ Opisz w zeszycie przebieg i najważniejsze znaki liturgiczne jednego, wybranego 
         id: 'rel7-59-q1',
         question: 'W który dzień Triduum Paschalnego w Kościele katolickim nie odprawia się Mszy Świętej?',
         options: [
-          'W Wielki Czwartek',
           'W Wielki Piątek',
-          'W Wielką Sobotę rano',
-          'W Wielki Piątek i w Wielką Sobotę (do Wigilii Paschalnej)'
+          'W Wielki Piątek i w Wielką Sobotę (do Wigilii Paschalnej)',
+          'W Wielki Czwartek',
+          'W Wielką Sobotę rano'
         ],
-        correctAnswer: 3,
+        correctAnswer: 1,
         explanation: 'W Wielki Piątek ani w Wielką Sobotę w ciągu dnia nie odprawia się Mszy Świętej. Najważniejszą celebracją jest wieczorna Liturgia Męki Pańskiej w Wielki Piątek oraz Wigilia Paschalna odprawiana w noc Wielkiej Soboty.'
       },
       {
         id: 'rel7-59-q2',
         question: 'Która celebracja liturgiczna jest najważniejsza i najbogatsza w całym roku liturgicznym?',
         options: [
-          'Pasterka w noc Bożego Narodzenia',
+          'Suma odpustowa',
           'Wigilia Paschalna w Wielką Sobotę wieczorem/w nocy',
           'Procesja Bożego Ciała',
-          'Suma odpustowa'
+          'Pasterka w noc Bożego Narodzenia'
         ],
         correctAnswer: 1,
         explanation: 'Wigilia Paschalna to szczyt Triduum Paschalnego i matka wszystkich świętych wigilii; celebruje przejście Jezusa ze śmierci do zmartwychwstania.'

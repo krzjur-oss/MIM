@@ -71,6 +71,7 @@ import {
 } from 'recharts';
 import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student, isChapterProtected } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
+import { safeGet, safeSet, safeRemove, onStorageError, normalizeChapter, normalizeProgress, normalizeStudent } from './storage';
 import DrawingOverlay from './components/DrawingOverlay';
 import ChapterManager from './components/ChapterManager';
 
@@ -366,55 +367,89 @@ export default function App() {
     }
   }, [toast]);
 
+  // Storage error handler (e.g. QuotaExceededError alert toast)
+  useEffect(() => {
+    const unsubscribe = onStorageError((msg) => {
+      showToast(msg, 'error');
+    });
+    return unsubscribe;
+  }, []);
+
   // 1. Chapters database state
   const [chapters, setChaptersInternal] = useState<Chapter[]>(() => {
-    const saved = localStorage.getItem('multibook_chapters');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as Chapter[];
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Sync with DEFAULT_CHAPTERS to ensure all default chapters are present and updated
-          const synced = [...parsed];
-          DEFAULT_CHAPTERS.forEach((defaultCh) => {
-            const index = synced.findIndex((c) => c.id === defaultCh.id);
-            if (index === -1) {
-              synced.push(defaultCh);
-            } else {
-              synced[index] = {
-                ...synced[index],
-                ...defaultCh,
-              };
-            }
-          });
-          return sortChapters(synced);
+    const validated = safeGet<Chapter[]>('multibook_chapters', [], (raw) => {
+      if (!Array.isArray(raw)) return null;
+      const normalized = raw
+        .map(normalizeChapter)
+        .filter((c): c is Chapter => c !== null);
+      return normalized.length > 0 ? normalized : null;
+    });
+
+    if (validated.length > 0) {
+      // Sync with DEFAULT_CHAPTERS while strictly preserving user edits
+      const synced = [...validated];
+      DEFAULT_CHAPTERS.forEach((defaultCh) => {
+        const index = synced.findIndex((c) => c.id === defaultCh.id);
+        if (index === -1) {
+          synced.push(defaultCh);
+        } else {
+          // If chapter was edited by user, retain user's content and metadata
+          if (synced[index].userEdited) {
+            synced[index] = {
+              ...defaultCh,
+              ...synced[index],
+              userEdited: true,
+            };
+          } else {
+            // Not edited by user, update to latest version from defaultChapters
+            synced[index] = {
+              ...synced[index],
+              ...defaultCh,
+            };
+          }
         }
-      } catch (e) {
-        console.error("Błąd wczytywania rozdziałów z localStorage", e);
-      }
+      });
+      return sortChapters(synced);
     }
     return sortChapters(DEFAULT_CHAPTERS);
   });
 
   const setChapters = (val: Chapter[] | ((prev: Chapter[]) => Chapter[])) => {
     if (typeof val === 'function') {
-      setChaptersInternal((prev) => sortChapters(val(prev)));
+      setChaptersInternal((prev) => {
+        const next = val(prev);
+        return sortChapters(next.length > 0 ? next : DEFAULT_CHAPTERS);
+      });
     } else {
-      setChaptersInternal(sortChapters(val));
+      setChaptersInternal(sortChapters(val.length > 0 ? val : DEFAULT_CHAPTERS));
     }
   };
 
   // Save chapters to LocalStorage when changed
   useEffect(() => {
-    localStorage.setItem('multibook_chapters', JSON.stringify(chapters));
+    safeSet('multibook_chapters', chapters);
   }, [chapters]);
 
-  // 2. Active Chapter Selection State
+  // 2. Active Chapter Selection State with guaranteed fallback to DEFAULT_CHAPTERS[0]
   const [currentChapterId, setCurrentChapterId] = useState<string>(() => {
-    return chapters[0]?.id || 'intro-multibook';
+    return chapters[0]?.id || DEFAULT_CHAPTERS[0]?.id || 'intro-multibook';
   });
 
-  const activeChapter = useMemo(() => {
-    return chapters.find((c) => c.id === currentChapterId) || chapters[0];
+  // Guarantee that activeChapter is NEVER undefined
+  const activeChapter: Chapter = useMemo(() => {
+    const found = chapters.find((c) => c.id === currentChapterId);
+    if (found) return found;
+    return chapters[0] || DEFAULT_CHAPTERS[0];
+  }, [chapters, currentChapterId]);
+
+  // Auto-sync currentChapterId if active chapter was deleted or empty
+  useEffect(() => {
+    if (chapters.length === 0) {
+      setChaptersInternal(sortChapters(DEFAULT_CHAPTERS));
+      setCurrentChapterId(DEFAULT_CHAPTERS[0].id);
+    } else if (!chapters.some((c) => c.id === currentChapterId)) {
+      setCurrentChapterId(chapters[0].id);
+    }
   }, [chapters, currentChapterId]);
 
   const activeCategoryChapters = useMemo(() => {
@@ -431,11 +466,11 @@ export default function App() {
 
   // Tryb Czytania State (Hides sidebar and header, filters out symbols like hearts, candles, etc.)
   const [isReadingMode, setIsReadingMode] = useState<boolean>(() => {
-    return localStorage.getItem('multibook_reading_mode') === 'true';
+    return safeGet<boolean>('multibook_reading_mode', false, (v) => (typeof v === 'boolean' ? v : null));
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_reading_mode', isReadingMode.toString());
+    safeSet('multibook_reading_mode', isReadingMode);
   }, [isReadingMode]);
 
   // Table of Contents State and Logic
@@ -624,26 +659,23 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isNotesFullscreen]);
 
-  // 3. User Progress: Bookmarks, Notes, Completed
+  // 3. User Progress: Bookmarks, Notes, Completed, Quiz Attempts
   const [progress, setProgress] = useState<StudentProgress>(() => {
-    const saved = localStorage.getItem('multibook_progress');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Błąd wczytywania postępu z localStorage", e);
-      }
-    }
-    return {
-      completedChapters: [],
-      bookmarkedChapters: [],
-      chapterNotes: {}
-    };
+    return safeGet<StudentProgress>(
+      'multibook_progress',
+      {
+        completedChapters: [],
+        bookmarkedChapters: [],
+        chapterNotes: {},
+        quizAttempts: {}
+      },
+      normalizeProgress
+    );
   });
 
   // Save progress to LocalStorage when changed
   useEffect(() => {
-    localStorage.setItem('multibook_progress', JSON.stringify(progress));
+    safeSet('multibook_progress', progress);
   }, [progress]);
 
   // 3.2 Debounced Personal Notes State and Handlers
@@ -715,7 +747,7 @@ export default function App() {
       const savedNote = progress.chapterNotes[activeChapter.id] || '';
       if (localNoteText !== savedNote) {
         const updatedNotes = { ...progress.chapterNotes, [activeChapter.id]: localNoteText };
-        localStorage.setItem('multibook_progress', JSON.stringify({ ...progress, chapterNotes: updatedNotes }));
+        safeSet('multibook_progress', { ...progress, chapterNotes: updatedNotes });
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -919,8 +951,6 @@ export default function App() {
         <meta charset="utf-8">
         <title>Notatki z lekcji - ${escapeHtml(activeChapter.title)}</title>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
-          
           @page {
             size: A4;
             margin: 20mm;
@@ -1095,7 +1125,7 @@ export default function App() {
           </div>
 
           <div class="footer">
-            Generowane automatycznie z Interaktywnego Multibooka • KrzJur@gmail.com
+            Generowane automatycznie z Interaktywnego Multibooka • kjureczek@proton.me
           </div>
         </div>
 
@@ -1219,27 +1249,36 @@ export default function App() {
 
   // 4. Customizing layout text, line-height, dyslexic fonts, themes
   const [theme, setTheme] = useState<ThemeType>(() => {
-    return (localStorage.getItem('multibook_theme') as ThemeType) || 'light';
+    return safeGet<ThemeType>('multibook_theme', 'light', (v) => {
+      const valid: ThemeType[] = ['light', 'sepia', 'blue', 'dark', 'dyslexic'];
+      return valid.includes(v as ThemeType) ? (v as ThemeType) : null;
+    });
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_theme', theme);
+    safeSet('multibook_theme', theme);
   }, [theme]);
 
   const [fontSize, setFontSize] = useState<number>(() => {
-    return Number(localStorage.getItem('multibook_fontsize')) || 105; // base percentage %
+    return safeGet<number>('multibook_fontsize', 105, (v) =>
+      typeof v === 'number' && v >= 80 && v <= 160 ? v : null
+    );
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_fontsize', fontSize.toString());
+    safeSet('multibook_fontsize', fontSize);
   }, [fontSize]);
 
   const [lineHeight, setLineHeight] = useState<'normal' | 'relaxed' | 'loose'>(() => {
-    return (localStorage.getItem('multibook_lineheight') as 'normal' | 'relaxed' | 'loose') || 'relaxed';
+    return safeGet<'normal' | 'relaxed' | 'loose'>('multibook_lineheight', 'relaxed', (v) => {
+      return ['normal', 'relaxed', 'loose'].includes(v as string)
+        ? (v as 'normal' | 'relaxed' | 'loose')
+        : null;
+    });
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_lineheight', lineHeight);
+    safeSet('multibook_lineheight', lineHeight);
   }, [lineHeight]);
 
   // 5. Open/close manager modal
@@ -1248,51 +1287,63 @@ export default function App() {
 
   // 5a. Teacher Classes & Realization Tracker States
   const [teacherClasses, setTeacherClasses] = useState<string[]>(() => {
-    const saved = localStorage.getItem('multibook_teacher_classes');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
-        }
-      } catch (e) {}
-    }
-    return ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'].sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
+    return safeGet<string[]>(
+      'multibook_teacher_classes',
+      ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'],
+      (raw) => {
+        if (!Array.isArray(raw) || raw.length === 0) return null;
+        return raw
+          .filter((c): c is string => typeof c === 'string')
+          .sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' }));
+      }
+    );
   });
 
   const [realizations, setRealizations] = useState<{ className: string; chapterId: string; timestamp: number }[]>(() => {
-    const saved = localStorage.getItem('multibook_realizations');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {}
-    }
-    return [];
+    return safeGet(
+      'multibook_realizations',
+      [],
+      (raw) => {
+        if (!Array.isArray(raw)) return null;
+        return raw.filter(
+          (r) =>
+            r &&
+            typeof r.className === 'string' &&
+            typeof r.chapterId === 'string' &&
+            typeof r.timestamp === 'number'
+        );
+      }
+    );
   });
 
   // Curriculum configuration states (stores which chapters/lessons are assigned to which classes)
   const [classChapters, setClassChapters] = useState<Record<string, string[]>>(() => {
-    const saved = localStorage.getItem('multibook_class_chapters');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed === 'object' && parsed !== null) return parsed;
-      } catch (e) {}
-    }
-    
-    // Default fallback: assign all existing chapter IDs to each initial teacher class
-    const defaults: Record<string, string[]> = {};
-    const initialClasses = ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'];
-    const allIds = DEFAULT_CHAPTERS.map(c => c.id);
-    initialClasses.forEach(cls => {
-      defaults[cls] = [...allIds];
-    });
-    return defaults;
+    return safeGet<Record<string, string[]>>(
+      'multibook_class_chapters',
+      (() => {
+        const defaults: Record<string, string[]> = {};
+        const initialClasses = ['Klasa 4A', 'Klasa 4B', 'Klasa 5A', 'Klasa 6A', 'Klasa 7A', 'Klasa 8B'];
+        const allIds = DEFAULT_CHAPTERS.map(c => c.id);
+        initialClasses.forEach(cls => {
+          defaults[cls] = [...allIds];
+        });
+        return defaults;
+      })(),
+      (raw) => {
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+        const res: Record<string, string[]> = {};
+        for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+          if (typeof k === 'string' && Array.isArray(v)) {
+            res[k] = v.filter((item): item is string => typeof item === 'string');
+          }
+        }
+        return res;
+      }
+    );
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_class_chapters', JSON.stringify(classChapters));
+    safeSet('multibook_class_chapters', classChapters);
   }, [classChapters]);
 
   const [teacherActiveSubTab, setTeacherActiveSubTab] = useState<'students' | 'curriculum' | 'stats'>('students');
@@ -1304,7 +1355,7 @@ export default function App() {
 
   const [templateWeekday, setTemplateWeekday] = useState<number>(1); // 1 = Monday, 2 = Tuesday, ..., 7 = Sunday
   const [templateTime, setTemplateTime] = useState<string>("08:00");
-  const [templateStartDate, setTemplateStartDate] = useState<string>("2026-06-22");
+  const [templateStartDate, setTemplateStartDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
   const [templateSelectedChapters, setTemplateSelectedChapters] = useState<string[]>([]);
   const [isTemplateGeneratorOpen, setIsTemplateGeneratorOpen] = useState<boolean>(false);
 
@@ -1320,18 +1371,20 @@ export default function App() {
   const [rightDrawerTab, setRightDrawerTab] = useState<'notes' | 'classes'>('notes');
   const [newClassNameInput, setNewClassNameInput] = useState('');
   const [expandedClassDetails, setExpandedClassDetails] = useState<Record<string, boolean>>({});
-  const [currentCalendarDate, setCurrentCalendarDate] = useState(() => new Date(2026, 5, 21)); // June 21, 2026
+  const [currentCalendarDate, setCurrentCalendarDate] = useState(() => new Date()); // Dynamic current date
 
   // State variables for our custom chapter notes photo gallery & link pasting
   const [chapterGalleryImages, setChapterGalleryImages] = useState<Record<string, string[]>>(() => {
-    const saved = localStorage.getItem('multibook_chapter_gallery_images');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed === 'object' && parsed !== null) return parsed;
-      } catch (e) {}
-    }
-    return {};
+    return safeGet<Record<string, string[]>>('multibook_chapter_gallery_images', {}, (raw) => {
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+      const res: Record<string, string[]> = {};
+      for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+        if (typeof k === 'string' && Array.isArray(v)) {
+          res[k] = v.filter((item): item is string => typeof item === 'string');
+        }
+      }
+      return res;
+    });
   });
 
   const [newImageUrlInput, setNewImageUrlInput] = useState('');
@@ -1339,7 +1392,7 @@ export default function App() {
 
   // Save custom gallery images to LocalStorage
   useEffect(() => {
-    localStorage.setItem('multibook_chapter_gallery_images', JSON.stringify(chapterGalleryImages));
+    safeSet('multibook_chapter_gallery_images', chapterGalleryImages);
   }, [chapterGalleryImages]);
 
   // Selective Export Backup Modal states
@@ -1387,11 +1440,7 @@ export default function App() {
 
   // Terms & License Acceptance and Modal states
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(() => {
-    try {
-      return !!localStorage.getItem('multibook_terms_and_license_accepted_v1');
-    } catch {
-      return false;
-    }
+    return safeGet<boolean>('multibook_terms_and_license_accepted_v1', false, (v) => Boolean(v));
   });
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [termsTab, setTermsTab] = useState<'terms' | 'license'>('terms');
@@ -1399,15 +1448,11 @@ export default function App() {
   const [acceptedLicenseCheckbox, setAcceptedLicenseCheckbox] = useState(false);
 
   const handleAcceptTermsAndLicense = () => {
-    try {
-      localStorage.setItem('multibook_terms_and_license_accepted_v1', JSON.stringify({
-        acceptedAt: new Date().toISOString(),
-        version: '1.3',
-        author: 'mgr Krzysztof Jureczek'
-      }));
-    } catch (e) {
-      console.warn('LocalStorage error:', e);
-    }
+    safeSet('multibook_terms_and_license_accepted_v1', {
+      acceptedAt: new Date().toISOString(),
+      version: '1.3',
+      author: 'mgr Krzysztof Jureczek'
+    });
     setHasAcceptedTerms(true);
     setIsTermsModalOpen(false);
     showToast('Witamy w Cyfrowym Multibooku Edukacyjnym! Życzymy owocnej nauki i pracy.', 'success');
@@ -1525,27 +1570,23 @@ export default function App() {
   const [activeMainTab, setActiveMainTab] = useState<'lessons' | 'teacher-panel'>('lessons');
 
   const [students, setStudents] = useState<Student[]>(() => {
-    const saved = localStorage.getItem('multibook_students');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {}
-    }
-    return DEFAULT_STUDENTS;
+    return safeGet<Student[]>('multibook_students', [], (raw) => {
+      if (!Array.isArray(raw)) return null;
+      return raw.map(normalizeStudent).filter((s): s is Student => s !== null);
+    });
   });
 
   useEffect(() => {
-    localStorage.setItem('multibook_students', JSON.stringify(students));
+    safeSet('multibook_students', students);
   }, [students]);
 
   // Save teacher classes and realizations to LocalStorage
   useEffect(() => {
-    localStorage.setItem('multibook_teacher_classes', JSON.stringify(teacherClasses));
+    safeSet('multibook_teacher_classes', teacherClasses);
   }, [teacherClasses]);
 
   useEffect(() => {
-    localStorage.setItem('multibook_realizations', JSON.stringify(realizations));
+    safeSet('multibook_realizations', realizations);
   }, [realizations]);
 
   // Teacher Panel State variables
@@ -2131,8 +2172,14 @@ export default function App() {
             <div className="space-y-3">
               {filteredStudents.length === 0 ? (
                 <div className={`p-10 text-center rounded-xl border ${isDark ? 'border-slate-800 bg-slate-900/10' : 'border-slate-200 bg-slate-50/50'}`}>
-                  <p className="text-sm font-medium text-slate-500">Nie znaleziono uczniów spełniających kryteria.</p>
-                  <p className="text-xs text-slate-400 mt-1">Użyj przycisku u góry, aby wygenerować fikcyjnych uczniów do testów.</p>
+                  <p className="text-sm font-medium text-slate-500">Brak zarejestrowanych uczniów w bazie programu.</p>
+                  <p className="text-xs text-slate-400 mt-1 mb-4">Możesz dodać uczniów ręcznie w formularzu po lewej stronie lub wczytać dane przykładowe do celów demonstracyjnych.</p>
+                  <button
+                    onClick={handleGenerateMockStudents}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition cursor-pointer"
+                  >
+                    <span>👥 Wczytaj dane przykładowe</span>
+                  </button>
                 </div>
               ) : (
                 filteredStudents.map(student => {
@@ -3502,7 +3549,18 @@ export default function App() {
 
   // 8. Quiz Interaction States
   // Map of chapterId -> QuizAnswersState (which question was solved and what index was chosen)
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>>(() => {
+    return safeGet<Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>>('multibook_quiz_answers', {}, (raw) => {
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+        return raw as Record<string, Record<string, { chosenIdx: number; isCorrect: boolean; showFeedback: boolean }>>;
+      }
+      return null;
+    });
+  });
+
+  useEffect(() => {
+    safeSet('multibook_quiz_answers', quizAnswers);
+  }, [quizAnswers]);
 
   // 10. Mobile sidebar trigger
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -3834,14 +3892,22 @@ export default function App() {
       const desc = descLines.join('\n');
       const eventUid = `${r.chapterId}-${r.className.replace(/\s+/g, '_')}-${r.timestamp}@multibook`;
       
+      const escapeIcs = (str: string) => {
+        return str
+          .replace(/\\/g, '\\\\')
+          .replace(/;/g, '\\;')
+          .replace(/,/g, '\\,')
+          .replace(/\r?\n/g, '\\n');
+      };
+
       icsContent.push('BEGIN:VEVENT');
       icsContent.push(`UID:${eventUid}`);
       icsContent.push(`DTSTAMP:${formatIcsDate(new Date())}`);
       icsContent.push(`DTSTART:${formatIcsDate(new Date(r.timestamp))}`);
       icsContent.push(`DTEND:${formatIcsDate(new Date(r.timestamp + 45 * 60 * 1000))}`);
-      icsContent.push(`SUMMARY:[${chSubject}] ${chTitle}`.replace(/[,;]/g, '\\$&'));
-      icsContent.push(`DESCRIPTION:${desc.replace(/\n/g, '\\n').replace(/[,;]/g, '\\$&')}`);
-      icsContent.push(`LOCATION:${className}`.replace(/[,;]/g, '\\$&'));
+      icsContent.push(`SUMMARY:[${chSubject}] ${escapeIcs(chTitle)}`);
+      icsContent.push(`DESCRIPTION:${escapeIcs(desc)}`);
+      icsContent.push(`LOCATION:${escapeIcs(className)}`);
       icsContent.push('END:VEVENT');
     });
 
@@ -3854,8 +3920,10 @@ export default function App() {
       const linkElement = document.createElement('a');
       linkElement.setAttribute('href', url);
       linkElement.setAttribute('download', `realizacja_lekcji_${className.toLowerCase().replace(/\s+/g, '_')}.ics`);
+      document.body.appendChild(linkElement);
       linkElement.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(linkElement);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
       showToast(`Pomyślnie wygenerowano terminarz .ics dla klasy ${className}!`, 'success');
     } catch (e) {
       showToast('Wystąpił błąd podczas generowania pliku kalendarza .ics.', 'error');
@@ -3937,7 +4005,9 @@ export default function App() {
       const linkElement = document.createElement('a');
       linkElement.setAttribute('href', dataUri);
       linkElement.setAttribute('download', filename);
+      document.body.appendChild(linkElement);
       linkElement.click();
+      document.body.removeChild(linkElement);
 
       showToast('Kopia bezpieczeństwa z wybranymi danymi została pobrana!', 'success');
       setIsExportBackupModalOpen(false);
@@ -4032,47 +4102,53 @@ export default function App() {
     const restoredSummary: string[] = [];
 
     if (importCategories.chapters && Array.isArray(data.chapters)) {
-      if (isMerge) {
-        setChapters((prev) => {
-          const map = new Map(prev.map((c) => [c.id, c]));
-          data.chapters!.forEach((c) => {
-            map.set(c.id, c);
+      const validChapters = data.chapters
+        .map(normalizeChapter)
+        .filter((c): c is Chapter => c !== null);
+
+      if (validChapters.length > 0) {
+        if (isMerge) {
+          setChapters((prev) => {
+            const map = new Map(prev.map((c) => [c.id, c]));
+            validChapters.forEach((c) => {
+              map.set(c.id, { ...c, userEdited: true });
+            });
+            return Array.from(map.values());
           });
-          return Array.from(map.values());
-        });
-        restoredSummary.push(`Rozdziały (${data.chapters.length})`);
+        } else {
+          setChapters(validChapters.map((c) => ({ ...c, userEdited: true })));
+        }
+        restoredSummary.push(`Rozdziały (${validChapters.length})`);
       } else {
-        setChapters(data.chapters);
-        restoredSummary.push(`Rozdziały (${data.chapters.length})`);
+        showToast('W zaimportowanym pliku brak poprawnych rozdziałów (wymagane pola: id, title, content).', 'error');
       }
     }
 
     if (importCategories.progress && data.progress) {
+      const normProgress = normalizeProgress(data.progress);
       if (isMerge) {
         setProgress((prev) => ({
-          completedChapters: Array.from(new Set([...(prev?.completedChapters || []), ...(data.progress?.completedChapters || [])])),
-          bookmarkedChapters: Array.from(new Set([...(prev?.bookmarkedChapters || []), ...(data.progress?.bookmarkedChapters || [])])),
-          chapterNotes: { ...(prev?.chapterNotes || {}), ...(data.progress?.chapterNotes || {}) },
+          completedChapters: Array.from(new Set([...(prev?.completedChapters || []), ...normProgress.completedChapters])),
+          bookmarkedChapters: Array.from(new Set([...(prev?.bookmarkedChapters || []), ...normProgress.bookmarkedChapters])),
+          chapterNotes: { ...(prev?.chapterNotes || {}), ...normProgress.chapterNotes },
+          quizAttempts: { ...(prev?.quizAttempts || {}), ...(normProgress.quizAttempts || {}) }
         }));
       } else {
-        setProgress({
-          completedChapters: Array.isArray(data.progress.completedChapters) ? data.progress.completedChapters : [],
-          bookmarkedChapters: Array.isArray(data.progress.bookmarkedChapters) ? data.progress.bookmarkedChapters : [],
-          chapterNotes: data.progress.chapterNotes && typeof data.progress.chapterNotes === 'object' ? data.progress.chapterNotes : {},
-        });
+        setProgress(normProgress);
       }
       restoredSummary.push('Postępy i notatki');
     }
 
     if (importCategories.teacherClasses) {
       if (Array.isArray(data.teacherClasses)) {
+        const cleanClasses = data.teacherClasses.filter((c): c is string => typeof c === 'string' && c.trim().length > 0);
         if (isMerge) {
-          setTeacherClasses((prev) => Array.from(new Set([...prev, ...data.teacherClasses!])).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
+          setTeacherClasses((prev) => Array.from(new Set([...prev, ...cleanClasses])).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
         } else {
-          setTeacherClasses(data.teacherClasses.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
+          setTeacherClasses(cleanClasses.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
         }
       }
-      if (data.classChapters) {
+      if (data.classChapters && typeof data.classChapters === 'object') {
         if (isMerge) {
           setClassChapters((prev) => {
             const merged = { ...prev };
@@ -4089,30 +4165,36 @@ export default function App() {
     }
 
     if (importCategories.realizations && Array.isArray(data.realizations)) {
+      const validRealizations = data.realizations.filter(
+        (r) => r && typeof r.className === 'string' && typeof r.chapterId === 'string' && typeof r.timestamp === 'number'
+      );
       if (isMerge) {
         setRealizations((prev) => {
           const makeKey = (r: any) => `${r.className}_${r.chapterId}_${r.timestamp}`;
           const existing = new Set(prev.map(makeKey));
-          const newItems = data.realizations!.filter((r) => !existing.has(makeKey(r)));
+          const newItems = validRealizations.filter((r) => !existing.has(makeKey(r)));
           return [...prev, ...newItems];
         });
       } else {
-        setRealizations(data.realizations);
+        setRealizations(validRealizations);
       }
-      restoredSummary.push(`Realizacje (${data.realizations.length})`);
+      restoredSummary.push(`Realizacje (${validRealizations.length})`);
     }
 
     if (importCategories.students && Array.isArray(data.students)) {
+      const validStudents = data.students
+        .map(normalizeStudent)
+        .filter((s): s is Student => s !== null);
       if (isMerge) {
         setStudents((prev) => {
-          const existing = new Set(prev.map((s) => s.id));
-          const newStuds = data.students!.filter((s) => !existing.has(s.id));
-          return [...prev, ...newStuds];
+          const map = new Map(prev.map((s) => [s.id, s]));
+          validStudents.forEach((s) => map.set(s.id, s));
+          return Array.from(map.values());
         });
       } else {
-        setStudents(data.students);
+        setStudents(validStudents);
       }
-      restoredSummary.push(`Uczniowie (${data.students.length})`);
+      restoredSummary.push(`Uczniowie (${validStudents.length})`);
     }
 
     if (importCategories.chapterGalleryImages && data.chapterGalleryImages) {
@@ -4155,9 +4237,15 @@ export default function App() {
   };
 
   const handleAddNewChapter = (newChap: Chapter) => {
-    setChapters((prev) => [...prev, newChap]);
-    setCurrentChapterId(newChap.id);
-    showToast(`Utworzono lekcję: ${newChap.title}`, 'success');
+    const validated = normalizeChapter(newChap);
+    if (!validated) {
+      showToast('Niepoprawne dane lekcji (wymagane pola: id, title, content).', 'error');
+      return;
+    }
+    const tagged: Chapter = { ...validated, userEdited: true };
+    setChapters((prev) => [...prev, tagged]);
+    setCurrentChapterId(tagged.id);
+    showToast(`Utworzono lekcję: ${tagged.title}`, 'success');
   };
 
   const handleUpdateChapter = (updatedChap: Chapter) => {
@@ -4165,20 +4253,35 @@ export default function App() {
       showToast('Regulamin oraz Licencja WLPE są integralną częścią programu i nie podlegają edycji.', 'info');
       return;
     }
-    setChapters((prev) => prev.map((c) => (c.id === updatedChap.id ? updatedChap : c)));
-    showToast(`Zaktualizowano lekcję: ${updatedChap.title}`, 'success');
+    const validated = normalizeChapter(updatedChap);
+    if (!validated) {
+      showToast('Niepoprawne dane lekcji (wymagane pola: id, title, content).', 'error');
+      return;
+    }
+    const tagged: Chapter = { ...validated, userEdited: true };
+    setChapters((prev) => prev.map((c) => (c.id === tagged.id ? tagged : c)));
+    showToast(`Zaktualizowano lekcję: ${tagged.title}`, 'success');
   };
 
   const handleImportAllChapters = (imported: Chapter[]) => {
-    setChapters(imported);
-    if (imported.length > 0) {
-      setCurrentChapterId(imported[0].id);
+    const valid = imported.map(normalizeChapter).filter((c): c is Chapter => c !== null);
+    if (valid.length === 0) {
+      showToast('Brak poprawnych rozdziałów do zaimportowania (wymagane pola: id, title, content).', 'error');
+      return;
     }
-    showToast(`Zaimportowano ${imported.length} lekcji!`, 'success');
+    const tagged = valid.map((c) => ({ ...c, userEdited: true }));
+    setChapters(tagged);
+    setCurrentChapterId(tagged[0].id);
+    showToast(`Zaimportowano ${tagged.length} lekcji!`, 'success');
   };
 
   const handleDeleteChapter = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (chapters.length <= 1) {
+      showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+      return;
+    }
+
     const chapterToDelete = chapters.find((c) => c.id === id);
     if (isChapterProtected(chapterToDelete)) {
       showToast('Ten temat (Regulamin / Licencja WLPE) jest chroniony i nie może zostać usunięty.', 'error');
@@ -4189,6 +4292,10 @@ export default function App() {
       'Czy na pewno chcesz bezpowrotnie usunąć ten rozdział z Twojego multibooka?',
       () => {
         const afterDelete = chapters.filter((c) => c.id !== id);
+        if (afterDelete.length === 0) {
+          showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+          return;
+        }
         setChapters(afterDelete);
         
         // If current is deleted, re-route
@@ -4209,9 +4316,11 @@ export default function App() {
         setProgress({
           completedChapters: [],
           bookmarkedChapters: [],
-          chapterNotes: {}
+          chapterNotes: {},
+          quizAttempts: {}
         });
         setQuizAnswers({});
+        safeRemove('multibook_quiz_answers');
         setCurrentChapterId(DEFAULT_CHAPTERS[0].id);
         showToast('Przywrócono domyślne działy podręcznika.', 'success');
       },
@@ -4482,7 +4591,7 @@ export default function App() {
     fontSize: `${fontSize}%`,
     lineHeight: lineHeight === 'normal' ? '1.5' : lineHeight === 'relaxed' ? '1.8' : '2.1',
     fontFamily: theme === 'dyslexic' 
-      ? '"Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif' 
+      ? '"OpenDyslexicRegular", "OpenDyslexic", sans-serif' 
       : 'system-ui, -apple-system, sans-serif'
   };
 
@@ -5581,6 +5690,32 @@ export default function App() {
                                             }
                                           };
                                         });
+
+                                        // Persist quiz attempts into progress
+                                        setProgress((prevProg) => {
+                                          const prevChapAnswers = quizAnswers[activeChapter.id] || {};
+                                          const updatedChapAnswers = {
+                                            ...prevChapAnswers,
+                                            [q.id]: { chosenIdx: oIndex, isCorrect: isCorr, showFeedback: true }
+                                          };
+                                          const answeredKeys = Object.keys(updatedChapAnswers);
+                                          const correctCount = answeredKeys.filter((k) => updatedChapAnswers[k]?.isCorrect).length;
+                                          const totalCount = activeChapter.quizzes?.length || answeredKeys.length;
+
+                                          const updatedAttempts = {
+                                            ...(prevProg.quizAttempts || {}),
+                                            [activeChapter.id]: {
+                                              correct: correctCount,
+                                              total: totalCount,
+                                              timestamp: Date.now()
+                                            }
+                                          };
+
+                                          return {
+                                            ...prevProg,
+                                            quizAttempts: updatedAttempts
+                                          };
+                                        });
                                       }}
                                       className={`p-3 text-left border rounded-xl font-medium text-xs transition-colors transition-transform cursor-pointer focus:outline-hidden ${optionCardClasses}`}
                                     >
@@ -5641,6 +5776,11 @@ export default function App() {
                                 const copied = { ...prev };
                                 delete copied[activeChapter.id];
                                 return copied;
+                              });
+                              setProgress((prevProg) => {
+                                const copiedAttempts = { ...(prevProg.quizAttempts || {}) };
+                                delete copiedAttempts[activeChapter.id];
+                                return { ...prevProg, quizAttempts: copiedAttempts };
                               });
                             }}
                             className="bg-white text-emerald-800 hover:bg-slate-50 font-bold text-xs p-2 px-3.5 rounded-xl shrink-0 cursor-pointer transition-colors"
@@ -5945,9 +6085,14 @@ export default function App() {
 
                   {/* Propozycja grafik z galerii opartej na przedmiocie */}
                   <div className="space-y-1">
-                    <span className="text-[8.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-tight block">
-                      💡 Szybka galeria ({activeChapter.subject || 'Inne'}):
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[8.5px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-tight block">
+                        💡 Szybka galeria ({activeChapter.subject || 'Inne'}):
+                      </span>
+                      <span className="text-[7.5px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1 rounded" title="Do wczytania tych miniaturek wymagane jest aktywne połączenie z Internetem">
+                        online
+                      </span>
+                    </div>
                     <div className="flex flex-wrap gap-1">
                       {(PRESET_SUBJECT_GALLERIES[activeChapter.subject || ''] || DEFAULT_SUBJECT_GALLERY).map((preset, pIdx) => (
                         <button
@@ -6655,7 +6800,15 @@ export default function App() {
             onAddChapter={handleAddNewChapter}
             onUpdateChapter={handleUpdateChapter}
             onDeleteChapter={(id) => {
+              if (chapters.length <= 1) {
+                showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+                return;
+              }
               const afterDelete = chapters.filter((c) => c.id !== id);
+              if (afterDelete.length === 0) {
+                showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+                return;
+              }
               setChapters(afterDelete);
               if (currentChapterId === id && afterDelete.length > 0) {
                 setCurrentChapterId(afterDelete[0].id);

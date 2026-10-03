@@ -79,24 +79,24 @@ Dowiedz się, jakie imię patrona do bierzmowania wybrałeś (lub zamierzasz wyb
         id: 'rel8-25-q1',
         question: 'Jak brzmią dokładne słowa formuły sakramentalnej bierzmowania wypowiadane przez biskupa?',
         options: [
-          'Ja ciebie chrzczę w imię Ojca i Syna i Ducha Świętego.',
-          'Przyjmij znamię daru Ducha Świętego.',
+          'Niech Duch Święty zstąpi na ciebie i napełni cię mocą.',
           'Oto słowo Boże ku twojemu zbawieniu.',
-          'Niech Duch Święty zstąpi na ciebie i napełni cię mocą.'
+          'Przyjmij znamię daru Ducha Świętego.',
+          'Ja ciebie chrzczę w imię Ojca i Syna i Ducha Świętego.'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Podczas namaszczenia czoła bierzmowanego krzyżmem świętym szafarz (biskup) wypowiada słowa: „Przyjmij znamię daru Ducha Świętego” (KKK 1320).'
       },
       {
         id: 'rel8-25-q2',
         question: 'Kiedy święci się olej krzyżma świętego wykorzystywany podczas bierzmowania?',
         options: [
-          'W uroczystość Zesłania Ducha Świętego',
-          'W Wielki Czwartek podczas Mszy Krzyżma',
           'W każdą niedzielę Adwentu',
-          'W noc Wigilii Paschalnej'
+          'W uroczystość Zesłania Ducha Świętego',
+          'W noc Wigilii Paschalnej',
+          'W Wielki Czwartek podczas Mszy Krzyżma'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Krzyżmo święte jest uroczyście konsekrowane (święcone) przez biskupa w Wielki Czwartek rano, podczas specjalnej Mszy świętej zwanej Mszą Krzyżma.'
       }
     ]
@@ -172,12 +172,12 @@ Ułóż modlitwę dziękczynną za jeden z przyjętych sakramentów świętych (
         id: 'rel8-28-q1',
         question: 'Które z sakramentów zaliczamy do grupy sakramentów wtajemniczenia chrześcijańskiego?',
         options: [
+          'Bierzmowanie, spowiedź, małżeństwo',
           'Chrzest, bierzmowanie, Eucharystia',
-          'Pokuta, namaszczenie chorych, kapłaństwo',
           'Małżeństwo, kapłaństwo, chrzest',
-          'Bierzmowanie, spowiedź, małżeństwo'
+          'Pokuta, namaszczenie chorych, kapłaństwo'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Sakramenty wtajemniczenia chrześcijańskiego to te, które kładą fundament pod całe życie chrześcijańskie: chrzest, bierzmowanie oraz Eucharystia (KKK 1211).'
       },
       {
@@ -185,11 +185,11 @@ Ułóż modlitwę dziękczynną za jeden z przyjętych sakramentów świętych (
         question: 'Co symbolizuje „woda żywa”, o której Jezus rozmawiał z Samarytanką przy studni?',
         options: [
           'Zwykłą, czystą wodę źródlaną do picia',
+          'Rzekę Jordan przepływającą przez Izrael',
           'Łaskę Bożą i Ducha Świętego dających życie wieczne',
-          'Deszcz nawadniający pola w Samarii',
-          'Rzekę Jordan przepływającą przez Izrael'
+          'Deszcz nawadniający pola w Samarii'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Woda żywa w nauczaniu Jezusa to symbol łaski uświęcającej, Ducha Świętego oraz życia Bożego, które otrzymujemy w sakramentach.'
       }
     ]
@@ -271,24 +271,24 @@ Napisz, które z Ośmiu Błogosławieństw najbardziej do Ciebie przemawia i w j
         id: 'rel8-29-q1',
         question: 'Komu Jezus obiecał w pierwszym błogosławieństwie, że „do nich należy królestwo niebieskie”?',
         options: [
-          'Ubodzym w duchu',
-          'Cichym i cierpliwym',
           'Czującym smutek i lęk',
+          'Cichym i cierpliwym',
+          'Ubodzym w duchu',
           'Wprowadzającym pokój'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Pierwsze błogosławieństwo brzmi: „Błogosławieni ubodzy w duchu, albowiem do nich należy królestwo niebieskie” (Mt 5,3).'
       },
       {
         id: 'rel8-29-q2',
         question: 'Które z błogosławieństw mówi o nagrodzie w postaci oglądania samego Boga?',
         options: [
-          'Błogosławieni cisi',
-          'Błogosławieni czystego serca',
           'Błogosławieni miłosierni',
-          'Błogosławieni wprowadzający pokój'
+          'Błogosławieni cisi',
+          'Błogosławieni wprowadzający pokój',
+          'Błogosławieni czystego serca'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus powiedział: „Błogosławieni czystego serca, albowiem oni Boga oglądać będą” (Mt 5,8).'
       }
     ]
@@ -367,24 +367,24 @@ Ułóż modlitwę w intencji dziecka nienarodzonego, chorego lub starszego czło
         id: 'rel8-38-q1',
         question: 'Które przykazanie Dekalogu stoi na straży nienaruszalności i świętości życia ludzkiego?',
         options: [
+          'Dziesiąte przykazanie',
           'Trzecie przykazanie',
           'Piąte przykazanie',
-          'Siódme przykazanie',
-          'Dziesiąte przykazanie'
+          'Siódme przykazanie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Piąte przykazanie Bożego Dekalogu brzmi: „Nie będziesz zabijał” (Wj 20,13) i zakazuje wszelkiego bezpośredniego niszczenia życia ludzkiego.'
       },
       {
         id: 'rel8-38-q2',
         question: 'Jak Kościół określa samobójstwo w świetle Katechizmu Kościoła Katolickiego?',
         options: [
-          'Jako czyn całkowicie obojętny moralnie',
-          'Jako zaprzeczenie miłości własnej, bliźniego i Boga żywego',
+          'Jako zachowanie godne pochwały w trudnej sytuacji',
           'Jako wyraz dojrzałej osobistej wolności człowieka',
-          'Jako zachowanie godne pochwały w trudnej sytuacji'
+          'Jako czyn całkowicie obojętny moralnie',
+          'Jako zaprzeczenie miłości własnej, bliźniego i Boga żywego'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Katechizm (KKK 2281) wyjaśnia, że samobójstwo zaprzecza naturalnemu dążeniu do zachowania życia, sprzeciwia się miłości siebie, niszczy solidarność z bliźnimi i sprzeciwia się miłości Boga.'
       }
     ]
@@ -463,23 +463,23 @@ Napisz, dlaczego warto dawać świadectwo wiary we współczesnym świecie pełn
         question: 'Który młody święty, uczeń św. Jana Bosko, zmarł w wieku zaledwie 14 lat i został ogłoszony patronem młodzieży?',
         options: [
           'Święty Stanisław Kostka',
-          'Święty Dominik Savio',
+          'Błogosławiony Carlo Acutis',
           'Święty Tarsycjusz',
-          'Błogosławiony Carlo Acutis'
+          'Święty Dominik Savio'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Święty Dominik Savio (1842-1857) był wybitnym wychowankiem oratorium św. Jana Bosko, odznaczał się głęboką pobożnością i został kanonizowany jako najmłodszy wyznawca w historii Kościoła.'
       },
       {
         id: 'rel8-41-q2',
         question: 'Jak nazywa się encyklika papieża Franciszka o wierze, napisana wspólnie z Benedyktem XVI?',
         options: [
+          'Evangelii gaudium',
           'Lumen fidei',
-          'Laudato si\'',
           'Lumen gentium',
-          'Evangelii gaudium'
+          'Laudato si\''
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: '„Lumen fidei” (Światło wiary) to pierwsza encyklika papieża Franciszka, wydana w 2013 roku, której szkic przygotował jeszcze papież Benedykt XVI.'
       }
     ]
@@ -558,24 +558,24 @@ Wypisz, jakie grupy lub stowarzyszenia katolickie dla dzieci i młodzieży dzia�
         id: 'rel8-42-q1',
         question: 'W którym dokumencie Soboru Watykańskiego II opisano rolę i powołanie świeckich w Kościele?',
         options: [
-          'Dei verbum',
-          'Lumen gentium',
           'Sacrosanctum concilium',
-          'Gaudium et spes'
+          'Gaudium et spes',
+          'Lumen gentium',
+          'Dei verbum'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Konstytucja dogmatyczna o Kościele „Lumen gentium” (Światło narodów) w rozdziale IV szczegółowo opisuje powołanie, zadania i charyzmaty ludzi świeckich.'
       },
       {
         id: 'rel8-42-q2',
         question: 'Do jakich dwóch grup apostolstwa zalicza się wspólne działanie młodzieży w ruchach oazowych lub Caritas?',
         options: [
-          'Do apostolstwa hierarchicznego',
-          'Do apostolstwa indywidualnego',
           'Do apostolstwa zespołowego (grupowego)',
+          'Do apostolstwa indywidualnego',
+          'Do apostolstwa hierarchicznego',
           'Do apostolstwa zakonnego'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Działanie w ramach struktur, parafii, stowarzyszeń lub ruchów to apostolstwo zespołowe, oparte na współpracy i wspólnym dążeniu do celu.'
       }
     ]
@@ -657,24 +657,24 @@ Napisz krótką notatkę biograficzną o jednym z męczenników II wojny świato
         id: 'rel8-46-q1',
         question: 'W którym niemieckim obozie koncentracyjnym poniósł męczeńską śmierć głodową św. Maksymilian Kolbe?',
         options: [
+          'KL Stutthof',
           'KL Dachau',
-          'KL Auschwitz-Birkenau',
           'KL Treblinka',
-          'KL Stutthof'
+          'KL Auschwitz-Birkenau'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ojciec Maksymilian Kolbe oddał życie za współwięźnia w niemieckim nazistowskim obozie koncentracyjnym KL Auschwitz.'
       },
       {
         id: 'rel8-46-q2',
         question: 'Jak brzmi data liturgicznego wspomnienia św. Maksymiliana Kolbego, będąca zarazem dniem jego śmierci?',
         options: [
-          '1 września',
-          '14 sierpnia',
           '10 października',
-          '3 maja'
+          '3 maja',
+          '1 września',
+          '14 sierpnia'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ojciec Maksymilian został dobity zastrzykiem fenolu 14 sierpnia 1941 roku i ten dzień jest obchodzony w Kościele jako jego wspomnienie liturgiczne.'
       }
     ]

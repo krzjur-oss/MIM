@@ -93,21 +93,21 @@ Zastanów się nad swoim dniem powszednim. Do każdej z pięciu poznanych form m
         question: 'Która z form modlitwy polega na bezinteresownym wysławianiu Boga za to, kim jest, a nie tylko za dary, które otrzymujemy?',
         options: [
           'Modlitwa prośby',
+          'Modlitwa wstawiennicza',
           'Modlitwa dziękczynna',
-          'Modlitwa uwielbienia',
-          'Modlitwa wstawiennicza'
+          'Modlitwa uwielbienia'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Modlitwa uwielbienia różni się od innych form tym, że wychwala Boga bezpośrednio dla Niego samego, bezinteresownie dając Mu chwałę za to, kim jest.'
       },
       {
         id: 'rel8-17-q2',
         question: 'Co wedługYOUCAT 469 jest „wielką bramą do wiary” i żywą relacją z Bogiem?',
         options: [
-          'Zgromadzenie majątku',
+          'Podróże turystyczne',
           'Modlitwa',
           'Tylko nauka teorii teologicznych',
-          'Podróże turystyczne'
+          'Zgromadzenie majątku'
         ],
         correctAnswer: 1,
         explanation: 'YOUCAT wskazuje, że modlitwa jest wielką bramą do wiary, pozwalającą człowiekowi powierzyć się Bogu i trwać w Jego obecności.'
@@ -203,24 +203,24 @@ Napisz krótkie wyjaśnienie, dlaczego dla chrześcijanina codzienne, świadome 
         id: 'rel8-18-q1',
         question: 'Z ilu próśb składa się Modlitwa Pańska?',
         options: [
-          'Z trzech',
           'Z pięciu',
-          'Ze stu',
-          'Z siedmiu'
+          'Z trzech',
+          'Z siedmiu',
+          'Ze stu'
         ],
-        correctAnswer: 3,
+        correctAnswer: 2,
         explanation: 'Modlitwa Pańska dzieli się na wstęp oraz siedem próśb: trzy pierwsze odnoszą się do chwały Bożej, a cztery kolejne do ludzkich potrzeb.'
       },
       {
         id: 'rel8-18-q2',
         question: 'Co rozumiemy pod pojęciem „chleba powszedniego” w czwartej prośbie w sensie duchowym?',
         options: [
-          'Wyłącznie zwykłe pożywienie z piekarni',
           'Słowo Boże oraz Ciało Chrystusa przyjęte w Eucharystii',
+          'Wyłącznie zwykłe pożywienie z piekarni',
           'Dobra materialne i bogactwo',
           'Sukcesy sportowe i naukowe'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Katechizm Kościoła Katolickiego wskazuje, że chleb powszedni to pokarm niezbędny do życia, ale w sensie duchowym oznacza również Eucharystię oraz Słowo Boże.'
       }
     ]
@@ -299,12 +299,12 @@ Zredaguj krótki dekalog (listę 5 rad), jak współczesny młody człowiek moż
         id: 'rel8-19-q1',
         question: 'Która trudność na modlitwie polega na braku jakichkolwiek emocjonalnych pociech, myśli i poczuciu pustki, mimo szczerych chęci?',
         options: [
-          'Roztargnienie',
           'Oschłość duchowa',
-          'Acedia',
-          'Pycha'
+          'Pycha',
+          'Roztargnienie',
+          'Acedia'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Oschłość duchowa to stan, w którym serce nie odczuwa pociech, myśli ani uczuć religijnych, dając człowiekowi poczucie pustki.'
       },
       {
@@ -313,8 +313,8 @@ Zredaguj krótki dekalog (listę 5 rad), jak współczesny młody człowiek moż
         options: [
           'Głośne śpiewanie pieśni',
           'Wierność (systematyczność)',
-          'Modlenie się wyłącznie przy innych ludziach',
-          'Emocjonalny zapał trwający bez przerwy'
+          'Emocjonalny zapał trwający bez przerwy',
+          'Modlenie się wyłącznie przy innych ludziach'
         ],
         correctAnswer: 1,
         explanation: 'YOUCAT wyjaśnia, że modlitwa żyje dzięki wierności, czyli trwaniu w niej także wtedy, gdy nie czujemy emocjonalnego zapału.'
@@ -400,24 +400,24 @@ Napisz krótką modlitwę do Ducha Świętego z prośbą o dar męstwa w codzien
         id: 'rel8-26-q1',
         question: 'Co według Listu św. Jakuba sprawia, że wiara staje się martwa sama w sobie?',
         options: [
-          'Brak wykształcenia teologicznego',
           'Brak uczynków płynących z miłości',
-          'Niezapamiętanie modlitw',
-          'Rzadkie wyjazdy na pielgrzymki'
+          'Brak wykształcenia teologicznego',
+          'Rzadkie wyjazdy na pielgrzymki',
+          'Niezapamiętanie modlitw'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Święty Jakub Apostoł poucza, że „wiara, jeśli nie byłaby połączona z uczynkami, martwa jest sama w sobie” (Jk 2,17).'
       },
       {
         id: 'rel8-26-q2',
         question: 'Kto według YOUCAT 11 jest wezwany i odpowiedzialny za przekazywanie wiary innym?',
         options: [
-          'Wyłącznie księża i zakonnice',
+          'Tylko papież i biskupi',
           'Tylko katecheci w szkołach',
-          'Każdy ochrzczony chrześcijanin',
-          'Tylko papież i biskupi'
+          'Wyłącznie księża i zakonnice',
+          'Każdy ochrzczony chrześcijanin'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'YOUCAT podkreśla, że żaden chrześcijanin nie pozostawia zadania przekazywania wiary wyłącznie specjalistom – każdy ochrzczony jest za to współodpowiedzialny.'
       }
     ]
@@ -503,24 +503,24 @@ Dowiedz się od rodziców, kiedy i w jakim kościele zostałeś ochrzczony. Zapi
         id: 'rel8-30-q1',
         question: 'Które z Ośmiu Błogosławieństw odnosi się bezpośrednio do postawy pokory i ubóstwa duchowego?',
         options: [
+          'Błogosławieni ubodzy w duchu',
           'Błogosławieni czystego serca',
           'Błogosławieni, którzy łakną i pragną sprawiedliwości',
-          'Błogosławieni ubodzy w duchu',
           'Błogosławieni cisi'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Jezus w Ewangelii (Mt 5,3) mówi: „Błogosławieni ubodzy w duchu, albowiem do nich należy królestwo niebieskie.”'
       },
       {
         id: 'rel8-30-q2',
         question: 'Który z sakramentów świętych jest fundamentem całego życia chrześcijańskiego i bramą otwierającą dostęp do innych sakramentów?',
         options: [
+          'Kapłaństwo',
           'Bierzmowanie',
           'Chrzest święty',
-          'Pokuta',
-          'Kapłaństwo'
+          'Pokuta'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Chrzest święty jest pierwszym sakramentem, gładzi grzech pierworodny, czyni nas dziećmi Bożymi i włącza do wspólnoty Kościoła.'
       }
     ]
@@ -610,22 +610,22 @@ Zastanów się nad sytuacją, w której zachowałeś się niesprawiedliwie wobec
         id: 'rel8-31-q1',
         question: 'Który fragment Biblii zawiera obietnicę: „Błogosławieni, którzy łakną i pragną sprawiedliwości, albowiem oni będą nasyceni”?',
         options: [
-          'Księga Rodzaju',
           'Ewangelia wg św. Mateusza (Kazanie na Górze)',
-          'Księga Wyjścia (Dekalog)',
-          'Apokalipsa św. Jana'
+          'Księga Rodzaju',
+          'Apokalipsa św. Jana',
+          'Księga Wyjścia (Dekalog)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Obietnica ta pochodzi z Ośmiu Błogosławieństw wygłoszonych przez Jezusa w Kazaniu na Górze (Mt 5,6).'
       },
       {
         id: 'rel8-31-q2',
         question: 'Czy samo uzyskanie rozgrzeszenia w spowiedzi zdejmuje z człowieka obowiązek naprawienia wyrządzonej krzywdy?',
         options: [
-          'Tak, spowiedź usuwa wszelkie obowiązki materialne',
-          'Nie, naprawienie krzywdy jest obowiązkiem sumienia i warunkiem pełnego zadośćuczynienia',
           'Tak, o ile spowiednik o tym nie wspomni',
-          'Tylko wtedy, gdy szkoda była mniejsza niż 50 zł'
+          'Nie, naprawienie krzywdy jest obowiązkiem sumienia i warunkiem pełnego zadośćuczynienia',
+          'Tylko wtedy, gdy szkoda była mniejsza niż 50 zł',
+          'Tak, spowiedź usuwa wszelkie obowiązki materialne'
         ],
         correctAnswer: 1,
         explanation: 'Katechizm (KKK 2487) poucza, że wszelkie wykroczenie przeciw sprawiedliwości nakłada obowiązek naprawienia krzywd, nawet po uzyskaniu przebaczenia (rozgrzeszenia).'
@@ -719,24 +719,24 @@ Zastanów się i napisz w 3–4 zdaniach, dlaczego sakramentu pokuty i pojednani
         id: 'rel8-32-q1',
         question: 'Wymień poprawną kolejność pierwszych trzech warunków sakramentu pokuty:',
         options: [
-          'Szczera spowiedź, żal za grzechy, rachunek sumienia',
           'Rachunek sumienia, żal za grzechy, mocne postanowienie poprawy',
-          'Zadośćuczynienie, rachunek sumienia, szczera spowiedź',
-          'Żal za grzechy, mocne postanowienie poprawy, zadośćuczynienie'
+          'Szczera spowiedź, żal za grzechy, rachunek sumienia',
+          'Żal za grzechy, mocne postanowienie poprawy, zadośćuczynienie',
+          'Zadośćuczynienie, rachunek sumienia, szczera spowiedź'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Kolejność pięciu warunków pokuty rozpoczyna się od rachunku sumienia, następnie żalu za grzechy i mocnego postanowienia poprawy.'
       },
       {
         id: 'rel8-32-q2',
         question: 'Jaki jest najcenniejszy owoc sakramentu pokuty według encykliki Reconciliatio et paenitentia papieża Jana Pawła II?',
         options: [
-          'Uniknięcie kary od rodziców',
-          'Pojednanie z Bogiem w głębi serca',
+          'Dobre samopoczucie fizyczne',
           'Zapomnienie o popełnionych czynach',
-          'Dobre samopoczucie fizyczne'
+          'Pojednanie z Bogiem w głębi serca',
+          'Uniknięcie kary od rodziców'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jan Paweł II uczy, że najcenniejszym owocem spowiedzi jest pojednanie z Bogiem, z którego rodzą się kolejne pojednania (z samym sobą, ludźmi i Kościołem).'
       }
     ]
@@ -819,24 +819,24 @@ Wyszukaj informacje o działalności organizacji „Pomoc Kościołowi w Potrzeb
         id: 'rel8-33-q1',
         question: 'Gdzie w Biblii znajdują się słowa pociechy: „Cieszcie się i radujcie, albowiem wasza nagroda wielka jest w niebie. Tak bowiem prześladowali proroków...”?',
         options: [
-          'W Księdze Hioba',
           'W Ewangelii wg św. Mateusza (Kazanie na Górze)',
           'W Księdze Koheleta',
+          'W Księdze Hioba',
           'W Pierwszym Liście do Koryntian'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Te słowa stanowią zwieńczenie Ośmiu Błogosławieństw wypowiedzianych przez Jezusa w Kazaniu na Górze (Mt 5,12).'
       },
       {
         id: 'rel8-33-q2',
         question: 'Który sakrament daje chrześcijaninowi najgłębsze siły do znoszenia cierpień i wierności wierze, według Benedykta XVI?',
         options: [
-          'Chrzest święty',
           'Eucharystia (Msza Święta)',
           'Namaszczenie chorych',
+          'Chrzest święty',
           'Małżeństwo'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Benedykt XVI podkreśla, że spożywanie Chleba Eucharystycznego daje chrześcijanom siłę i energię niezbędną do mężnego dawania świadectwa i znoszenia prześladowań.'
       }
     ]
@@ -913,22 +913,22 @@ Zastanów się nad słowami bł. Pawła Manny: „Nie jest rzeczą konieczną, a
         id: 'rel8-39-q1',
         question: 'Do kogo Pan Jezus skierował nakaz: „Idźcie na cały świat i głoście Ewangelię wszelkiemu stworzeniu”?',
         options: [
-          'Do faryzeuszy i uczonych w Piśmie',
-          'Do swoich Apostołów i uczniów',
           'Do rzymskich żołnierzy',
-          'Wyłącznie do proroków Starego Testamentu'
+          'Wyłącznie do proroków Starego Testamentu',
+          'Do faryzeuszy i uczonych w Piśmie',
+          'Do swoich Apostołów i uczniów'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Słowa te Jezus wypowiedział przed swoim wniebowstąpieniem do Jedenastu Apostołów (Mk 16,14-15).'
       },
       {
         id: 'rel8-39-q2',
         question: 'Co według KKK 900 daje ludziom świeckim prawo i obowiązek do szerzenia orędzia zbawienia?',
         options: [
-          'Zgoda władz państwowych',
+          'Wpłacenie odpowiedniej sumy na misje',
           'Sakramenty chrztu i bierzmowania',
-          'Ukończenie studiów teologicznych',
-          'Wpłacenie odpowiedniej sumy na misje'
+          'Zgoda władz państwowych',
+          'Ukończenie studiów teologicznych'
         ],
         correctAnswer: 1,
         explanation: 'Katechizm uczy, że świeccy są wezwani do apostolstwa i szerzenia wiary bezpośrednio na mocy przyjętych sakramentów chrztu i bierzmowania.'
@@ -1010,24 +1010,24 @@ Zastanów się nad wezwaniem św. Jana Pawła II: „Nie trwajcie w bezczynnośc
         id: 'rel8-43-q1',
         question: 'Do czego według YOUCAT 139 powołani są świeccy w kontekście życia społecznego?',
         options: [
-          'Do całkowitego odizolowania się od spraw ziemskich',
           'Do przyczyniania się do wzrostu królestwa Bożego przez zaangażowanie społeczne',
           'Do zastępowania biskupów w ich urzędzie',
+          'Do całkowitego odizolowania się od spraw ziemskich',
           'Do unikania jakiejkolwiek odpowiedzialności za państwo'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'YOUCAT wskazuje, że świeccy są posłani, by angażując się w życie społeczne (pracę, politykę, rodzinę), przemieniali je mocą Ewangelii.'
       },
       {
         id: 'rel8-43-q2',
         question: 'Która z metafor św. Pawła (Rz 12) najlepiej opisuje jedność i różnorodność darów we wspólnocie Kościoła?',
         options: [
+          'Metafora owczarni i wilków',
           'Metafora budowy świątyni ze złotych cegieł',
           'Metafora jednego ciała posiadającego wiele członków',
-          'Metafora winnego krzewu i dzikich latorośli',
-          'Metafora owczarni i wilków'
+          'Metafora winnego krzewu i dzikich latorośli'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Święty Paweł porównuje Kościół do jednego ciała, w którym poszczególni chrześcijanie są różnymi członkami, posiadającymi odmienne, ale uzupełniające się dary i zadania.'
       }
     ]
@@ -1111,9 +1111,9 @@ Ułóż i zapisz w brudnopisie hasło promujące pokój i zgodę między ludźmi
         question: 'Który niemiecki obóz koncentracyjny stał się głównym miejscem kaźni i symbolem martyrologii polskiego duchowieństwa (więziono tam ponad 1700 polskich księży)?',
         options: [
           'KL Auschwitz-Birkenau',
-          'KL Treblinka',
+          'KL Gross-Rosen',
           'KL Dachau',
-          'KL Gross-Rosen'
+          'KL Treblinka'
         ],
         correctAnswer: 2,
         explanation: 'KL Dachau w Niemczech był obozem, do którego zwożono duchownych z całej okupowanej Europy. Więziono tam 1773 polskich księży, z których 868 poniosło śmierć.'
@@ -1124,8 +1124,8 @@ Ułóż i zapisz w brudnopisie hasło promujące pokój i zgodę między ludźmi
         options: [
           '1 września',
           '29 kwietnia (rocznica wyzwolenia obozu w Dachau)',
-          '11 listopada',
-          '14 sierpnia'
+          '14 sierpnia',
+          '11 listopada'
         ],
         correctAnswer: 1,
         explanation: 'Dzień Męczeństwa Duchowieństwa Polskiego obchodzony jest 29 kwietnia, w rocznicę wyzwolenia obozu koncentracyjnego w Dachau przez wojska amerykańskie w 1945 roku.'

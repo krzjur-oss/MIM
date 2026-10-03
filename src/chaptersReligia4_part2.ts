@@ -57,10 +57,10 @@ Uczestniczenie w Eucharystii jest szczególnym spotkaniem z Chrystusem, który u
         id: 'r4-l11-q1',
         question: 'Co oznaczało „łamanie chleba” u pierwszych chrześcijan?',
         options: [
-          'Zwykłe śniadanie',
+          'Dzielenie ziarna',
           'Sprawowanie Najświętszej Eucharystii na pamiątkę Chrystusa',
           'Piekarniczy wypiek chleba',
-          'Dzielenie ziarna'
+          'Zwykłe śniadanie'
         ],
         correctAnswer: 1,
         explanation: '„Łamanie chleba” w Dziejach Apostolskich oznacza sprawowanie Najświętszej Eucharystii.'
@@ -69,12 +69,12 @@ Uczestniczenie w Eucharystii jest szczególnym spotkaniem z Chrystusem, który u
         id: 'r4-l11-q2',
         question: 'Kto napisał: „Gdyby ludzie znali wartość Eucharystii, służby porządkowe musiałyby kierować ruchem u wejścia do kościołów”?',
         options: [
-          'Św. Teresa od Dzieciątka Jezus',
-          'Św. Jan Paweł II',
           'Św. Franciszek',
-          'Św. Piotr'
+          'Św. Jan Paweł II',
+          'Św. Piotr',
+          'Św. Teresa od Dzieciątka Jezus'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Są to słynne słowa św. Teresy z Lisieux (od Dzieciątka Jezus).'
       }
     ]
@@ -142,12 +142,12 @@ Miłość wymaga pełnego zaangażowania. Trzeba ją okazywać czynami, dobrym s
         id: 'r4-l12-q1',
         question: 'Co daje nam siłę do kochania Boga i bliźnich w codziennym życiu?',
         options: [
-          'Uczestnictwo we Mszy Świętej i przyjmowanie Eucharystii',
           'Samo oglądanie telewizji',
-          'Odpoczynek bez modlitwy',
-          'Własne ambicje bez Boga'
+          'Uczestnictwo we Mszy Świętej i przyjmowanie Eucharystii',
+          'Własne ambicje bez Boga',
+          'Odpoczynek bez modlitwy'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Eucharystia jest źródłem siły i miłości do pielęgnowania relacji z Bogiem i ludźmi.'
       },
       {
@@ -228,9 +228,9 @@ Jesteś dzieckiem Bożym. Modląc się, możesz ofiarować Bogu każdy swój dzi
         id: 'r4-l13-q1',
         question: 'Czym jest modlitwa dla chrześcijanina?',
         options: [
-          'Rozmową ze znajomym',
-          'Spotkaniem z Panem Bogiem i wyrazem naszej wiary oraz miłości',
           'Recytowaniem wierszyków na ocenę',
+          'Spotkaniem z Panem Bogiem i wyrazem naszej wiary oraz miłości',
+          'Rozmową ze znajomym',
           'Tylko formalnym obowiązkiem'
         ],
         correctAnswer: 1,
@@ -240,12 +240,12 @@ Jesteś dzieckiem Bożym. Modląc się, możesz ofiarować Bogu każdy swój dzi
         id: 'r4-l13-q2',
         question: 'Gdzie Jezus zachęca nas do modlitwy w ukryciu przed wzrokiem ludzi?',
         options: [
-          'W izdebce z zamkniętymi drzwiami',
-          'Na rynku dla poklasku',
           'Głośno na ulicach',
-          'Nigdzie'
+          'Nigdzie',
+          'Na rynku dla poklasku',
+          'W izdebce z zamkniętymi drzwiami'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus powiedział: „wejdź do swej izdebki, zamknij drzwi i módl się do Ojca twego, który jest w ukryciu” (Mt 6,6).'
       }
     ]
@@ -327,23 +327,23 @@ Każdy, kto okazuje bezinteresowną pomoc innym, jest człowiekiem błogosławio
         question: 'Ile jest uczynków miłosierdzia względem ciała i względem duszy w tradycji Kościoła?',
         options: [
           'Po 5',
-          'Po 7 względem ciała i 7 względem duszy',
           'Po 10',
+          'Po 7 względem ciała i 7 względem duszy',
           'Po 3'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jest 7 uczynków miłosierdzia co do ciała oraz 7 co do duszy.'
       },
       {
         id: 'r4-l22-q2',
         question: 'Który z poniższych jest uczynkiem miłosierdzia względem duszy?',
         options: [
-          'Głodnych nakarmić',
           'Wątpiącym dobrze radzić',
+          'Głodnych nakarmić',
           'Nagich przyodziać',
           'Podróżnych w dom przyjąć'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Wątpiącym dobrze radzić, grzeszących upominać czy pocieszać strapionych to uczynki względem duszy.'
       }
     ]
@@ -411,24 +411,24 @@ Zaistnienie zła w świecie wiąże się z grzechem pierwszych ludzi. Przyczyną
         id: 'r4-l28-q1',
         question: 'Czym jest grzech w nauce Kościoła?',
         options: [
-          'Zwykłym błędem ortograficznym',
-          'Świadomym i dobrowolnym przekroczeniem woli Bożej',
+          'Niezamierzonym pomyłkowym działaniem',
           'Zapomnieniem o zadaniu domowym',
-          'Niezamierzonym pomyłkowym działaniem'
+          'Zwykłym błędem ortograficznym',
+          'Świadomym i dobrowolnym przekroczeniem woli Bożej'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Grzech to ŚWIADOME i DOBROWOLNE przekroczenie przykazań i woli Bożej.'
       },
       {
         id: 'r4-l28-q2',
         question: 'Dlaczego Pan Bóg nie powstrzymał siłą pierwszych ludzi przed grzechem?',
         options: [
-          'Ponieważ dał człowiekowi wolną wolę i szanuje jego wolność',
           'Bo o tym nie wiedział',
           'Bo nie miał siły',
-          'Bo nie kochał człowieka'
+          'Bo nie kochał człowieka',
+          'Ponieważ dał człowiekowi wolną wolę i szanuje jego wolność'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Bóg stworzył człowieka wolnym i szanuje jego wolną wolę, wzywając go do wyboru dobra z miłości.'
       }
     ]
@@ -497,24 +497,24 @@ Grzech pierworodny spowodował, że ludzie utracili łaskę uświęcającą. Bó
         id: 'r4-l29-q1',
         question: 'W którym sakramencie odbudowujemy zerwaną przez grzech przyjaźń z Panem Jezusem?',
         options: [
-          'W sakramencie pokuty i pojednania (spowiedzi)',
-          'W bierzmowaniu',
           'W namaszczeniu chorych',
-          'W święceniach'
+          'W bierzmowaniu',
+          'W święceniach',
+          'W sakramencie pokuty i pojednania (spowiedzi)'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Sakrament pokuty i pojednania pozwala nam zyskać przebaczenie grzechów i powrócić do łaski uświęcającej.'
       },
       {
         id: 'r4-l29-q2',
         question: 'Kto przez swoje pełne posłuszeństwo Ojcu naprawił skutki nieposłuszeństwa Adama?',
         options: [
-          'Jezus Chrystus',
           'Mojżesz',
+          'Prorok Izajasz',
           'Król Dawid',
-          'Prorok Izajasz'
+          'Jezus Chrystus'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Święty Paweł naucza, że jak przez nieposłuszeństwo Adama wszyscy stali się grzesznikami, tak przez posłuszeństwo Chrystusa wszyscy stają się sprawiedliwi.'
       }
     ]
@@ -588,9 +588,9 @@ Siedem grzechów nazywamy **głównymi**, ponieważ są one źródłem innych gr
         question: 'Dlaczego podane 7 grzechów nazywamy grzechami „głównymi”?',
         options: [
           'Ponieważ powodują inne grzechy i vady ludzkie',
+          'Bo można je popełniać bez konsekwencji',
           'Bo dotyczą tylko głowy człowieka',
-          'Bo są najważniejszymi przykazaniami',
-          'Bo można je popełniać bez konsekwencji'
+          'Bo są najważniejszymi przykazaniami'
         ],
         correctAnswer: 0,
         explanation: 'Nazywamy je głównymi, bo są korzeniem i źródłem innych grzechów oraz złych nawyków.'
@@ -599,12 +599,12 @@ Siedem grzechów nazywamy **głównymi**, ponieważ są one źródłem innych gr
         id: 'r4-l30-q2',
         question: 'Który grzech główny polega na smutku z powodu powodzenia lub dobra drugiego człowieka?',
         options: [
-          'Zazdrość',
-          'Lenistwo',
           'Chciwość',
+          'Lenistwo',
+          'Zazdrość',
           'Pycha'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Zazdrość to smutek z powodu dobra, powodzenia lub zalet bliźniego.'
       }
     ]
@@ -672,22 +672,22 @@ Chrystus przyjął na siebie grzechy ludzi i powierzył Apostołom oraz ich nast
         id: 'r4-l33-q1',
         question: 'Komu Jezus przekazał władzę odpuszczania grzechów w Kościele?',
         options: [
-          'Apostołom i ich następcom (biskupom i kapłanom)',
+          'Aniołom na niebie',
           'Uczonym w Prawie',
           'Rzymskim żołnierzom',
-          'Aniołom na niebie'
+          'Apostołom i ich następcom (biskupom i kapłanom)'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus powiedział do Apostołów: „Którym odpuścicie grzechy, są im odpuszczone” (J 20,23).'
       },
       {
         id: 'r4-l33-q2',
         question: 'Jaki jest największy przymiot Boga wobec grzesznego człowieka?',
         options: [
-          'Surowość',
+          'Kara',
           'Miłosierdzie',
           'Obojętność',
-          'Kara'
+          'Surowość'
         ],
         correctAnswer: 1,
         explanation: 'Miłosierdzie Boże to niezmierzona miłość Boga, przebaczająca każdemu skruszonemu grzesznikowi.'
@@ -759,24 +759,24 @@ Ze względu na pokutny charakter tego okresu kolor szat liturgicznych jest **fio
         id: 'r4-l35-q1',
         question: 'Jak nazywa się dzień, w którym rozpoczyna się Wielki Post?',
         options: [
-          'Niedziela Palmowa',
-          'Środa Popielcowa',
           'Wielki Czwartek',
-          'Święto Trzech Króli'
+          'Święto Trzech Króli',
+          'Niedziela Palmowa',
+          'Środa Popielcowa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Wielki Post rozpoczyna się w Środę Popielcową od obrzędu posypania głów popiołem.'
       },
       {
         id: 'r4-l35-q2',
         question: 'Wymień trzy tradycyjne filary praktyk wielkopostnych:',
         options: [
-          'Modlitwa, post, jałmużna',
-          'Śpiew, nauka, sport',
           'Praca, sen, podróże',
-          'Zabawa, zakupy, odpoczynek'
+          'Zabawa, zakupy, odpoczynek',
+          'Śpiew, nauka, sport',
+          'Modlitwa, post, jałmużna'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Tradycyjne drogi nawrócenia wielkopostnego to modlitwa, post oraz jałmużna.'
       }
     ]
@@ -855,24 +855,24 @@ Krzyż przypomina o najważniejszej prawdzie naszej wiary: że Chrystus umarł n
         id: 'r4-l36-q1',
         question: 'Ile jest stacji w nabożeństwie Drogi Krzyżowej?',
         options: [
-          '10',
-          '12',
           '14',
-          '15'
+          '15',
+          '12',
+          '10'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Droga Krzyżowa tradycyjnie składa się z 14 stacji.'
       },
       {
         id: 'r4-l36-q2',
         question: 'Kto według stacji V pomógł Panu Jezusowi nieść krzyż?',
         options: [
-          'Św. Piotr',
           'Szymon z Cyreny',
           'Jan Apostoł',
+          'Św. Piotr',
           'Setnik rzymski'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Szymon z Cyreny został przymuszony do niesienia krzyża wraz z Jezusem.'
       }
     ]

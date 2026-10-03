@@ -74,24 +74,24 @@ Zredaguj krótkie hasło zachęcające do dbania o przyrodę jako Boże stworzen
         id: 'rel5-11-q1',
         question: 'Z czego według nauki Kościoła Bóg stworzył cały świat i wszechświat?',
         options: [
-          'Z kosmicznego pyłu i dawnej materii',
-          'Z zupełnego niczego (ex nihilo) swoją wszechmocną wolą',
           'Z wody i ognia',
-          'Świat istniał od zawsze, Bóg go tylko uporządkował'
+          'Świat istniał od zawsze, Bóg go tylko uporządkował',
+          'Z zupełnego niczego (ex nihilo) swoją wszechmocną wolą',
+          'Z kosmicznego pyłu i dawnej materii'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Wiara chrześcijańska uczy, że Bóg stworzył wszechświat z niczego, nie potrzebując do tego żadnej uprzedniej materii ani pomocy.'
       },
       {
         id: 'rel5-11-q2',
         question: 'O czym mówił Jan Paweł II w Zamościu w kontekście ochrony środowiska?',
         options: [
-          'Że ochrona środowiska to sprawa wyłącznie dla naukowców',
           'Że degradacja przyrody godzi w dar stworzenia i należy z niego korzystać z szacunkiem i wdzięcznością',
+          'Że ochrona środowiska to sprawa wyłącznie dla naukowców',
           'Że powinniśmy mieszkać wyłącznie w jaskiniach',
           'Że przyrody nie da się zniszczyć'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Papież podkreślił ekologiczną odpowiedzialność człowieka jako opiekuna stworzenia wyznaczonego przez Boga.'
       }
     ]
@@ -165,24 +165,24 @@ Napisz krótki list do kolegi lub koleżanki, w którym wyjaśnisz, dlaczego ka�
         id: 'rel5-12-q1',
         question: 'Jakie wyjątkowe dary otrzymał od Boga człowiek, których nie mają zwierzęta?',
         options: [
-          'Szybkie bieganie i ostry wzrok',
           'Rozumną naturę, wolną wolę i nieśmiertelną duszę',
+          'Skrzydła i umiejętność latania',
           'Zdolność do życia w stadzie',
-          'Skrzydła i umiejętność latania'
+          'Szybkie bieganie i ostry wzrok'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Tylko człowiek został stworzony na obraz Boga, obdarzony rozumem, wolną wolą i nieśmiertelną duszą, dzięki czemu może Go poznać i pokochać.'
       },
       {
         id: 'rel5-12-q2',
         question: 'Co według Rdz 1, 31 Bóg pomyślał o świecie po stworzeniu człowieka?',
         options: [
-          'Że musi jeszcze dużo poprawić',
           'Że wszystko, co uczynił, było bardzo dobre',
-          'Że świat jest nieudany',
-          'Że człowiek zepsuje Jego dzieło'
+          'Że musi jeszcze dużo poprawić',
+          'Że człowiek zepsuje Jego dzieło',
+          'Że świat jest nieudany'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Po stworzeniu człowieka Pismo Święte podsumowuje, że całe Boże dzieło było „bardzo dobre” – stanowiło szczyt harmonii.'
       }
     ]
@@ -259,24 +259,24 @@ Ułóż w zeszycie własną krótką modlitwę z podziękowaniem Bogu za to, że
         id: 'rel5-13-q1',
         question: 'Kto namówił pierwszych ludzi do nieposłuszeństwa wobec Boga w raju?',
         options: [
+          'Inni ludzie',
           'Anioł Gabriel',
           'Szatan pod postacią węża',
-          'Inni ludzie',
           'Sami wpadli na ten pomysł bez niczyjej pomocy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Księga Rodzaju opisuje, że to wąż (symbol szatana) zwiódł Ewę, kusząc ją obietnicą, że będą jak Bóg znali dobro i zło.'
       },
       {
         id: 'rel5-13-q2',
         question: 'Co oznacza słowo „Protoewangelia”?',
         options: [
-          'Pierwszy rozdział Ewangelii św. Jana',
           'Pierwszą Dobrą Nowinę o nadchodzącym Zbawicielu, zapowiedzianą już w raju',
           'Zasady zachowania w kościele',
-          'Listę wszystkich grzechów'
+          'Listę wszystkich grzechów',
+          'Pierwszy rozdział Ewangelii św. Jana'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Protoewangelia (Rdz 3, 15) to pierwsza obietnica zbawienia wypowiedziana przez Boga zaraz po upadku pierwszych ludzi.'
       }
     ]
@@ -348,10 +348,10 @@ Narysuj w zeszycie tęczę w siedmiu barwach: czerwonym, pomarańczowym, żółt
         id: 'rel5-15-q1',
         question: 'Co stało się biblijnym znakiem przymierza Boga z Noe i całą ziemią?',
         options: [
-          'Kamienne tablice',
+          'Ogień spadający z nieba',
           'Łuk na obłokach (tęcza)',
-          'Złoty kielich',
-          'Ogień spadający z nieba'
+          'Kamienne tablice',
+          'Złoty kielich'
         ],
         correctAnswer: 1,
         explanation: 'Bóg ustanowił tęczę (łuk na obłokach) jako widzialny znak, że już nigdy nie zniszczy ziemi wodami potopu.'
@@ -360,12 +360,12 @@ Narysuj w zeszycie tęczę w siedmiu barwach: czerwonym, pomarańczowym, żółt
         id: 'rel5-15-q2',
         question: 'Zapowiedzią jakiego sakramentu według KKK 1094 były wody potopu i arka?',
         options: [
-          'Sakramentu Bierzmowania',
-          'Sakramentu Chrztu Świętego',
+          'Sakramentu Małżeństwa',
           'Sakramentu Kapłaństwa',
-          'Sakramentu Małżeństwa'
+          'Sakramentu Chrztu Świętego',
+          'Sakramentu Bierzmowania'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Woda potopu, która niszczy grzech i daje początek nowemu życiu, oraz arka ratująca ludzi są doskonałymi obrazami chrztu i Kościoła.'
       }
     ]
@@ -437,22 +437,22 @@ Napisz, co możemy zrobić konkretnego, aby w naszych rodzinach wzrastała jedno
         id: 'rel5-16-q1',
         question: 'Co skłoniło ludzi w krainie Szinear do budowy wieży sięgającej nieba?',
         options: [
+          'Brakowało im mieszkań',
           'Chcieli uchronić się przed dzikimi zwierzętami',
           'Pycha i chęć „uczynienia sobie imienia” oraz samowystarczalności bez Boga',
-          'Brakowało im mieszkań',
           'Bóg im to nakazał'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Ludzie chcieli dumnie udowodnić swoją wielkość i wejść do nieba o własnych siłach, ignorując Boga, co jest klasycznym wyrazem grzechu pychy.'
       },
       {
         id: 'rel5-16-q2',
         question: 'Co oznacza biblijne słowo „Babel”?',
         options: [
-          'Wspaniałe miasto',
+          'Brama do nieba',
           'Pomieszanie, kraj pomieszanych języków',
           'Wysoka góra',
-          'Brama do nieba'
+          'Wspaniałe miasto'
         ],
         correctAnswer: 1,
         explanation: 'Słowo Babel nawiązuje do pomieszania języków, którego dokonał Bóg, aby ukrócić pyszne plany budowniczych.'
@@ -539,11 +539,11 @@ Napisz w zeszycie krótki tekst na temat: „Czego uczy mnie postawa patriarchy 
         question: 'Jak nazywamy wybitnych praojców narodu wybranego w Starym Testamencie?',
         options: [
           'Apostołami',
-          'Patriarchami',
           'Ewangelistami',
+          'Patriarchami',
           'Męczennikami'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Patriarcha (praojciec) to tytuł nadawany założycielom rodu Izraela, z których pierwszym i najważniejszym był Abraham.'
       }
     ]
@@ -624,9 +624,9 @@ Ułóż w zeszycie krótką modlitwę, w której podziękujesz Panu Bogu za to, 
         id: 'rel5-20-q2',
         question: 'Co oznaczały we śnie faraona tłuste i chude krowy oraz zdrowe i suche kłosy?',
         options: [
-          'Nadchodzącą wojnę z sąsiadami',
-          'Siedem lat wielkiego dobrobytu i obfitości, a po nich siedem lat wielkiego głodu',
           'Konieczność zmiany religii w Egipcie',
+          'Siedem lat wielkiego dobrobytu i obfitości, a po nich siedem lat wielkiego głodu',
+          'Nadchodzącą wojnę z sąsiadami',
           'Konieczność zbudowania nowych piramid'
         ],
         correctAnswer: 1,
@@ -702,24 +702,24 @@ Narysuj lub opisz w zeszycie scenę powołania Mojżesza przy krzewie gorejącym
         id: 'rel5-23-q1',
         question: 'W jakiej niezwykłej postaci Bóg objawił się Mojżeszowi na górze Horeb?',
         options: [
-          'Jako potężny wicher niszczący skały',
-          'W płomieniu ognia ze środka krzewu, który płonął, a się nie spalał',
           'Jako starzec ze złotą laską',
-          'W cichym, łagodnym powiewie wiatru'
+          'W cichym, łagodnym powiewie wiatru',
+          'W płomieniu ognia ze środka krzewu, który płonął, a się nie spalał',
+          'Jako potężny wicher niszczący skały'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Bóg przemówił do Mojżesza z płonącego krzewu (krzewu gorejącego), który był znakiem obecności i świętości Boga.'
       },
       {
         id: 'rel5-23-q2',
         question: 'Co oznaczają słowa Jahwe – „JESTEM, KTÓRY JESTEM”?',
         options: [
-          'Że Bóg nie chce wyjawić swojego imienia',
-          'Że Bóg jest Jedynym, Prawdziwym, Zawsze Obecnym i Wiernym swoim obietnicom',
           'Że Bóg jest daleko od spraw ludzkich',
-          'To imię dawnego faraona'
+          'To imię dawnego faraona',
+          'Że Bóg nie chce wyjawić swojego imienia',
+          'Że Bóg jest Jedynym, Prawdziwym, Zawsze Obecnym i Wiernym swoim obietnicom'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Imię Boga objawione Mojżeszowi wyraża Jego wieczne istnienie, samowystarczalność oraz obietnicę stałej obecności i pomocy swojemu ludowi.'
       }
     ]
@@ -789,22 +789,22 @@ Napisz w zeszycie, co możesz zrobić w tym tygodniu, by okazać wdzięczność 
         id: 'rel5-24-q1',
         question: 'Czym Izraelici musieli oznaczyć drzwi swoich domów, aby ocalić pierworodnych przed aniołem śmierci?',
         options: [
-          'Złotym krzyżykiem',
-          'Krwią jednorocznego baranka bez skazy',
+          'Wodą z Nilu',
           'Zielonymi gałązkami palmowymi',
-          'Wodą z Nilu'
+          'Złotym krzyżykiem',
+          'Krwią jednorocznego baranka bez skazy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Bóg nakazał Izraelitom skropić krwią baranka odrzwia i progi swoich domów, co stanowiło znak ocalenia podczas nocy paschalnej.'
       },
       {
         id: 'rel5-24-q2',
         question: 'Kto jako pierwszy nazwał Jezusa publicznie „Barankiem Bożym”?',
         options: [
-          'Święty Piotr',
+          'Mojżesz',
           'Święty Jan Chrzciciel nad Jordanem',
           'Faraon',
-          'Mojżesz'
+          'Święty Piotr'
         ],
         correctAnswer: 1,
         explanation: 'Jan Chrzciciel, widząc podchodzącego Jezusa, wskazał na Niego słowami: „Oto Baranek Boży, który gładzi grzechy świata” (J 1, 29).'
@@ -878,24 +878,24 @@ Narysuj w zeszycie symbole eucharystyczne (np. kielich i hostię z literami IHS)
         id: 'rel5-26-q1',
         question: 'Przez ile lat Izraelici żywili się manną na pustyni?',
         options: [
-          'Przez 7 lat',
           'Przez 40 lat',
+          'Tylko przez kilka tygodni',
           'Przez rok',
-          'Tylko przez kilka tygodni'
+          'Przez 7 lat'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Izraelici jedli mannę przez całe 40 lat wędrówki, aż do momentu wejścia do granic Ziemi Obiecanej (Kanaan).'
       },
       {
         id: 'rel5-26-q2',
         question: 'Kiedy Pan Jezus ustanowił sakrament Eucharystii (Mszę Świętą)?',
         options: [
-          'Podczas chrztu w rzece Jordan',
           'Podczas Ostatniej Wieczerzy w Wielki Czwartek',
-          'Podczas kazania na górze',
-          'Dopiero po swoim zmartwychwstaniu'
+          'Podczas chrztu w rzece Jordan',
+          'Dopiero po swoim zmartwychwstaniu',
+          'Podczas kazania na górze'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Jezus ustanowił Eucharystię w Wielki Czwartek w Wieczerniku, dając uczniom swoje Ciało i Krew pod postaciami chleba i wina.'
       }
     ]

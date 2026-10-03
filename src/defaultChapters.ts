@@ -76,24 +76,24 @@ W tym dziale (**Wprowadzenie**) znajdziesz kompletne instrukcje krok po kroku do
         id: 'intro-q1',
         question: 'Gdzie są zapisywane Twoje prywatne notatki i nowo dodane rozdziały w tym Multibooku?',
         options: [
-          'Na zewnętrznym serwerze w chmurze',
-          'Lokalnie w pamięci Twojej przeglądarki (LocalStorage) – działają w 100% offline',
+          'W bazie danych wymagającej logowania i hasła',
           'Są jednorazowe i znikają po zamknięciu karty',
-          'W bazie danych wymagającej logowania i hasła'
+          'Lokalnie w pamięci Twojej przeglądarki (LocalStorage) – działają w 100% offline',
+          'Na zewnętrznym serwerze w chmurze'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Wszystkie materiały, notatki i zrealizowane lekcje są bezpiecznie zapisywane w pamięci lokalnej Twojego urządzenia, co gwarantuje pełną prywatność i działanie bez internetu.'
       },
       {
         id: 'intro-q2',
         question: 'Która funkcja ułatwia pracę na lekcji z tablicą interaktywną lub rzutnikiem?',
         options: [
+          'Szkicownik na Żywo pozwalający pisać, zakreślać i rysować bezpośrednio na treści podręcznika',
           'Tylko czytanie statycznego tekstu',
           'Wyłącznie import plików PDF',
-          'Szkicownik na Żywo pozwalający pisać, zakreślać i rysować bezpośrednio na treści podręcznika',
           'Odtwarzacz plików MP3'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Szkicownik na Żywo pozwala na nanoszenie odręcznych notatek, zakreśleń neonowych i figur bezpośrednio na wyświetlaną stronę w czasie rzeczywistym.'
       }
     ]
@@ -173,10 +173,10 @@ Każda lekcja może posiadać własny **test sprawdzający wiedzę**:
         id: 'guide-create-q1',
         question: 'W jaki sposób możesz pogrubić fragment tekstu w treści lekcji Markdown?',
         options: [
-          'Wpisując <pogrubienie>tekst</pogrubienie>',
-          'Otaczając tekst podwójnymi gwiazdkami: **tekst**',
           'Wpisując tekst wielkimi literami',
-          'Otaczając tekst nawiasami kwadratowymi [tekst]'
+          'Otaczając tekst podwójnymi gwiazdkami: **tekst**',
+          'Otaczając tekst nawiasami kwadratowymi [tekst]',
+          'Wpisując <pogrubienie>tekst</pogrubienie>'
         ],
         correctAnswer: 1,
         explanation: 'W standardzie Markdown pogrubienie tekstu uzyskujemy poprzez otoczenie go dwoma gwiazdkami z każdej strony: **ważny tekst**.'
@@ -185,12 +185,12 @@ Każda lekcja może posiadać własny **test sprawdzający wiedzę**:
         id: 'guide-create-q2',
         question: 'Czy po zapisaniu nowej lekcji można ją później modyfikować i edytować?',
         options: [
-          'Nie, lekcje są jednorazowe i nie można ich zmieniać',
           'Tak, klikając przycisk „Edytuj temat” w nagłówku, stopce lub na liście tematów',
           'Tylko jeśli usuniemy plik z dysku komputera',
-          'Tylko przez kontakt z administratorem serwera'
+          'Tylko przez kontakt z administratorem serwera',
+          'Nie, lekcje są jednorazowe i nie można ich zmieniać'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Wszystkie tematy – zarówno autorskie, jak i domyślne – można w dowolnej chwili otworzyć w edytorze, zmienić treść, dodać pytania testowe lub zaktualizować dział.'
       }
     ]
@@ -251,24 +251,24 @@ Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** znajdujący się w praw
         id: 'guide-teacher-q1',
         question: 'Do czego służy funkcja Dziennika Realizacji w Panelu Nauczyciela?',
         options: [
+          'Do automatycznego pisania notatek za uczniów',
           'Do wysyłania e-maili do dyrekcji',
           'Do ewidencjonowania dat i tematów lekcji przeprowadzonych w poszczególnych klasach',
-          'Do blokowania uczniom dostępu do Internetu',
-          'Do automatycznego pisania notatek za uczniów'
+          'Do blokowania uczniom dostępu do Internetu'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Dziennik Realizacji pozwala przypisywać ukończone tematy do poszczególnych oddziałów klasowych i śledzić ich realizację w kalendarzu dydaktycznym.'
       },
       {
         id: 'guide-teacher-q2',
         question: 'W jakiej formie Kreator Sprawdzianów przygotowuje materiały testowe?',
         options: [
-          'Tylko jako dźwięk MP3',
-          'Jako sformatowany arkusz A4 do bezpośredniego druku oraz plik PDF (wersja dla ucznia i klucz dla nauczyciela)',
+          'Jako prezentację wideo',
           'Tylko jako surowy plik tekstowy bez formatowania',
-          'Jako prezentację wideo'
+          'Tylko jako dźwięk MP3',
+          'Jako sformatowany arkusz A4 do bezpośredniego druku oraz plik PDF (wersja dla ucznia i klucz dla nauczyciela)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Kreator generuje profesjonalny, gotowy do druku arkusz testowy z nagłówkiem szkolnym, miejscem na podpis i punktację oraz osobnym kluczem odpowiedzi.'
       }
     ]
@@ -329,23 +329,23 @@ Wszystkie notatki naniesione na tablicy możesz w każdej chwili **zapisać jako
         question: 'Do czego służy funkcja Reflektora (Spotlight) w szkicowniku?',
         options: [
           'Do zmiany koloru czcionki w całym podręczniku',
-          'Do przyciemnienia tła i wyróżnienia pojedynczego fragmentu lekcji kręgiem światła',
           'Do wyłączania monitora',
+          'Do przyciemnienia tła i wyróżnienia pojedynczego fragmentu lekcji kręgiem światła',
           'Do automatycznego czytania tekstu'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Reflektor pozwala skupić wzrok klasy na kluczowym fragmencie ilustracji lub tekstu poprzez przyciemnienie pozostałej części ekranu.'
       },
       {
         id: 'guide-board-q2',
         question: 'Jakie tła są dostępne w trybie Czystej Tablicy?',
         options: [
-          'Tylko czarne tło bez opcji zmiany',
-          'Biała tablica, zielona tablica kredowa, papier w kratkę oraz papier w linie',
+          'Brak możliwości korzystania z czystej tablicy',
           'Tylko tapeta ze zdjęciem',
-          'Brak możliwości korzystania z czystej tablicy'
+          'Tylko czarne tło bez opcji zmiany',
+          'Biała tablica, zielona tablica kredowa, papier w kratkę oraz papier w linie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Multibook oferuje różnorodne tła tablicowe dopasowane do specyfiki różnych przedmiotów szkolnych (w tym kratkę i linie).'
       }
     ]
@@ -402,24 +402,24 @@ Kliknij ikonę gwiazdki **„Dodaj do zakładek”** w nagłówku aktywnej lekcj
         id: 'guide-notes-q1',
         question: 'Czy po wyjściu z aplikacji lub zamknięciu przeglądarki Twoje notatki zostaną utracone?',
         options: [
+          'Tylko jeśli klikniemy specjalny przycisk w chmurze',
           'Tak, trzeba je za każdym razem zapisywać ręcznie na pendrive',
-          'Nie, notatki zapisują się automatycznie w pamięci lokalnej i będą dostępne po ponownym otwarciu',
           'Zostaną skasowane po 10 minutach bezczynności',
-          'Tylko jeśli klikniemy specjalny przycisk w chmurze'
+          'Nie, notatki zapisują się automatycznie w pamięci lokalnej i będą dostępne po ponownym otwarciu'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'System automatycznego zapisu dba o natychmiastowe utrwalanie każdej wpisanej litery w bezpiecznej pamięci lokalnej Twojej przeglądarki.'
       },
       {
         id: 'guide-notes-q2',
         question: 'W jaki sposób możesz powiększyć ilustrację dołączoną do notatek?',
         options: [
+          'Nie można powiększać ilustracji',
           'Należy wydrukować ją na papierze',
-          'Klikając na miniaturę obrazka, co otworzy pełnoekranowy podgląd Lightbox',
           'Przez zmianę rozdzielczości ekranu w systemie Windows',
-          'Nie można powiększać ilustracji'
+          'Klikając na miniaturę obrazka, co otworzy pełnoekranowy podgląd Lightbox'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Kliknięcie w dowolny obrazek otwiera elegancki, wyśrodkowany podgląd Lightbox z możliwością powiększenia i skopiowania odnośnika.'
       }
     ]
@@ -477,22 +477,22 @@ W oknie kopii zapasowej znajduje się specjalny przycisk **„Odblokuj kompletny
         id: 'guide-backup-q1',
         question: 'Czym różni się tryb „Scalania (Merge)” od trybu „Zastąpienia (Replace)” podczas importu?',
         options: [
-          'Nie ma żadnej różnicy',
-          'Scalanie dodaje nowe tematy bez kasowania Twoich dotychczasowych lekcji, a Zastąpienie nadpisuje całą bazę',
+          'Scalanie usuwa wszystkie pytania quizowe',
           'Zastąpienie działa tylko na telefonach komórkowych',
-          'Scalanie usuwa wszystkie pytania quizowe'
+          'Nie ma żadnej różnicy',
+          'Scalanie dodaje nowe tematy bez kasowania Twoich dotychczasowych lekcji, a Zastąpienie nadpisuje całą bazę'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Tryb scalania (Merge) jest bezpieczny: dodaje brakujące lekcje i aktualizuje zmodyfikowane, nie usuwając pozostałych tematów.'
       },
       {
         id: 'guide-backup-q2',
         question: 'Czy kopię zapasową Multibooka (.json) można wgrać na innym komputerze w szkole?',
         options: [
-          'Nie, plik działa tylko na jednym urządzeniu',
+          'Tylko przez kabel USB podłączony do obu komputerów jednocześnie',
           'Tak, wystarczy przenieść plik .json i zaimportować go w przeglądarce na dowolnym komputerze',
-          'Tylko po wykupieniu specjalnej licencji',
-          'Tylko przez kabel USB podłączony do obu komputerów jednocześnie'
+          'Nie, plik działa tylko na jednym urządzeniu',
+          'Tylko po wykupieniu specjalnej licencji'
         ],
         correctAnswer: 1,
         explanation: 'Plik JSON jest w pełni przenośny – możesz łatwo przekazać swoje przygotowane lekcje kolegom z pracy lub załadować je na komputerze w klasie.'
@@ -554,12 +554,12 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
         id: 'guide-access-q1',
         question: 'W jaki sposób czcionka OpenDyslexic pomaga osobom ze specyficznymi trudnościami w czytaniu?',
         options: [
-          'Zmienia język tekstu na łacinę',
-          'Posiada pogrubione dolne krawędzie liter, co ułatwia orientację przestrzenną znaków i zapobiega ich obracaniu w percepcji wzrokowej',
+          'Zmniejsza kontrast tekstu do zera',
           'Ukrywa trudne słowa',
-          'Zmniejsza kontrast tekstu do zera'
+          'Posiada pogrubione dolne krawędzie liter, co ułatwia orientację przestrzenną znaków i zapobiega ich obracaniu w percepcji wzrokowej',
+          'Zmienia język tekstu na łacinę'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Krój OpenDyslexic wykorzystuje asymetrię i dociążenie dolnej części liter, dzięki czemu mózg łatwiej identyfikuje właściwy kierunek i kształt znaku.'
       },
       {
@@ -568,8 +568,8 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
         options: [
           'Nie, lektor zawsze czyta od początku do końca',
           'Tak, klikając ikonę głośniczka znajdującą się przy wybranym fragmencie tekstu',
-          'Tylko jeśli nagramy własny plik audio',
-          'Tylko w trybie ciemnym'
+          'Tylko w trybie ciemnym',
+          'Tylko jeśli nagramy własny plik audio'
         ],
         correctAnswer: 1,
         explanation: 'Każda sekcja i akapit posiada własny przycisk lektora, umożliwiający odsłuchanie dokładnie tego fragmentu, który aktualnie omawiamy.'
@@ -670,10 +670,10 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
         id: 'guide-terms-q1',
         question: 'Dla jakich celów aplikacja Cyfrowy Multibook Edukacyjny jest całkowicie bezpłatna?',
         options: [
-          'Tylko do celów komercyjnych w płatnych firmach',
+          'Wymaga comiesięcznej opłaty subskrypcyjnej',
           'Do darmowego użytku prywatnego oraz edukacyjnego (w szkołach, przedszkolach, uczelniach i placówkach oświatowych)',
           'Tylko przez pierwsze 7 dni okresu próbnego',
-          'Wymaga comiesięcznej opłaty subskrypcyjnej'
+          'Tylko do celów komercyjnych w płatnych firmach'
         ],
         correctAnswer: 1,
         explanation: 'Aplikacja została udostępniona całkowicie bezpłatnie do darmowego użytku prywatnego (własnego) oraz edukacyjnego (w placówkach oświatowo-wychowawczych).'
@@ -682,10 +682,10 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
         id: 'guide-terms-q2',
         question: 'Czy dane uczniów i notatki wprowadzane do programu są przesyłane na serwery zewnętrzne?',
         options: [
-          'Tak, trafiają do zagranicznej bazy danych',
+          'Tylko w weekendy',
           'Nie, wszystkie dane są przechowywane w 100% lokalnie w pamięci przeglądarki (localStorage) i nigdy nie opuszczają urządzenia użytkownika',
           'Są wysyłane pocztą e-mail do producenta',
-          'Tylko w weekendy'
+          'Tak, trafiają do zagranicznej bazy danych'
         ],
         correctAnswer: 1,
         explanation: 'Aplikacja działa w trybie pełnego poszanowania prywatności (RODO offline) – wszelkie dane pozostają wyłącznie na Twoim urządzeniu.'
@@ -788,23 +788,23 @@ W sprawach nieuregulowanych niniejszą licencją zastosowanie mają przepisy pra
         question: 'Co oznacza skrót WLPE w licencji oprogramowania Multibooka?',
         options: [
           'Wirtualna Licencja Płatna Elektronicznie',
-          'Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona)',
+          'Wstępna Licencja Programisty Edukatora',
           'Wielomodułowa Licencja Przedsiębiorstwa Europejskiego',
-          'Wstępna Licencja Programisty Edukatora'
+          'Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'WLPE to Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona), gwarantująca bezpłatny użytek prywatny i edukacyjny przy ochronie praw autorskich.'
       },
       {
         id: 'guide-lic-q2',
         question: 'Czy wolno sprzedawać program lub pobierać opłaty za jego udostępnianie bez pisemnej zgody Autora?',
         options: [
+          'Tylko w szkołach niepublicznych',
           'Tak, każdy może sprzedawać program w internecie',
           'Nie, jakakolwiek sprzedaż, komercjalizacja, pobieranie opłat czy usuwanie oznaczeń autorskich jest surowo zabronione',
-          'Tylko jeśli zmienimy kolory interfejsu',
-          'Tylko w szkołach niepublicznych'
+          'Tylko jeśli zmienimy kolory interfejsu'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Licencja WLPE zabrania jakiejkolwiek komercjalizacji, redystrybucji za opłatą, usuwania oznaczeń autorskich czy tworzenia nieautoryzowanych kopii.'
       }
     ]
@@ -817,6 +817,7 @@ W sprawach nieuregulowanych niniejszą licencją zastosowanie mają przepisy pra
     grade: 'Klasa 1',
     chapterGroup: 'Stworzenie świata',
     educationLevel: 'Szkoła Podstawowa (Klasy 1-3)',
+    lessonNumber: 1,
     estimatedReadTime: 3,
     isDefault: true,
     createdAt: Date.now() - 3000,
@@ -848,23 +849,23 @@ Popatrz, jak wspaniale Bóg ułożył świat dla nas krok po kroku:
         question: 'Dlaczego Pan Bóg stworzył dla nas tak wspaniały i piękny świat?',
         options: [
           'Zrobił to przez przypadek',
-          'Z wielkiej miłości do każdego z nas',
           'Zrobił to dla zabawy',
+          'Z wielkiej miłości do każdego z nas',
           'Chciał sprawdzić nasze siły'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Pan Bóg stworzył świat, ponieważ kocha każdego z nas i chciał podarować nam piękny dom pełen darów natury do radosnego życia.'
       },
       {
         id: 'rel-q2',
         question: 'W jaki sposób dziecko w klasie 1 może podziękować Bogu i dbać o Jego stworzenie?',
         options: [
-          'Niszcząc drzewa i rzucając śmieci na ziemię',
-          'Ignorując przyrodę wokół siebie',
           'Modląc się z wdzięcznością oraz troszcząc się o zwierzęta i rośliny',
+          'Ignorując przyrodę wokół siebie',
+          'Niszcząc drzewa i rzucając śmieci na ziemię',
           'Bojąc się wszystkiego, co na świecie'
         ],
-        correctAnswer: 2,
+        correctAnswer: 0,
         explanation: 'Troszczenie się o zwierzątka, podlewanie kwiatów i krótka modlitwa z podziękowaniem to najpiękniejsze sposoby na szanowanie daru stworzenia.'
       }
     ]
@@ -877,6 +878,7 @@ Popatrz, jak wspaniale Bóg ułożył świat dla nas krok po kroku:
     grade: 'Klasa 7',
     chapterGroup: 'Biologia Komórki',
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
+    lessonNumber: 1,
     estimatedReadTime: 5,
     isDefault: true,
     createdAt: Date.now() - 2000,
@@ -906,8 +908,8 @@ Oto najważniejsze elementy wnętrza komórki eukariotycznej:
         id: 'bio-q1',
         question: 'Które organellum komórkowe nazywamy „elektrownią komórki”?',
         options: [
-          'Jądro komórkowe',
           'Siatka śródplazmatyczna',
+          'Jądro komórkowe',
           'Mitochondrium',
           'Wakuola'
         ],
@@ -920,10 +922,10 @@ Oto najważniejsze elementy wnętrza komórki eukariotycznej:
         options: [
           'Produkcja białek na zewnątrz komórki',
           'Przechowywanie wody i soli mineralnych',
-          'Sterowanie życiem komórki i przechowywanie DNA',
-          'Izolowanie komórki przed zimnem'
+          'Izolowanie komórki przed zimnem',
+          'Sterowanie życiem komórki i przechowywanie DNA'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Jądro komórkowe koordynuje wszystkie aktywności komórki, replikację DNA, podziały oraz syntezę białek poprzez instrukcje RNA.'
       }
     ]
@@ -936,6 +938,7 @@ Oto najważniejsze elementy wnętrza komórki eukariotycznej:
     grade: 'Klasa 8',
     chapterGroup: 'Układ Słoneczny',
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
+    lessonNumber: 1,
     estimatedReadTime: 4,
     isDefault: true,
     createdAt: Date.now() - 1000,
@@ -966,10 +969,10 @@ Characterystyczna rdzawo-czerwona barwa planety wynika z obecności **tlenku że
         id: 'space-q1',
         question: 'Skąd bierze się czerwona barwa powierzchni Marsa?',
         options: [
-          'Z gigantycznych pożarów lasów marsjańskich',
           'Z obecności obfitych złóż miedzi',
+          'Z odbicia światła od pobliskiego Słońca',
           'Z obfitości tlenku żelaza(III) - potocznie rdzy - pokrywającej planetę',
-          'Z odbicia światła od pobliskiego Słońca'
+          'Z gigantycznych pożarów lasów marsjańskich'
         ],
         correctAnswer: 2,
         explanation: 'Powierzchnia Marsa jest pokryta drobnym pyłem bogatym w tlenki żelaza, czyli pospolitą rdzę, co nadaje planecie krwistoczerwony kolor.'
@@ -1074,12 +1077,12 @@ Ułóż modlitwę dziękczynną za dar Bożej miłości w Twoim życiu codzienny
         id: 'rel8-1-q2',
         question: 'Kto w przypowieści o krzewie winnym i latoroślach jest krzewem winnym?',
         options: [
-          'Apostołowie i uczniowie',
-          'Jezus Chrystus',
           'Ludzie świeccy i kapłani',
-          'Aniołowie w niebie'
+          'Apostołowie i uczniowie',
+          'Aniołowie w niebie',
+          'Jezus Chrystus'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus wyraźnie mówi: „Ja jestem krzewem winnym, wy — latoroślami.” Bez trwania w Nim człowiek nie może przynieść owocu.'
       }
     ]
@@ -1157,22 +1160,22 @@ Napisz krótki tekst o tym, do czego zobowiązuje Cię przyjęcie sakramentu bie
         id: 'rel8-23-q1',
         question: 'Kto w Kościele katolickim jest zwyczajnym szafarzem sakramentu bierzmowania?',
         options: [
+          'Proboszcz lub wikariusz w nagłych wypadkach',
           'Dowolny katecheta świecki',
           'Biskup (jako następca Apostołów)',
-          'Diakon pełniący służbę liturgiczną',
-          'Proboszcz lub wikariusz w nagłych wypadkach'
+          'Diakon pełniący służbę liturgiczną'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Zwyczajnym szafarzem bierzmowania jest biskup, co podkreśla łączność tego sakramentu z pierwszym wylaniem Ducha Świętego w Dniu Pięćdziesiątnicy.'
       },
       {
         id: 'rel8-23-q2',
         question: 'Jak nazywa się uroczysty dzień, w którym Apostołowie zostali napełnieni Duchem Świętym?',
         options: [
-          'Dzień Pański (Niedziela)',
+          'Uroczystość Objawienia Pańskiego',
           'Wniebowstąpienie Pańskie',
           'Dzień Pięćdziesiątnicy (Zielone Świątki)',
-          'Uroczystość Objawienia Pańskiego'
+          'Dzień Pański (Niedziela)'
         ],
         correctAnswer: 2,
         explanation: 'Apostołowie zostali napełnieni Duchem Świętym w Dniu Pięćdziesiątnicy, który upamiętnia wylanie Ducha Świętego na rodzący się Kościół.'
@@ -1266,11 +1269,11 @@ Naucz się hymnu: „O Stworzycielu Duchu, przyjdź” lub napisz rozważanie na
         question: 'Która liczba tradycyjnie symbolizuje pełnię darów Ducha Świętego?',
         options: [
           '3 - Trójca Święta',
-          '7 - Siedem Darów',
           '10 - Przykazania Boże',
-          '12 - Apostołowie'
+          '12 - Apostołowie',
+          '7 - Siedem Darów'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Tradycja Kościoła oraz Pismo Święte (por. Iz 11,1-2) wymieniają siedem darów Ducha Świętego, co symbolizuje ich duchową pełnię.'
       },
       {
@@ -1278,11 +1281,11 @@ Naucz się hymnu: „O Stworzycielu Duchu, przyjdź” lub napisz rozważanie na
         question: 'Co to jest charyzmat zgodnie ze słownikiem słów kluczowych?',
         options: [
           'Specjalne pozwolenie na głoszenie kazań',
-          'Nadzwyczajny dar Ducha Świętego udzielony dla dobra wspólnoty',
+          'Nazwa stopnia naukowego z teologii',
           'Złote naczynie liturgiczne używane w kościele',
-          'Nazwa stopnia naukowego z teologii'
+          'Nadzwyczajny dar Ducha Świętego udzielony dla dobra wspólnoty'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Charyzmaty to nadzwyczajne, darmowe dary Ducha Świętego, które służą budowaniu całej wspólnoty Kościoła, a nie tylko osobie obdarowanej.'
       }
     ]
@@ -1359,22 +1362,22 @@ Uzasadnij krótko w zeszycie, dlaczego bł. Hannę Chrzanowską nazywa się „M
         id: 'rel8-27-q1',
         question: 'W którym roku i gdzie została ogłoszona błogosławioną Hanna Chrzanowska?',
         options: [
-          'W 1973 roku w Rzymie przez papieża Pawła VI',
           'W 2018 roku w Sanktuarium Bożego Miłosierdzia w Krakowie-Łagiewnikach',
-          'W 2005 roku w Warszawie przez papieża Benedykta XVI',
-          'W 2023 roku w Radomiu przez biskupa diecezjalnego'
+          'W 2023 roku w Radomiu przez biskupa diecezjalnego',
+          'W 1973 roku w Rzymie przez papieża Pawła VI',
+          'W 2005 roku w Warszawie przez papieża Benedykta XVI'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Hanna Chrzanowska została beatyfikowana 28 kwietnia 2018 roku w Sanktuarium Bożego Miłosierdzia w Krakowie-Łagiewnikach.'
       },
       {
         id: 'rel8-27-q2',
         question: 'Jakim mianem określa się bł. Hannę Chrzanowską ze względu na jej niezwykłą opiekę nad chorymi?',
         options: [
-          'Apostołka Trędowatych',
+          'Święta Pielęgniarka z Warszawy',
           'Matka Teresa z Krakowa',
-          'Opiekunka Rodzin Katolickich',
-          'Święta Pielęgniarka z Warszawy'
+          'Apostołka Trędowatych',
+          'Opiekunka Rodzin Katolickich'
         ],
         correctAnswer: 1,
         explanation: 'Dzięki swojemu bezgranicznemu poświęceniu dla chorych i najuboższych zyskała zaszczytne miano „Matki Teresy z Krakowa”.'
@@ -1449,12 +1452,12 @@ Napisz krótki dekalog czuwania, jak dziś powinno wyglądać adwentowe oczekiwa
         id: 'rel8-56-q1',
         question: 'Z jakiego języka wywodzi się słowo "Adwent" i co ono oznacza?',
         options: [
-          'Z greki i oznacza podziękowanie',
-          'Z łaciny i oznacza przyjście',
           'Z języka hebrajskiego i oznacza zbawiciel',
-          'Z łaciny i oznacza czuwanie sumienia'
+          'Z łaciny i oznacza czuwanie sumienia',
+          'Z łaciny i oznacza przyjście',
+          'Z greki i oznacza podziękowanie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Słowo „Adwent” pochodzi z łacińskiego słowa „adventus”, które dosłownie oznacza „przyjście”.'
       },
       {
@@ -1462,11 +1465,11 @@ Napisz krótki dekalog czuwania, jak dziś powinno wyglądać adwentowe oczekiwa
         question: 'Kogo św. Jan Paweł II podaje jako wzór w swojej definicji słowa „czuwam”?',
         options: [
           'Człowieka o bogatych talentach',
-          'Człowieka sumienia, dbającego o dobro bliźnich',
           'Osobę, która nigdy nie śpi',
-          'Uczonego badającego Biblię'
+          'Uczonego badającego Biblię',
+          'Człowieka sumienia, dbającego o dobro bliźnich'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Papież Jan Paweł II wyjaśniał: „Czuwam — to znaczy, że staram się być człowiekiem sumienia. Że tego sumienia nie zagłuszam...”'
       }
     ]
@@ -1545,9 +1548,9 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
         question: 'Które sakramenty zostały ustanowione w Wielki Czwartek podczas Ostatniej Wieczerzy?',
         options: [
           'Chrzest św. i Bierzmowanie',
-          'Pokuta (spowiedź) i Namaszczenie Chorych',
+          'Małżeństwo i Chrzest',
           'Eucharystia (Najświętszy Sakrament) i Kapłaństwo',
-          'Małżeństwo i Chrzest'
+          'Pokuta (spowiedź) i Namaszczenie Chorych'
         ],
         correctAnswer: 2,
         explanation: 'Podczas Ostatniej Wieczerzy w Wielki Czwartek Pan Jezus ustanowił sakramenty Eucharystii oraz Kapłaństwa.'
@@ -1556,9 +1559,9 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
         id: 'rel8-61-q2',
         question: 'Która liturgia stanowi szczyt i centrum całego roku liturgicznego?',
         options: [
-          'Droga Krzyżowa w Wielki Piątek rano',
-          'Liturgia Wigilii Paschalnej celebrowana w Wielką Sobotę wieczorem',
           'Pasterka w noc Bożego Narodzenia',
+          'Liturgia Wigilii Paschalnej celebrowana w Wielką Sobotę wieczorem',
+          'Droga Krzyżowa w Wielki Piątek rano',
           'Nabożeństwo Gorzkich Żali'
         ],
         correctAnswer: 1,
@@ -1568,10 +1571,12 @@ Ułóż krótkie wezwanie modlitewne o głębokie i owocne przeżycie sakramenta
   }
 ];
 
-export const DEFAULT_CHAPTERS: Chapter[] = BASE_CHAPTERS.filter((c) => c.subject !== 'Religia');
+export const DEFAULT_CHAPTERS: Chapter[] = BASE_CHAPTERS.filter(
+  (c) => !c.id.startsWith('religia-8-')
+);
 
 export const ALL_RELIGIA_CHAPTERS: Chapter[] = [
-  ...BASE_CHAPTERS.filter((c) => c.subject === 'Religia'),
+  ...BASE_CHAPTERS.filter((c) => c.id.startsWith('religia-8-')),
   ...RELIGIA_1_CHAPTERS_PART1,
   ...RELIGIA_1_CHAPTERS_PART2,
   ...RELIGIA_1_CHAPTERS_PART3,

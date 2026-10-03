@@ -66,24 +66,24 @@ W spowiedzi wyznajemy swoje grzechy przed kapłanem, a w imieniu Pana Jezusa otr
         id: 'r3-l29-q1',
         question: 'Do czego Pan Jezus porównał radość aniołów w niebie z powrotu grzesznika?',
         options: [
-          'Do radości kobiety, która po starannym poszukiwaniu odnalazła zgubioną drachmę',
           'Do budowy nowego domu',
           'Do wyprawy w daleką podróż',
-          'Do zbierania owoców w ogrodzie'
+          'Do zbierania owoców w ogrodzie',
+          'Do radości kobiety, która po starannym poszukiwaniu odnalazła zgubioną drachmę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus pouczył, że wielka radość panuje w niebie u Aniołów z powodu każdego grzesznika, który się nawraca (Łk 15,10).'
       },
       {
         id: 'r3-l29-q2',
         question: 'Co otrzymujemy w sakramencie pokuty i pojednania?',
         options: [
-          'Przebaczenie grzechów, łaskę uświęcającą i czyste serce',
           'Tylko pamiątkową kartkę',
           'Nagrodę w postaci słodyczy',
-          'Nowe ubranie na niedzielę'
+          'Nowe ubranie na niedzielę',
+          'Przebaczenie grzechów, łaskę uświęcającą i czyste serce'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Sakrament pokuty zmywa winy, jednając nas z Bogiem i Kościołem oraz napełniając łaską uświęcającą.'
       }
     ]
@@ -145,24 +145,24 @@ Przystępując do spowiedzi i Komunii Świętej w pierwsze piątki miesiąca, od
         id: 'r3-l30-q1',
         question: 'Komu Pan Jezus objawił nabożeństwo do swojego Najświętszego Serca we Francji w XVII wieku?',
         options: [
-          'Świętej Małgorzacie Marii Alacoque',
-          'Świętej Teresie od Dzieciątka Jezus',
           'Świętej Faustynie Kowalskiej',
-          'Świętej Bernadecie'
+          'Świętej Teresie od Dzieciątka Jezus',
+          'Świętej Bernadecie',
+          'Świętej Małgorzacie Marii Alacoque'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus objawił swoje Serce św. Małgorzacie Marii Alacoque, prosząc o czczenie Jego Serca i nabożeństwo pierwszych piątków.'
       },
       {
         id: 'r3-l30-q2',
         question: 'Co jest warunkiem przeżycia nabożeństwa pierwszych piątków miesiąca?',
         options: [
-          'Stan łaski uświęcającej i przyjęcie Komunii Świętej w intencji wynagradzającej',
           'Odpowiedź na pytania z katechizmu',
+          'Przeczytanie całej Biblii',
           'Złożenie ofiary pieniężnej',
-          'Przeczytanie całej Biblii'
+          'Stan łaski uświęcającej i przyjęcie Komunii Świętej w intencji wynagradzającej'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Najważniejsze jest przyjęcie Komunii Świętej w stanie łaski uświęcającej w pierwsze piątki miesiąca na cześć Serca Jezusowego.'
       }
     ]
@@ -244,9 +244,9 @@ Wypełniając przykazania Boże, okazujemy miłość Bogu oraz szacunek rodzicom
         question: 'Gdzie i komu Bóg przekazał Dziesięć Przykazań Bożych (Dekalog)?',
         options: [
           'Mojżeszowi na Górze Synaj',
-          'Abrahamowi w Betlejem',
+          'Piotrowi nad Jeziorem Galilejskim',
           'Apostołom w Wieczerniku',
-          'Piotrowi nad Jeziorem Galilejskim'
+          'Abrahamowi w Betlejem'
         ],
         correctAnswer: 0,
         explanation: 'Bóg objawił Dekalog Mojżeszowi na Górze Synaj jako zasady Przymierza z ludem wybranym.'
@@ -256,8 +256,8 @@ Wypełniając przykazania Boże, okazujemy miłość Bogu oraz szacunek rodzicom
         question: 'Czego dotyczą pierwsze trzy przykazania Dekalogu?',
         options: [
           'Miłości i czci wobec Pana Boga',
-          'Miłości do bliźnich i sąsiadów',
           'Ochrony przyrody',
+          'Miłości do bliźnich i sąsiadów',
           'Obowiązków szkolnych'
         ],
         correctAnswer: 0,
@@ -333,12 +333,12 @@ Części Liturgii Słowa:
         id: 'r3-l44-q1',
         question: 'Jak nazywa się miejsce w kościele, z którego czytane jest Słowo Boże (zwane Stołem Słowa Bożego)?',
         options: [
-          'Ambona',
-          'Ołtarz główny',
+          'Kruchta',
           'Zakrystia',
-          'Kruchta'
+          'Ambona',
+          'Ołtarz główny'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Ambona to wyznaczone miejsce w prezbiterium służące do czytania czytań, Ewangelii oraz głoszenia homilii.'
       },
       {
@@ -346,9 +346,9 @@ Części Liturgii Słowa:
         question: 'W jakiej postawie ciała wysłuchujemy czytania Ewangelii podczas Mszy Świętej?',
         options: [
           'W postawie stojącej na znak szacunku dla Słowa Chrystusa',
-          'Siedząc w ławce',
           'Klęcząc na obu kolanach',
-          'W postawie leżącej'
+          'W postawie leżącej',
+          'Siedząc w ławce'
         ],
         correctAnswer: 0,
         explanation: 'Podczas czytania Ewangelii wszyscy wierni stoją, okazując gotowość i szacunek dla przychodzącego w Słowie Chrystusa.'
@@ -421,9 +421,9 @@ W ten sposób Jezus ustanowił sakrament **Eucharystii** oraz sakrament **Kapła
         question: 'Kiedy i gdzie Pan Jezus ustanowił Sakrament Eucharystii i Kapłaństwa?',
         options: [
           'W Wielki Czwartek podczas Ostatniej Wieczerzy w Wieczerniku',
+          'W Niedzielę Zmartwychwstania nad jeziorem',
           'W Niedzielę Palmową w świątyni',
-          'W Wielki Piątek pod krzyżem',
-          'W Niedzielę Zmartwychwstania nad jeziorem'
+          'W Wielki Piątek pod krzyżem'
         ],
         correctAnswer: 0,
         explanation: 'Jezus ustanowił Eucharystię i Kapłaństwo w wieczór Wielkiego Czwartku w Wieczerniku.'
@@ -433,8 +433,8 @@ W ten sposób Jezus ustanowił sakrament **Eucharystii** oraz sakrament **Kapła
         question: 'Jakie dwa sakramenty zostały ustanowione podczas Ostatniej Wieczerzy?',
         options: [
           'Eucharystia i Kapłaństwo',
-          'Chrzest i Bierzmowanie',
           'Małżeństwo i Pokuta',
+          'Chrzest i Bierzmowanie',
           'Namaszczenie Chorych i Chrzest'
         ],
         correctAnswer: 0,
@@ -504,24 +504,24 @@ Ofiara Mszy Świętej jest **tą samą ofiarą**, którą Jezus złożył na krz
         id: 'r3-l47-q1',
         question: 'Jaka jest najdoskonalsza ofiara złożona Bogu w historii świata?',
         options: [
-          'Ofiara Pana Jezusa złożona z samego siebie na krzyżu Golgoty',
-          'Ofiara ze złota i srebra',
+          'Ofiara z plonów rolnych',
           'Ofiara ze zwierząt w Starym Testamencie',
-          'Ofiara z plonów rolnych'
+          'Ofiara ze złota i srebra',
+          'Ofiara Pana Jezusa złożona z samego siebie na krzyżu Golgoty'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus złożył sam siebie w ofierze Ojcu z miłości do nas, co jest jedyną i najdoskonalszą ofiarą zbawczą.'
       },
       {
         id: 'r3-l47-q2',
         question: 'Co Jezus wyjednał dla nas przez swoją mękę, śmierć i zmartwychwstanie?',
         options: [
-          'Odpuszczenie grzechów, łaskę i życie wieczne w niebie',
-          'Ziemskie bogactwa i królestwo polityczne',
           'Zwolnienie z nauki w szkole',
+          'Ziemskie bogactwa i królestwo polityczne',
+          'Odpuszczenie grzechów, łaskę i życie wieczne w niebie',
           'Sławę wśród narodów'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Ofiara Chrystusa otworzyła ludziom niebo, gładząc grzechy i obdarzając życiem wiecznym.'
       }
     ]
@@ -585,12 +585,12 @@ Podczas każdej Mszy Świętej następuje cud **Przeistoczenia**. Gdy kapłan wy
         id: 'r3-l48-q1',
         question: 'Jak nazywamy najważniejszy moment Mszy Świętej, w którym chleb i wino stają się Ciałem i Krwią Chrystusa?',
         options: [
+          'Kolektą',
           'Przeistoczeniem',
           'Aktem pokuty',
-          'Dziękczynieniem',
-          'Kolektą'
+          'Dziękczynieniem'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Przeistoczenie to centralny moment Liturgii Eucharystycznej, w którym uobecnia się Prawdziwe Ciało i Krew Pana.'
       },
       {
@@ -599,8 +599,8 @@ Podczas każdej Mszy Świętej następuje cud **Przeistoczenia**. Gdy kapłan wy
         options: [
           'Gdy zajął z nimi miejsce u stołu, wziął chleb, błogosławił go i łamał',
           'Gdy szli ścieżką w pyle',
-          'Gdy wszedł do miasta',
-          'Gdy pokazał im monety'
+          'Gdy pokazał im monety',
+          'Gdy wszedł do miasta'
         ],
         correctAnswer: 0,
         explanation: 'Oczy uczniów otworzyły się i poznali Go dokładnie podczas błogosławienia i łamania chleba.'
@@ -670,24 +670,24 @@ Warunki godnego przyjęcia Komunii Świętej:
         id: 'r3-l51-q1',
         question: 'Kogo słowa powtarzamy tuż przed przyjęciem Komunii Świętej: „Panie, nie jestem godzien...”?',
         options: [
-          'Setnika z Kafarnaum',
-          'Piotra Apostoła',
           'Króla Dawida',
+          'Piotra Apostoła',
+          'Setnika z Kafarnaum',
           'Świętego Józefa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Powtarzamy słowa pokornego i pełnego wiary setnika rzymskiego z Kafarnaum.'
       },
       {
         id: 'r3-l51-q2',
         question: 'Co jest koniecznym warunkiem czystości serca do przyjęcia Komunii Świętej?',
         options: [
-          'Stan łaski uświęcającej (brak grzechu ciężkiego na sumieniu)',
+          'Uchwalenie zasad nauki',
           'Ukończenie szkoły podstawowej',
-          'Złożenie obietnicy podróży',
-          'Uchwalenie zasad nauki'
+          'Stan łaski uświęcającej (brak grzechu ciężkiego na sumieniu)',
+          'Złożenie obietnicy podróży'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Do godnego przyjęcia Komunii Świętej niezbędne jest czyste serce w stanie łaski uświęcającej.'
       }
     ]
@@ -767,8 +767,8 @@ Gdy przyjmujemy Komunię Świętą:
         question: 'Co Pan Jezus obiecał w Ewangelii wg św. Jana każdemu, kto spożywa Chleb Żywy?',
         options: [
           'Że będzie żył na wieki',
-          'Doczesne bogactwo',
           'Sławę i zaszczyty',
+          'Doczesne bogactwo',
           'Brak trudności w szkole'
         ],
         correctAnswer: 0,
@@ -778,12 +778,12 @@ Gdy przyjmujemy Komunię Świętą:
         id: 'r3-l52-q2',
         question: 'Co jest Chlebem Żywym karmiącym naszą duszę?',
         options: [
-          'Prawdziwe Ciało Pana Jezusa przyjmowane w Komunii Świętej',
-          'Zwykły chleb pszenny ze sklepu',
           'Owoce zebrane w sadzie',
-          'Symboliczna pamiątka'
+          'Symboliczna pamiątka',
+          'Zwykły chleb pszenny ze sklepu',
+          'Prawdziwe Ciało Pana Jezusa przyjmowane w Komunii Świętej'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'W Komunii Świętej pod postacią chleba przyjmujemy samego żywego i prawdziwego Chrystusa.'
       }
     ]
@@ -859,8 +859,8 @@ Słowa „Idźcie w pokoju Chrystusa” oznaczają, że mamy nieść miłość i
         question: 'W czyje imię kapłan udziela nam błogosławieństwa na zakończenie Mszy Świętej?',
         options: [
           'W imię Trójcy Przenajświętszej: Ojca i Syna, i Ducha Świętego',
-          'W imię królów ziemskich',
           'W imię parafian',
+          'W imię królów ziemskich',
           'W imię aniołów'
         ],
         correctAnswer: 0,
@@ -870,12 +870,12 @@ Słowa „Idźcie w pokoju Chrystusa” oznaczają, że mamy nieść miłość i
         id: 'r3-l55-q2',
         question: 'Co odpowiadamy kapłanowi na słowa rozesłania: „Idźcie w pokoju Chrystusa”?',
         options: [
-          '„Bogu niech będą dzięki”',
+          '„Więcej grzechów nie pamiętam”',
           '„I z duchem twoim”',
-          '„Amen”',
-          '„Więcej grzechów nie pamiętam”'
+          '„Bogu niech będą dzięki”',
+          '„Amen”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Nasza odpowiedź to radosne dziękczynienie słowami: „Bogu niech będą dzięki”.'
       }
     ]
@@ -950,12 +950,12 @@ Przez modlitwę, roratnie postawienia i dobre uczynki przygotowujemy serca na pr
         id: 'r3-l57-q1',
         question: 'Czym jest Adwent w Kościele katolickim?',
         options: [
-          'Czasem radosnego oczekiwania na Narodzenie Pańskie i powtórne przyjście Chrystusa',
           'Okresem wielkiego smutku i postu',
-          'Czasem odpoczynku wakacyjnego',
-          'Zwykłym miesiącem zimowym'
+          'Zwykłym miesiącem zimowym',
+          'Czasem radosnego oczekiwania na Narodzenie Pańskie i powtórne przyjście Chrystusa',
+          'Czasem odpoczynku wakacyjnego'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Adwent to radosny czas czuwania i przygotowania serc na Narodzenie Chrystusa.'
       },
       {
@@ -963,9 +963,9 @@ Przez modlitwę, roratnie postawienia i dobre uczynki przygotowujemy serca na pr
         question: 'Co symbolizuje ozdobna świeca zwana Roratką zapalana podczas Mszy roratnich?',
         options: [
           'Najświętszą Maryję Pannę będącą wzorem oczekiwania na Zbawiciela',
+          'Pasterzy w Betlejem',
           'Archanioła Gabriela',
-          'Świętego Mikołaja',
-          'Pasterzy w Betlejem'
+          'Świętego Mikołaja'
         ],
         correctAnswer: 0,
         explanation: 'Roratka symbolizuje Maryję, która przyjęła Słowo Boże i jest Jutrzenką zapowiadającą przyjście Słońca – Chrystusa.'
@@ -1038,24 +1038,24 @@ Wielki Post to czas nawrócenia – stawania się lepszym człowiekiem i zbliża
         id: 'r3-l59-q1',
         question: 'W jaki dzień rozpoczyna się okres Wielkiego Postu w Kościele?',
         options: [
-          'W Środę Popielcową',
           'W Niedzielę Palmową',
-          'W Wielki Czwartek',
-          'W Niedzielę Zmartwychwstania'
+          'W Środę Popielcową',
+          'W Niedzielę Zmartwychwstania',
+          'W Wielki Czwartek'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Wielki Post rozpoczyna się w Środę Popielcową gestem posypania głów popiołem na znak pokuty.'
       },
       {
         id: 'r3-l59-q2',
         question: 'Jakie są dwa główne nabożeństwa wielkopostne rozważające Mękę Pańską?',
         options: [
-          'Droga Krzyżowa i Gorzkie Żale',
-          'Roraty i Majowe',
+          'Anioł Pański i Godzinki',
           'Nieszpory i Różaniec',
-          'Anioł Pański i Godzinki'
+          'Droga Krzyżowa i Gorzkie Żale',
+          'Roraty i Majowe'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'W Wielkim Poście uczestniczymy w Drogi Krzyżowej oraz w śpiewie Gorzkich Żali.'
       }
     ]
@@ -1121,12 +1121,12 @@ Zatrzymujemy się przy **czterech ołtarzach**, gdzie czytane są cztery fragmen
         id: 'r3-l60-q1',
         question: 'Kogo czcimy w procesji podczas uroczystości Bożego Ciała?',
         options: [
-          'Obecnego w Najświętszym Sakramencie żywego Pana Jezusa',
-          'Sławnych postaci historycznych',
+          'Patronów miast',
           'Aniołów Stróżów',
-          'Patronów miast'
+          'Obecnego w Najświętszym Sakramencie żywego Pana Jezusa',
+          'Sławnych postaci historycznych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Boże Ciało to publiczne uwielbienie Chrystusa obecnego pod postacią Chleba Eucharystycznego.'
       },
       {
@@ -1134,9 +1134,9 @@ Zatrzymujemy się przy **czterech ołtarzach**, gdzie czytane są cztery fragmen
         question: 'Przy ilu ołtarzach zatrzymuje się procesja Bożego Ciała, aby słuchać Ewangelii?',
         options: [
           'Przy 4 ołtarzach',
+          'Przy 7 ołtarzach',
           'Przy 2 ołtarzach',
-          'Przy 12 ołtarzach',
-          'Przy 7 ołtarzach'
+          'Przy 12 ołtarzach'
         ],
         correctAnswer: 0,
         explanation: 'Procesja zatrzymuje się przy 4 ołtarzach symbolizujących cztery strony świata i cztery Ewangelie.'

@@ -60,24 +60,24 @@ Kochać bliźniego to znaczy być życzliwym, pomagać chorym i słabym, dzieli�
         id: 'r1-l12-q1',
         question: 'Kto jest naszym bliźnim według nauki Pana Jezusa?',
         options: [
-          'Każdy człowiek, którego spotykamy na naszej drodze',
+          'Tylko mieszkańcy naszego miasta',
           'Tylko nasi najbliżsi koledzy z ławki',
           'Tylko ludzie bogaci',
-          'Tylko mieszkańcy naszego miasta'
+          'Każdy człowiek, którego spotykamy na naszej drodze'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Bliźnim jest każdy człowiek bez wyjątku, potrzebujący miłości i szacunku.'
       },
       {
         id: 'r1-l12-q2',
         question: 'Jak brzmi druga część Przykazania Miłości z Ewangeliig Łukasza?',
         options: [
-          '„...a swego bliźniego, jak siebie samego”',
-          '„...a bliźniego unikaj”',
           '„...i nie pomagaj nikomu”',
-          '„...i zyskuj jak najwięcej zabawek”'
+          '„...a bliźniego unikaj”',
+          '„...i zyskuj jak najwięcej zabawek”',
+          '„...a swego bliźniego, jak siebie samego”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus nakazuje miłować bliźniego jak siebie samego.'
       }
     ]
@@ -145,12 +145,12 @@ W Biblii odnajdujemy historię stworzenia świata, opowieści o prorokach, a prz
         id: 'r1-l15-q1',
         question: 'Czym jest Pismo Święte (Biblia)?',
         options: [
+          'Słownikiem ortograficznym',
           'Świętą Księgą, w której zawarte jest słowo Boga skierowane do ludzi',
-          'Zbiorem dawnych baśni i bajek',
           'Podręcznikiem do historii geograficznej',
-          'Słownikiem ortograficznym'
+          'Zbiorem dawnych baśni i bajek'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Biblia to Święta Księga napisana pod natchnieniem Ducha Świętego zawierająca Słowo Boże.'
       },
       {
@@ -158,9 +158,9 @@ W Biblii odnajdujemy historię stworzenia świata, opowieści o prorokach, a prz
         question: 'Co powiedział Pan Jezus o swoim Słowie w Ewangelii wg św. Łukasza?',
         options: [
           '„Niebo i ziemia przeminą, ale moje słowa nie przeminą”',
-          'Mądrość ludzka szybko zniknie',
+          'Pismo Święte należy czytać tylko rzadko',
           'Słowa są bez znaczenia',
-          'Pismo Święte należy czytać tylko rzadko'
+          'Mądrość ludzka szybko zniknie'
         ],
         correctAnswer: 0,
         explanation: 'Jezus zapewnił o wiecznej trwałości i prawdzie swojego słowa.'
@@ -226,24 +226,24 @@ W niedzielę Pan Jezus zmartwychwstał, dlatego gromadzimy się w kościele na M
         id: 'r1-l18-q1',
         question: 'Jak brzmi III Przykazanie Boże dotyczące Dnia Pańskiego?',
         options: [
-          'Pamiętaj, abyś dzień święty święcił.',
           'Czcij ojca swego i matkę swoją.',
           'Nie zabijaj.',
-          'Nie będziesz brał imienia Pana Boga na darmo.'
+          'Nie będziesz brał imienia Pana Boga na darmo.',
+          'Pamiętaj, abyś dzień święty święcił.'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Trzecie przykazanie Dekalogu wzywa do uświęcania niedzieli poprzez udział we Mszy św. i odpoczynek.'
       },
       {
         id: 'r1-l18-q2',
         question: 'Dlaczego niedziela jest najważniejszym dniem tygodnia dla chrześcijan?',
         options: [
-          'Bo jest pamiątką Zmartwychwstania Pana Jezusa',
-          'Bo sklepy są zamknięte',
+          'Bo to zwykły dzień tygodnia',
           'Bo zaczynają się bajki',
-          'Bo to zwykły dzień tygodnia'
+          'Bo sklepy są zamknięte',
+          'Bo jest pamiątką Zmartwychwstania Pana Jezusa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Niedziela jest Dniem Pańskim, w którym cieszymy się ze Zmartwychwstania Chrystusa.'
       }
     ]
@@ -306,24 +306,24 @@ Bóg kocha nas nawet wtedy, gdy zrobimy coś złego, i cieszy się, kiedy przepr
         id: 'r1-l19-q1',
         question: 'Kim jest Bóg ukazany nam przez Pana Jezusa?',
         options: [
-          'Miłosiernym i kochanym Ojcem, który przebacza skruszonym',
           'Surowym sędzią bez litości',
+          'Miłosiernym i kochanym Ojcem, który przebacza skruszonym',
           'Obojętnym obserwatorem',
           'Królem ukrytym w pałacu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus objawia Boga jako kochającego, Miłosiernego Ojca przebaczającego nasze winy.'
       },
       {
         id: 'r1-l19-q2',
         question: 'Jak powinniśmy postępować wobec tych, którzy wyrządzili nam przykrość?',
         options: [
-          'Przebaczać im z serca i okazywać dobro',
-          'Pamiętać o urazie na zawsze',
           'Oddawać złem za zło',
-          'Unikać ich na zawsze'
+          'Unikać ich na zawsze',
+          'Pamiętać o urazie na zawsze',
+          'Przebaczać im z serca i okazywać dobro'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jako dzieci miłosiernego Boga uczymy się przebaczenia i dawania drugiej szansy.'
       }
     ]
@@ -386,12 +386,12 @@ Aby w rodzinie panowało szczęście, potrzebna jest miłość, cierpliwość, w
         id: 'r1-l20-q1',
         question: 'Co Pismo Święte mówi o stosunku Boga do pierwszej rodziny (Rdz 1,28a)?',
         options: [
-          '„Bóg im błogosławił”',
-          'Bóg nakazał im żyć osobo',
+          'Bóg nie interesował się nimi',
           'Bóg zganił ich',
-          'Bóg nie interesował się nimi'
+          '„Bóg im błogosławił”',
+          'Bóg nakazał im żyć osobo'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Księga Rodzaju opisuje, że Bóg pobłogosławił ludzi i ich rodzinę.'
       },
       {
@@ -399,9 +399,9 @@ Aby w rodzinie panowało szczęście, potrzebna jest miłość, cierpliwość, w
         question: 'Trzy ważne słowa pomagające w budowaniu miłości i zgody w rodzinie to:',
         options: [
           'Proszę, dziękuję, przepraszam',
-          'Daj, przynieś, kup',
           'Szybko, natychmiast, już',
-          'Cicho, odejdź, zostaw'
+          'Cicho, odejdź, zostaw',
+          'Daj, przynieś, kup'
         ],
         correctAnswer: 0,
         explanation: 'Słowa grzecznościowe: proszę, dziękuję i przepraszam budują pokój i życzliwość w domu.'
@@ -468,24 +468,24 @@ Szkoła jest miejscem, w którym spędzamy wiele czasu. Uczymy się tam pisać, 
         id: 'r1-l22-q1',
         question: 'Do czego zachęca św. Paweł wiernych w 1 List do Tesaloniczan (1 Tes 5,13b)?',
         options: [
-          'Aby otaczać się miłością i zachowywać między sobą pokój',
           'Aby rywalizować ze sobą w gniewie',
           'Aby myśleć tylko o własnych korzyściach',
-          'Aby hałasować na korytarzach'
+          'Aby hałasować na korytarzach',
+          'Aby otaczać się miłością i zachowywać między sobą pokój'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Apostoł zachęca do miłości, szacunku i zachowywania pokoju we wspólnocie.'
       },
       {
         id: 'r1-l22-q2',
         question: 'Co wnosimy do wspólnoty szkolnej według słów piosenki?',
         options: [
+          'Własne pretensje',
           'To, co każdy z nas ma w sobie najlepszego',
-          'Złe humory',
           'Gromadzony hałas',
-          'Własne pretensje'
+          'Złe humory'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Każdy z nas wnosi do grupy swoje unikalne talenty i dobroć serca.'
       }
     ]
@@ -552,9 +552,9 @@ Pan Jezus na krzyżu dał nam Maryję za naszą Matkę. Ona kocha każdego z nas
         question: 'Który anioł przyniósł Maryi radosną nowinę w Nazarecie?',
         options: [
           'Anioł Gabriel',
+          'Anioł Stróż',
           'Archanioł Michał',
-          'Archanioł Rafał',
-          'Anioł Stróż'
+          'Archanioł Rafał'
         ],
         correctAnswer: 0,
         explanation: 'Bóg posłał archanioła Gabriela do Maryi ze zwiastowaniem narodzin Syna Bożego.'
@@ -563,12 +563,12 @@ Pan Jezus na krzyżu dał nam Maryję za naszą Matkę. Ona kocha każdego z nas
         id: 'r1-l23-q2',
         question: 'Kim jest Maryja dla wszystkich chrześcijan?',
         options: [
-          'Matką Pana Jezusa i naszą najlepszą Matką w niebie',
           'Zwykłą postacią z historii',
+          'Matką Pana Jezusa i naszą najlepszą Matką w niebie',
           'Aniołem',
           'Królową ziemskiego państwa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Maryja jest Matką Bożą i Matką całego Kościoła opiekującą się nami z nieba.'
       }
     ]
@@ -632,24 +632,24 @@ Pan Jezus daje nam piękny przykład posłuszeństwa. Gdy natychmiast i bez narz
         id: 'r1-l25-q1',
         question: 'Gdzie Pan Jezus wychowywał się u boku Świętej Rodziny?',
         options: [
-          'W Nazarecie',
-          'W Rzymie',
           'W Kanie Galilejskiej',
-          'Na pustyni'
+          'W Rzymie',
+          'Na pustyni',
+          'W Nazarecie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus wzrastał w małym Nazarecie będąc posłusznym swoim rodzicom.'
       },
       {
         id: 'r1-l25-q2',
         question: 'Jak Jezus zachowywał się wobec Maryi i św. Józefa według św. Łukasza (Łk 2,51)?',
         options: [
-          'Był im poddany i posłuszny we wszystkim z miłością',
-          'Lubił sprzeczać się z nimi',
           'Unikał pomocy w domu',
-          'Odchodził sam bez pytania'
+          'Odchodził sam bez pytania',
+          'Lubił sprzeczać się z nimi',
+          'Był im poddany i posłuszny we wszystkim z miłością'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Ewangelia wskazuje na wielkie posłuszeństwo i szacunek młodego Jezusa wobec rodziców.'
       }
     ]
@@ -715,9 +715,9 @@ Jezus prosi nas, abyśmy naśladowali Go w dobroci każdego dnia. Możemy to rob
         question: 'Jakie przykazanie dał Jezus uczniom przed swoją męką?',
         options: [
           '„Abyście się wzajemnie miłowali, tak jak Ja was umiłowałem”',
-          'Zbierajcie jak najwięcej majątku',
           'Bądźcie pierwsi we wszystkich grach',
-          'Unikajcie trudnych zadań'
+          'Unikajcie trudnych zadań',
+          'Zbierajcie jak najwięcej majątku'
         ],
         correctAnswer: 0,
         explanation: 'Chrystus dał nam nowe przykazanie wzajemnej miłości i dobroci.'
@@ -726,12 +726,12 @@ Jezus prosi nas, abyśmy naśladowali Go w dobroci każdego dnia. Możemy to rob
         id: 'r1-l26-q2',
         question: 'Gdzie według piosenki możemy odnaleźć żywego Chrystusa w naszym codziennym życiu?',
         options: [
-          'W rodzinie, w kościele i w drugim człowieku',
-          'Tylko w dalekiej krainie',
+          'Nigdzie go nie ma',
           'W świecie bajek',
-          'Nigdzie go nie ma'
+          'Tylko w dalekiej krainie',
+          'W rodzinie, w kościele i w drugim człowieku'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Chrystus żyje pośród nas w naszej rodzinie, kościele i w każdym potrzebującym bliźnim.'
       }
     ]

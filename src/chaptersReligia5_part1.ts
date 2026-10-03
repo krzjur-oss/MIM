@@ -71,24 +71,24 @@ Napisz w zeszycie, co należy czynić, aby osiągnąć szczęście wieczne w nie
         id: 'rel5-1-q1',
         question: 'Co według Psalmu 119 daje człowiekowi prawdziwe szczęście i chroni go przed wstydem?',
         options: [
-          'Zdobywanie bogactw i sławy',
           'Przestrzeganie Bożych przykazań i postępowanie według Prawa Pańskiego',
+          'Brak jakichkolwiek obowiązków',
           'Podróżowanie po całym świecie',
-          'Brak jakichkolwiek obowiązków'
+          'Zdobywanie bogactw i sławy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Psalmista uczy, że prawdziwie szczęśliwi są ci, którzy postępują zgodnie z prawem Bożym i całym sercem szukają Boga.'
       },
       {
         id: 'rel5-1-q2',
         question: 'Kto według słów św. Jana Pawła II jest dla każdego człowieka „Drogą, Prawdą i Życiem”?',
         options: [
-          'Król Salomon',
-          'Jezus Chrystus',
+          'Jan Chrzciciel',
           'Mojżesz',
-          'Jan Chrzciciel'
+          'Jezus Chrystus',
+          'Król Salomon'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'W Ewangelii św. Jana Jezus sam mówi o sobie: „Ja jestem Drogą, Prawdą i Życiem”, wskazując, że nikt nie przychodzi do Ojca inaczej jak tylko przez Niego.'
       }
     ]
@@ -162,24 +162,24 @@ Napisz kilka zdań o świętym patronie, który dał wzór pięknego życia w wi
         id: 'rel5-2-q1',
         question: 'Dlaczego Piotr zaczął tonąć, gdy szedł po wodzie do Jezusa?',
         options: [
-          'Ponieważ nie umiał pływać',
-          'Przestraszył się silnego wiatru i na chwilę zwątpił',
           'Jezus go popchnął',
-          'Woda była zbyt głęboka'
+          'Woda była zbyt głęboka',
+          'Ponieważ nie umiał pływać',
+          'Przestraszył się silnego wiatru i na chwilę zwątpił'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Piotr zaczął tonąć, ponieważ na widok silnego wiatru ogarnął go lęk i jego wiara zachwiała się, za co Jezus łagodnie go upomniał.'
       },
       {
         id: 'rel5-2-q2',
         question: 'Która z trzech cnót boskich jest konieczna do zbawienia według KKK 183?',
         options: [
-          'Wiara',
-          'Sprawiedliwość',
           'Męstwo',
-          'Roztropność'
+          'Roztropność',
+          'Sprawiedliwość',
+          'Wiara'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Katechizm naucza, że wiara jest nadprzyrodzonym darem Bożym koniecznym do zbawienia.'
       }
     ]
@@ -257,10 +257,10 @@ Ułóż i zapisz w zeszycie własną krótką „złotą myśl” na temat nadzi
         id: 'rel5-3-q1',
         question: 'Jak brzmi słynne wyznanie Hioba po utracie majątku i rodziny?',
         options: [
-          '„Dlaczego mnie to spotkało, nie chcę takiego Boga!”',
+          '„Muszę szybko odrobić straty”',
           '„Dał Pan i zabrał Pan. Niech będzie imię Pańskie błogosławione!”',
           '„To wszystko wina moich przyjaciół”',
-          '„Muszę szybko odrobić straty”'
+          '„Dlaczego mnie to spotkało, nie chcę takiego Boga!”'
         ],
         correctAnswer: 1,
         explanation: 'Hiob uczy nas bezgranicznego poddania się woli Bożej i ufności, że Bóg ma plan nawet w najgłębszym cierpieniu.'
@@ -269,12 +269,12 @@ Ułóż i zapisz w zeszycie własną krótką „złotą myśl” na temat nadzi
         id: 'rel5-3-q2',
         question: 'Kiedy chrześcijanin otrzymuje dar nadprzyrodzonej nadziei?',
         options: [
-          'Dopiero po ukończeniu 18 lat',
-          'W sakramencie chrztu świętego',
+          'Gdy odniesie wielki sukces życiowy',
           'Po przeczytaniu całej Biblii',
-          'Gdy odniesie wielki sukces życiowy'
+          'Dopiero po ukończeniu 18 lat',
+          'W sakramencie chrztu świętego'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Nadzieja, obok wiary i miłości, jest cnotą wlaną, którą otrzymujemy jako dar od Boga podczas chrztu świętego.'
       }
     ]
@@ -350,24 +350,24 @@ Zaprojektuj w zeszycie plakat lub rysunek ilustrujący hasło: „Miłość sens
         id: 'rel5-4-q1',
         question: 'Na jakie drzewo wspiął się mały wzrostem Zacheusz, aby zobaczyć przechodzącego Jezusa?',
         options: [
+          'Na krzew oliwny',
           'Na palmę daktylową',
-          'Na sykomorę (odmianę figowca)',
           'Na dąb',
-          'Na krzew oliwny'
+          'Na sykomorę (odmianę figowca)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ewangelia Łukasza podaje, że Zacheusz wspiął się na sykomorę, ponieważ był niskiego wzrostu i tłum zasłaniał mu widok.'
       },
       {
         id: 'rel5-4-q2',
         question: 'Co Zacheusz obiecał uczynić po tym, jak przyjął Jezusa w swoim domu?',
         options: [
+          'Napisać książkę o swoich podatkach',
           'Zbudować nową synagogę',
           'Rozdać połowę majątku ubogim, a skrzywdzonym oddać poczwórnie',
-          'Zrezygnować z pracy celnika i zostać apostołem',
-          'Napisać książkę o swoich podatkach'
+          'Zrezygnować z pracy celnika i zostać apostołem'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Przemieniony miłością Chrystusa Zacheusz podjął konkretne decyzje naprawienia krzywd i pomocy ubogim, co Jezus nazwał zbawieniem tego domu.'
       }
     ]
@@ -444,23 +444,23 @@ Narysuj w zeszycie swój kościół parafialny i napisz, pod jakim wezwaniem (pa
         question: 'Do czego Jezus porównuje Siebie, a do czego uczniów w Ewangelii św. Jana?',
         options: [
           'Do pasterza i wilków',
-          'Do krzewu winnego (Jezus) i latorośli (uczniowie)',
           'Do budowniczego i cegieł',
-          'Do siewcy i roli'
+          'Do siewcy i roli',
+          'Do krzewu winnego (Jezus) i latorośli (uczniowie)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Jezus mówi: „Ja jestem krzewem winnym, wy – latoroślami”. Podkreśla to, że całe nasze życie i dobre owoce zależą od trwania w łączności z Nim.'
       },
       {
         id: 'rel5-5-q2',
         question: 'Co według KKK 1816 jest obowiązkiem każdego ucznia Chrystusa?',
         options: [
-          'Zachowywać wiarę, żyć nią, odważnie o niej świadczyć i szerzyć ją',
           'Tylko raz w roku pójść do kościoła',
           'Wyprowadzić się na pustynię',
-          'Ograniczyć kontakty z innymi ludźmi'
+          'Ograniczyć kontakty z innymi ludźmi',
+          'Zachowywać wiarę, żyć nią, odważnie o niej świadczyć i szerzyć ją'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Każdy ochrzczony ma misję aktywnego wyznawania i dzielenia się wiarą w swoim codziennym środowisku.'
       }
     ]
@@ -549,12 +549,12 @@ Napisz w zeszycie, jak konkretnie możesz w tym tygodniu przyczynić się do bud
         id: 'rel5-6-q2',
         question: 'Co według KKK 1879 pozwala człowiekowi rozwijać swoje możliwości i odpowiadać na powołanie?',
         options: [
+          'Unikanie jakiejkolwiek pracy',
           'Życie w całkowitej samotności',
-          'Życie społeczne, wzajemna służba i dialog z ludźmi',
           'Gromadzenie jak największej ilości rzeczy',
-          'Unikanie jakiejkolwiek pracy'
+          'Życie społeczne, wzajemna służba i dialog z ludźmi'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Człowiek jako istota społeczna potrzebuje innych ludzi i dopiero we wspólnocie, poprzez służbę i dialog, może w pełni rozwinąć swoje dary.'
       }
     ]
@@ -627,12 +627,12 @@ Podczas wieczornej modlitwy odszukaj w Biblii i odczytaj ze zrozumieniem dowolny
         id: 'rel5-7-q1',
         question: 'Z jakich dwóch zasadniczych części składa się całe Pismo Święte?',
         options: [
-          'Z Księgi Rodzaju i Apokalipsy',
           'Ze Starego Testamentu i Nowego Testamentu',
-          'Z Ewangelii i Listów apostolskich',
-          'Z Prawa i Proroków'
+          'Z Prawa i Proroków',
+          'Z Księgi Rodzaju i Apokalipsy',
+          'Z Ewangelii i Listów apostolskich'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Pismo Święte chrześcijan dzieli się na Stary Testament (zapowiedź Zbawiciela i przymierze z Izraelem) oraz Nowy Testament (życie Jezusa i początki Kościoła).'
       },
       {
@@ -640,11 +640,11 @@ Podczas wieczornej modlitwy odszukaj w Biblii i odczytaj ze zrozumieniem dowolny
         question: 'Jaką trwałość przypisuje Jezus swoim słowom w Ewangelii (Łk 21, 33)?',
         options: [
           'Są ważne tylko przez kilka lat',
-          'Są mniej trwałe niż ziemia',
           'Niebo i ziemia przeminą, ale Jego słowa nie przeminą',
-          'Przeminą razem z upadkiem państw'
+          'Przeminą razem z upadkiem państw',
+          'Są mniej trwałe niż ziemia'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Jezus podkreśla boski i wieczny charakter swojego słowa, które nigdy nie straci na aktualności.'
       }
     ]
@@ -718,22 +718,22 @@ Wyobraź sobie, że piszesz list do przyjaciela, który nie wierzy w Boga. Wyja�
         id: 'rel5-8-q1',
         question: 'Co to znaczy, że Pismo Święte jest natchnione przez Boga?',
         options: [
+          'Że Biblię przyniósł anioł z nieba w gotowej formie',
           'Że autorzy sami wymyślili ciekawe historie',
           'Że Bóg natchnął autorów ludzkich Duchem Świętym, aby zapisali dokładnie to, co On chciał przekazać',
-          'Że Biblię przyniósł anioł z nieba w gotowej formie',
           'Że tekst Biblii napisał się sam'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Natchnienie biblijne polega na tym, że Bóg współpracował z autorami ludzkimi, działając w nich i przez nich, gwarantując bezbłędność zbawczych prawd.'
       },
       {
         id: 'rel5-8-q2',
         question: 'Do kogo Ojciec Niebieski kieruje swoje słowo na kartach Biblii według KKK 104?',
         options: [
-          'Tylko do królów i kapłanów',
+          'Tylko do narodu wybranego',
           'Do wszystkich swoich dzieci, prowadząc z nimi pełną miłości rozmowę',
           'Tylko do ludzi żyjących w starożytności',
-          'Tylko do narodu wybranego'
+          'Tylko do królów i kapłanów'
         ],
         correctAnswer: 1,
         explanation: 'Katechizm przypomina, że Bóg w Biblii spotyka się z nami z miłością, rozmawiając z każdym człowiekiem jak kochający Ojciec ze swoimi dziećmi.'
@@ -822,24 +822,24 @@ Przepisz pięknym pismem do zeszytu i zapamiętaj werset: *„Twoje słowo jest 
         id: 'rel5-9-q1',
         question: 'Ile dokładnie ksiąg wchodzi w skład kanonu katolickiego Nowego Testamentu?',
         options: [
-          '46 ksiąg',
           '27 ksiąg',
           '12 ksiąg',
+          '46 ksiąg',
           '7 ksiąg'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Kanon katolicki Nowego Testamentu składa się z 27 ksiąg natchnionych, w tym 4 Ewangelii, Dziejów Apostolskich, Listów i Apokalipsy.'
       },
       {
         id: 'rel5-9-q2',
         question: 'W jakich trzech głównych językach oryginalnie spisano księgi Pisma Świętego?',
         options: [
-          'W łacińskim, polskim i niemieckim',
-          'W hebrajskim, aramejskim i greckim',
           'W egipskim, babilońskim i rzymskim',
-          'W angielskim, greckim i hebrajskim'
+          'W angielskim, greckim i hebrajskim',
+          'W łacińskim, polskim i niemieckim',
+          'W hebrajskim, aramejskim i greckim'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Księgi Starego Testamentu powstały głównie w języku hebrajskim i aramejskim, natomiast cały Nowy Testament został spisany w języku greckim.'
       }
     ]
@@ -921,12 +921,12 @@ Odszukaj w swoim Piśmie Świętym fragment oznaczony adresem: **Mk 1,9-11** i n
         id: 'rel5-10-q1',
         question: 'Rozszyfruj następujący adres biblijny: Rdz 1, 27',
         options: [
-          'Księga Rodzaju, rozdział 1, werset 27',
           'Księga Rodzaju, rozdział 27, werset 1',
           'Ewangelia Mateusza, rozdział 1, werset 27',
-          'Apokalipsa św. Jana, rozdział 1, werset 27'
+          'Apokalipsa św. Jana, rozdział 1, werset 27',
+          'Księga Rodzaju, rozdział 1, werset 27'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Skrót „Rdz” oznacza Księgę Rodzaju, pierwsza cyfra (1) to numer rozdziału, a cyfra po przecinku (27) to numer wersetu.'
       },
       {
@@ -934,11 +934,11 @@ Odszukaj w swoim Piśmie Świętym fragment oznaczony adresem: **Mk 1,9-11** i n
         question: 'Kto wypowiedział słynne słowa: „Kto nie zna Pisma Świętego, ten nie zna Chrystusa”?',
         options: [
           'Święty Franciszek z Asyżu',
-          'Święty Hieronim',
+          'Święty Stanisław',
           'Święty Jan Paweł II',
-          'Święty Stanisław'
+          'Święty Hieronim'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Święty Hieronim, wielki doktor Kościoła, który przetłumaczył Biblię na język łaciński (Wulgata), podkreślał kluczową rolę Pisma Świętego w poznaniu Jezusa.'
       }
     ]

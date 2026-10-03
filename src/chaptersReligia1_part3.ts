@@ -61,9 +61,9 @@ Jezus modlił się nawet na krzyżu, przepraszając i prosząc o przebaczenie dl
         question: 'O co prosił Pan Jezus na krzyżu w modlitwie do Ojca (Łk 23,34)?',
         options: [
           '„Ojcze, przebacz im, bo nie wiedzą, co czynią”',
+          'O pomoc od aniołów',
           'O ukaranie wrogów',
-          'O zabranie go w tym momencie z krzyża',
-          'O pomoc od aniołów'
+          'O zabranie go w tym momencie z krzyża'
         ],
         correctAnswer: 0,
         explanation: 'Jezus modlił się z miłością nawet za swoich oprawców, prosząc Boga o wybaczenie.'
@@ -72,12 +72,12 @@ Jezus modlił się nawet na krzyżu, przepraszając i prosząc o przebaczenie dl
         id: 'r1-l27-q2',
         question: 'Jakiej modlitwy nauczył nas Jezus w Ewangelii?',
         options: [
-          'Modlitwy Pańskiej – „Ojcze nasz”',
           'Aniele Boży',
+          'Aktu strzelistego',
           'Pod Twoją obronę',
-          'Aktu strzelistego'
+          'Modlitwy Pańskiej – „Ojcze nasz”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus przekazał nam modlitwę „Ojcze nasz”, ucząc nas, jak prosić Boga Ojca.'
       }
     ]
@@ -142,9 +142,9 @@ Godność dziecka Bożego to wielki dar i wyróżnienie. Oznacza to, że jesteś
         question: 'Na czyj obraz i podobieństwo Bóg stworzył człowieka według Księgi Rodzaju?',
         options: [
           'Na swój obraz i podobieństwo Boże',
+          'Na obraz królów ziemi',
           'Na obraz aniołów',
-          'Na obraz przyrody',
-          'Na obraz królów ziemi'
+          'Na obraz przyrody'
         ],
         correctAnswer: 0,
         explanation: 'Biblia poucza, że człowiek ma wyjątkową godność, będąc stworzonym na obraz samgo Boga.'
@@ -153,12 +153,12 @@ Godność dziecka Bożego to wielki dar i wyróżnienie. Oznacza to, że jesteś
         id: 'r1-l30-q2',
         question: 'W jakim sakramencie stajemy się włączonymi do rodziny Dziećmi Bożymi?',
         options: [
-          'W sakramencie chrztu świętego',
-          'W sakramencie bierzmowania',
           'W sakramencie namaszczenia',
-          'W sakramencie małżeństwa'
+          'W sakramencie bierzmowania',
+          'W sakramencie małżeństwa',
+          'W sakramencie chrztu świętego'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Chrzest święty gładzi grzech pierworodny i czyni nas dziećmi Bożymi.'
       }
     ]
@@ -222,12 +222,12 @@ Jezus uczy nas, jak kochać naszą mamę na ziemi. Dziękujemy mamie za trud opi
         id: 'r1-l31-q1',
         question: 'Jak Syn Boży odnosił się do swojej Matki Maryi w Nazarecie?',
         options: [
-          'Kochał Ją, szanował i był Jej posłuszny we wszystkim',
           'Mówił, że nie ma dla Niej czasu',
+          'Wymagał ciągłej obsługi',
           'Rzadko z Nią rozmawiał',
-          'Wymagał ciągłej obsługi'
+          'Kochał Ją, szanował i był Jej posłuszny we wszystkim'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus, choć był Bogiem, szanował Maryję i był Jej zawsze posłuszny.'
       },
       {
@@ -235,9 +235,9 @@ Jezus uczy nas, jak kochać naszą mamę na ziemi. Dziękujemy mamie za trud opi
         question: 'Czwarte Przykazanie Boże nakazuje nam:',
         options: [
           'Czcić ojca swego i matkę swoją',
+          'Szanować tylko kolegów',
           'Nie kraść',
-          'Pamiętać o dniu świętym',
-          'Szanować tylko kolegów'
+          'Pamiętać o dniu świętym'
         ],
         correctAnswer: 0,
         explanation: 'IV Przykazanie Dekalogu wzywa do szacunku, posłuszeństwa i miłości wobec rodziców.'
@@ -303,24 +303,24 @@ Nasi ojcowie naśladują Świętego Józefa, pracując dla rodziny, chroniąc do
         id: 'r1-l32-q1',
         question: 'Kto był przybranym ojcem i opiekunem Pana Jezusa na ziemi?',
         options: [
-          'Święty Józef z Nazaretu',
-          'Święty Piotr',
           'Święty Jan',
+          'Święty Piotr',
+          'Święty Józef z Nazaretu',
           'Król Dawid'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Święty Józef sprawował sprawiedliwą i troskliwą opiekę nad Maryją i Jezusem.'
       },
       {
         id: 'r1-l32-q2',
         question: 'Co zrobił św. Józef na polecenie Anioła, aby uratować małego Jezusa przed narodem Heroda?',
         options: [
-          'Wziął Dziecię i Jego Matkę w nocy i uciekł do Egiptu',
-          'Został na miejscu',
           'Ukrył się u sąsiadów w Betlejem',
+          'Został na miejscu',
+          'Wziął Dziecię i Jego Matkę w nocy i uciekł do Egiptu',
           'Odszedł sam na pustynię'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Święty Józef natychmiast uciekł z Rodziną do Egiptu, chroniąc życie Dzieciątka.'
       }
     ]
@@ -387,12 +387,12 @@ Obietnica nieba dla przyjaciół Boga:
         id: 'r1-l37-q1',
         question: 'Kto może zostać świętym według słów znanej piosenki religijnej?',
         options: [
-          'Każdy człowiek: mały, duży, bogaty czy biedny, który kocha Boga i bliźniego',
-          'Tylko starożytni królowie',
+          'Tylko dorośli po 80. roku życia',
           'Tylko aniołowie',
-          'Tylko dorośli po 80. roku życia'
+          'Każdy człowiek: mały, duży, bogaty czy biedny, który kocha Boga i bliźniego',
+          'Tylko starożytni królowie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Powołanie do świętości jest skierowane do każdego człowieka bez wyjątku.'
       },
       {
@@ -400,9 +400,9 @@ Obietnica nieba dla przyjaciół Boga:
         question: 'Co powiedział Jezus w Ewangelii św. Jana o domu swego Ojca?',
         options: [
           '„W domu Ojca mego jest mieszkań wiele”',
-          'Że w niebie zabraknie miejsca',
+          'Że wejdą tam tylko wybrani rycerze',
           'Że niebo jest daleko i niedostępne',
-          'Że wejdą tam tylko wybrani rycerze'
+          'Że w niebie zabraknie miejsca'
         ],
         correctAnswer: 0,
         explanation: 'Jezus obiecał, że w niebie przygotowane jest miejsce dla każdego przyjaciela Boga.'
@@ -470,12 +470,12 @@ Najważniejsza dla zmarłych jest jednak nasza modlitwa. Prosimy w niej miłosie
         id: 'r1-l38-q1',
         question: 'Co jest najcenniejszym darem, jaki możemy ofiarować zmarłym?',
         options: [
-          'Nasza szczerza modlitwa i zamówiona Msza Święta',
+          'Głośny płacz bez nadziei',
           'Duże ilości plastiku',
           'Droga biżuteria',
-          'Głośny płacz bez nadziei'
+          'Nasza szczerza modlitwa i zamówiona Msza Święta'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Modlitwa za zmarłych pomaga im w drodze do pełnego szczęścia w niebie.'
       },
       {
@@ -483,9 +483,9 @@ Najważniejsza dla zmarłych jest jednak nasza modlitwa. Prosimy w niej miłosie
         question: 'Co Pan Jezus obiecał w Ewangelii wg św. Jana tym, którzy w Niego wierzą?',
         options: [
           '„Kto we Mnie wierzy, choćby i umarł, żyć będzie”',
+          'Że nie ma zmartwychwstania',
           'Że śmierć jest końcem wszystkiego',
-          'Że zmarli zostaną zapomniani',
-          'Że nie ma zmartwychwstania'
+          'Że zmarli zostaną zapomniani'
         ],
         correctAnswer: 0,
         explanation: 'Jezus jest Zmartwychwstaniem i Życiem dającym nadzieję nieba.'
@@ -551,24 +551,24 @@ Adwent uczy nas czujności, dobrych uczynków i modlitewnego przygotowania czyst
         id: 'r1-l40-q1',
         question: 'Czym jest okres Adwentu?',
         options: [
-          'Czasem radosnego oczekiwania i przygotowania na narodzenie Pana Jezusa',
-          'Czasem smutku i płaczu',
           'Czasem wolnym od lekcji',
-          'Zwykłym miesiącem zimowym'
+          'Zwykłym miesiącem zimowym',
+          'Czasem radosnego oczekiwania i przygotowania na narodzenie Pana Jezusa',
+          'Czasem smutku i płaczu'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Adwent to radosny czas duchowego przygotowania na święta Bożego Narodzenia.'
       },
       {
         id: 'r1-l40-q2',
         question: 'Jak nazywa się poranna adwentowa Msza Święta ku czci Najświętszej Maryi Panny?',
         options: [
-          'Roraty',
+          'Rezurekcja',
           'Pasterka',
           'Gorzkie Żale',
-          'Rezurekcja'
+          'Roraty'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Roraty to szczególna adwentowa Msza św. sprawowana ze światłem lampionów.'
       }
     ]
@@ -635,8 +635,8 @@ Zaczynamy od odczytania Ewangelii św. Łukasza o narodzeniu Jezusa, wspólnej m
         options: [
           'Znakiem miłości, przebaczenia, pokoju i jedności w rodzinie',
           'Zwykłą przekąską przed kolacją',
-          'Ozdobą stołową',
-          'Pamiątką po wakacjach'
+          'Pamiątką po wakacjach',
+          'Ozdobą stołową'
         ],
         correctAnswer: 0,
         explanation: 'Łamanie się opłatkiem wyraża chęć przebaczenia win, miłość i składanie dobrych życzeń.'
@@ -645,12 +645,12 @@ Zaczynamy od odczytania Ewangelii św. Łukasza o narodzeniu Jezusa, wspólnej m
         id: 'r1-l42-q2',
         question: 'Co położono na dnie żłóbka, w którym narodził się Jezus w Betlejem?',
         options: [
+          'Koce wełniane',
           'Sianko i pieluszki',
           'Złote poduszki',
-          'Marmurowe płyty',
-          'Koce wełniane'
+          'Marmurowe płyty'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus narodził się w ubóstwie w stajence i został położony na sianku w żłóbku.'
       }
     ]
@@ -714,12 +714,12 @@ Pierwszymi, którzy oddali Mu pokłon, byli ubodzy pasterze oraz Mędrcy ze Wsch
         id: 'r1-l43-q1',
         question: 'Gdzie narodził się Pan Jezus według relacji Ewangelii?',
         options: [
-          'W Betlejem w stajence i został położony w żłobie',
-          'W wielkim pałacu w Rzymie',
+          'Na łodzi na jeziorze',
           'W świątyni jerozolimskiej',
-          'Na łodzi na jeziorze'
+          'W Betlejem w stajence i został położony w żłobie',
+          'W wielkim pałacu w Rzymie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus narodził się w Betlejem w ubogim grocie/stajence z powodu braku miejsca w gospodzie.'
       },
       {
@@ -727,9 +727,9 @@ Pierwszymi, którzy oddali Mu pokłon, byli ubodzy pasterze oraz Mędrcy ze Wsch
         question: 'Kto jako pierwszy usłyszał śpiew aniołów i pośpieszył do szopki betlejemskiej?',
         options: [
           'Pasterze pilnujący swoich stada nocą',
-          'Rzymscy żołnierze',
           'Kupcy z targowiska',
-          'Faryzeusze'
+          'Faryzeusze',
+          'Rzymscy żołnierze'
         ],
         correctAnswer: 0,
         explanation: 'Anioł objawił pasterzom nowinę o narodzeniu Zbawiciela i pospieszyli do żłóbka.'
@@ -795,12 +795,12 @@ Trwa 40 dni, tak jak 40 dni postu Jezusa na pustyni. W Wielkim Poście bierzemy 
         id: 'r1-l48-q1',
         question: 'W jaki dzień rozpoczynamy okres Wielkiego Postu w Kościele?',
         options: [
-          'W Środę Popielcową',
-          'W Wielki Piątek',
           'W Wielką Sobotę',
-          'W Niedzielę Palmową'
+          'W Wielki Piątek',
+          'W Niedzielę Palmową',
+          'W Środę Popielcową'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Środa Popielcowa otwiera 40-dniowy czas Wielkiego Postu i przygotowania do Paschy.'
       },
       {
@@ -808,9 +808,9 @@ Trwa 40 dni, tak jak 40 dni postu Jezusa na pustyni. W Wielkim Poście bierzemy 
         question: 'Trzy główne filary poprawy życia w Wielkim Poście to:',
         options: [
           'Modlitwa, post i jałmużna (dobre uczynki)',
-          'Gra, zabawa i wycieczki',
           'Kupowanie prezentów, oglądanie bajek i sen',
-          'Bieganie, pływanie i gimnastyka'
+          'Bieganie, pływanie i gimnastyka',
+          'Gra, zabawa i wycieczki'
         ],
         correctAnswer: 0,
         explanation: 'Kościół uczy, że modlitwa, post i jałmużna zbliżają nasze serca do Boga.'
@@ -876,24 +876,24 @@ Zmartwychwstanie Chrystusa daje nam wielką nadzieję na życie wieczne w niebie
         id: 'r1-l54-q1',
         question: 'Którego dnia po ukrzyżowaniu Pan Jezus powstał z martwych?',
         options: [
-          'Trzeciego dnia (w Niedzielę Wielkanocną)',
+          'Dziesiątego dnia',
           'Siódmego dnia',
-          'Po roku',
-          'Dziesiątego dnia'
+          'Trzeciego dnia (w Niedzielę Wielkanocną)',
+          'Po roku'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus zmartwychwstał trzeciego dnia po swojej śmierci na krzyżu.'
       },
       {
         id: 'r1-l54-q2',
         question: 'Co znaczy słowo „Alleluja” śpiewane szczególnie w okresie Wielkanocy?',
         options: [
+          'Przepraszam za winy',
           'Chwalcie Pana! / Chwała Bogu!',
           'Dzień dobry',
-          'Do widzenia',
-          'Przepraszam za winy'
+          'Do widzenia'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Alleluja to hebrajskie radosne zawołanie uwielbienia: Chwalcie Pana!'
       }
     ]
@@ -908,7 +908,7 @@ Zmartwychwstanie Chrystusa daje nam wielką nadzieję na życie wieczne w niebie
     educationLevel: 'Szkoła Podstawowa (Klasy 1-3)',
     estimatedReadTime: 3,
     isDefault: true,
-    lessonNumber: 3000,
+    lessonNumber: 60,
     createdAt: Date.now() - 31000,
     content: `# Lekcja 60: Wakacje z Panem Bogiem 🏔️🌊☀️
 
@@ -960,24 +960,24 @@ Bóg nie idzie na wakacje od nas – On jest przy nas w górach, nad morzem, na 
         id: 'r1-l60-q1',
         question: 'O czym chrześcijanin pamięta również podczas letnich wakacji?',
         options: [
-          'O codziennej modlitwie, niedzielnej Mszy Świętej i dbałości o bezpieczeństwo',
-          'Aby zapomnieć o modlitwie na dwa miesiące',
           'Że do kościoła chodzi się tylko w trakcie nauki',
-          'Żeby nie pomagać nikomu'
+          'Aby zapomnieć o modlitwie na dwa miesiące',
+          'Żeby nie pomagać nikomu',
+          'O codziennej modlitwie, niedzielnej Mszy Świętej i dbałości o bezpieczeństwo'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Bóg jest z nami zawsze i wszędzie – na wakacjach również pamiętamy o modlitwie i Mszy świętej.'
       },
       {
         id: 'r1-l60-q2',
         question: 'Obietnica Boga dana ludziom w piosence wakacyjnej brzmi:',
         options: [
-          '„Nigdy nie opuszczę was”',
-          '„Bądźcie sami na szlaku”',
           '„Nie ma mnie latem”',
-          '„Odpocznijcie bez modlitwy”'
+          '„Nigdy nie opuszczę was”',
+          '„Odpocznijcie bez modlitwy”',
+          '„Bądźcie sami na szlaku”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Bóg zapewnia o swojej nieustannej obecności i miłości w każdym miejscu i czasie.'
       }
     ]

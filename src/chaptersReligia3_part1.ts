@@ -78,23 +78,23 @@ Również dzisiaj Chrystus przychodzi do nas:
         question: 'Czym jest katecheza?',
         options: [
           'Zwykłą lekcją historii',
-          'Spotkaniem z Panem Jezusem, poznawaniem Jego nauki i pogłębianiem więzi z Nim',
           'Tylko czytaniem podręcznika',
+          'Spotkaniem z Panem Jezusem, poznawaniem Jego nauki i pogłębianiem więzi z Nim',
           'Uczestnictwem w zawodach sportowych'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Katecheza to wyjątkowe spotkanie z Chrystusem, na którym poznajemy Jego naukę i uczy się żyć zgodnie z Ewangelią.'
       },
       {
         id: 'r3-l01-q2',
         question: 'Jakie słowa Jezusa przypominają nam o Jego obecności pośród nas?',
         options: [
-          '„Bo gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
-          '„Idźcie i odpoczywajcie”',
+          '„Módlcie się tylko w samotności”',
           '„Nie czytajcie Pisma Świętego”',
-          '„Módlcie się tylko w samotności”'
+          '„Bo gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
+          '„Idźcie i odpoczywajcie”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus obiecał w Ewangelii wg św. Mateusza (Mt 18,20), że jest obecny tam, gdzie gromadzą się wierni w Jego imię.'
       }
     ]
@@ -163,24 +163,24 @@ To rodzice jako pierwsi nauczyli nas uczynić znak krzyża i wypowiedzieć pierw
         id: 'r3-l02-q1',
         question: 'Czym jest Pierwsza Komunia Święta?',
         options: [
-          'Przyjęciem po raz pierwszy prawdziwego Ciała Pana Jezusa pod postacią chleba',
           'Zwykłym uroczystym obiadem rodzinnym',
-          'Otrzymaniem nowego modlitewnika',
-          'Egzaminem ze znajomości pacierza'
+          'Przyjęciem po raz pierwszy prawdziwego Ciała Pana Jezusa pod postacią chleba',
+          'Egzaminem ze znajomości pacierza',
+          'Otrzymaniem nowego modlitewnika'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Pierwsza Komunia Święta to moment, w którym po raz pierwszy w pełni uczestniczymy we Mszy Świętej, przyjmując Ciało Chrystusa.'
       },
       {
         id: 'r3-l02-q2',
         question: 'Gdzie Maryja i Józef odnaleźli dwunastoletniego Jezusa, który pozostał w Jerozolimie?',
         options: [
-          'Na rynku miejskim',
-          'W świątyni wśród nauczycieli',
+          'W ogrodzie oliwnym',
           'W domu krewnego',
-          'W ogrodzie oliwnym'
+          'Na rynku miejskim',
+          'W świątyni wśród nauczycieli'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Ewangelia wg św. Łukasza podaje, że rodzice odnaleźli Jezusa po 3 dniach w świątyni jerozolimskiej.'
       }
     ]
@@ -252,24 +252,24 @@ W parafii wspólnie modlimy się, słuchamy Słowa Bożego i przyjmujemy sakrame
         id: 'r3-l03-q1',
         question: 'Czym jest parafia?',
         options: [
-          'Budynkiem szkoly podstawowej',
           'Wspólnotą wiernych, nad którą pasterską troskę sprawuje ksiądz proboszcz',
           'Organizacją charytatywną dla dorosłych',
+          'Budynkiem szkoly podstawowej',
           'Grupą przyjaciół z osiedla'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Parafia to wspólnota wiernych zamieszkujących dany teren, zjednoczona wokół kościoła i duszpasterza.'
       },
       {
         id: 'r3-l03-q2',
         question: 'W jaki sposób pierwsi chrześcijanie trwali we wspólnocie (Dz 2,42)?',
         options: [
-          'Trwali w nauce Apostołów, łamaniu chleba i modlitwach',
-          'Spotykali się tylko raz w roku',
+          'Gromadzili tylko majątki osobiste',
           'Unikali wspólnych modlitw',
-          'Gromadzili tylko majątki osobiste'
+          'Spotykali się tylko raz w roku',
+          'Trwali w nauce Apostołów, łamaniu chleba i modlitwach'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Dzieje Apostolskie podkreślają, że chrześcijanie gromadzili się na nauce, łamaniu chleba (Eucharystii) oraz modlitwie.'
       }
     ]
@@ -341,12 +341,12 @@ Maryja swoim życiem uczy nas, jak uwielbiać Boga i dziękować Mu za wszystkie
         id: 'r3-l04-q1',
         question: 'Jak nazywa się hymn uwielbienia, który Maryja wyśpiewała w domu Elżbiety?',
         options: [
-          'Magnificat („Wielbi dusza moja Pana”)',
           'Te Deum („Ciebie Boga wysławiamy”)',
+          'Magnificat („Wielbi dusza moja Pana”)',
           'Gloria in excelsis Deo',
           'Pasterka'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Słowa Maryi „Wielbi dusza moja Pana...” to po łacinie Magnificat – wielki hymn uwielbienia i dziękczynienia.'
       },
       {
@@ -427,8 +427,8 @@ W Starym Testamencie **Melchizedek** w geście wdzięczności złożył Bogu ofi
         question: 'Kim był Melchizedek zapowiadający Eucharystię w Starym Testamencie?',
         options: [
           'Królem Szalemu i kapłanem Boga Najwyższego, który złożył ofiarę z chleba i wina',
-          'Pasterzem owiec w Betlejem',
           'Prorokiem na pustyni',
+          'Pasterzem owiec w Betlejem',
           'Rzymskim żołnierzem'
         ],
         correctAnswer: 0,
@@ -438,12 +438,12 @@ W Starym Testamencie **Melchizedek** w geście wdzięczności złożył Bogu ofi
         id: 'r3-l07-q2',
         question: 'Co oznacza greckie słowo „Eucharystia”?',
         options: [
-          'Dziękczynienie',
-          'Przeproszenie',
           'Prośba',
-          'Ofiarowanie'
+          'Dziękczynienie',
+          'Ofiarowanie',
+          'Przeproszenie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Słowo Eucharystia pochodzi z języka greckiego i oznacza dziękczynienie składane Bogu.'
       }
     ]
@@ -507,24 +507,24 @@ Pan Jezus w przypowieści o faryzeuszu i celniku uczy nas, że Bóg nie przyjmuj
         id: 'r3-l08-q1',
         question: 'Dlaczego celnik z przypowieści Jezusa odszedł z świątyni usprawiedliwiony?',
         options: [
-          'Ponieważ z pokorą i skruchą bił się w piersi i prosił o zmiłowanie',
-          'Chwalił się swoimi dobrymi uczynkami',
           'Płacił wysokie podatki',
-          'Głośno śpiewał pieśni'
+          'Chwalił się swoimi dobrymi uczynkami',
+          'Głośno śpiewał pieśni',
+          'Ponieważ z pokorą i skruchą bił się w piersi i prosił o zmiłowanie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Celnik stanął z daleka, uznał swoją grzeszność i szczerym sercem prosił Boga o miłosierdzie.'
       },
       {
         id: 'r3-l08-q2',
         question: 'Jak nazywamy modlitwę, w której przepraszamy Boga za popełnione grzechy?',
         options: [
-          'Modlitwą przebłagalną (przeproszenia)',
-          'Modlitwą prośby',
           'Modlitwą dziękczynną',
-          'Modlitwą uwielbienia'
+          'Modlitwą przebłagalną (przeproszenia)',
+          'Modlitwą uwielbienia',
+          'Modlitwą prośby'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Modlitwa przebłagalna wyraża nasz żal za grzechy i pragnienie pojednania z Panem Bogiem.'
       }
     ]
@@ -591,24 +591,24 @@ Jezus na przykładzie uzdrowienia dwóch niewidomych uczy nas, że warunkiem wys
         id: 'r3-l09-q1',
         question: 'Co odpowiedzieli niewidomi, gdy Jezus zapytał ich: „Wierzycie, że mogę to uczynić?”?',
         options: [
+          'Milczeli ze strachu',
           '„Tak, Panie!”',
-          '„Nie wiemy”',
           '„Pokaż nam cud najpierw”',
-          'Milczeli ze strachu'
+          '„Nie wiemy”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Niewidomi wyznali swoją gorącą wiarę słowami „Tak, Panie!”, po czym Jezus dotknął ich oczu i przywrócił im wzrok.'
       },
       {
         id: 'r3-l09-q2',
         question: 'Jaka postawa jest konieczna podczas modlitwy prośby?',
         options: [
-          'Głęboka wiara, ufność i wytrwałość',
-          'Niecierpliwość i żądanie natychmiastowych wyników',
           'Duma i samowystarczalność',
-          'Brak przekonania'
+          'Niecierpliwość i żądanie natychmiastowych wyników',
+          'Brak przekonania',
+          'Głęboka wiara, ufność i wytrwałość'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus wielokrotnie podkreślał, że na modlitwie prośby potrzebna jest szczera wiara i wytrwała ufność w Bożą dobroć.'
       }
     ]
@@ -680,24 +680,24 @@ Nasz udział we Mszy Świętej powinien być świadomy, czynny i pełen skupieni
         id: 'r3-l11-q1',
         question: 'Dlaczego Mszę Świętą nazywamy najdoskonalszą modlitwą?',
         options: [
-          'Ponieważ sam Jezus Chrystus składa w niej ofiarę Ojcu i jednoczy nas ze sobą',
           'Bo trwa dokładnie jedną godzinę',
+          'Ponieważ sam Jezus Chrystus składa w niej ofiarę Ojcu i jednoczy nas ze sobą',
           'Bo śpiewamy na niej najwięcej piosenek',
           'Bo odprawia ją kapłan w zabytkowym kościele'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Msza Święta jest najdoskonalszą modlitwą, ponieważ jest obecnością samego Chrystusa i Jego zbawczej ofiary.'
       },
       {
         id: 'r3-l11-q2',
         question: 'Wymień cztery główne części Mszy Świętej we właściwej kolejności:',
         options: [
-          'Obrzędy wstępne, Liturgia Słowa, Liturgia Eucharystyczna, Obrzędy zakończenia',
           'Liturgia Słowa, Komunia, Różaniec, Kazanie',
+          'Obrzędy wstępne, Liturgia Słowa, Liturgia Eucharystyczna, Obrzędy zakończenia',
           'Wejście, Pieśń, Błogosławieństwo, Ewangelia',
           'Akt pokuty, Modlitwa wiernych, Ogłoszenia, Błogosławieństwo'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Liturgia Mszy Świętej dzieli się na: 1. Obrzędy wstępne, 2. Liturgię Słowa, 3. Liturgię Eucharystyczną, 4. Obrzędy zakończenia.'
       }
     ]

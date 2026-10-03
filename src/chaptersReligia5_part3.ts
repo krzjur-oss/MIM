@@ -88,8 +88,8 @@ Napisz w zeszycie krótkie wypracowanie: „Dlaczego Pan Bóg dał nam Dziesię�
         options: [
           'Na pustyni judzkiej królowi Dawidowi',
           'Na górze Synaj Mojżeszowi',
-          'W świątyni jerozolimskiej Salomonowi',
-          'W Nazarecie Józefowi i Maryi'
+          'W Nazarecie Józefowi i Maryi',
+          'W świątyni jerozolimskiej Salomonowi'
         ],
         correctAnswer: 1,
         explanation: 'Bóg wyrył Dekalog na dwóch kamiennych tablicach i przekazał je Mojżeszowi na szczycie góry Synaj jako znak przymierza.'
@@ -98,12 +98,12 @@ Napisz w zeszycie krótkie wypracowanie: „Dlaczego Pan Bóg dał nam Dziesię�
         id: 'rel5-28-q2',
         question: 'Jak brzmi nowe przykazanie dane przez Jezusa podczas Ostatniej Wieczerzy?',
         options: [
-          'Abyśmy składali Bogu jak najwięcej ofiar',
           'Abyśmy się wzajemnie miłowali, tak jak On nas umiłował',
+          'Abyśmy składali Bogu jak najwięcej ofiar',
           'Abyśmy nie rozmawiali z poganami',
           'Abyśmy zachowywali tylko dawne tradycje'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'W Ewangelii św. Jana Jezus podsumowuje i udoskonala całe prawo, dając przykazanie wzajemnej, bezwarunkowej miłości na Jego wzór.'
       }
     ]
@@ -179,21 +179,21 @@ Ułóż w zeszycie własną, krótką modlitwę z prośbą o dar żywej wiary i 
         question: 'Do kogo nawiązuje biblijny tytuł „Nowa Ewa”, zapowiedziany w Protoewangelii?',
         options: [
           'Do żony Noego',
-          'Do Maryi, Matki Jezusa',
           'Do św. Marii Magdaleny',
-          'Do kobiety z Samarii'
+          'Do kobiety z Samarii',
+          'Do Maryi, Matki Jezusa'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Maryja jest nazywana „Nową Ewą”, ponieważ swoim posłuszeństwem Bogu naprawiła błąd pierwszej Ewy i wydała na świat Zbawiciela, który pokonał grzech.'
       },
       {
         id: 'rel5-30-q2',
         question: 'W jaki sposób Bóg najpełniej przemówił do ludzi w „dniach ostatecznych” według Hbr 1, 1-2?',
         options: [
-          'Przez trzęsienia ziemi i zjawiska przyrody',
+          'Przez kamienne posągi',
           'Przez swojego Syna – Jezusa Chrystusa',
-          'Przez babilońskich mędrców',
-          'Przez kamienne posągi'
+          'Przez trzęsienia ziemi i zjawiska przyrody',
+          'Przez babilońskich mędrców'
         ],
         correctAnswer: 1,
         explanation: 'Autor Listu do Hebrajczyków uczy, że po wielu prorokach Bóg posłał swojego Syna, który jest ostateczną i pełną odpowiedzią Boga dla świata.'
@@ -271,10 +271,10 @@ Przedstaw w formie rysunku lub opowiadania współczesną scenę pomagania drugi
         id: 'rel5-34-q1',
         question: 'Kto przeszedł obojętnie obok rannego i półżywego człowieka leżącego na drodze do Jerycha?',
         options: [
-          'Dwaj kupcy egipscy',
+          'Pasterze z pobliskich pól',
           'Kapłan i lewita',
-          'Samarytanin i rzymski żołnierz',
-          'Pasterze z pobliskich pól'
+          'Dwaj kupcy egipscy',
+          'Samarytanin i rzymski żołnierz'
         ],
         correctAnswer: 1,
         explanation: 'Ewangelia podaje, że ranną ofiarę zbójców minęli bez udzielenia pomocy urzędnicy świątynni: najpierw żydowski kapłan, a potem lewita.'
@@ -283,12 +283,12 @@ Przedstaw w formie rysunku lub opowiadania współczesną scenę pomagania drugi
         id: 'rel5-34-q2',
         question: 'Co Samarytanin zrobił dla rannego człowieka po opatrzeniu jego ran?',
         options: [
-          'Zostawił go na drodze, by sam doszedł do miasta',
           'Wsadził go na swoje bydlę, zawiózł do gospody, pielęgnował i opłacił jego dalszy pobyt',
+          'Zostawił go na drodze, by sam doszedł do miasta',
           'Zabrał mu resztki pieniędzy',
           'Zadzwonił po straż świątynną'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Samarytanin nie tylko opatrzył rany winem i oliwą, ale wziął pełną odpowiedzialność za powrót rannego do zdrowia, zostawiając gospodarzowi pieniądze (dwa denary).'
       }
     ]
@@ -360,24 +360,24 @@ Zaprojektuj i narysuj w zeszycie krzyż, otoczony hasłami, które kojarzą Ci s
         id: 'rel5-36-q1',
         question: 'Co oznaczało hebrajskie słowo „Masziah” (Mesjasz), przetłumaczone na grekę jako „Chrystus”?',
         options: [
-          'Nauczyciel prawdy',
           'Pomazaniec (wybrany i namaszczony przez Boga)',
           'Potężny król ziemski',
-          'Wspaniały sędzia'
+          'Wspaniały sędzia',
+          'Nauczyciel prawdy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Słowo Mesjasz (Chrystus) oznacza Pomazańca – Osobę wybraną przez Boga i namaszczoną Duchem Świętym do spełnienia zbawczej misji.'
       },
       {
         id: 'rel5-36-q2',
         question: 'W jakich godzinach mrok ogarnął całą ziemię, gdy Jezus wisiał na krzyżu?',
         options: [
-          'W nocy od północy do rana',
-          'Od godziny szóstej (12:00) do godziny dziewiątej (15:00) w ciągu dnia',
+          'Słońce świeciło mocniej niż zwykle',
           'Tylko przez kilka minut',
-          'Słońce świeciło mocniej niż zwykle'
+          'Od godziny szóstej (12:00) do godziny dziewiątej (15:00) w ciągu dnia',
+          'W nocy od północy do rana'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Ewangelia podaje, że w czasie męki Pańskiej od południa (godzina szósta) do godziny trzeciej po południu (godzina dziewiąta) nastąpiło niezwykłe zaćmienie i mrok ogarnął ziemię.'
       }
     ]
@@ -453,23 +453,23 @@ Narysuj w zeszycie i opisz tradycyjne symbole Zmartwychwstania Pańskiego (np. p
         question: 'Którego dnia po złożeniu do grobu Pan Jezus zmartwychwstał zgodnie z zapowiedzią?',
         options: [
           'Drugiego dnia',
-          'Trzeciego dnia (w niedzielę rano)',
           'Siódmego dnia',
-          'Po czterdziestu dniach'
+          'Po czterdziestu dniach',
+          'Trzeciego dnia (w niedzielę rano)'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Chrześcijanie świętują zmartwychwstanie Jezusa jako wydarzenie, które miało miejsce trzeciego dnia (licząc od Wielkiego Piątku jako pierwszego dnia).'
       },
       {
         id: 'rel5-37-q2',
         question: 'Które z kobiet jako pierwsze zastały odsunięty kamień i pusty grób?',
         options: [
+          'Samarytanka i wdowa z Sarepty',
           'Królowa Estera i Rut',
           'Maria Magdalena, Joanna i Maria, matka Jakuba, oraz inne kobiety',
-          'Samarytanka i wdowa z Sarepty',
           'Apostołowie Piotr i Jan'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Ewangelia Łukasza wymienia z imienia te pobożne kobiety (Niewiasty niosące wonności), które przyszły o świcie namaścić ciało Jezusa i jako pierwsze usłyszały o zmartwychwstaniu.'
       }
     ]
@@ -546,24 +546,24 @@ Napisz w zeszycie, jak rozumiesz słowa Pana Jezusa dane apostołom: „Uczynię
         id: 'rel5-38-q1',
         question: 'Ilu najbliższych uczniów (Apostołów) wybrał i powołał Jezus, aby tworzyli fundament Kościoła?',
         options: [
-          '72 uczniów',
-          '12 apostołów',
+          '100 apostołów',
           '3 uczniów',
-          '100 apostołów'
+          '12 apostołów',
+          '72 uczniów'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jezus powołał dokładnie dwunastu Apostołów, symbolizujących 12 szczepów Izraela, na których zbudował wspólnotę swojego Kościoła.'
       },
       {
         id: 'rel5-38-q2',
         question: 'Jak brzmiała profesja (zawód) pierwszych uczniów powołanych nad Jeziorem Galilejskim?',
         options: [
-          'Byli celnikami pobierającymi podatki',
-          'Byli rybakami łowiącymi ryby',
           'Byli pasterzami owiec',
-          'Byli rzymskimi żołnierzami'
+          'Byli celnikami pobierającymi podatki',
+          'Byli rzymskimi żołnierzami',
+          'Byli rybakami łowiącymi ryby'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Szymon Piotr, Andrzej, Jakub i Jan byli rybakami, pracującymi ciężko nad Jeziorem Galilejskim, zanim zostali rybakami ludzi.'
       }
     ]
@@ -636,11 +636,11 @@ Dowiedz się, jak nazywa się obecny papież (Biskup Rzymu), skąd pochodzi i na
         question: 'Jak brzmi słynne wezwanie Jezusa skierowane do Piotra w J 21, 15-17?',
         options: [
           '„Zbuduj mi wielki kościół w Rzymie”',
+          '„Idź i walcz z rzymskimi żołnierzami”',
           '„Paś baranki moje... Paś owce moje”',
-          '„Zostań w Galilei i nie wracaj do Jerozolimy”',
-          '„Idź i walcz z rzymskimi żołnierzami”'
+          '„Zostań w Galilei i nie wracaj do Jerozolimy”'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jezus używa metafory pasterskiej, powierzając Piotrowi (pasterzowi) misję opieki, karmienia i kierowania Jego wiernymi (barankami i owcami).'
       },
       {
@@ -649,8 +649,8 @@ Dowiedz się, jak nazywa się obecny papież (Biskup Rzymu), skąd pochodzi i na
         options: [
           'Prezydent Rzymu',
           'Każdorazowy Papież (Biskup Rzymu)',
-          'Proboszcz naszej parafii',
-          'Dowódca Gwardii Szwajcarskiej'
+          'Dowódca Gwardii Szwajcarskiej',
+          'Proboszcz naszej parafii'
         ],
         correctAnswer: 1,
         explanation: 'Papież jest następcą św. Piotra na stolicy biskupiej w Rzymie i z tego tytułu sprawuje najwyższą władzę pasterską w Kościele.'
@@ -728,12 +728,12 @@ Dowiedz się i zapisz w zeszycie:
         id: 'rel5-44-q1',
         question: 'Kto stoi na czele diecezji i jest duchowym następcą Apostołów w tym Kościele lokalnym?',
         options: [
-          'Ksiądz Proboszcz',
           'Biskup Diecezjalny (ordynariusz)',
+          'Dziekan',
           'Prezydent miasta',
-          'Dziekan'
+          'Ksiądz Proboszcz'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Na czele diecezji stoi biskup diecezjalny, który w łączności z papieżem sprawuje urząd nauczycielski, pasterski i kapłański.'
       },
       {
@@ -741,11 +741,11 @@ Dowiedz się i zapisz w zeszycie:
         question: 'Kto jest bezpośrednim opiekunem i pasterzem mniejszej wspólnoty – parafii?',
         options: [
           'Papież',
+          'Katecheta',
           'Ksiądz Proboszcz',
-          'Biskup Pomocniczy',
-          'Katecheta'
+          'Biskup Pomocniczy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Proboszcz jest kapłanem wyznaczonym przez biskupa do przewodniczenia i sprawowania bezpośredniej opieki duszpasterskiej nad parafianami.'
       }
     ]
@@ -825,24 +825,24 @@ Napisz w zeszycie, jak rozumiesz słynne słowa św. Jana Pawła II skierowane d
         id: 'rel5-45-q1',
         question: 'Jak brzmi trzecie przykazanie kościelne?',
         options: [
-          'Przynajmniej raz w roku, w okresie wielkanocnym, przyjąć Komunię Świętą',
-          'W niedziele i święta nakazane uczestniczyć we Mszy Świętej',
           'Przynajmniej raz w roku przystąpić do sakramentu pokuty',
-          'Troszczyć się o potrzeby wspólnoty Kościoła'
+          'Troszczyć się o potrzeby wspólnoty Kościoła',
+          'Przynajmniej raz w roku, w okresie wielkanocnym, przyjąć Komunię Świętą',
+          'W niedziele i święta nakazane uczestniczyć we Mszy Świętej'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Trzecie przykazanie kościelne nakazuje wiernym, aby przynajmniej raz w roku, właśnie w okresie wielkanocnym (który jest sercem roku liturgicznego), przyjąć Ciało Pańskie.'
       },
       {
         id: 'rel5-45-q2',
         question: 'Od czego należy powstrzymać się w czasie Wielkiego Postu zgodnie z czwartym przykazaniem kościelnym?',
         options: [
+          'Od rozmawiania z innymi',
           'Od chodzenia do szkoły',
-          'Od udziału w hucznych zabawach',
           'Od jedzenia jakichkolwiek posiłków przez 40 dni',
-          'Od rozmawiania z innymi'
+          'Od udziału w hucznych zabawach'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Czwarte przykazanie kościelne wzywa do powstrzymywania się od udziału w zabawach w okresie pokuty (Wielki Post), aby ułatwić skupienie, refleksję i nawrócenie.'
       }
     ]
@@ -916,23 +916,23 @@ Napisz w zeszycie krótką modlitwę dziękczynną za dar wiary w naszej Ojczyź
         question: 'Kiedy odbył się Chrzest Polski i który władca go przyjął?',
         options: [
           'W 1000 roku, Bolesław Chrobry',
-          'W 966 roku, Mieszko I',
+          'W 968 roku, brat Wojciech',
           'W 1410 roku, Władysław Jagiełło',
-          'W 968 roku, brat Wojciech'
+          'W 966 roku, Mieszko I'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Tradycyjną datą Chrztu Polski jest 14 kwietnia 966 roku, kiedy to książę Mieszko I przyjął chrzest, co rozpoczęło chrystianizację i budowanie państwa polskiego.'
       },
       {
         id: 'rel5-48-q2',
         question: 'Gdzie w 1000 roku na ziemiach polskich utworzono pierwsze arcybiskupstwo (metropolię)?',
         options: [
-          'W Poznaniu',
-          'W Gnieźnie',
           'W Krakowie',
-          'W Warszawie'
+          'W Poznaniu',
+          'W Warszawie',
+          'W Gnieźnie'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Podczas słynnego Zjazdu Gnieźnieńskiego w 1000 roku utworzono pierwszą polską metropolię ze stolicą w Gnieźnie, a jej arcybiskupem został Radzim Gaudenty.'
       }
     ]

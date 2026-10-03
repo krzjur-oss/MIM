@@ -61,24 +61,24 @@ Pan Jezus bardzo kocha wszystkie dzieci. Cieszy się, gdy przychodzimy do Niego,
         id: 'r1-l01-q1',
         question: 'Co powiedział Pan Jezus do swoich uczniów, gdy dzieci chciały do Niego podejść?',
         options: [
-          '„Pozwólcie dzieciom przychodzić do Mnie, nie przeszkadzajcie im”',
           'Odeślijcie dzieci do domu',
+          'Tylko dorośli mogą słuchać moich słów',
           'Dzieci powinny cicho czekać w innym miejscu',
-          'Tylko dorośli mogą słuchać moich słów'
+          '„Pozwólcie dzieciom przychodzić do Mnie, nie przeszkadzajcie im”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus gorąco pragnął obecności dzieci i pouczył uczniów, by nie zabraniali im do Niego przychodzić.'
       },
       {
         id: 'r1-l01-q2',
         question: 'Czym jest katecheza?',
         options: [
-          'Lekcją religii, na której poznajemy Boga i uczymy się modlitwy',
-          'Zwykłą lekcją matematyki',
           'Treningiem sportowym na boisku',
-          'Zabawą na przerwie szkolnej'
+          'Zabawą na przerwie szkolnej',
+          'Zwykłą lekcją matematyki',
+          'Lekcją religii, na której poznajemy Boga i uczymy się modlitwy'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Katecheza to lekcja religii, podczas której poznajemy nauki Pana Jezusa i wzrastamy w wierze.'
       }
     ]
@@ -142,24 +142,24 @@ Nasza klasa szkolna jest wspólnotą. Pomoże nam w tym wzajemna życzliwość, 
         id: 'r1-l02-q1',
         question: 'W czym Pan Jezus czynił postępy podczas swojego dzieciństwa w Nazarecie?',
         options: [
-          'W mądrości, w latach i w łasce u Boga i u ludzi',
           'W gromadzeniu skarbców i bogactw',
-          'W zdobywaniu władzy nad królestwem',
-          'W wygrywaniu zawodów sportowych'
+          'W wygrywaniu zawodów sportowych',
+          'W mądrości, w latach i w łasce u Boga i u ludzi',
+          'W zdobywaniu władzy nad królestwem'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Ewangelia św. Łukasza przypomina, że Jezus rósł w mądrości, latach i łasce Bożej oraz ludzkiej.'
       },
       {
         id: 'r1-l02-q2',
         question: 'Jak budujemy dobrą wspólnotę w naszej klasie szkolnej?',
         options: [
-          'Przez pomoc innym, życzliwość i zgodną zabawę',
-          'Przez hałasowanie na lekcjach',
           'Przez zabieranie zabawek rówieśnikom',
-          'Przez kłótnie i wyśmiewanie innych'
+          'Przez kłótnie i wyśmiewanie innych',
+          'Przez hałasowanie na lekcjach',
+          'Przez pomoc innym, życzliwość i zgodną zabawę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Wspólnotę buduje miłość, życzliwość, pomoc i szacunek wobec każdego rówieśnika.'
       }
     ]
@@ -223,24 +223,24 @@ Gdy żegnamy się słowami: *„W imię Ojca i Syna, i Ducha Świętego. Amen”
         id: 'r1-l03-q1',
         question: 'O czym przypomina nam Znak Krzyża?',
         options: [
-          'O męce i wielkiej miłości Pana Jezusa, który oddał za nas życie',
           'O budowie kościołów',
-          'O podróżach po świecie',
-          'O zajęciach plastycznych'
+          'O zajęciach plastycznych',
+          'O męce i wielkiej miłości Pana Jezusa, który oddał za nas życie',
+          'O podróżach po świecie'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Krzyż przypomina o ofierze miłości Chrystusa oraz o Trójcy Świętej.'
       },
       {
         id: 'r1-l03-q2',
         question: 'Jakie słowa wypowiadamy, uczyniwszy Znak Krzyża Świętego?',
         options: [
-          'W imię Ojca i Syna, i Ducha Świętego. Amen.',
+          'Bogu niech będą dzięki',
           'Aniele Boży, Stróżu mój',
-          'Zdrowaś Maryjo, łaski pełna',
-          'Bogu niech będą dzięki'
+          'W imię Ojca i Syna, i Ducha Świętego. Amen.',
+          'Zdrowaś Maryjo, łaski pełna'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Znak krzyża wykonujemy ze słowami miłości do Trójcy Świętej: Ojca, Syna i Ducha Świętego.'
       }
     ]
@@ -304,24 +304,24 @@ Boże słowo zachęca nas do posłuszeństwa i okazywania szacunku rodzicom. Gdy
         id: 'r1-l04-q1',
         question: 'Czym dla każdego z nas jest nasza rodzina?',
         options: [
-          'Pięknym darem od Pana Boga, w którym uczymy się miłości',
           'Miejscem przypadkowego spotkania',
+          'Miejscem do kłótni',
           'Zwykłą grupą znajomych',
-          'Miejscem do kłótni'
+          'Pięknym darem od Pana Boga, w którym uczymy się miłości'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Rodzina jest pierwszym darem od Boga, stworzonym do wzajemnej miłości i wsparcia.'
       },
       {
         id: 'r1-l04-q2',
         question: 'Do czego wzywa dzieci Święty Paweł w Liście do Efezjan (Ef 6,1)?',
         options: [
-          'Do posłuszeństwa i szacunku wobec swoich rodziców',
-          'Do ciągłego domagania się prezentów',
           'Do oglądania telewizji',
+          'Do ciągłego domagania się prezentów',
+          'Do posłuszeństwa i szacunku wobec swoich rodziców',
           'Do unikania pracy domowej'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Apostoł Paweł wzywa: „Dzieci, bądźcie posłuszne waszym rodzicom”.'
       }
     ]
@@ -385,12 +385,12 @@ Pan Jezus jest z nami w kościele w szczególny sposób. Słuchamy Jego słowa, 
         id: 'r1-l05-q1',
         question: 'Kto tworzy wspólnotę Kościoła?',
         options: [
-          'Wszyscy ochrzczeni wierzący w Pana Jezusa',
-          'Tylko papież i biskupi',
           'Tylko aniołowie w niebie',
-          'Mieszkańcy jednego miasta'
+          'Tylko papież i biskupi',
+          'Mieszkańcy jednego miasta',
+          'Wszyscy ochrzczeni wierzący w Pana Jezusa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Kościół to cała Boża rodzina – wszyscy ochrzczeni ludzie wierzący w Chrystusa.'
       },
       {
@@ -398,9 +398,9 @@ Pan Jezus jest z nami w kościele w szczególny sposób. Słuchamy Jego słowa, 
         question: 'Co obiecał Pan Jezus swoim uczniom w Ewangelii wg św. Mateusza?',
         options: [
           '„Ja jestem z wami przez wszystkie dni, aż do skończenia świata”',
-          'Że spotkają się tylko raz w roku',
           'Że opuści ich na długi czas',
-          'Że będą żyć bez modlitwy'
+          'Że będą żyć bez modlitwy',
+          'Że spotkają się tylko raz w roku'
         ],
         correctAnswer: 0,
         explanation: 'Jezus zapewnił o swojej nieustannej obecności we wspólnocie wiernych.'
@@ -466,24 +466,24 @@ Pan Bóg stworzył świat z miłości do człowieka. Pragnie, abyśmy cieszyli s
         id: 'r1-l06-q1',
         question: 'Jak brzmią pierwsze słowa Pisma Świętego w Księdze Rodzaju?',
         options: [
-          '„Na początku Bóg stworzył niebo i ziemię”',
           'Pan jest pasterzem moim',
           'Bądźcie posłuszni rodzicom',
-          'Anioł Pański zwiastował Pannie Maryi'
+          'Anioł Pański zwiastował Pannie Maryi',
+          '„Na początku Bóg stworzył niebo i ziemię”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Biblia rozpoczyna się od opisu stworzenia nieba i ziemi przez Boga Stwórcę.'
       },
       {
         id: 'r1-l06-q2',
         question: 'Dlaczego Pan Bóg stworzył tak piękny świat?',
         options: [
-          'Z miłości do człowieka, byśmy cieszyli się życiem i dbali o Jego dzieło',
           'Aby świat stał pusty',
           'Przez przypadek',
-          'Dla zabawy bez celu'
+          'Dla zabawy bez celu',
+          'Z miłości do człowieka, byśmy cieszyli się życiem i dbali o Jego dzieło'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Stworzenie świata jest bezinteresownym darem miłości Boga dla ludzi.'
       }
     ]
@@ -546,24 +546,24 @@ Każdy z nas jest wyjątkowy i ważny dla Boga. Pan Bóg zna nas po imieniu i pr
         id: 'r1-l07-q1',
         question: 'Kto jest najdoskonalszym stworzeniem Boży na ziemi?',
         options: [
+          'Rzeki i morza',
           'Człowiek',
           'Ptaki niebieskie',
-          'Rzeki i morza',
           'Słońce i księżyc'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Człowiek został stworzony jako korona stworzenia na obraz i podobieństwo Boże.'
       },
       {
         id: 'r1-l07-q2',
         question: 'Czym Bóg obdarzył człowieka przy stworzeniu według Księgi Rodzaju?',
         options: [
+          'Siłą większą niż wszystkie zwierzęta',
           'Tchnieniem życia, miłującym sercem, rozumem i nieśmiertelną duszą',
           'Złotą koroną',
-          'Siłą większą niż wszystkie zwierzęta',
           'Skrzydłami'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Bóg ulepił człowieka i tchnął w niego tchnienie życia, dając mu nieśmiertelną duszę.'
       }
     ]
@@ -627,24 +627,24 @@ Aniołowie bezustannie wielbią Pana Boga w niebie, śpiewając chwałę Stwórc
         id: 'r1-l08-q1',
         question: 'Kim są aniołowie stworzeni przez Pana Boga?',
         options: [
-          'Niewidzialnymi duchami obdarzonymi rozumem i wolą, wysłannikami Boga',
-          'Ludźmi ze skrzydłami żyjącymi na ziemi',
           'Postaciami z bajek',
-          'Gwiazdami na niebie'
+          'Gwiazdami na niebie',
+          'Niewidzialnymi duchami obdarzonymi rozumem i wolą, wysłannikami Boga',
+          'Ludźmi ze skrzydłami żyjącymi na ziemi'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Aniołowie to duchowe istoty stworzone przez Boga do Jego służby i uwielbienia.'
       },
       {
         id: 'r1-l08-q2',
         question: 'Główne zadanie Aniołów według Psalmów to:',
         options: [
-          'Wielbienie Pana Boga i wypełnianie Jego woli',
           'Odpoczynek bez pracy',
-          'Rządzenie państwami',
-          'Latanie nad chmurami dla zabawy'
+          'Latanie nad chmurami dla zabawy',
+          'Wielbienie Pana Boga i wypełnianie Jego woli',
+          'Rządzenie państwami'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Aniołowie nieustannie wielbią Boga w niebie i służą jako Jego posłańcy.'
       }
     ]
@@ -710,24 +710,24 @@ Chroni nas przed niebezpieczeństwami, podpowiada nam dobre myśli, wspiera w cz
         id: 'r1-l08-q1_a',
         question: 'Kogo Pan Bóg przydzielił każdemu człowiekowi do osobistej opieki?',
         options: [
-          'Anioła Stróża',
           'Króla',
           'Żołnierza',
-          'Rycerza'
+          'Rycerza',
+          'Anioła Stróża'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Bóg w swojej miłości przydzielił każdemu z nas Anioła Stróża jako stróża i przewodnika.'
       },
       {
         id: 'r1-l09-q2',
         question: 'W czym pomaga nam nasz Anioł Stróż?',
         options: [
-          'Chroni nas przed złem, podpowiada dobre czyny i prowadzi do nieba',
-          'Odrabia za nas zadania domowe',
           'Kupuje nam zabawki',
-          'Załatwia sprawy w sklepie'
+          'Odrabia za nas zadania domowe',
+          'Załatwia sprawy w sklepie',
+          'Chroni nas przed złem, podpowiada dobre czyny i prowadzi do nieba'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Anioł Stróż strzeże naszej duszy i ciała, inspirując do czynienia dobra.'
       }
     ]

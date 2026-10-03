@@ -74,24 +74,24 @@ Opisz w zeszycie, dlaczego Apostołowie nie rozumieli słów Jezusa o zapowiedzi
         id: 'rel7-13-q1',
         question: 'Z jakiego języka wywodzi się słowo „Pasja” i co ono oznacza?',
         options: [
-          'Z greki, oznacza „zwycięstwo Chrystusa”',
           'Z łaciny (passio), oznacza „cierpienie, męka”',
-          'Z hebrajskiego, oznacza „przejście”',
-          'Z niemieckiego, oznacza „świętość”'
+          'Z greki, oznacza „zwycięstwo Chrystusa”',
+          'Z niemieckiego, oznacza „świętość”',
+          'Z hebrajskiego, oznacza „przejście”'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Słowo Pasja wywodzi się z łacińskiego „passio”, co oznacza cierpienie lub mękę, i odnosi się do Męki Jezusa.'
       },
       {
         id: 'rel7-13-q2',
         question: 'Jak reagowali uczniowie na zapowiedzi Jezusa o cierpieniu i zmartwychwstaniu?',
         options: [
-          'Od razu wszystko zrozumieli i zaczęli świętować',
           'Mieli trudności ze zrozumieniem, ponieważ oczekiwali ziemskiego wodza i króla',
           'Zignorowali słowa Jezusa i odeszli od Niego',
+          'Od razu wszystko zrozumieli i zaczęli świętować',
           'Zapisali te słowa w rzymskich kronikach'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Uczniowie oczekiwali politycznego mesjasza, który wyzwoli Izrael spod okupacji rzymskiej, stąd cierpiący Chrystus był dla nich trudny do zaakceptowania.'
       }
     ]
@@ -171,12 +171,12 @@ Wymień trzy rady ewangeliczne i krótko opisz, jak młody człowiek żyjący w 
         id: 'rel7-14-q1',
         question: 'Które z poniższych stanowią trzy rady ewangeliczne?',
         options: [
-          'Wiara, nadzieja, miłość',
           'Czystość, ubóstwo, posłuszeństwo',
           'Modlitwa, post, jałmużna',
-          'Roztropność, sprawiedliwość, umiarkowanie'
+          'Roztropność, sprawiedliwość, umiarkowanie',
+          'Wiara, nadzieja, miłość'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Rady ewangeliczne, które odzwierciedlają styl życia Chrystusa, to czystość, ubóstwo i posłuszeństwo.'
       },
       {
@@ -185,8 +185,8 @@ Wymień trzy rady ewangeliczne i krótko opisz, jak młody człowiek żyjący w 
         options: [
           'Do karania nieposłusznych chrześcijan',
           'Do ułatwienia usunięcia wszystkiego, co mogłoby przeszkadzać w rozwoju miłości',
-          'Do gromadzenia bogactw przez zakony',
-          'Do zwolnienia ludzi z obowiązku pracy'
+          'Do zwolnienia ludzi z obowiązku pracy',
+          'Do gromadzenia bogactw przez zakony'
         ],
         correctAnswer: 1,
         explanation: 'Ich celem jest oczyszczenie serca z przywiązań i ułatwienie usunięcia przeszkód w rozwoju doskonałej miłości Boga i bliźniego.'
@@ -276,10 +276,10 @@ Wypisz do zeszytu imiona Dwunastu Apostołów. Zaznacz, którzy z nich byli ryba
         id: 'rel7-15-q2',
         question: 'Jak nazywa się w Kościele ciągłość przekazywania urzędu pasterskiego i władzy od Apostołów do dzisiejszych biskupów?',
         options: [
-          'Dogmat nieomylności',
+          'Kolegium kardynalskie',
           'Sukcesja apostolska',
-          'Liturgia godzin',
-          'Kolegium kardynalskie'
+          'Dogmat nieomylności',
+          'Liturgia godzin'
         ],
         correctAnswer: 1,
         explanation: 'Sukcesja apostolska to nieprzerwany łańcuch święceń i przekazywania misji od samych Apostołów kolejnym generacjom biskupów.'
@@ -360,23 +360,23 @@ Dowiedz się i napisz w zeszycie, jak nazywa się obecny papież, z jakiego kraj
         question: 'Jak brzmiało pierwotne imię św. Piotra, zanim Jezus mu je zmienił?',
         options: [
           'Andrzej',
-          'Szymon',
+          'Mateusz',
           'Jan',
-          'Mateusz'
+          'Szymon'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Święty Piotr początkowo nazywał się Szymon (syn Jony), a Jezus zmienił mu imię na Piotr, co oznacza Skałę.'
       },
       {
         id: 'rel7-16-q2',
         question: 'Które z poniższych stwierdzeń opisuje przymioty władzy papieża w Kościele?',
         options: [
-          'Jest czasowa i podlega zmianie przez królów',
-          'Jest najwyższa, pełna, bezpośrednia i powszechna',
+          'Dotyczy wyłącznie spraw finansowych',
           'Jest ograniczona tylko do terytorium Włoch',
-          'Dotyczy wyłącznie spraw finansowych'
+          'Jest czasowa i podlega zmianie przez królów',
+          'Jest najwyższa, pełna, bezpośrednia i powszechna'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Nauka Kościoła definiuje władzę biskupa Rzymu jako najwyższą, pełną, bezpośrednią i powszechną nad całym Kościołem.'
       }
     ]
@@ -451,24 +451,24 @@ Napisz krótką notatkę biograficzną o bł. Carlo Acutisie i wyjaśnij, dlacze
         id: 'rel7-18-q1',
         question: 'Kto jest powołany do świętości w Kościele katolickim?',
         options: [
+          'Tylko ludzie żyjący w pierwszych wiekach chrześcijaństwa',
           'Tylko papieże, biskupi i księża',
-          'Wszyscy ochrzczeni chrześcijanie, bez względu na stan życia',
           'Wyłącznie zakonnicy żyjący w klasztorach klauzurowych',
-          'Tylko ludzie żyjący w pierwszych wiekach chrześcijaństwa'
+          'Wszyscy ochrzczeni chrześcijanie, bez względu na stan życia'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Sobór Watykański II przypomniał o powszechnym powołaniu do świętości – każdy chrześcijanin na mocy chrztu jest do niej wezwany.'
       },
       {
         id: 'rel7-18-q2',
         question: 'Jak bł. Carlo Acutis nazywał Eucharystię?',
         options: [
-          'Trudnym obowiązkiem niedzielnym',
           'Autostradą do Nieba',
           'Złotym skarbem w ziemi',
-          'Kluczem do biblioteki'
+          'Kluczem do biblioteki',
+          'Trudnym obowiązkiem niedzielnym'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Błogosławiony Carlo Acutis mawiał: „Eucharystia to moja autostrada do Nieba”, podkreślając znaczenie codziennej Komunii Świętej.'
       }
     ]
@@ -545,12 +545,12 @@ Wybierz jeden z symboli Ducha Świętego i wyjaśnij w zeszycie jego znaczenie w
         id: 'rel7-19-q1',
         question: 'Który z symboli Ducha Świętego upamiętnia Jego zstąpienie na Jezusa podczas chrztu w Jordanie?',
         options: [
-          'Ogień',
           'Woda',
-          'Gołębica',
-          'Pieczęć'
+          'Pieczęć',
+          'Ogień',
+          'Gołębica'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Podczas chrztu Jezusa w Jordanie niebiosa się otwarły i Duch Święty zstąpił na Niego w postaci cielesnej niby gołębica (por. Łk 3,22).'
       },
       {
@@ -558,11 +558,11 @@ Wybierz jeden z symboli Ducha Świętego i wyjaśnij w zeszycie jego znaczenie w
         question: 'Jak Jezus nazwał Ducha Świętego, obiecując Go Apostołom?',
         options: [
           'Sędzią sprawiedliwym',
-          'Innym Pocieszycielem (Parakletem) i Duchem Prawdy',
           'Aniołem Stróżem',
+          'Innym Pocieszycielem (Parakletem) i Duchem Prawdy',
           'Królem narodów'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jezus obiecał zesłać Apostołom „innego Pocieszyciela... Ducha Prawdy” (J 14,16-17), który będzie z nimi na zawsze.'
       }
     ]
@@ -642,10 +642,10 @@ Napisz w zeszycie, w jaki sposób Duch Święty działa i objawia swoją obecno�
         id: 'rel7-20-q1',
         question: 'Gdzie według słów Jezusa z Dziejów Apostolskich (Dz 1,8) uczniowie mają być Jego świadkami?',
         options: [
-          'Tylko w świątyni jerozolimskiej',
-          'W Jerozolimie, w całej Judei, w Samarii i aż po krańce ziemi',
           'Wyłącznie w Galilei',
-          'Tylko wśród swoich rodzin'
+          'W Jerozolimie, w całej Judei, w Samarii i aż po krańce ziemi',
+          'Tylko wśród swoich rodzin',
+          'Tylko w świątyni jerozolimskiej'
         ],
         correctAnswer: 1,
         explanation: 'Jezus nakazał nieść świadectwo Ewangelii na cały świat: od Jerozolimy, przez sąsiednie prowincje, aż po krańce ziemi.'
@@ -654,10 +654,10 @@ Napisz w zeszycie, w jaki sposób Duch Święty działa i objawia swoją obecno�
         id: 'rel7-20-q2',
         question: 'Jak św. Paweł określa ciało chrześcijanina w 1 Kor 6,19?',
         options: [
-          'Zwykłym prochem i niczym więcej',
+          'Narzędziem do pracy fizycznej',
           'Świątynią Ducha Świętego',
-          'Klatką dla duszy',
-          'Narzędziem do pracy fizycznej'
+          'Zwykłym prochem i niczym więcej',
+          'Klatką dla duszy'
         ],
         correctAnswer: 1,
         explanation: 'Święty Paweł pisze wprost: „Czyż nie wiecie, że ciało wasze jest świątynią Ducha Świętego, który w was jest...”.'
@@ -740,8 +740,8 @@ Napisz, w jaki sposób możesz w praktyce rozwijać dary Ducha Świętego w swoi
         options: [
           'Prorok Izajasz',
           'Prorok Jeremiasz',
-          'Prorok Daniel',
-          'Prorok Eliasz'
+          'Prorok Eliasz',
+          'Prorok Daniel'
         ],
         correctAnswer: 0,
         explanation: 'Siedem darów Ducha Świętego opiera się na proroctwie Izajasza (Iz 11,1-2), który zapowiedział spocznięcie Ducha na „różdżce z pnia Jessego”.'
@@ -750,10 +750,10 @@ Napisz, w jaki sposób możesz w praktyce rozwijać dary Ducha Świętego w swoi
         id: 'rel7-21-q2',
         question: 'Co to jest charyzmat?',
         options: [
-          'Złoty krzyż noszony przez biskupa',
-          'Specjalny, darmowy dar Ducha Świętego dla dobra i budowania wspólnoty Kościoła',
           'Zgromadzenie liturgiczne na koniec roku',
-          'Kara kościelna za nieprzestrzeganie Dekalogu'
+          'Specjalny, darmowy dar Ducha Świętego dla dobra i budowania wspólnoty Kościoła',
+          'Kara kościelna za nieprzestrzeganie Dekalogu',
+          'Złoty krzyż noszony przez biskupa'
         ],
         correctAnswer: 1,
         explanation: 'Charyzmat to szczególny dar Ducha Świętego, udzielany pojedynczym osobom dla pożytku i budowania całej wspólnoty wiernych.'
@@ -835,20 +835,20 @@ Wypisz do zeszytu sześć grzechów przeciwko Duchowi Świętemu. Wybierz jeden 
         question: 'Dlaczego grzech przeciwko Duchowi Świętemu określany jest jako ten, który „nie będzie odpuszczony”?',
         options: [
           'Ponieważ Boże miłosierdzie ma swoje granice i jest zbyt małe dla tego grzechu',
-          'Ponieważ człowiek sam, w sposób wolny i świadomy, zamyka się na łaskę nawrócenia i odrzuca Boże przebaczenie',
           'Ponieważ papież nałożył na ten grzech specjalną karę finansową',
+          'Ponieważ człowiek sam, w sposób wolny i świadomy, zamyka się na łaskę nawrócenia i odrzuca Boże przebaczenie',
           'Ponieważ ten grzech został popełniony przez rzymskich żołnierzy'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Bóg chce wybaczyć każdy grzech, ale szanuje wolną wolę człowieka. Jeśli człowiek uporczywie odrzuca żal i Boże miłosierdzie, sam uniemożliwia sobie przebaczenie.'
       },
       {
         id: 'rel7-22-q2',
         question: 'Które z zachowań jest przykładem grzeszenia zuchwałego w nadziei miłosierdzia Bożego?',
         options: [
-          'Wątpienie, czy spowiedź była ważna',
-          'Świadome popełnianie zła z myślą, że „i tak pójdę do spowiedzi i Bóg mi wybaczy”',
           'Zapomnienie jednego z grzechów lekkich podczas spowiedzi',
+          'Świadome popełnianie zła z myślą, że „i tak pójdę do spowiedzi i Bóg mi wybaczy”',
+          'Wątpienie, czy spowiedź była ważna',
           'Zazdrość, że kolega lepiej się modli'
         ],
         correctAnswer: 1,
@@ -933,23 +933,23 @@ Opisz w zeszycie, jakie znaki towarzyszyły zstąpieniu Ducha Świętego w Wiecz
         question: 'Ile dni po swoim Zmartwychwstaniu Jezus zesłał Ducha Świętego na Apostołów?',
         options: [
           'Trzy dni',
-          'Czterdzieści dni',
           'Pięćdziesiąt dni',
+          'Czterdzieści dni',
           'Sto dni'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Duch Święty zstąpił na Apostołów w dzień Pięćdziesiątnicy, czyli dokładnie 50 dni po zmartwychwstaniu Chrystusa.'
       },
       {
         id: 'rel7-24-q2',
         question: 'Które z widzialnych znaków towarzyszyły zstąpieniu Ducha Świętego w Wieczerniku?',
         options: [
-          'Gwałtowny wicher, ogień (języki ognia) oraz dar języków',
           'Trzęsienie ziemi, zaćmienie słońca i ulewny deszcz',
+          'Zstąpienie aniołów z mieczami',
           'Chmura dymu i dźwięk trąb',
-          'Zstąpienie aniołów z mieczami'
+          'Gwałtowny wicher, ogień (języki ognia) oraz dar języków'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Według opisu z Dziejów Apostolskich (Dz 2,2-4) wydarzeniu towarzyszyły: szum jakby gwałtownego wiatru, języki jakby z ognia i mówienie obcymi językami.'
       }
     ]

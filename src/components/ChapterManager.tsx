@@ -348,6 +348,10 @@ export default function ChapterManager({
   };
 
   const handleDeleteTopic = (ch: Chapter) => {
+    if (allChapters.length <= 1) {
+      notify('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+      return;
+    }
     if (isChapterProtected(ch)) {
       notify('Ten temat jest chroniony (Regulamin / Licencja) i nie może zostać usunięty.', 'error');
       return;

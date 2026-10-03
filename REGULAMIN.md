@@ -52,6 +52,7 @@ Szczegółowe warunki określa plik `LICENSE.md`. W sprawach zgody na niestandar
 3. **Administrator danych**: W rozumieniu przepisów RODO/GDPR administratorem ewentualnych danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor Aplikacji nie posiada technicznego ani fizycznego dostępu do tych danych.
 4. **Brak śledzenia i ciasteczek**: Aplikacja nie używa marketingowych ani śledzących plików cookies, nie korzysta z zewnętrznych skryptów analitycznych (typu Google Analytics czy Facebook Pixel) ani nie profiluje użytkowników.
 5. **Kontrola nad danymi**: Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON (kopia zapasowa) lub trwale je usunąć, korzystając z wbudowanej funkcji resetu lub czyszcząc pamięć podręczną przeglądarki.
+6. **Zasoby zewnętrzne (Galeria obrazów edukacyjnych)**: Aplikacja w pełni funkcjonuje w trybie offline. Wbudowane opcjonalne propozycje edukacyjnych fotografii (np. ilustracje z serwisu Unsplash w brudnopisie) pobierają miniatury bezpośrednio z domen dostawcy wyłącznie w momencie aktywnego połączenia z siecią internetową i nie przekazują żadnych danych identyfikacyjnych użytkownika.
 
 ---
 

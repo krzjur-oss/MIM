@@ -72,24 +72,24 @@ Wypisz, jakie znasz akcje pomocy potrzebującym w Twojej miejscowości, w Polsce
         id: 'rel8-4-q1',
         question: 'Które z przykazań Jezus nazwał „największym i pierwszym”?',
         options: [
-          'Przykazanie miłości Boga',
-          'Przykazanie miłości bliźniego',
           'Dekalog w całości',
-          'Przykazanie czczenia niedzieli'
+          'Przykazanie czczenia niedzieli',
+          'Przykazanie miłości Boga',
+          'Przykazanie miłości bliźniego'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Jezus w Ewangelii wg św. Mateusza (22,37-38) stwierdza wyraźnie, że największym i pierwszym przykazaniem jest miłowanie Pana Boga całym sercem, duszą i umysłem.'
       },
       {
         id: 'rel8-4-q2',
         question: 'Po czym według słów Jezusa z Ewangelii św. Jana wszyscy rozpoznają Jego uczniów?',
         options: [
-          'Po tym, że będą znali całe Pismo Święte na pamięć',
-          'Po ich wzajemnej miłości',
           'Po bogatym stroju i wyglądzie zewnętrznym',
-          'Po głośnej i demonstracyjnej modlitwie publicznej'
+          'Po głośnej i demonstracyjnej modlitwie publicznej',
+          'Po ich wzajemnej miłości',
+          'Po tym, że będą znali całe Pismo Święte na pamięć'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Jezus powiedział: „Po tym wszyscy poznają, żeście uczniami moimi, jeśli będziecie się wzajemnie miłowali” (J 13,35).'
       }
     ]
@@ -167,24 +167,24 @@ Ułóż krótką modlitwę o właściwe rozeznanie i realizację swojego życiow
         id: 'rel8-5-q1',
         question: 'W jakiej encyklice Jan Paweł II napisał, że „człowiek nie może żyć bez miłości”?',
         options: [
-          'Deus caritas est',
-          'Redemptor hominis',
+          'Laborem exercens',
           'Fides et ratio',
-          'Laborem exercens'
+          'Redemptor hominis',
+          'Deus caritas est'
         ],
-        correctAnswer: 1,
+        correctAnswer: 2,
         explanation: 'Cytowane słowa pochodzą z programowej encykliki św. Jana Pawła II „Redemptor hominis” (punkt 10).'
       },
       {
         id: 'rel8-5-q2',
         question: 'Co jest warunkiem trwania w miłości Jezusa według fragmentu Ewangelii św. Jana?',
         options: [
-          'Zdobycie dużego majątku i sławy',
           'Pielęgnowanie wyłącznie własnych uczuć',
-          'Zachowywanie Jego przykazań',
-          'Unikanie kontaktu z ludźmi'
+          'Zdobycie dużego majątku i sławy',
+          'Unikanie kontaktu z ludźmi',
+          'Zachowywanie Jego przykazań'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Jezus mówi: „Jeśli będziecie zachowywać moje przykazania, będziecie trwać w miłości mojej, tak jak Ja zachowałem przykazania Ojca mego” (J 15,10).'
       }
     ]
@@ -261,9 +261,9 @@ Zilustruj lub opisz w kilku zdaniach powołanie do świętości w wybranej formi
         question: 'Jak brzmi łaciński tytuł adhortacji papieża Franciszka o powołaniu do świętości?',
         options: [
           'Laudato si\'',
-          'Amoris laetitia',
+          'Fratelli tutti',
           'Gaudete et exsultate',
-          'Fratelli tutti'
+          'Amoris laetitia'
         ],
         correctAnswer: 2,
         explanation: '„Gaudete et exsultate” (Cieszcie się i radujcie) to adhortacja papieża Franciszka poświęcona powołaniu do świętości we współczesnym świecie.'
@@ -273,11 +273,11 @@ Zilustruj lub opisz w kilku zdaniach powołanie do świętości w wybranej formi
         question: 'Który apostoł pisze o „różnych darach łaski, lecz tym samym Duchu”?',
         options: [
           'Święty Piotr',
-          'Święty Paweł',
           'Święty Jan',
-          'Święty Jakub'
+          'Święty Jakub',
+          'Święty Paweł'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Fragment o różnorodności charyzmatów i darów pochodzi z Pierwszego Listu św. Pawła do Koryntian (1 Kor 12).'
       }
     ]
@@ -359,24 +359,24 @@ Pomyśl, kto najbardziej potrzebuje Twojej modlitwy wstawienniczej i pomódl si�
         id: 'rel8-14-q1',
         question: 'O ocalenie którego miasta targował się z Bogiem Abraham w ufnym dialogu?',
         options: [
-          'Jerycho',
-          'Sodoma',
           'Babilon',
-          'Jerozolima'
+          'Jerycho',
+          'Jerozolima',
+          'Sodoma'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Abraham wstawiał się przed Bogiem za mieszkańcami Sodomy, prosząc o oszczędzenie miasta, jeśli znajdzie się w nim choćby dziesięciu sprawiedliwych.'
       },
       {
         id: 'rel8-14-q2',
         question: 'Kto podtrzymywał wzniesione ręce Mojżesza podczas bitwy z Amalekitami?',
         options: [
-          'Jozue i Kaleb',
-          'Aaron i Chur',
           'Dawid i Salomon',
-          'Samson i Gedeon'
+          'Jozue i Kaleb',
+          'Samson i Gedeon',
+          'Aaron i Chur'
         ],
-        correctAnswer: 1,
+        correctAnswer: 3,
         explanation: 'Księga Wyjścia podaje, że Aaron i Chur podpierali ręce Mojżesza, aby pozostawały wzniesione w geście modlitwy aż do zwycięstwa Izraela.'
       }
     ]
@@ -456,10 +456,10 @@ Wybierz jedną z postaci Nowego Testamentu i napisz, czego możemy się od niej 
         id: 'rel8-15-q1',
         question: 'Jak nazywa się uroczysty hymn dziękczynny Maryi zapisany w Ewangelii wg św. Łukasza?',
         options: [
-          'Te Deum',
+          'Ave Maria',
           'Magnificat',
-          'Pater Noster',
-          'Ave Maria'
+          'Te Deum',
+          'Pater Noster'
         ],
         correctAnswer: 1,
         explanation: 'Maryjny hymn uwielbienia i dziękczynienia zaczynający się od słów „Wielbi dusza moja Pana” to po łacinie „Magnificat” (Łk 1,46-55).'
@@ -469,11 +469,11 @@ Wybierz jedną z postaci Nowego Testamentu i napisz, czego możemy się od niej 
         question: 'Która forma modlitwy polega na cichym, miłosnym wpatrywaniu się w Boga bez używania słów?',
         options: [
           'Modlitwa ustna',
-          'Różaniec',
           'Rozmyślanie (medytacja)',
-          'Kontemplacja myślna'
+          'Kontemplacja myślna',
+          'Różaniec'
         ],
-        correctAnswer: 3,
+        correctAnswer: 2,
         explanation: 'Kontemplacja myślna to, według Katechizmu, proste i milczące spojrzenie wiary utkwione w Jezusa, będące bezpośrednim obcowaniem z Bogiem.'
       }
     ]
@@ -552,22 +552,22 @@ Napisz krótką modlitwę z prośbą o umocnienie Twojej wiary, nadziei i miło�
         id: 'rel8-22-q1',
         question: 'Który apostoł napisał słowa: „Czyż nie wiecie, żeście świątynią Boga i że Duch Boży mieszka w was?”?',
         options: [
-          'Święty Piotr',
+          'Święty Mateusz',
           'Święty Jan',
-          'Święty Paweł',
-          'Święty Mateusz'
+          'Święty Piotr',
+          'Święty Paweł'
         ],
-        correctAnswer: 2,
+        correctAnswer: 3,
         explanation: 'Słynne słowa określające człowieka i wspólnotę jako świątynię Boga napisał św. Paweł w swoim Pierwszym Liście do Koryntian (1 Kor 3,16).'
       },
       {
         id: 'rel8-22-q2',
         question: 'Od którego sakramentu człowiek staje się świątynią Ducha Świętego i dzieckiem Bożym?',
         options: [
-          'Od bierzmowania',
           'Od pierwszej spowiedzi świętej',
+          'Od sakramentu kapłaństwa',
           'Od chrztu świętego',
-          'Od sakramentu kapłaństwa'
+          'Od bierzmowania'
         ],
         correctAnswer: 2,
         explanation: 'To chrzest święty gładzi grzech pierworodny, włącza człowieka do Kościoła i czyni go przybranym dzieckiem Bożym oraz mieszkaniem Ducha Świętego.'

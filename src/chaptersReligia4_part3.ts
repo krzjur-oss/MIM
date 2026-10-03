@@ -69,9 +69,9 @@ Pan Jezus uczy, że jeśli będziemy mieć wielką wiara, będziemy świadkami n
         id: 'r4-l37-q1',
         question: 'Wymień trzy cnoty Boskie:',
         options: [
-          'Mądrość, odwaga, siła',
-          'Wiara, nadzieja, miłość',
           'Radość, spokój, opanowanie',
+          'Wiara, nadzieja, miłość',
+          'Mądrość, odwaga, siła',
           'Prawda, sprawiedliwość, pokora'
         ],
         correctAnswer: 1,
@@ -81,12 +81,12 @@ Pan Jezus uczy, że jeśli będziemy mieć wielką wiara, będziemy świadkami n
         id: 'r4-l37-q2',
         question: 'Co Jezus powiedział o skuteczności modlitwy z wierną ufnością?',
         options: [
-          '„Otrzymacie wszystko, o co na modlitwie z wiara prosić będziecie”',
           '„Modlitwa nie ma wpływu na życie”',
           '„Proście tylko o bogactwa”',
-          '„Bóg słucha tylko wybranych”'
+          '„Bóg słucha tylko wybranych”',
+          '„Otrzymacie wszystko, o co na modlitwie z wiara prosić będziecie”'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus zapewnił, że wszystko, o co na modlitwie z wiara prosić będziemy, otrzymamy (Mt 21,22).'
       }
     ]
@@ -154,24 +154,24 @@ Ostatnim elementem liturgii słowa we Mszy Świętej jest **modlitwa wiernych** 
         id: 'r4-l40-q1',
         question: 'Jak inaczej nazywamy modlitwę wiernych we Mszy Świętej?',
         options: [
-          'Modlitwą powszechną',
           'Aktem pokuty',
-          'Dziękczynieniem',
-          'Hymnem uwielbienia'
+          'Modlitwą powszechną',
+          'Hymnem uwielbienia',
+          'Dziękczynieniem'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Modlitwa wiernych jest też nazywana modlitwą powszechną.'
       },
       {
         id: 'r4-l40-q2',
         question: 'Która część Mszy Świętej kończy się modlitwą wiernych?',
         options: [
-          'Obrzędy wstępne',
           'Liturgia słowa',
+          'Obrzędy zakończenia',
           'Liturgia eucharystyczna',
-          'Obrzędy zakończenia'
+          'Obrzędy wstępne'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Modlitwa wiernych stanowi zwieńczenie Liturgii słowa.'
       }
     ]
@@ -240,12 +240,12 @@ Pan Jezus uczy nas, byśmy i my byli posłuszni Panu Bogu, czyniąc zawsze tak, 
         id: 'r4-l41-q1',
         question: 'W jakim miejscu Jezus modlił się przed pojmaniem słowami: „nie jak Ja chcę, ale jak Ty”?',
         options: [
-          'W Betlejem',
           'W Ogrodzie Oliwnym (Getsemani)',
-          'W Kafarnaum',
-          'Na Górze Tabor'
+          'Na Górze Tabor',
+          'W Betlejem',
+          'W Kafarnaum'
         ],
-        correctAnswer: 1,
+        correctAnswer: 0,
         explanation: 'Jezus modlił się w Getsemani (Ogrójcu) tuż przed pojmaniem.'
       },
       {
@@ -254,8 +254,8 @@ Pan Jezus uczy nas, byśmy i my byli posłuszni Panu Bogu, czyniąc zawsze tak, 
         options: [
           '„Bądź wola Twoja jako w niebie, tak i na ziemi”',
           '„Chleba naszego powszedniego daj nam dzisiaj”',
-          '„I nie wódź nas na pokuszenie”',
-          '„Święć się imię Twoje”'
+          '„Święć się imię Twoje”',
+          '„I nie wódź nas na pokuszenie”'
         ],
         correctAnswer: 0,
         explanation: 'Słowa „Bądź wola Twoja...” oznaczają gotowość do pełnienia woli Boga.'
@@ -322,24 +322,24 @@ W tej modlitwie zwracamy się do Boga z naszymi prośbami. Pierwsze trzy prośby
         id: 'r4-l43-q1',
         question: 'Dlaczego modlitwę „Ojcze nasz” nazywamy Modlitwą Pańską?',
         options: [
-          'Ponieważ nauczył jej sam Pan Jezus',
           'Bo jest odmawiana w niedzielę',
-          'Bo jest najdłuższa',
-          'Bo napisali ją królestwa'
+          'Ponieważ nauczył jej sam Pan Jezus',
+          'Bo napisali ją królestwa',
+          'Bo jest najdłuższa'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Nazywamy ją Modlitwą Pańską, ponieważ pochodzi bezpośrednio od naszego Pana, Jezusa Chrystusa.'
       },
       {
         id: 'r4-l43-q2',
         question: 'Do kogo odnoszą się pierwsze trzy prośby w modlitwie „Ojcze nasz”?',
         options: [
+          'Do Aniołów',
           'Do Boga Ojca',
           'Do nas samych',
-          'Do Aniołów',
           'Do świętych'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Pierwsze trzy prośby dotyczą uwielbienia Boga (imię, Królestwo, wola Boża).'
       }
     ]
@@ -405,12 +405,12 @@ Wielkanoc jest największym świętem chrześcijańskim. Zmartwychwstały Chryst
         id: 'r4-l45-q1',
         question: 'Jak nazywa się noc, w którą Pan Jezus zmartwychwstał?',
         options: [
-          'Nocą Paschalną',
           'Nocą Wigilijną',
-          'Nocą Świętojańską',
-          'Nocą Cichą'
+          'Nocą Cichą',
+          'Nocą Paschalną',
+          'Nocą Świętojańską'
         ],
-        correctAnswer: 0,
+        correctAnswer: 2,
         explanation: 'Noc przejścia ze śmierci do życia nazywa się Nocą Paschalną.'
       },
       {
@@ -418,9 +418,9 @@ Wielkanoc jest największym świętem chrześcijańskim. Zmartwychwstały Chryst
         question: 'Co przypomina nam każda niedziela w ciągu roku?',
         options: [
           'Zmartwychwstanie Pana Jezusa',
-          'Wniebowzięcie',
+          'Chrzest w Jordanie',
           'Narodzenie w Betlejem',
-          'Chrzest w Jordanie'
+          'Wniebowzięcie'
         ],
         correctAnswer: 0,
         explanation: 'Każda niedziela to „Mała Wielkanoc” – dziękczynienie za Zmartwychwstanie Chrystusa.'
@@ -494,24 +494,24 @@ Podczas każdej Mszy Świętej Pan Jezus uobecnia się pośród nas z miłości 
         id: 'r4-l46-q1',
         question: 'W jaki sposób Jezus składa swoją Ofiarę podczas każdej Mszy Świętej?',
         options: [
+          'Wcale nie składa ofiary',
           'W sposób bezkrwawy pod postaciami chleba i wina',
           'W sposób krwawy na ołtarzu',
-          'Tylko jako wyobrażenie symboliczne',
-          'Wcale nie składa ofiary'
+          'Tylko jako wyobrażenie symboliczne'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Msza Święta to bezkrwawe uobecnienie tej samej Ofiary, którą Jezus złożył na krzyżu.'
       },
       {
         id: 'r4-l46-q2',
         question: 'Co Jezus przemienił w swoje Ciało i Krew podczas Ostatniej Wieczerzy?',
         options: [
+          'Oliwę i miód',
           'Chleb i wino',
-          'Owoce i wodę',
           'Rybę i chleb',
-          'Oliwę i miód'
+          'Owoce i wodę'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Jezus wziął chleb i wino, wypowiadając słowa: „To jest Ciało moje”, „To jest Krew moja”.'
       }
     ]
@@ -580,12 +580,12 @@ Apostołowie i ich następcy – biskupi i kapłani – z polecenia Pana Jezusa 
         id: 'r4-l49-q1',
         question: 'Co Jezus obiecał każdemu, kto godnie spożywa Jego Ciało i pije Jego Krew?',
         options: [
-          'Życie wieczne i zmartwychwstanie w dniu ostatecznym',
           'Doczesną sławę',
+          'Zwolnienie z trudów nauki',
           'Szybki awans zawodowy',
-          'Zwolnienie z trudów nauki'
+          'Życie wieczne i zmartwychwstanie w dniu ostatecznym'
         ],
-        correctAnswer: 0,
+        correctAnswer: 3,
         explanation: 'Jezus powiedział: „Kto spożywa moje Ciało i pije moją Krew, ma życie wieczne” (J 6,54).'
       },
       {
@@ -593,9 +593,9 @@ Apostołowie i ich następcy – biskupi i kapłani – z polecenia Pana Jezusa 
         question: 'Co jest niezbędnym warunkiem do przyjęcia Komunii Świętej?',
         options: [
           'Stan łaski uświęcającej (czyste serce bez grzechu ciężkiego)',
+          'Zakup specjalnego stroju',
           'Ukończenie 18 lat',
-          'Idealna ocena z religii',
-          'Zakup specjalnego stroju'
+          'Idealna ocena z religii'
         ],
         correctAnswer: 0,
         explanation: 'Warunkiem przystąpienia do Komunii Świętej jest czyste serce w stanie łaski uświęcającej.'
@@ -664,10 +664,10 @@ Boże Ciało uświadamia nam prawdę o szczególnej obecności Pana Jezusa wśr�
         id: 'r4-l52-q1',
         question: 'Jak nazywa się ozdobne naczynie liturgiczne służące do ukazywania i adoracji Najświętszego Sakramentu?',
         options: [
-          'Kielich',
+          'Puszka (cyborium)',
           'Monstrancja',
-          'Patena',
-          'Puszka (cyborium)'
+          'Kielich',
+          'Patena'
         ],
         correctAnswer: 1,
         explanation: 'Monstrancja to ozdobne naczynie liturgiczne, w którym umieszcza się Hostię do adoracji.'
@@ -676,12 +676,12 @@ Boże Ciało uświadamia nam prawdę o szczególnej obecności Pana Jezusa wśr�
         id: 'r4-l52-q2',
         question: 'Ile ołtarzy jest tradycyjnie przygotowywanych na trasie procesji Bożego Ciała?',
         options: [
-          '2',
-          '3',
+          '7',
           '4',
-          '7'
+          '3',
+          '2'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Procesja Bożego Ciała zatrzymuje się przy 4 ołtarzach, przy których czytane są cztery Ewangelie.'
       }
     ]
@@ -750,9 +750,9 @@ Adorując Pana Jezusa, patrzysz na Niego z wiara i miłością, a On patrzy na C
         question: 'Co według słów Papieża Franciszka oznacza prawdziwie adorować Jezusa?',
         options: [
           'Przebywać z Nim z miłością bez stawiania listy prośb, pozwalając Mu nas uzdrawiać',
+          'Czytać gazety w ławce',
           'Szybko przemieścić się przez kościół',
-          'Tylko głośno śpiewać',
-          'Czytać gazety w ławce'
+          'Tylko głośno śpiewać'
         ],
         correctAnswer: 0,
         explanation: 'Adorować to znaczy przebywać przed Chrystusem z miłością, dziękczynieniem i w cichej modlitwie.'
@@ -762,9 +762,9 @@ Adorując Pana Jezusa, patrzysz na Niego z wiara i miłością, a On patrzy na C
         question: 'Jaka jest podstawowa postawa ciała przy przechodzeniu obok Tabernakulum?',
         options: [
           'Skłon głowy lub przyklęknięcie na jedno kolano',
-          'Ukłon w stronę okna',
+          'Stanie na baczność',
           'Podniesienie rąk do góry',
-          'Stanie na baczność'
+          'Ukłon w stronę okna'
         ],
         correctAnswer: 0,
         explanation: 'Przechodząc przed Tabernakulum, z czcią przyklękamy na jedno kolano lub składamy skłon.'
@@ -840,24 +840,24 @@ Wakacje to czas odpoczynku i podziwiania piękna świata, ale i oddawania Bogu c
         id: 'r4-l57-q1',
         question: 'W jaki sposób chrześcijanin powinien pamiętać o Bogu w czasie wakacji?',
         options: [
-          'Poprzez codzienną modlitwę, podziwianie stworzenia i uczestnictwo w niedzielnej Mszy Świętej',
-          'Zapominając o wierze aż do września',
           'Omijając kościoły z daleka',
-          'Tylko przez oglądanie zdjęć'
+          'Poprzez codzienną modlitwę, podziwianie stworzenia i uczestnictwo w niedzielnej Mszy Świętej',
+          'Tylko przez oglądanie zdjęć',
+          'Zapominając o wierze aż do września'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Chrześcijanin trwa w jedności z Bogiem zawsze – także podczas wakacji, pamiętając o modlitwie i Mszy Świętej.'
       },
       {
         id: 'r4-l57-q2',
         question: 'Który święty napisał słynną Pieśń Słoneczną („Pochwalony bądź Panie z wszystkimi Twoimi stworzeniami”)?',
         options: [
-          'Św. Franciszek z Asyżu',
-          'Św. Antoni',
           'Św. Jan Bosco',
-          'Św. Wojciech'
+          'Św. Franciszek z Asyżu',
+          'Św. Wojciech',
+          'Św. Antoni'
         ],
-        correctAnswer: 0,
+        correctAnswer: 1,
         explanation: 'Święty Franciszek z Asyżu zachwycał się dziełem stworzenia i ułożył Pieśń Słoneczną.'
       }
     ]
