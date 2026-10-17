@@ -1,0 +1,6 @@
+{
+  "summary": "Plan wdrożenia automatycznej migracji danych do bazy IndexedDB dla ekranów interaktywnych Android i tabletów. Rozwiązuje problem przepełnionej pamięci podręcznej (QuotaExceededError) z zachowaniem pełnego działania offline.",
+  "updatedAt": "2026-10-17T11:05:20.603132943Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

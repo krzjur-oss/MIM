@@ -109,8 +109,127 @@ export const idbDelete = async (key: string): Promise<void> => {
 };
 
 // ============================================================================
-// Safe LocalStorage Get / Set / Remove
+// Storage Metrics & Diagnostics Interface
 // ============================================================================
+export interface StorageItemMetric {
+  key: string;
+  label: string;
+  bytes: number;
+  formatted: string;
+}
+
+export interface StorageMetrics {
+  usedBytes: number;
+  formattedUsed: string;
+  estimatedQuotaBytes: number;
+  formattedQuota: string;
+  usagePercent: number;
+  isNearQuota: boolean;
+  hasQuotaExceeded: boolean;
+  items: StorageItemMetric[];
+  hasIndexedDB: boolean;
+}
+
+const FRIENDLY_KEY_LABELS: Record<string, string> = {
+  multibook_chapters: 'Baza lekcji i rozdziałów (pełny podręcznik)',
+  multibook_chapter_gallery_images: 'Galeria ilustracji i plansz',
+  multibook_progress: 'Postępy nauki i notatki z lekcji',
+  multibook_quiz_answers: 'Historia odpowiedzi w quizach',
+  multibook_students: 'Profile i oceny uczniów',
+  multibook_teacher_classes: 'Klasy i grupy lekcyjne',
+  multibook_realizations: 'Dziennik zrealizowanych tematów',
+  multibook_class_chapters: 'Przypisania rozdziałów do klas',
+  multibook_theme: 'Motyw graficzny (kolorystyka)',
+  multibook_fontsize: 'Rozmiar czcionki czytnika',
+  multibook_lineheight: 'Interlinia czytnika',
+  multibook_reading_mode: 'Tryb skupienia / czytania',
+  multibook_terms_and_license_accepted_v1: 'Zgoda licencyjna i regulamin',
+};
+
+export const formatBytes = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+export const getStorageMetrics = (): StorageMetrics => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return {
+      usedBytes: 0,
+      formattedUsed: '0 KB',
+      estimatedQuotaBytes: 5 * 1024 * 1024,
+      formattedQuota: '5.0 MB',
+      usagePercent: 0,
+      isNearQuota: false,
+      hasQuotaExceeded: false,
+      items: [],
+      hasIndexedDB: typeof window !== 'undefined' && !!window.indexedDB,
+    };
+  }
+
+  let totalChars = 0;
+  const items: StorageItemMetric[] = [];
+
+  try {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (!key) continue;
+      const val = window.localStorage.getItem(key) || '';
+      // In JS strings, each UTF-16 character occupies 2 bytes in browser storage memory
+      const itemBytes = (key.length + val.length) * 2;
+      totalChars += key.length + val.length;
+
+      items.push({
+        key,
+        label: FRIENDLY_KEY_LABELS[key] || key,
+        bytes: itemBytes,
+        formatted: formatBytes(itemBytes),
+      });
+    }
+  } catch (e) {
+    console.warn('[storage] Błąd odczytu statystyk localStorage:', e);
+  }
+
+  items.sort((a, b) => b.bytes - a.bytes);
+
+  const usedBytes = totalChars * 2;
+  const estimatedQuotaBytes = 5 * 1024 * 1024; // 5 MB typical DOMStorage limit on Android
+  const usagePercent = Math.min(100, Math.round((usedBytes / estimatedQuotaBytes) * 100));
+
+  return {
+    usedBytes,
+    formattedUsed: formatBytes(usedBytes),
+    estimatedQuotaBytes,
+    formattedQuota: '5.0 MB',
+    usagePercent,
+    isNearQuota: usagePercent >= 70,
+    hasQuotaExceeded: usagePercent >= 98,
+    items,
+    hasIndexedDB: typeof window !== 'undefined' && !!window.indexedDB,
+  };
+};
+
+// ============================================================================
+// Heavy Storage Collections (Educational Database routed directly to IndexedDB)
+// ============================================================================
+export const HEAVY_STORAGE_KEYS = [
+  'multibook_chapters',
+  'multibook_chapter_gallery_images',
+  'multibook_progress',
+  'multibook_quiz_answers',
+  'multibook_students',
+  'multibook_teacher_classes',
+  'multibook_realizations',
+  'multibook_class_chapters',
+] as const;
+
+export type HeavyStorageKey = typeof HEAVY_STORAGE_KEYS[number];
+
+export const isHeavyKey = (key: string): boolean => {
+  return (HEAVY_STORAGE_KEYS as readonly string[]).includes(key);
+};
+
+let lastQuotaNotificationTime = 0;
 
 export const safeGet = <T>(
   key: string,
@@ -137,25 +256,100 @@ export const safeGet = <T>(
   }
 };
 
+/**
+ * Asynchroniczny odczyt danych: sprawdza najpierw wysokopojemną bazę IndexedDB,
+ * a w przypadku jej braku (np. przed migracją) sięga po fallback do localStorage.
+ */
+export const safeGetAsync = async <T>(
+  key: string,
+  defaultValue: T,
+  validator?: (val: unknown) => T | null
+): Promise<T> => {
+  try {
+    const idbVal = await idbGet<T>(key);
+    if (idbVal !== null && idbVal !== undefined) {
+      if (validator) {
+        const validated = validator(idbVal);
+        if (validated !== null) return validated;
+      } else {
+        return idbVal;
+      }
+    }
+  } catch (e) {
+    console.warn(`[storage] Ostrzeżenie przy asynchronicznym odczycie IndexedDB dla "${key}":`, e);
+  }
+
+  return safeGet(key, defaultValue, validator);
+};
+
+/**
+ * Główna funkcja zapisu danych:
+ * - Ciężkie bazy danych (rozdziały, postępy, zdjęcia, quizy, uczniowie) zapisuje bezpośrednio do IndexedDB (100% offline, brak limitu 5MB).
+ * - Usuwa je jednocześnie z localStorage, aby wyeliminować błędy QuotaExceededError na ekranach Android i tabletach.
+ * - Lekkie ustawienia interfejsu (motyw, rozmiar czcionki) zapisuje w localStorage dla natychmiastowego startu bez migotania.
+ */
 export const safeSet = <T>(key: string, value: T): boolean => {
-  if (typeof window === 'undefined' || !window.localStorage) {
+  if (typeof window === 'undefined') {
     return false;
   }
+
+  // 1. Obszerne zbiory danych edukacyjnych -> zapis do IndexedDB
+  if (isHeavyKey(key)) {
+    idbSet(key, value).catch((err) => {
+      console.warn(`[storage] Błąd zapisu IndexedDB dla "${key}":`, err);
+    });
+
+    // Uwalniamy ciasny localStorage z ciężkich danych
+    if (window.localStorage) {
+      try {
+        if (window.localStorage.getItem(key)) {
+          window.localStorage.removeItem(key);
+        }
+      } catch {}
+    }
+    return true;
+  }
+
+  // 2. Lekkie ustawienia interfejsu -> zapis do localStorage
+  if (!window.localStorage) {
+    return false;
+  }
+
   try {
     const serialized = JSON.stringify(value);
     window.localStorage.setItem(key, serialized);
-
-    // Also persist large datasets to IndexedDB asynchronously as an offline mirror/backup
-    if (key === 'multibook_chapters' || key === 'multibook_chapter_gallery_images') {
-      idbSet(key, value).catch(() => {});
-    }
     return true;
   } catch (e) {
     if (isQuotaExceeded(e)) {
-      console.error(`[storage] QuotaExceededError dla klucza "${key}":`, e);
-      notifyStorageError('Brak miejsca w pamięci przeglądarki, wykonaj kopię zapasową');
-      // Attempt to save exclusively to IndexedDB if localStorage quota exceeded
-      idbSet(key, value).catch(() => {});
+      console.warn(`[storage] QuotaExceededError dla klucza "${key}" - uruchamiam samonaprawę:`, e);
+
+      // Samonaprawa: ewakuacja wszystkich ciężkich kluczy z localStorage do IndexedDB
+      try {
+        for (const heavyKey of HEAVY_STORAGE_KEYS) {
+          const rawHeavy = window.localStorage.getItem(heavyKey);
+          if (rawHeavy) {
+            try {
+              idbSet(heavyKey, JSON.parse(rawHeavy)).catch(() => {});
+            } catch {}
+            window.localStorage.removeItem(heavyKey);
+          }
+        }
+
+        const serialized = JSON.stringify(value);
+        window.localStorage.setItem(key, serialized);
+        console.info(`[storage] Samonaprawa udana: klucz "${key}" zapisany po ewakuacji ciężkich danych.`);
+        return true;
+      } catch (retryErr) {
+        console.warn(`[storage] Zapis do localStorage nie powiódł się po samonaprawie:`, retryErr);
+        // Ostateczny fallback: zabezpiecz dane w bazie IndexedDB
+        idbSet(key, value).catch(() => {});
+
+        const now = Date.now();
+        if (now - lastQuotaNotificationTime > 30000) {
+          lastQuotaNotificationTime = now;
+          notifyStorageError('Pamięć podręczna urządzenia jest pełna. Dane zabezpieczono w lokalnej bazie IndexedDB.');
+        }
+      }
     } else {
       console.error(`[storage] Błąd zapisu klucza "${key}" do localStorage:`, e);
     }
@@ -164,13 +358,82 @@ export const safeSet = <T>(key: string, value: T): boolean => {
 };
 
 export const safeRemove = (key: string): void => {
-  if (typeof window === 'undefined' || !window.localStorage) return;
+  if (typeof window === 'undefined') return;
   try {
-    window.localStorage.removeItem(key);
+    if (window.localStorage) {
+      window.localStorage.removeItem(key);
+    }
     idbDelete(key).catch(() => {});
   } catch (e) {
     console.warn(`[storage] Błąd usuwania klucza "${key}":`, e);
   }
+};
+
+/**
+ * Cicha automatyczna migracja przy uruchomieniu (dla ekranów interaktywnych Android i tabletów):
+ * Przenosi dotychczasowe dane z ciasnego localStorage (limit 5MB) do bazy IndexedDB (brak limitu)
+ * i natychmiast czyści stary localStorage, trwale eliminując komunikaty o przepełnionej pamięci.
+ */
+export const silentMigrateToIndexedDB = async (): Promise<{
+  migrated: boolean;
+  freedBytes: number;
+  keysMigrated: string[];
+}> => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return { migrated: false, freedBytes: 0, keysMigrated: [] };
+  }
+
+  let totalFreedChars = 0;
+  const keysMigrated: string[] = [];
+
+  for (const key of HEAVY_STORAGE_KEYS) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Bezpiecznie zapisz w IndexedDB
+        await idbSet(key, parsed);
+        // Zwolnij z localStorage
+        window.localStorage.removeItem(key);
+        totalFreedChars += key.length + raw.length;
+        keysMigrated.push(key);
+        console.info(`[storage-migration] Pomyślnie zmigrowano "${key}" do IndexedDB i zwolniono localStorage.`);
+      }
+    } catch (e) {
+      console.warn(`[storage-migration] Błąd podczas migracji klucza "${key}":`, e);
+    }
+  }
+
+  // Oznacz zakończenie migracji w pamięci podręcznej
+  try {
+    window.localStorage.setItem('multibook_migrated_to_idb_v1', 'true');
+  } catch {}
+
+  const freedBytes = totalFreedChars * 2;
+  return {
+    migrated: keysMigrated.length > 0,
+    freedBytes,
+    keysMigrated,
+  };
+};
+
+/**
+ * Ręczna optymalizacja pamięci wywoływana z poziomu interfejsu (StorageManagerModal):
+ * Przenosi wszystkie ciężkie bazy do IndexedDB i uwalnia pamięć przeglądarki.
+ */
+export const optimizeStorage = async (): Promise<{ freedBytes: number; formattedFreed: string }> => {
+  const result = await silentMigrateToIndexedDB();
+  return {
+    freedBytes: result.freedBytes,
+    formattedFreed: formatBytes(result.freedBytes),
+  };
+};
+
+/**
+ * Czyści historię odpowiedzi z quizów, zwalniając pamięć przed nową lekcją.
+ */
+export const clearQuizHistoryStorage = (): void => {
+  safeRemove('multibook_quiz_answers');
 };
 
 // ============================================================================

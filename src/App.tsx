@@ -55,7 +55,8 @@ import {
   CheckCircle2,
   ShieldCheck,
   Scale,
-  Lock
+  Lock,
+  HardDrive
 } from 'lucide-react';
 import {
   BarChart,
@@ -71,9 +72,22 @@ import {
 } from 'recharts';
 import { Chapter, QuizQuestion, ThemeType, StudentProgress, Student, isChapterProtected } from './types';
 import { DEFAULT_CHAPTERS } from './defaultChapters';
-import { safeGet, safeSet, safeRemove, onStorageError, normalizeChapter, normalizeProgress, normalizeStudent } from './storage';
+import {
+  safeGet,
+  safeSet,
+  safeRemove,
+  onStorageError,
+  idbGet,
+  idbSet,
+  silentMigrateToIndexedDB,
+  optimizeStorage,
+  normalizeChapter,
+  normalizeProgress,
+  normalizeStudent
+} from './storage';
 import DrawingOverlay from './components/DrawingOverlay';
 import ChapterManager from './components/ChapterManager';
+import { StorageManagerModal } from './components/StorageManagerModal';
 
 const getChildrenText = (children: React.ReactNode): string => {
   if (!children) return '';
@@ -374,6 +388,9 @@ export default function App() {
     });
     return unsubscribe;
   }, []);
+
+  // Storage Manager Modal state (for Android interactive screens and quota management)
+  const [isStorageModalOpen, setIsStorageModalOpen] = useState(false);
 
   // 1. Chapters database state
   const [chapters, setChaptersInternal] = useState<Chapter[]>(() => {
@@ -3562,6 +3579,92 @@ export default function App() {
     safeSet('multibook_quiz_answers', quizAnswers);
   }, [quizAnswers]);
 
+  // Cicha automatyczna migracja do bazy IndexedDB i pełna synchronizacja stanu przy uruchomieniu
+  useEffect(() => {
+    let isMounted = true;
+
+    silentMigrateToIndexedDB().then(async () => {
+      if (!isMounted) return;
+
+      try {
+        // 1. Rozdziały i lekcje
+        const idbCh = await idbGet<Chapter[]>('multibook_chapters');
+        if (idbCh && Array.isArray(idbCh) && idbCh.length > 0 && isMounted) {
+          setChaptersInternal((prev) => {
+            const valid = idbCh.map(normalizeChapter).filter((c): c is Chapter => c !== null);
+            if (valid.length > 0) {
+              const merged = [...valid];
+              DEFAULT_CHAPTERS.forEach((def) => {
+                if (!merged.some((m) => m.id === def.id)) {
+                  merged.push(def);
+                }
+              });
+              return sortChapters(merged);
+            }
+            return prev;
+          });
+        }
+
+        // 2. Galeria ilustracji i plansz
+        const idbGall = await idbGet<Record<string, string[]>>('multibook_chapter_gallery_images');
+        if (idbGall && typeof idbGall === 'object' && Object.keys(idbGall).length > 0 && isMounted) {
+          setChapterGalleryImages((prev) => ({ ...idbGall, ...prev }));
+        }
+
+        // 3. Postępy ucznia i notatki
+        const idbProg = await idbGet<StudentProgress>('multibook_progress');
+        if (idbProg && isMounted) {
+          const norm = normalizeProgress(idbProg);
+          setProgress((prev) => ({
+            completedChapters: Array.from(new Set([...prev.completedChapters, ...norm.completedChapters])),
+            bookmarkedChapters: Array.from(new Set([...prev.bookmarkedChapters, ...norm.bookmarkedChapters])),
+            chapterNotes: { ...norm.chapterNotes, ...prev.chapterNotes },
+            quizAttempts: { ...norm.quizAttempts, ...prev.quizAttempts },
+          }));
+        }
+
+        // 4. Profile uczniów
+        const idbStuds = await idbGet<Student[]>('multibook_students');
+        if (idbStuds && Array.isArray(idbStuds) && idbStuds.length > 0 && isMounted) {
+          const valid = idbStuds.map(normalizeStudent).filter((s): s is Student => s !== null);
+          if (valid.length > 0) {
+            setStudents(valid);
+          }
+        }
+
+        // 5. Klasy nauczyciela
+        const idbClasses = await idbGet<string[]>('multibook_teacher_classes');
+        if (idbClasses && Array.isArray(idbClasses) && idbClasses.length > 0 && isMounted) {
+          setTeacherClasses(idbClasses);
+        }
+
+        // 6. Dziennik zrealizowanych lekcji
+        const idbRealiz = await idbGet<any[]>('multibook_realizations');
+        if (idbRealiz && Array.isArray(idbRealiz) && idbRealiz.length > 0 && isMounted) {
+          setRealizations(idbRealiz);
+        }
+
+        // 7. Przypisania rozdziałów do klas
+        const idbClassCh = await idbGet<Record<string, string[]>>('multibook_class_chapters');
+        if (idbClassCh && typeof idbClassCh === 'object' && isMounted) {
+          setClassChapters((prev) => ({ ...idbClassCh, ...prev }));
+        }
+
+        // 8. Historia odpowiedzi w quizach
+        const idbQuiz = await idbGet<Record<string, any>>('multibook_quiz_answers');
+        if (idbQuiz && typeof idbQuiz === 'object' && isMounted) {
+          setQuizAnswers((prev) => ({ ...idbQuiz, ...prev }));
+        }
+      } catch (err) {
+        console.warn('[storage] Błąd synchronizacji IndexedDB przy starcie:', err);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // 10. Mobile sidebar trigger
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -5122,6 +5225,17 @@ export default function App() {
                   />
                 </label>
               </div>
+
+              <button
+                type="button"
+                id="sidebar-storage-manager-btn"
+                onClick={() => setIsStorageModalOpen(true)}
+                className="w-full mt-2 py-1 px-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg text-[9px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1.5 border border-indigo-200 dark:border-indigo-800 active:scale-95"
+                title="Diagnozuj i zoptymalizuj pamięć przeglądarki na ekranach interaktywnych Android i tabletach"
+              >
+                <HardDrive className="w-3 h-3 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                <span>⚡ Pamięć i ekrany Android</span>
+              </button>
             </div>
             <div className="flex justify-between items-center px-1">
               <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.3</p>
@@ -5325,6 +5439,19 @@ export default function App() {
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>{isReadingMode ? 'Tryb Czytania (WŁ.)' : 'Tryb Czytania'}</span>
+              </button>
+
+              <div className={`w-[1px] h-5 border-l ${activeThemeConfig.border}`} />
+
+              {/* Storage & Android Screen Optimizer */}
+              <button
+                id="header-storage-manager-btn"
+                onClick={() => setIsStorageModalOpen(true)}
+                className={`px-2.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
+                title="Pamięć urządzenia i optymalizacja dla ekranów interaktywnych Android / tabletów"
+              >
+                <HardDrive className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                <span className="hidden xl:inline">Pamięć ekranu</span>
               </button>
             </div>
           </div>
@@ -6858,6 +6985,19 @@ export default function App() {
               <p className="text-[11px] leading-normal text-slate-500 dark:text-slate-400 mt-0.5">
                 {toast.message}
               </p>
+              {(toast.message.toLowerCase().includes('pamięć') || toast.message.includes('IndexedDB')) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToast(null);
+                    setIsStorageModalOpen(true);
+                  }}
+                  className="mt-2 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold cursor-pointer transition-all flex items-center gap-1 active:scale-95 shadow-3xs"
+                >
+                  <HardDrive className="w-3 h-3" />
+                  <span>Otwórz optymalizację pamięci</span>
+                </button>
+              )}
             </div>
             <button
               onClick={() => setToast(null)}
@@ -7151,6 +7291,15 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* STORAGE & ANDROID SCREENS OPTIMIZER MODAL */}
+      <StorageManagerModal
+        isOpen={isStorageModalOpen}
+        onClose={() => setIsStorageModalOpen(false)}
+        onExportBackup={handleExportDatabase}
+        onResetFactory={handleResetToDefault}
+        showToast={showToast}
+      />
 
       {/* EXPORT BACKUP SELECTIVE MODAL */}
       <AnimatePresence>
