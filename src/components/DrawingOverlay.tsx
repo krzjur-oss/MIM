@@ -23,6 +23,8 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const currentPointsRef = useRef<Point[]>([]);
+  const pendingPointsRef = useRef<Point[]>([]);
+  const animFrameIdRef = useRef<number | null>(null);
   const isPanningRef = useRef(false);
   const panStartRef = useRef<{ clientX: number; clientY: number; scrollTop: number; scrollLeft: number }>({
     clientX: 0,
@@ -214,7 +216,7 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     });
   };
 
-  const getCoordinates = (e: React.MouseEvent | React.TouchEvent): Point | null => {
+  const getCoordinates = (e: React.PointerEvent | React.MouseEvent | React.TouchEvent | PointerEvent): Point | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
 
@@ -222,13 +224,15 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     let clientX = 0;
     let clientY = 0;
 
-    if ('touches' in e) {
-      if (e.touches.length === 0) return null;
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+    if ('touches' in e && (e as React.TouchEvent).touches) {
+      const touchEv = e as React.TouchEvent;
+      if (touchEv.touches.length === 0) return null;
+      clientX = touchEv.touches[0].clientX;
+      clientY = touchEv.touches[0].clientY;
     } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
+      const mouseEv = e as MouseEvent | React.MouseEvent | React.PointerEvent;
+      clientX = mouseEv.clientX;
+      clientY = mouseEv.clientY;
     }
 
     const viewport = document.getElementById('multibook-reader-scroll-viewport');
@@ -241,7 +245,43 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     };
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Render pending points batch in next animation frame for silky-smooth 60/120fps on Android displays
+  const flushPendingPoints = () => {
+    animFrameIdRef.current = null;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { desynchronized: true }) || canvas.getContext('2d');
+    if (!ctx) return;
+
+    const points = pendingPointsRef.current;
+    if (points.length === 0) return;
+
+    const viewport = document.getElementById('multibook-reader-scroll-viewport');
+    const scrollTop = viewport ? viewport.scrollTop : 0;
+    const scrollLeft = viewport ? viewport.scrollLeft : 0;
+
+    for (let i = 0; i < points.length; i++) {
+      const pt = points[i];
+      ctx.lineTo(pt.x - scrollLeft, pt.y - scrollTop);
+    }
+    ctx.stroke();
+    pendingPointsRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => {
+      if (animFrameIdRef.current !== null) {
+        cancelAnimationFrame(animFrameIdRef.current);
+      }
+    };
+  }, []);
+
+  // Universal Pointer Event Handlers (High-performance for touchscreens, styluses, and mouse)
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    try {
+      (e.target as HTMLElement)?.setPointerCapture?.(e.pointerId);
+    } catch {}
+
     if (tool === 'pan') {
       const viewport = document.getElementById('multibook-reader-scroll-viewport');
       if (viewport) {
@@ -260,31 +300,7 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     startDrawing(e);
   };
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    if (tool === 'pan') {
-      if (e.touches.length > 0) {
-        const viewport = document.getElementById('multibook-reader-scroll-viewport');
-        if (viewport) {
-          isPanningRef.current = true;
-          setIsCurrentlyPanning(true);
-          panStartRef.current = {
-            clientX: e.touches[0].clientX,
-            clientY: e.touches[0].clientY,
-            scrollTop: viewport.scrollTop,
-            scrollLeft: viewport.scrollLeft,
-          };
-        }
-      }
-      return;
-    }
-
-    startDrawing(e);
-  };
-
-  // Obsługa zdarzenia mouseMove:
-  // Warunek pozwala na przesuwanie tła / widoku TYLKO wtedy, gdy aktywne jest narzędzie 'rączka' (panning),
-  // a nie narzędzie do rysowania.
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (tool === 'pan') {
       if (isPanningRef.current) {
         const viewport = document.getElementById('multibook-reader-scroll-viewport');
@@ -298,54 +314,98 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
       return;
     }
 
-    // Gdy aktywne jest narzędzie do rysowania (pen, highlighter, eraser), wykonaj wyłącznie rysowanie bez przesuwania
-    draw(e);
+    if (!isDrawing) return;
+
+    // Use coalesced events if available for high-fidelity handwriting curves on interactive screens
+    const nativeEv = e.nativeEvent as PointerEvent;
+    const coalescedEvents = (typeof nativeEv?.getCoalescedEvents === 'function')
+      ? nativeEv.getCoalescedEvents()
+      : [e];
+
+    for (const ev of coalescedEvents) {
+      const pt = getCoordinates(ev as PointerEvent);
+      if (pt) {
+        currentPointsRef.current.push(pt);
+        pendingPointsRef.current.push(pt);
+      }
+    }
+
+    if (animFrameIdRef.current === null) {
+      animFrameIdRef.current = requestAnimationFrame(flushPendingPoints);
+    }
   };
 
-  // Obsługa zdarzenia touchMove:
-  // Warunek pozwala na przesuwanie tła / widoku TYLKO wtedy, gdy aktywne jest narzędzie 'rączka' (panning),
-  // a nie narzędzie do rysowania.
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    try {
+      (e.target as HTMLElement)?.releasePointerCapture?.(e.pointerId);
+    } catch {}
+
     if (tool === 'pan') {
-      if (isPanningRef.current && e.touches.length > 0) {
-        if (e.cancelable) e.preventDefault();
-        const touch = e.touches[0];
-        const viewport = document.getElementById('multibook-reader-scroll-viewport');
-        if (viewport) {
-          const deltaY = touch.clientY - panStartRef.current.clientY;
-          const deltaX = touch.clientX - panStartRef.current.clientX;
-          viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
-          viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
-        }
-      }
+      isPanningRef.current = false;
+      setIsCurrentlyPanning(false);
       return;
     }
 
-    // Gdy aktywne jest narzędzie do rysowania (pen, highlighter, eraser), wykonaj wyłącznie rysowanie bez przesuwania
+    if (animFrameIdRef.current !== null) {
+      cancelAnimationFrame(animFrameIdRef.current);
+      flushPendingPoints();
+    }
+
+    stopDrawing();
+  };
+
+  // Fallback mouse/touch delegates for maximum cross-platform compatibility
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    handlePointerDown(e as unknown as React.PointerEvent<HTMLCanvasElement>);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan' && e.touches.length > 0) {
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (viewport) {
+        isPanningRef.current = true;
+        setIsCurrentlyPanning(true);
+        panStartRef.current = {
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY,
+          scrollTop: viewport.scrollTop,
+          scrollLeft: viewport.scrollLeft,
+        };
+      }
+      return;
+    }
+    startDrawing(e);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    handlePointerMove(e as unknown as React.PointerEvent<HTMLCanvasElement>);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (tool === 'pan' && isPanningRef.current && e.touches.length > 0) {
+      if (e.cancelable) e.preventDefault();
+      const touch = e.touches[0];
+      const viewport = document.getElementById('multibook-reader-scroll-viewport');
+      if (viewport) {
+        const deltaY = touch.clientY - panStartRef.current.clientY;
+        const deltaX = touch.clientX - panStartRef.current.clientX;
+        viewport.scrollTop = panStartRef.current.scrollTop - deltaY;
+        viewport.scrollLeft = panStartRef.current.scrollLeft - deltaX;
+      }
+      return;
+    }
     draw(e);
   };
 
   const handleMouseUp = () => {
-    if (tool === 'pan') {
-      isPanningRef.current = false;
-      setIsCurrentlyPanning(false);
-      return;
-    }
-
-    stopDrawing();
+    handlePointerUp({ target: null, pointerId: 0 } as unknown as React.PointerEvent<HTMLCanvasElement>);
   };
 
   const handleTouchEnd = () => {
-    if (tool === 'pan') {
-      isPanningRef.current = false;
-      setIsCurrentlyPanning(false);
-      return;
-    }
-
-    stopDrawing();
+    handlePointerUp({ target: null, pointerId: 0 } as unknown as React.PointerEvent<HTMLCanvasElement>);
   };
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | React.PointerEvent<HTMLCanvasElement>) => {
     if (tool === 'pan') return;
 
     const pt = getCoordinates(e);
@@ -353,9 +413,10 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
 
     setIsDrawing(true);
     currentPointsRef.current = [pt];
+    pendingPointsRef.current = [];
 
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
+    const ctx = canvas?.getContext('2d', { desynchronized: true }) || canvas?.getContext('2d');
     if (canvas && ctx) {
       const viewport = document.getElementById('multibook-reader-scroll-viewport');
       const scrollTop = viewport ? viewport.scrollTop : 0;
@@ -385,7 +446,6 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (tool === 'pan') return;
-
     if (!isDrawing) return;
     
     if (e.cancelable) {
@@ -398,7 +458,7 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
     currentPointsRef.current.push(pt);
 
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
+    const ctx = canvas?.getContext('2d', { desynchronized: true }) || canvas?.getContext('2d');
     if (canvas && ctx) {
       const viewport = document.getElementById('multibook-reader-scroll-viewport');
       const scrollTop = viewport ? viewport.scrollTop : 0;
@@ -411,7 +471,6 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
 
   const stopDrawing = () => {
     if (tool === 'pan') return;
-
     if (!isDrawing) return;
     setIsDrawing(false);
 
@@ -427,7 +486,9 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
       setStrokes(updated);
     }
     currentPointsRef.current = [];
+    pendingPointsRef.current = [];
   };
+
 
   const clearCanvas = () => {
     setStrokes([]);
@@ -789,6 +850,10 @@ export default function DrawingOverlay({ isActive, onClose, chapterId }: Drawing
       <canvas
         id="multibook-drawing-canvas"
         ref={canvasRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

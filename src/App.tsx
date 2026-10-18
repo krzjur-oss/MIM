@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useDeferredValue, lazy, Suspense } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -86,8 +86,12 @@ import {
   normalizeStudent
 } from './storage';
 import DrawingOverlay from './components/DrawingOverlay';
-import ChapterManager from './components/ChapterManager';
-import { StorageManagerModal } from './components/StorageManagerModal';
+import { detectDeviceProfile, applyBoardModeDOM } from './utils/devicePerformance';
+
+const ChapterManager = lazy(() => import('./components/ChapterManager'));
+const StorageManagerModal = lazy(() =>
+  import('./components/StorageManagerModal').then((m) => ({ default: m.StorageManagerModal }))
+);
 
 const getChildrenText = (children: React.ReactNode): string => {
   if (!children) return '';
@@ -489,6 +493,20 @@ export default function App() {
   useEffect(() => {
     safeSet('multibook_reading_mode', isReadingMode);
   }, [isReadingMode]);
+
+  // Device Detection Profile & Classroom Board Mode (Ultra wydajność dla tablic Android i tabletów)
+  const deviceProfile = useMemo(() => detectDeviceProfile(), []);
+
+  const [isBoardMode, setIsBoardMode] = useState<boolean>(() => {
+    const saved = safeGet<boolean | null>('multibook_board_mode', null, (v) => (typeof v === 'boolean' ? v : null));
+    if (saved !== null) return saved;
+    return detectDeviceProfile().recommendedBoardMode;
+  });
+
+  useEffect(() => {
+    safeSet('multibook_board_mode', isBoardMode);
+    applyBoardModeDOM(isBoardMode);
+  }, [isBoardMode]);
 
   // Table of Contents State and Logic
   const [isTocExpanded, setIsTocExpanded] = useState<boolean>(true);
@@ -3449,6 +3467,7 @@ export default function App() {
   };
 
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [selectedSubject, setSelectedSubject] = useState<string>('Wszystkie');
   const [selectedSchoolType, setSelectedSchoolType] = useState<string>('Wszystkie');
   const [selectedGrade, setSelectedGrade] = useState<string>('Wszystkie');
@@ -3471,18 +3490,32 @@ export default function App() {
     return ['Wszystkie', ...Array.from(set)];
   }, [chapters]);
 
-  // Filtered chapters for current display
+  // Filtered chapters for current display (Zoptymalizowane pod kątem tabletów i ekranów dotykowych)
   const filteredChapters = useMemo(() => {
+    const query = deferredSearchQuery.trim().toLowerCase();
+
     return chapters.filter((c) => {
-      const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            (c.chapterGroup || '').toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesSubject = selectedSubject === 'Wszystkie' || c.subject === selectedSubject;
-      const matchesSchoolType = selectedSchoolType === 'Wszystkie' || (c.schoolType || 'Ogólny / Pozostałe') === selectedSchoolType;
-      const matchesGrade = selectedGrade === 'Wszystkie' || (c.grade || 'Ogólny') === selectedGrade;
-      return matchesSearch && matchesSubject && matchesSchoolType && matchesGrade;
+      // 1. Szybkie filtry kategorialne (wczesne odrzucenie bez kosztownego przeszukiwania tekstu)
+      if (selectedSubject !== 'Wszystkie' && c.subject !== selectedSubject) return false;
+      if (selectedSchoolType !== 'Wszystkie' && (c.schoolType || 'Ogólny / Pozostałe') !== selectedSchoolType) return false;
+      if (selectedGrade !== 'Wszystkie' && (c.grade || 'Ogólny') !== selectedGrade) return false;
+
+      // Gdy brak zapytania w polu szukajki — nie dotykaj stringów
+      if (!query) return true;
+
+      // 2. Szybkie dopasowanie po tytule i grupie
+      if (c.title && c.title.toLowerCase().includes(query)) return true;
+      if (c.chapterGroup && c.chapterGroup.toLowerCase().includes(query)) return true;
+      if (c.grade && c.grade.toLowerCase().includes(query)) return true;
+
+      // 3. Głębokie przeszukiwanie pełnej treści lekcji tylko dla zapytań o długości >= 3 znaków
+      if (query.length >= 3 && c.content) {
+        return c.content.toLowerCase().includes(query);
+      }
+
+      return false;
     });
-  }, [chapters, searchQuery, selectedSubject, selectedSchoolType, selectedGrade]);
+  }, [chapters, deferredSearchQuery, selectedSubject, selectedSchoolType, selectedGrade]);
 
   // Collapsible state for Table of Contents hierarchy (School Types, Grades, Chapter Groups)
   const [collapsedSchoolTypes, setCollapsedSchoolTypes] = useState<Record<string, boolean>>({});
@@ -5443,6 +5476,27 @@ export default function App() {
 
               <div className={`w-[1px] h-5 border-l ${activeThemeConfig.border}`} />
 
+              {/* Classroom Board Mode Toggle (Optymalizacja Android & GPU) */}
+              <button
+                id="toggle-board-mode-btn"
+                onClick={() => setIsBoardMode(!isBoardMode)}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isBoardMode
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs ring-2 ring-emerald-400/30'
+                    : activeThemeConfig.galleryPresetBtn
+                }`}
+                title={
+                  isBoardMode
+                    ? 'Tryb Tablicy Szkolnej (WŁĄCZONY) — ultra płynność GPU, brak obciążających filtrów rozmycia'
+                    : 'Włącz Tryb Tablicy Szkolnej (optymalizacja dla monitorów interaktywnych Android i tabletów)'
+                }
+              >
+                <Tv className={`w-3.5 h-3.5 ${isBoardMode ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
+                <span>{isBoardMode ? 'Tryb Tablicy (WŁ.)' : 'Tryb Tablicy'}</span>
+              </button>
+
+              <div className={`w-[1px] h-5 border-l ${activeThemeConfig.border}`} />
+
               {/* Storage & Android Screen Optimizer */}
               <button
                 id="header-storage-manager-btn"
@@ -6922,34 +6976,36 @@ export default function App() {
       {/* CHAPTER CREATOR MODAL LAYER */}
       <AnimatePresence>
         {isCreatorOpen && (
-          <ChapterManager
-            allChapters={chapters}
-            onAddChapter={handleAddNewChapter}
-            onUpdateChapter={handleUpdateChapter}
-            onDeleteChapter={(id) => {
-              if (chapters.length <= 1) {
-                showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
-                return;
-              }
-              const afterDelete = chapters.filter((c) => c.id !== id);
-              if (afterDelete.length === 0) {
-                showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
-                return;
-              }
-              setChapters(afterDelete);
-              if (currentChapterId === id && afterDelete.length > 0) {
-                setCurrentChapterId(afterDelete[0].id);
-              }
-            }}
-            editingChapter={editingChapter}
-            onImportAll={handleImportAllChapters}
-            onClose={() => {
-              setIsCreatorOpen(false);
-              setEditingChapter(null);
-            }}
-            showToast={showToast}
-            showConfirm={showConfirm}
-          />
+          <Suspense fallback={null}>
+            <ChapterManager
+              allChapters={chapters}
+              onAddChapter={handleAddNewChapter}
+              onUpdateChapter={handleUpdateChapter}
+              onDeleteChapter={(id) => {
+                if (chapters.length <= 1) {
+                  showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+                  return;
+                }
+                const afterDelete = chapters.filter((c) => c.id !== id);
+                if (afterDelete.length === 0) {
+                  showToast('Nie można usunąć ostatniej lekcji w podręczniku.', 'error');
+                  return;
+                }
+                setChapters(afterDelete);
+                if (currentChapterId === id && afterDelete.length > 0) {
+                  setCurrentChapterId(afterDelete[0].id);
+                }
+              }}
+              editingChapter={editingChapter}
+              onImportAll={handleImportAllChapters}
+              onClose={() => {
+                setIsCreatorOpen(false);
+                setEditingChapter(null);
+              }}
+              showToast={showToast}
+              showConfirm={showConfirm}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
@@ -7293,13 +7349,19 @@ export default function App() {
       </AnimatePresence>
 
       {/* STORAGE & ANDROID SCREENS OPTIMIZER MODAL */}
-      <StorageManagerModal
-        isOpen={isStorageModalOpen}
-        onClose={() => setIsStorageModalOpen(false)}
-        onExportBackup={handleExportDatabase}
-        onResetFactory={handleResetToDefault}
-        showToast={showToast}
-      />
+      {isStorageModalOpen && (
+        <Suspense fallback={null}>
+          <StorageManagerModal
+            isOpen={isStorageModalOpen}
+            onClose={() => setIsStorageModalOpen(false)}
+            onExportBackup={handleExportDatabase}
+            onResetFactory={handleResetToDefault}
+            showToast={showToast}
+            isBoardMode={isBoardMode}
+            onToggleBoardMode={() => setIsBoardMode((prev) => !prev)}
+          />
+        </Suspense>
+      )}
 
       {/* EXPORT BACKUP SELECTIVE MODAL */}
       <AnimatePresence>

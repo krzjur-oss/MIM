@@ -1,6 +1,6 @@
 {
-  "summary": "Plan wdrożenia automatycznej migracji danych do bazy IndexedDB dla ekranów interaktywnych Android i tabletów. Rozwiązuje problem przepełnionej pamięci podręcznej (QuotaExceededError) z zachowaniem pełnego działania offline.",
-  "updatedAt": "2026-10-17T11:05:20.603132943Z",
+  "summary": "Kompleksowy plan optymalizacji wydajności, płynności oraz zużycia pamięci RAM programu na ekranach interaktywnych Android i tabletach. Obejmuje automatyczne wykrywanie ekranu z przełącznikiem Trybu Tablicy, odciążenie GPU, optymalizację wyszukiwarki lekcji i płynne rysowanie bez opóźnień.",
+  "updatedAt": "2026-10-18T11:34:23.664351613Z",
   "requestFeedback": true,
   "userFacing": true
 }

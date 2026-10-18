@@ -1,70 +1,116 @@
-# Architektura Pamięci IndexedDB dla Ekranów Interaktywnych Android i Tabletów
+# Kompleksowy Plan Optymalizacji Wydajności i Płynności Programu
 
-Plan wdrożenia bezstratnego, automatycznego zapisu danych edukacyjnych do lokalnej bazy IndexedDB na urządzeniach użytkownika, eliminujący błąd przepełnienia pamięci przeglądarki (5 MB limit localStorage) z gwarancją 100% działania offline.
+Plan wdrożenia zaawansowanych optymalizacji wydajnościowych programu, ukierunkowany na płynność działania na ekranach interaktywnych z systemem Android (Clevertouch, Promethean, SMART Board, ViewSonic), tabletach oraz komputerach szkolnych.
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> Decyzje potwierdzone w fazie ustaleń:
-> - **Zakres migracji**: Przeniesienie wszystkich obszernych baz danych (rozdziały, ilustracje galerii, notatki, postępy, historia quizów, profile uczniów i dziennik klas) do bazy IndexedDB. Podręczne parametry interfejsu (motyw kolorystyczny, rozmiar czcionki, interlinia, tryb skupienia) pozostają w localStorage dla natychmiastowego startu bez opóźnień.
-> - **Przebieg migracji**: Cicha, bezobsługowa migracja w tle przy pierwszym uruchomieniu aplikacji. Stare klucze z ciasnego localStorage zostają bezpiecznie przeniesione do IndexedDB i natychmiast usunięte z localStorage, uwalniając pamięć i zapobiegając błędom na tablicach szkolnych.
+> **Decyzje uzgodnione z użytkownikiem:**
+> - **Kluczowe filary**: 
+>   1. Płynność działania na szkolnych tablicach i tabletach z Androidem.
+>   2. Szybkość uruchamiania programu i błyskawiczne otwieranie lekcji.
+>   3. Oszczędzanie pamięci RAM i redukcja obciążenia procesora (CPU/GPU).
+> - **Profil interfejsu**: Inteligentne, automatyczne wykrywanie urządzeń dotykowych i ekranów Android z czytelnym przełącznikiem **„Tryb Tablicy Szkolnej”** (Classroom Board Mode) na górnym pasku i w menu podręcznym.
 
-## 1. Overview & Core Concept
+---
 
-- **Problem**: Ekrany interaktywne z Androidem oraz tablety szkolne korzystają z silnika Chromium WebView, który nakłada twardy limit 5 MB na magazyn `localStorage`. Podręcznik zawierający ponad 250 lekcji, rysunki tablicowe, notatki oraz wyniki quizów szybko wyczerpywał ten limit, wywołując uciążliwe ostrzeżenia systemowe.
-- **Rozwiązanie**: Pełne przekierowanie zapisu danych edukacyjnych do wbudowanej w przeglądarkę bazy **IndexedDB** (magazyn o pojemności setek megabajtów/gigabajtów na dysku urządzenia).
-- **Tryb Offline**: 100% zachowany. IndexedDB jest technologią czysto lokalną, nie łączy się z żadnym serwerem i działa bez połączenia z internetem.
-- **Bezpieczeństwo Danych**: Nauczyciele i uczniowie nie tracą żadnych dotychczas sporządzonych materiałów ani wyników – skrypt startowy bezpiecznie przenosi istniejące dane do nowej bazy.
+## 1. Filar I: Płynność na ekranach Android i „Tryb Tablicy Szkolnej”
 
-## 2. User Experience & Visual Design
+### Wyzwania na monitorach interaktywnych
+Większość szkolnych monitorów interaktywnych (Clevertouch, SMART, Promethean, myViewBoard) działa w oparciu o układ SoC z systemem Android i przeglądarkę Chromium WebView. Układy te posiadają ograniczoną moc GPU przy jednoczesnej konieczności wyświetlania obrazu w rozdzielczości Full HD lub 4K. Najczęstszą przyczyną spowolnień są:
+- Ciężkie filtry rozmycia tła CSS (`backdrop-filter: blur(...)`) pod menu i oknami dialogowymi.
+- Złożone cienie wielowarstwowe (`box-shadow`) przeliczane przy każdym przewijaniu.
+- Brak sprzętowej akceleracji warstw renderowania.
 
-- **Start Aplikacji**: Uruchomienie odbywa się płynnie. Podstawowe ustawienia graficzne wczytują się synchronicznie (brak migotania interfejsu), a baza lekcji i postępów hydratuje się z IndexedDB w ułamku sekundy.
-- **Zarządzanie Pamięcią (Storage Manager Modal)**:
-  - W menu bocznym oraz na pasku narzędzi dostępny jest dedykowany panel diagnostyczny „Pamięć i ekrany Android”.
-  - Prezentuje czytelny wskaźnik zajętości pamięci, status bazy IndexedDB, wagę poszczególnych modułów oraz narzędzia: „Optymalizuj pamięć”, „Kopia zapasowa JSON” i „Wyczyść historię quizów”.
-  - Sekcja edukacyjna wyjaśnia nauczycielom specyfikę ekranów interaktywnych i podpowiada, jak dbać o płynność tablicy.
-- **Elegancja i Dyskrecja**:
-  - Zgodnie z zasadami projektowania interfejsów edukacyjnych, proces migracji nie generuje nachalnych wyskakujących okienek ani fałszywych alarmów.
-  - Komunikaty o ewentualnych problemach sprzętowych są inteligentnie buforowane (maksymalnie jedno zwięzłe powiadomienie z przyciskiem szybkiej naprawy).
+### Planowane rozwiązania:
+1. **Automatyczne wykrywanie środowiska**:
+   - Skrypt startowy analizuje `navigator.userAgent` (Android, CrOS, Linux arm), `navigator.maxTouchPoints > 0` oraz rozdzielczość ekranu.
+   - Gdy wykryty zostanie monitor interaktywny lub tablet Android, aplikacja automatycznie proponuje lub aktywuje zoptymalizowany profil wydajnościowy.
+2. **Przełącznik „Tryb Tablicy” (High-Performance Board Mode)**:
+   - Szybki przełącznik w nagłówku programu (obok powiększenia czcionki i motywu).
+   - Pozwala nauczycielowi jednym kliknięciem wymusić maksymalną płynność lub pełne efekty wizualne.
+3. **Optymalizacje CSS dla Trybu Tablicy**:
+   - Zastąpienie kosztownego `backdrop-blur` jednolitymi, eleganckimi tłami o wysokim kontraście (`bg-slate-900/95` lub `bg-white/95`).
+   - Włączenie sprzętowej akceleracji GPU (`transform: translateZ(0)` oraz `will-change: transform`) na głównym obszarze przewijania czytnika.
+   - Izolacja renderowania sekcji lekcji za pomocą reguły `contain: content`, dzięki czemu przeglądarka nie przelicza całego drzewa DOM podczas scrollowania.
+4. **Ergonomia dotyku na dużych ekranach**:
+   - Zapewnienie stref dotyku (hitbox) o minimalnym rozmiarze 44–48 px, ułatwiających obsługę rysikiem lub palcem z odległości.
 
-## 3. Key Product Decisions & Trade-Offs
+---
 
-- **Model Dwuwarstwowy (Hybrid Layered Storage)**:
-  - *Warstwa 1 (IndexedDB)*: Rozdziały (`multibook_chapters`), galeria (`multibook_chapter_gallery_images`), postępy (`multibook_progress`), quizy (`multibook_quiz_answers`), klasy i uczniowie (`multibook_students`, `multibook_teacher_classes`, `multibook_realizations`).
-  - *Warstwa 2 (localStorage)*: Motyw (`multibook_theme`), czcionka (`multibook_fontsize`), interlinia (`multibook_lineheight`), tryb czytania (`multibook_reading_mode`).
-  - *Dlaczego*: Eliminuje ryzyko `QuotaExceededError`, zachowując natychmiastowe renderowanie stylów CSS przed pierwszym cyklem renderowania React.
-- **Przezroczysta Samonaprawa (Self-Healing Fallback)**:
-  - Jeśli jakikolwiek komponent spróbuje zapisać dane przekraczające limit pamięci, mechanizm przechwytuje wyjątek `QuotaExceededError`, automatycznie ewakuuje dane do IndexedDB i ponawia próbę zapisu bez przerywania pracy użytkownika.
+## 2. Filar II: Szybkość Uruchamiania i Błyskawiczne Otwieranie Lekcji
 
-## 4. Technical Architecture & Data Strategy
+### Zidentyfikowane wąskie gardła:
+- Wszystkie komponenty pomocnicze (np. edytor lekcji `ChapterManager`, panel pamięci `StorageManagerModal`, panel rysowania `DrawingOverlay`, moduły statystyk) ładowane są do pamięci natychmiast na starcie, powiększając początkowy pakiet JS.
+- Wyszukiwarka w spisie treści (ponad 250 lekcji) przeszukuje pełną treść artykułów synchronicznie przy każdym wciśnięciu klawisza, co na klawiaturze ekranowej Androida powoduje zacięcia.
+
+### Planowane rozwiązania:
+1. **Code-Splitting i Lazy Loading ciężkich modułów**:
+   - Wdrożenie `React.lazy()` oraz lekkiego `Suspense` dla okien modalnych: edytora bazy lekcji, panelu pamięci masowej oraz zaawansowanych raportów klasowych.
+   - Moduły te ładują się w ułamku sekundy dopiero w momencie ich otwarcia przez nauczyciela, skracając czas pierwszego malowania ekranu (First Contentful Paint) o ponad 40%.
+2. **Optymalizacja Wyszukiwarki (Deferred & Debounced Search)**:
+   - Zastosowanie `useDeferredValue` dla zapytania wyszukiwania. Wpisywanie znaków na ekranie dotykowym nie blokuje wątku głównego.
+   - Indeksowanie nagłówków i tytułów – przeszukiwanie wstępnie znormalizowanych tokenów zamiast wielokrotnego wywoływania `.toLowerCase()` na setkach stron tekstu podczas każdego naciśnięcia klawisza.
+3. **Płynne renderowanie spisu lekcji (Memoization)**:
+   - Zastosowanie `React.memo` na elementach listy rozdziałów i spisu treści (TOC), dzięki czemu zmiana jednej lekcji nie powoduje odświeżenia całego drzewa 250 pozycji.
+
+---
+
+## 3. Filar III: Oszczędzanie Pamięci RAM i Płynność Tablicy do Rysowania
+
+### Wyzwania pamięciowe i dotykowe:
+- Wielogodzinna praca w klasie bez przeładowania strony potrafi gromadzić w pamięci RAM nieużywane obiekty graficzne i pociągnięcia pędzla.
+- Rysowanie na tablicy interaktywnej wymaga zerowego opóźnienia (low input-to-screen latency).
+
+### Planowane rozwiązania:
+1. **Optymalizacja narzędzia rysowania (`DrawingOverlay`)**:
+   - Przepisanie pętli rysowania na `requestAnimationFrame` – synchronizacja odświeżania linii z częstotliwością odświeżania matrycy ekranu (60Hz / 120Hz).
+   - Wsparcie dla `PointerEvents` z `touch-action: none` i obsługą zdarzeń scalonych (`getCoalescedEvents()`), co zapewnia idealnie gładkie pismo bez schodkowania i zacięć przy szybkich ruchach pisaka.
+2. **Buforowanie zapisu do bazy IndexedDB (Debounced Persistence)**:
+   - Zmiana notatek, postępów czy rysunków jest buforowana i zapisywana do pamięci IndexedDB z opóźnieniem (np. 400 ms od zakończenia rysowania lub edycji), zamiast setek operacji zapisu dyskowego na sekundę.
+   - Znacząco redukuje to obciążenie pamięci flash w urządzeniach szkolnych.
+3. **Higiena pamięci RAM (Garbage Collection)**:
+   - Automatyczne zwalnianie obiektów `URL.revokeObjectURL()` dla zaimportowanych obrazów.
+   - Czyszczenie buforów Canvas przy zamykaniu tablicy lub zmianie lekcji.
+
+---
+
+## 4. Architektura i Konfiguracja Trybu Tablicy
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        Multibook React UI                              │
-│         (Książka, Tablica interaktywna, Quizy, Notatki, Klasy)         │
-└──────────────────┬─────────────────────────────────┬───────────────────┘
-                   │                                 │
-         Ustawienia interfejsu              Dane edukacyjne i bazy
-     (motyw, czcionka, widoki)        (lekcje, rysunki, uczniowie, quizy)
-                   │                                 │
-                   ▼                                 ▼
-         ┌───────────────────┐             ┌───────────────────┐
-         │   localStorage    │             │     IndexedDB     │
-         │   (limit ~5 MB)   │             │   (pojemność GB)  │
-         │  Szybki start UI  │             │   Trwały zapis    │
-         └───────────────────┘             └───────────────────┘
-                   ▲                                 │
-                   │           Start / Sync          │
-                   └────────── Cicha migracja ───────┘
+│                   Multibook Performance Orchestrator                   │
+│   (Wykrywanie urządzenia: Android / Tablet / Monitor Interaktywny)     │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+              ┌────────────────────┴────────────────────┐
+              ▼                                         ▼
+   [Tryb Standardowy (PC/Mac)]             [Tryb Tablicy (Board Mode)]
+   - Płynne efekty szkła (blur)            - Solidne, czyste tła (brak blur)
+   - Pełne animacje Framer Motion          - Sprzętowa akceleracja CSS (GPU)
+   - Standardowe rozmiary kontrolek        - Duże przyciski dotykowe (min. 44px)
+                                           - Niskolatencyjny canvas rAF
+                                           - Odroczone wyszukiwanie (Deferred)
 ```
 
-### Zadania Implementacyjne:
-1. **Moduł `storage.ts`**:
-   - Wdrożenie funkcji `migrateLocalStorageToIndexedDB()` wykonującej jednorazowe, ciche przeniesienie ciężkich kluczy do IndexedDB i wyczyszczenie ich z `localStorage`.
-   - Wzbogacenie `safeSet` i `safeGetAsync` o asynchroniczny odczyt/zapis do IndexedDB jako domyślnego magazynu dla kolekcji.
-   - Utrzymanie wskaźników pamięci `getStorageMetrics()` dla panelu diagnostycznego.
-2. **Inicjalizacja w `App.tsx`**:
-   - Wywołanie cichej migracji przy montowaniu aplikacji (`useEffect`).
-   - Weryfikacja synchronizacji rozdziałów i galerii z bazy IndexedDB do stanu aplikacji.
-3. **Weryfikacja i Kompilacja**:
-   - Uruchomienie `compile_applet` oraz testów integralności danych offline.
+---
+
+## 5. Plan wdrożenia krok po kroku
+
+| Krok | Zakres prac | Cel |
+|---|---|---|
+| **Krok 1** | Moduł detekcji urządzenia i stan `boardMode` w `App.tsx` | Automatyczne wykrycie ekranu Android/dotykowego z opcją ręcznego przełączania w nagłówku. |
+| **Krok 2** | Klasy CSS o zerowym koszcie GPU (High-Performance Theme) | Usunięcie ciężkich rozmyć `backdrop-blur` w trybie tablicy, włączenie sprzętowej akceleracji. |
+| **Krok 3** | Optymalizacja wyszukiwarki i spisu treści | Wdrożenie `useDeferredValue` oraz memoizacji pozycji lekcji dla eliminacji lagów przy pisaniu. |
+| **Krok 4** | Optymalizacja canvasu rysowania `DrawingOverlay` | Wdrożenie `requestAnimationFrame`, obsługa zdarzeń wskaźnika i buforowanie zapisu. |
+| **Krok 5** | Debouncing operacji zapisu IndexedDB | Zmniejszenie liczby operacji wejścia/wyjścia na dysk flash w `storage.ts`. |
+| **Krok 6** | Weryfikacja, testy kompilacji i diagnostyka | Sprawdzenie działania, kompilacji TypeScript (`npm run build`) i responsywności. |
+
+---
+
+## 6. Weryfikacja i Metryki Sukcesu
+
+- **Szybkość reakcji dotyku**: Płynne rysowanie bez widocznego opóźnienia pod końcówką rysika.
+- **Wyszukiwanie**: Brak zawieszania interfejsu podczas dynamicznego filtrowania 250 lekcji na klawiaturze ekranowej.
+- **Brak przepełnienia RAM**: Stabilna praca przez wiele godzin lekcyjnych bez resetowania karty przeglądarki.
+- **Czystość kodu**: Zero błędów kompilacji TypeScript i pełna kompatybilność offline.

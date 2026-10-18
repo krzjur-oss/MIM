@@ -282,9 +282,43 @@ export const safeGetAsync = async <T>(
   return safeGet(key, defaultValue, validator);
 };
 
+// Debounced write queue for high-frequency state changes (e.g. typing, drawing, rapid progress updates)
+const pendingIDBWrites = new Map<string, { timer: ReturnType<typeof setTimeout>; value: unknown }>();
+
+export const idbSetDebounced = (key: string, value: unknown, delayMs: number = 300): void => {
+  const existing = pendingIDBWrites.get(key);
+  if (existing) {
+    clearTimeout(existing.timer);
+  }
+  const timer = setTimeout(() => {
+    pendingIDBWrites.delete(key);
+    idbSet(key, value).catch((err) => {
+      console.warn(`[storage] Błąd debounced zapisu IndexedDB dla "${key}":`, err);
+    });
+  }, delayMs);
+  pendingIDBWrites.set(key, { timer, value });
+};
+
+export const flushPendingWrites = async (): Promise<void> => {
+  const promises: Promise<void>[] = [];
+  pendingIDBWrites.forEach((item, key) => {
+    clearTimeout(item.timer);
+    promises.push(idbSet(key, item.value));
+  });
+  pendingIDBWrites.clear();
+  await Promise.all(promises);
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    void flushPendingWrites();
+  });
+}
+
 /**
  * Główna funkcja zapisu danych:
  * - Ciężkie bazy danych (rozdziały, postępy, zdjęcia, quizy, uczniowie) zapisuje bezpośrednio do IndexedDB (100% offline, brak limitu 5MB).
+ * - Stosuje buforowanie zapisu (debouncing), by odciążyć pamięć flash i procesor na tabletach/tablicach.
  * - Usuwa je jednocześnie z localStorage, aby wyeliminować błędy QuotaExceededError na ekranach Android i tabletach.
  * - Lekkie ustawienia interfejsu (motyw, rozmiar czcionki) zapisuje w localStorage dla natychmiastowego startu bez migotania.
  */
@@ -293,11 +327,9 @@ export const safeSet = <T>(key: string, value: T): boolean => {
     return false;
   }
 
-  // 1. Obszerne zbiory danych edukacyjnych -> zapis do IndexedDB
+  // 1. Obszerne zbiory danych edukacyjnych -> buforowany zapis do IndexedDB
   if (isHeavyKey(key)) {
-    idbSet(key, value).catch((err) => {
-      console.warn(`[storage] Błąd zapisu IndexedDB dla "${key}":`, err);
-    });
+    idbSetDebounced(key, value, 250);
 
     // Uwalniamy ciasny localStorage z ciężkich danych
     if (window.localStorage) {

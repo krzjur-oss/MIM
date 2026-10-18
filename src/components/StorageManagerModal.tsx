@@ -16,6 +16,7 @@ import {
   Database,
   ShieldCheck,
   Sparkles,
+  Tv,
 } from 'lucide-react';
 import {
   getStorageMetrics,
@@ -23,6 +24,7 @@ import {
   clearQuizHistoryStorage,
   StorageMetrics,
 } from '../storage';
+import { detectDeviceProfile } from '../utils/devicePerformance';
 
 interface StorageManagerModalProps {
   isOpen: boolean;
@@ -30,6 +32,8 @@ interface StorageManagerModalProps {
   onExportBackup: () => void;
   onResetFactory: () => void;
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+  isBoardMode?: boolean;
+  onToggleBoardMode?: () => void;
 }
 
 export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
@@ -38,11 +42,14 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
   onExportBackup,
   onResetFactory,
   showToast,
+  isBoardMode,
+  onToggleBoardMode,
 }) => {
   const [metrics, setMetrics] = useState<StorageMetrics | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [showAndroidGuide, setShowAndroidGuide] = useState(true);
   const [showItemDetails, setShowItemDetails] = useState(false);
+  const [deviceProfile] = useState(() => detectDeviceProfile());
 
   const refreshMetrics = () => {
     setMetrics(getStorageMetrics());
@@ -176,6 +183,47 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
                 <span>IndexedDB: {metrics?.hasIndexedDB ? 'Dostępna (do 1 GB)' : 'Niedostępna'}</span>
               </div>
             </div>
+          </div>
+
+          {/* Device Profile & Classroom Board Mode */}
+          <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-3.5 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                <Tv className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-xs text-emerald-950 dark:text-emerald-200">
+                    Tryb Tablicy Szkolnej (GPU & Touch)
+                  </span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-extrabold ${
+                    isBoardMode
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                  }`}>
+                    {isBoardMode ? 'WŁĄCZONY' : 'WYŁĄCZONY'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-emerald-800/80 dark:text-emerald-300/80">
+                  Wykryte urządzenie: <strong>{deviceProfile.deviceLabel}</strong>. Wyłącza ciężkie rozmycia tła, włącza akcelerację GPU.
+                </p>
+              </div>
+            </div>
+
+            {onToggleBoardMode && (
+              <button
+                type="button"
+                onClick={onToggleBoardMode}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 cursor-pointer transition-all shadow-xs ${
+                  isBoardMode
+                    ? 'bg-emerald-700 hover:bg-emerald-800 text-white'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-50'
+                }`}
+                title="Włącz lub wyłącz Tryb Tablicy Szkolnej"
+              >
+                {isBoardMode ? 'Wyłącz' : 'Włącz'}
+              </button>
+            )}
           </div>
 
           {/* Quick Action Buttons */}
