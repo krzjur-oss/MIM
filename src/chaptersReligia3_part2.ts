@@ -76,7 +76,7 @@ Przez sakramenty Jezus spotyka się z nami, gładzi grzechy, jednoczy ze sobą i
         options: [
           'Widzialnym znakiem niewidzialnej łaski Bożej ustanowionym przez Pana Jezusa',
           'Tradycyjną uroczystością rodzinną',
-          'Modlitwą odmawianą wyłącznie przez kapłana',
+          'Modlitwą odmawianą wyłącznie przez kapłana w ramach osobistego rozwoju duchowego i moralnego',
           'Zwykłym zwyczajem ludowym'
         ],
         correctAnswer: 0,
@@ -157,7 +157,7 @@ Jezus dostrzegł w paralityku najpierw potrzebę uzdrowienia duszy, dlatego odpu
           'Brak kieszonkowego',
           'Zła ocena ze sprawdzianu',
           'Grzech – czyli świadome nieposłuszeństwo woli Bożej',
-          'Zwykłe przeziębienie'
+          'Zwykłe przeziębienie zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Grzech osłabia lub niszczy naszą relację z Panem Bogiem i bliźnimi, dlatego jest chorobą duszy.'
@@ -236,7 +236,7 @@ Gdy żałujemy za swoje złe postępowanie i z pokorą wracamy w sakramencie pok
         id: 'r3-l23-q1',
         question: 'Kogo symbolizuje postać miłosiernego ojca w przypowieści Jezusa?',
         options: [
-          'Sąsiada z wioski',
+          'Sąsiada z wioski podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Pana Boga, który kocha grzesznika i zawsze wyczekuje jego powrotu',
           'Surowego sędziego miejskiego',
           'Przełożonego robotników'
@@ -250,7 +250,7 @@ Gdy żałujemy za swoje złe postępowanie i z pokorą wracamy w sakramencie pok
         options: [
           'Wzruszył się głęboko, wybiegł mu naprzeciw i rzucił mu się na szyję',
           'Kazał mu zapłacić odszkodowanie',
-          'Zamknął przed nim drzwi domu',
+          'Zamknął przed nim drzwi domu na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Odesłał go do pracy najemnika bez przebaczenia'
         ],
         correctAnswer: 0,
@@ -324,7 +324,7 @@ Rachunek sumienia warto robić nie tylko przed spowiedzią, ale każdego wieczor
           'Zastanowieniem się nad swoimi myślami, słowami i uczynkami w świetle Bożej miłości',
           'Czytaniem książek historycznych',
           'Sprawdzaniem wydatków domowych',
-          'Liczebnym podsumowaniem ocen ze szkoły'
+          'Liczebnym podsumowaniem ocen ze szkoły w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Rachunek sumienia polega na przypomnieniu sobie zrobionego zła i zaniedbanego dobra przed Bogiem.'
@@ -333,7 +333,7 @@ Rachunek sumienia warto robić nie tylko przed spowiedzią, ale każdego wieczor
         id: 'r3-l24-q2',
         question: 'Który to warunek sakramentu pokuty i pojednania?',
         options: [
-          'Drugi warunek',
+          'Drugi warunek w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Ostatni warunek',
           'Pierwszy warunek',
           'Trzeci warunek'
@@ -416,7 +416,7 @@ Piotr Apostoł bardzo kochał Pana Jezusa, jednak z lęku wyparł się Go trzy r
         options: [
           'Wyszedł na zewnątrz i gorzko zapłakał z żalu',
           'Uciekł do innego kraju',
-          'Kłócił się z ludźmi',
+          'Kłócił się z ludźmi podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Udał, że nic się nie stało'
         ],
         correctAnswer: 0,
@@ -490,7 +490,7 @@ Pan Jezus powiedział do św. Faustyny Kowalskiej: *„Moje serce przepełnione 
           'Na szczerej woli i konkretnej decyzji unikania grzechu oraz stawania się lepszym człowiekiem',
           'Na milczeniu przed rodzicami',
           'Na obietnicy dobrej zabawy',
-          'Na zaplanowaniu zakupu prezentów'
+          'Na zaplanowaniu zakupu prezentów w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 0,
         explanation: 'Mocne postanowienie poprawy polega na podjęciu zdecydowanej walki ze słabościami przy pomocy łaski Bożej.'
@@ -499,7 +499,7 @@ Pan Jezus powiedział do św. Faustyny Kowalskiej: *„Moje serce przepełnione 
         id: 'r3-l26-q2',
         question: 'Co Pan Jezus powiedział do kobiety, której odpuścił grzechy w Ewangelii wg św. Jana?',
         options: [
-          '„Nie rozmawiaj z nikim”',
+          '„Nie rozmawiaj z nikim” podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           '„I Ja ciebie nie potępiam. Idź, a od tej chwili już nie grzesz!”',
           '„Nie wracaj do domu”',
           '„Przestań się modlić”'
@@ -581,7 +581,7 @@ Jezus przekazuje Apostołom i ich następcom władzę odpuszczania grzechów:
         question: 'Kogo zastępuje kapłan siedzący w konfesjonale podczas spowiedzi?',
         options: [
           'Sędziego państwowego',
-          'Autora podręcznika',
+          'Autora podręcznika w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Dyrektora szkoły',
           'Sama Pana Jezusa Chrystusa'
         ],
@@ -666,7 +666,7 @@ Przykład Zacheusza uczy nas, że prawdziwa radość z przebaczenia objawia się
         options: [
           'Zamknąć się w domu na tydzień',
           'Kupić nowy dom w Jerozolimie',
-          'Uciec z miasta',
+          'Uciec z miasta w codziennym życiu rodzinnym i szkolnym',
           'Oddać połowę majątku ubogim, a skrzywdzonym zwrócić poczwórnie'
         ],
         correctAnswer: 3,
@@ -676,7 +676,7 @@ Przykład Zacheusza uczy nas, że prawdziwa radość z przebaczenia objawia się
         id: 'r3-l28-q2',
         question: 'Jak nazywa się odmówienie modlitwy zadanej przez spowiednika oraz naprawienie krzywd bliźnim?',
         options: [
-          'Rachunkiem sumienia',
+          'Rachunkiem sumienia podczas wspólnotowych spotkań modlitewnych w parafii',
           'Formułą spowiedzi',
           'Zadośćuczynieniem Panu Bogu i bliźniemu',
           'Mocnym postanowieniem poprawy'

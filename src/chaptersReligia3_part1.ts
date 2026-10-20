@@ -77,7 +77,7 @@ Również dzisiaj Chrystus przychodzi do nas:
         id: 'r3-l01-q1',
         question: 'Czym jest katecheza?',
         options: [
-          'Zwykłą lekcją historii',
+          'Zwykłą lekcją historii podczas wspólnotowych spotkań modlitewnych w parafii',
           'Tylko czytaniem podręcznika',
           'Spotkaniem z Panem Jezusem, poznawaniem Jego nauki i pogłębianiem więzi z Nim',
           'Uczestnictwem w zawodach sportowych'
@@ -90,7 +90,7 @@ Również dzisiaj Chrystus przychodzi do nas:
         question: 'Jakie słowa Jezusa przypominają nam o Jego obecności pośród nas?',
         options: [
           '„Módlcie się tylko w samotności”',
-          '„Nie czytajcie Pisma Świętego”',
+          '„Nie czytajcie Pisma Świętego” w ramach osobistego rozwoju duchowego i moralnego',
           '„Bo gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
           '„Idźcie i odpoczywajcie”'
         ],
@@ -166,7 +166,7 @@ To rodzice jako pierwsi nauczyli nas uczynić znak krzyża i wypowiedzieć pierw
           'Zwykłym uroczystym obiadem rodzinnym',
           'Przyjęciem po raz pierwszy prawdziwego Ciała Pana Jezusa pod postacią chleba',
           'Egzaminem ze znajomości pacierza',
-          'Otrzymaniem nowego modlitewnika'
+          'Otrzymaniem nowego modlitewnika zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 1,
         explanation: 'Pierwsza Komunia Święta to moment, w którym po raz pierwszy w pełni uczestniczymy we Mszy Świętej, przyjmując Ciało Chrystusa.'
@@ -175,7 +175,7 @@ To rodzice jako pierwsi nauczyli nas uczynić znak krzyża i wypowiedzieć pierw
         id: 'r3-l02-q2',
         question: 'Gdzie Maryja i Józef odnaleźli dwunastoletniego Jezusa, który pozostał w Jerozolimie?',
         options: [
-          'W ogrodzie oliwnym',
+          'W ogrodzie oliwnym podczas uroczystych obchodów świąt nakazanych w Kościele',
           'W domu krewnego',
           'Na rynku miejskim',
           'W świątyni wśród nauczycieli'
@@ -254,7 +254,7 @@ W parafii wspólnie modlimy się, słuchamy Słowa Bożego i przyjmujemy sakrame
         options: [
           'Wspólnotą wiernych, nad którą pasterską troskę sprawuje ksiądz proboszcz',
           'Organizacją charytatywną dla dorosłych',
-          'Budynkiem szkoly podstawowej',
+          'Budynkiem szkoly podstawowej na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Grupą przyjaciół z osiedla'
         ],
         correctAnswer: 0,
@@ -266,7 +266,7 @@ W parafii wspólnie modlimy się, słuchamy Słowa Bożego i przyjmujemy sakrame
         options: [
           'Gromadzili tylko majątki osobiste',
           'Unikali wspólnych modlitw',
-          'Spotykali się tylko raz w roku',
+          'Spotykali się tylko raz w roku w środowisku rówieśniczym i lokalnej społeczności',
           'Trwali w nauce Apostołów, łamaniu chleba i modlitwach'
         ],
         correctAnswer: 3,
@@ -341,7 +341,7 @@ Maryja swoim życiem uczy nas, jak uwielbiać Boga i dziękować Mu za wszystkie
         id: 'r3-l04-q1',
         question: 'Jak nazywa się hymn uwielbienia, który Maryja wyśpiewała w domu Elżbiety?',
         options: [
-          'Te Deum („Ciebie Boga wysławiamy”)',
+          'Te Deum („Ciebie Boga wysławiamy”) w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Magnificat („Wielbi dusza moja Pana”)',
           'Gloria in excelsis Deo',
           'Pasterka'
@@ -428,7 +428,7 @@ W Starym Testamencie **Melchizedek** w geście wdzięczności złożył Bogu ofi
         options: [
           'Królem Szalemu i kapłanem Boga Najwyższego, który złożył ofiarę z chleba i wina',
           'Prorokiem na pustyni',
-          'Pasterzem owiec w Betlejem',
+          'Pasterzem owiec w Betlejem podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Rzymskim żołnierzem'
         ],
         correctAnswer: 0,
@@ -441,7 +441,7 @@ W Starym Testamencie **Melchizedek** w geście wdzięczności złożył Bogu ofi
           'Prośba',
           'Dziękczynienie',
           'Ofiarowanie',
-          'Przeproszenie'
+          'Przeproszenie w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 1,
         explanation: 'Słowo Eucharystia pochodzi z języka greckiego i oznacza dziękczynienie składane Bogu.'
@@ -507,7 +507,7 @@ Pan Jezus w przypowieści o faryzeuszu i celniku uczy nas, że Bóg nie przyjmuj
         id: 'r3-l08-q1',
         question: 'Dlaczego celnik z przypowieści Jezusa odszedł z świątyni usprawiedliwiony?',
         options: [
-          'Płacił wysokie podatki',
+          'Płacił wysokie podatki podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Chwalił się swoimi dobrymi uczynkami',
           'Głośno śpiewał pieśni',
           'Ponieważ z pokorą i skruchą bił się w piersi i prosił o zmiłowanie'
@@ -521,7 +521,7 @@ Pan Jezus w przypowieści o faryzeuszu i celniku uczy nas, że Bóg nie przyjmuj
         options: [
           'Modlitwą dziękczynną',
           'Modlitwą przebłagalną (przeproszenia)',
-          'Modlitwą uwielbienia',
+          'Modlitwą uwielbienia w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Modlitwą prośby'
         ],
         correctAnswer: 1,
@@ -683,7 +683,7 @@ Nasz udział we Mszy Świętej powinien być świadomy, czynny i pełen skupieni
           'Bo trwa dokładnie jedną godzinę',
           'Ponieważ sam Jezus Chrystus składa w niej ofiarę Ojcu i jednoczy nas ze sobą',
           'Bo śpiewamy na niej najwięcej piosenek',
-          'Bo odprawia ją kapłan w zabytkowym kościele'
+          'Bo odprawia ją kapłan w zabytkowym kościele w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 1,
         explanation: 'Msza Święta jest najdoskonalszą modlitwą, ponieważ jest obecnością samego Chrystusa i Jego zbawczej ofiary.'
@@ -692,7 +692,7 @@ Nasz udział we Mszy Świętej powinien być świadomy, czynny i pełen skupieni
         id: 'r3-l11-q2',
         question: 'Wymień cztery główne części Mszy Świętej we właściwej kolejności:',
         options: [
-          'Liturgia Słowa, Komunia, Różaniec, Kazanie',
+          'Liturgia Słowa, Komunia, Różaniec, Kazanie podczas wspólnotowych spotkań modlitewnych w parafii',
           'Obrzędy wstępne, Liturgia Słowa, Liturgia Eucharystyczna, Obrzędy zakończenia',
           'Wejście, Pieśń, Błogosławieństwo, Ewangelia',
           'Akt pokuty, Modlitwa wiernych, Ogłoszenia, Błogosławieństwo'

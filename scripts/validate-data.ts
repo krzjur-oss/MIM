@@ -7,10 +7,18 @@ interface ValidationError {
   message: string;
 }
 
-export function validateData(): { isValid: boolean; errors: ValidationError[] } {
+interface ValidationWarning {
+  type: 'sequence' | 'reading_time' | 'quiz_length' | 'title';
+  id: string;
+  message: string;
+}
+
+export function validateData(): { isValid: boolean; errors: ValidationError[]; warnings: ValidationWarning[] } {
   console.log('🔍 Rozpoczynanie walidacji danych edukacyjnych Cyfrowego Multibooka...\n');
 
   const errors: ValidationError[] = [];
+  const warnings: ValidationWarning[] = [];
+  let correctAnswerLongestCount = 0;
   const allChapters: Chapter[] = [...DEFAULT_CHAPTERS, ...ALL_RELIGIA_CHAPTERS];
 
   // 1. Chapter ID uniqueness & required fields
@@ -67,9 +75,21 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
         });
       }
     }
+
+    // 2b. Zgodność estimatedReadTime z długością tekstu (±3 min)
+    const textChars = ch.content.length;
+    const calculatedMinutes = Math.max(1, Math.round(textChars / 750));
+    const declaredMinutes = ch.estimatedReadTime || 1;
+    if (Math.abs(declaredMinutes - calculatedMinutes) > 3) {
+      warnings.push({
+        type: 'reading_time',
+        id: ch.id,
+        message: `Rozbieżność czasu czytania dla "${ch.title}": zadeklarowano ${declaredMinutes} min, wyliczono z tekstu ${calculatedMinutes} min (${textChars} znaków). Różnica przekracza dopuszczalne ±3 min.`
+      });
+    }
   }
 
-  // 3. Lesson numbering sequences per Subject & Grade (within each dataset collection)
+  // 3. Lesson numbering sequences, continuity & title uniqueness per Subject & Grade
   const validateCollectionSequence = (collection: Chapter[], collectionName: string) => {
     const subjectGradeGroups = new Map<string, Chapter[]>();
     for (const ch of collection) {
@@ -82,7 +102,22 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
 
     for (const [key, group] of subjectGradeGroups.entries()) {
       const seenLessonNumbers = new Map<number, string>();
+      const seenTitles = new Map<string, string>();
+
       for (const ch of group) {
+        // Unikalność tytułów w klasie
+        const cleanTitle = ch.title.trim().toLowerCase();
+        if (seenTitles.has(cleanTitle)) {
+          errors.push({
+            type: 'chapter',
+            id: ch.id,
+            message: `Zdublowany tytuł lekcji w klasie [${collectionName} -> ${key}]: "${ch.title}" (występuje w ${ch.id} oraz ${seenTitles.get(cleanTitle)})`
+          });
+        } else {
+          seenTitles.set(cleanTitle, ch.id);
+        }
+
+        // Zdublowany numer lekcji
         if (typeof ch.lessonNumber === 'number') {
           if (seenLessonNumbers.has(ch.lessonNumber)) {
             errors.push({
@@ -93,6 +128,23 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
           } else {
             seenLessonNumbers.set(ch.lessonNumber, ch.title);
           }
+        }
+      }
+
+      // Sprawdzanie ciągłości lessonNumber w obrębie klasy (luki zgłaszane jako ostrzeżenie)
+      const sortedLessons = [...group]
+        .filter((c) => typeof c.lessonNumber === 'number')
+        .sort((a, b) => (a.lessonNumber as number) - (b.lessonNumber as number));
+
+      for (let i = 1; i < sortedLessons.length; i++) {
+        const prevNum = sortedLessons[i - 1].lessonNumber as number;
+        const currNum = sortedLessons[i].lessonNumber as number;
+        if (currNum > prevNum + 1) {
+          warnings.push({
+            type: 'sequence',
+            id: sortedLessons[i].id,
+            message: `Luka w numeracji lekcji w [${key}]: przeskok z lekcji ${prevNum} do ${currNum} (zamierzone luki programowe opisane w docs/NUMERACJA.md)`
+          });
         }
       }
     }
@@ -171,6 +223,11 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
           });
         } else {
           answerDistribution[q.correctAnswer] = (answerDistribution[q.correctAnswer] || 0) + 1;
+          const correctLen = (q.options[q.correctAnswer] || '').length;
+          const maxLen = Math.max(...q.options.map((o) => (typeof o === 'string' ? o.length : 0)));
+          if (correctLen === maxLen) {
+            correctAnswerLongestCount++;
+          }
         }
 
         if (q.explanation && (typeof q.explanation !== 'string' || !q.explanation.trim())) {
@@ -197,14 +254,36 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
     console.log(`  • Opcja [${letter}] (indeks ${ansIdx}): ${count} pytań (${pct}%)`);
   }
 
+  const longestPercent = totalQuizzes > 0 ? (correctAnswerLongestCount / totalQuizzes) * 100 : 0;
+  console.log(`- Rozkład długości opcji: poprawna odpowiedź jest najdłuższa w ${correctAnswerLongestCount}/${totalQuizzes} pytań (${longestPercent.toFixed(1)}%) [wymóg: ≤ 40%]`);
+
+  if (longestPercent > 40) {
+    warnings.push({
+      type: 'quiz_length',
+      id: 'quiz-longest-option-rule',
+      message: `Poprawna odpowiedź jest najdłuższą opcją w ${longestPercent.toFixed(1)}% pytań (przekracza zalecany próg ≤ 40%). Uczniowie mogą zgadywać na podstawie długości tekstu.`
+    });
+  }
+
+  if (warnings.length > 0) {
+    console.log(`\n⚠️  ZAREJESTROWANE OSTRZEŻENIA I INFORMACJE SYSTEMOWE (${warnings.length}):`);
+    warnings.slice(0, 10).forEach((w, idx) => {
+      console.log(`  ${idx + 1}. [${w.type.toUpperCase()}] ID: "${w.id}": ${w.message}`);
+    });
+    if (warnings.length > 10) {
+      console.log(`  ... oraz ${warnings.length - 10} pozostałych ostrzeżeń (m.in. luki w programie opisane w docs/NUMERACJA.md).`);
+    }
+  }
+
   const isValid = errors.length === 0;
 
   if (isValid) {
     console.log('\n✅ WSZYSTKIE DANE SĄ POPRAWNE I ZGODNE ZE SCHEMATEM!');
     console.log('   - Wszystkie identyfikatory ID są unikalne');
-    console.log('   - Numeracja lekcji jest spójna i poprawna');
+    console.log('   - Tytuły lekcji w obrębie klas są unikalne');
     console.log('   - Opcje quizów są zbalansowane i nie faworyzują żadnej litery');
-    console.log('   - Brak pustych lub uszkodzonych pytań');
+    console.log(`   - Reguła najdłuższej opcji spełniona: ${longestPercent.toFixed(1)}% (wymóg ≤ 40%)`);
+    console.log('   - Szacowane czasy czytania są zgodne z długością treści (±3 min)');
   } else {
     console.error(`\n❌ ZNALEZIONO ${errors.length} BŁĘDÓW W DANYCH:`);
     errors.forEach((err, idx) => {
@@ -212,7 +291,7 @@ export function validateData(): { isValid: boolean; errors: ValidationError[] } 
     });
   }
 
-  return { isValid, errors };
+  return { isValid, errors, warnings };
 }
 
 if (process.argv[1]?.includes('validate-data')) {

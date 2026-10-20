@@ -879,7 +879,7 @@ Popatrz, jak wspaniale Bóg ułożył świat dla nas krok po kroku:
     chapterGroup: 'Biologia Komórki',
     educationLevel: 'Szkoła Podstawowa (Klasy 7-8)',
     lessonNumber: 1,
-    estimatedReadTime: 5,
+    estimatedReadTime: 2,
     isDefault: true,
     createdAt: Date.now() - 2000,
     content: `# Budowa i Funkcjonowanie Komórki 🧬

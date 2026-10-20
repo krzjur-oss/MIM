@@ -39,7 +39,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Type check TypeScript
+        run: npx tsc --noEmit
+
+      - name: Validate educational data
+        run: npm run validate
 
       - name: Build production app
         run: npm run build

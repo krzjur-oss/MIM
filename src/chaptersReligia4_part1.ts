@@ -73,7 +73,7 @@ Pan Jezus jest naszym najlepszym Przyjacielem i pragnie, abyśmy swoim postępow
         options: [
           'Spotkaniem się z Panem Bogiem i nauczaniem zasad wiary chrześcijańskiej',
           'Tylko nauczaniem śpiewu',
-          'Zwykłą lekcją historii',
+          'Zwykłą lekcją historii podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Kółkiem zainteresowań plastycznych'
         ],
         correctAnswer: 0,
@@ -86,7 +86,7 @@ Pan Jezus jest naszym najlepszym Przyjacielem i pragnie, abyśmy swoim postępow
           'Przyjaciółmi',
           'Obcymi',
           'Uczniami',
-          'Sługami'
+          'Sługami w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 0,
         explanation: 'Jezus powiedział: „Wy jesteście przyjaciółmi moimi, jeżeli czynicie to, co vam nakazuję” (J 15,14).'
@@ -254,7 +254,7 @@ W czasie każdej Mszy Świętej Pan Jezus uczy swoim słowem i karmi swoim Ciał
         id: 'r4-l3-q1',
         question: 'Z ilu głównych części składa się Msza Święta?',
         options: [
-          'Z dwóch',
+          'Z dwóch podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Z trzech',
           'Z sześciu',
           'Z czterech'
@@ -268,7 +268,7 @@ W czasie każdej Mszy Świętej Pan Jezus uczy swoim słowem i karmi swoim Ciał
         options: [
           'Świadomy, czynny, pełny i owocny',
           'Dowolny bez skupienia',
-          'Bierny i obojętny',
+          'Bierny i obojętny w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Tylko jako obserwator z daleka'
         ],
         correctAnswer: 0,
@@ -361,7 +361,7 @@ W czasie Mszy Świętej słuchamy słowa Bożego podczas **Liturgii słowa**, kt
           'Osobę, która zapomina o Bogu',
           'Osobę, która odrzuca naukę Jezusa',
           'Człowieka, który słucha słowa Bożego i wprowadza je w życie',
-          'Glebę w Ogrodzie Oliwnym'
+          'Glebę w Ogrodzie Oliwnym w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Żyzna ziemia oznacza człowieka, który słucha słowa Bożego i wydaje dobre owoce w swoim życiu.'
@@ -443,7 +443,7 @@ Tylko ten, kto dobrze przyjmuje słowo Boże i postępuje według niego, wytrwa 
         id: 'r4-l5-q2',
         question: 'Co jest trwałym fundamentem życia każdego chrześcijanina?',
         options: [
-          'Sława w internecie',
+          'Sława w internecie podczas wspólnotowych spotkań modlitewnych w parafii',
           'Bogactwo materialne',
           'Słowo Boże i nauka Jezusa',
           'Przypadek'
@@ -524,7 +524,7 @@ W cykl roku liturgicznego wpisane są następujące okresy:
         question: 'Kiedy rozpoczyna się rok liturgiczny w Kościele?',
         options: [
           '1 stycznia w Nowy Rok',
-          'W Niedzielę Palmową',
+          'W Niedzielę Palmową w ramach osobistego rozwoju duchowego i moralnego',
           'W pierwszą niedzielę Adwentu',
           '1 września'
         ],
@@ -538,7 +538,7 @@ W cykl roku liturgicznego wpisane są następujące okresy:
           'Boże Ciało',
           'Wniebowstąpienie Pańskie',
           'Uroczystość Chrystusa Króla Wszechświata',
-          'Zielone Świątki'
+          'Zielone Świątki zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Rok liturgiczny kończy się uroczystością Jezusa Chrystusa Króla Wszechświata.'
@@ -605,7 +605,7 @@ Fundamentem prawdziwej przyjaźni jest miłość. Podstawą przyjaźni z Jezusem
         id: 'r4-l7-q1',
         question: 'Jak brzmi pierwsze i największe przykazanie w nauczaniu Jezusa?',
         options: [
-          'Nie zabijaj',
+          'Nie zabijaj podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Będziesz miłował Pana Boga twego całym swoim sercem, całą swoją duszą i całym swoim umysłem',
           'Pamiętaj, abyś dzień święty święcił',
           'Szanuj starszych od siebie'
@@ -619,7 +619,7 @@ Fundamentem prawdziwej przyjaźni jest miłość. Podstawą przyjaźni z Jezusem
         options: [
           'Szuka własnej korzyści',
           'Jest bezinteresowny, szczery, cierpliwy i troskliwy',
-          'Unika odpowiedzialności',
+          'Unika odpowiedzialności na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Pamięta tylko w dobrych chwilach'
         ],
         correctAnswer: 1,
@@ -701,7 +701,7 @@ Pan Jezus przekazał św. Małgorzacie obietnicę: *„Serce moje wyleje hojne �
           'Tylko podpis na liście w szkole',
           'Obecność w stanie łaski uświęcającej i przyjęcie Komunii Świętej wynagradzającej',
           'Złożenie ofiary pieniężnej',
-          'Przeczytanie całej Biblii'
+          'Przeczytanie całej Biblii w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 1,
         explanation: 'Warunkiem jest spowiedź (łaska uświęcająca) oraz przyjęcie Komunii Świętej jako wynagrodzenie Najświętszemu Sercu Jezusa.'
@@ -771,7 +771,7 @@ Pan Jezus nas kocha i pragnie, abyśmy i my kochali Go ze wszystkich sił. Pomag
         id: 'r4-l9-q1',
         question: 'Czym odpowiedział setnik z Kafarnaum, gdy Jezus chciał przyjść do jego domu?',
         options: [
-          '„Nie trzeba, sam sobie poradzę”',
+          '„Nie trzeba, sam sobie poradzę” w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           '„Panie, nie jestem godzien, abyś wszedł pod dach mój, ale powiedz tylko słowo...”',
           '„Czekam na Ciebie z całym domem”',
           '„Przyjdź jutro rano”'
@@ -784,7 +784,7 @@ Pan Jezus nas kocha i pragnie, abyśmy i my kochali Go ze wszystkich sił. Pomag
         question: 'Czym jest cud?',
         options: [
           'Zwykłym zbiegiem okoliczności',
-          'Sztuczką cyrkową',
+          'Sztuczką cyrkową podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Odkryciem naukowym',
           'Nadzwyczajnym zjawiskiem, którego dokonuje sam Bóg'
         ],
@@ -860,7 +860,7 @@ Jezus chce, abyśmy Mu ufali i powierzali swoje sprawy w modlitwie.
           'Nic się nie stało',
           'Wrócił szybko do łodzi o własnych siłach',
           'Zaczął tonąć, ale Jezus natychmiast podał mu rękę i go uratował',
-          'Zamienił się w rybę'
+          'Zamienił się w rybę w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 2,
         explanation: 'Piotr zaczął tonąć ze strachu, lecz zawołał „Panie, ratuj mnie!” i Jezus go uratował.'
@@ -870,7 +870,7 @@ Jezus chce, abyśmy Mu ufali i powierzali swoje sprawy w modlitwie.
         question: 'Jak brzmią pokrzepiające słowa Jezusa wypowiedziane do przestraszonych uczniów w łodzi?',
         options: [
           '„Odwagi! Ja jestem, nie bójcie się!”',
-          '„Wracajcie do brzegów”',
+          '„Wracajcie do brzegów” podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           '„Nie ma dla was ratunku”',
           '„Uciekajcie gdzie pieprz rośnie”'
         ],

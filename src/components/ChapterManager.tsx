@@ -386,14 +386,21 @@ export default function ChapterManager({
       return;
     }
 
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(chaptersToExport, null, 2));
+    const jsonStr = JSON.stringify(chaptersToExport, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('href', url);
     const suffix = exportSubjectFilter === 'Wszystkie' ? 'all' : exportSubjectFilter.toLowerCase().replace(/\s+/g, '-');
     downloadAnchor.setAttribute('download', `multibook-export-${suffix}-${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
-    downloadAnchor.remove();
+    setTimeout(() => {
+      if (downloadAnchor.parentNode) {
+        downloadAnchor.parentNode.removeChild(downloadAnchor);
+      }
+      URL.revokeObjectURL(url);
+    }, 1000);
     notify(`Pomyślnie pobrano plik kopii zapasowej z ${chaptersToExport.length} lekcjami!`, 'success');
   };
 

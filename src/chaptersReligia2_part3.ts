@@ -89,7 +89,7 @@ Bóg kocha każdego człowieka i pragnie jego zbawienia. Dlatego dał nam przyka
           'Przepisami państwowymi',
           'Drogowskazami wskazującymi bezpieczną drogę do nieba i uczącymi miłości',
           'Zasadami tylko dla dorosłych',
-          'Trudnym ciężarem bez znaczenia'
+          'Trudnym ciężarem bez znaczenia w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 1,
         explanation: 'Dekalog jest zbiorem Bożych wskazówek, które chronią nas przed złem i prowadzą do zbawienia.'
@@ -157,7 +157,7 @@ Pan Jezus, przebywając w świątyni – domu swego Ojca, daje nam przykład pra
         id: 'r2-l38-q1',
         question: 'Gdzie Maryja i Józef odnaleźli dwunastoletniego Jezusa po trzech dniach poszukiwań?',
         options: [
-          'Na rynku miejskim',
+          'Na rynku miejskim podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'W świątyni w Jerozolimie wśród nauczycieli',
           'W Betlejem u krewnych',
           'Nad rzeką Jordan'
@@ -171,7 +171,7 @@ Pan Jezus, przebywając w świątyni – domu swego Ojca, daje nam przykład pra
         options: [
           'Że Bóg Ojciec i Jego dom są dla nas najważniejsze',
           'Że zwiedzanie wielkich miast jest najważniejsze',
-          'Że modlitwa w domu wystarczy',
+          'Że modlitwa w domu wystarczy w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Że należy unikać nauki w szkole'
         ],
         correctAnswer: 0,
@@ -242,7 +242,7 @@ Pan Jezus dostrzegł go i wstąpił do jego domu. Po spotkaniu z Jezusem Zacheus
           'Przepychał się siłą przez tłum',
           'Wsiadł na konia',
           'Wspiął się na drzewo sykomory przy drodze',
-          'Krzyczał z dachu domu'
+          'Krzyczał z dachu domu w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Zacheusz był niskiego wzrostu, dlatego wszedł na drzewo sykomory, by dostrzec Chrystusa.'
@@ -251,7 +251,7 @@ Pan Jezus dostrzegł go i wstąpił do jego domu. Po spotkaniu z Jezusem Zacheus
         id: 'r2-l39-q2',
         question: 'Jak Zacheusz postanowił naprawić swoje dawne złe postępowanie po wizycie Jezusa?',
         options: [
-          'Uciekł z miasta Jerycho',
+          'Uciekł z miasta Jerycho podczas wspólnotowych spotkań modlitewnych w parafii',
           'Przeprosił tylko słownie bez czynów',
           'Oddał połowę majątku ubogim, a skrzywdzonym zwrócił poczwórnie',
           'Założył nową firmę'
@@ -328,7 +328,7 @@ Kiedy człowiek popełni zło, powinien zwrócić się do Boga, przeprosić Go z
         question: 'Czym różniła się modlitwa celnika od modlitwy faryzeusza w przypowieści Jezusa?',
         options: [
           'Celnik głośno śpiewa pieśni',
-          'Celnik chwali się swoimi zasługami',
+          'Celnik chwali się swoimi zasługami w ramach osobistego rozwoju duchowego i moralnego',
           'Celnik z pokorą bije się w piersi i prosi o miłosierdzie za swoje grzechy',
           'Celnik krytykuje innych modlących się'
         ],
@@ -342,7 +342,7 @@ Kiedy człowiek popełni zło, powinien zwrócić się do Boga, przeprosić Go z
           'Rachunek sumienia',
           'Zadośćuczynienie Panu Bogu i bliźniemu',
           'Żał za grzechy',
-          'Mocne postanowienie poprawy'
+          'Mocne postanowienie poprawy zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 1,
         explanation: 'Zadośćuczynienie to 5. warunek spowiedzi – naprawienie szkód i modlitwa za skrzywdzonych.'
@@ -416,7 +416,7 @@ Pan Jezus wskazuje, jak ważna jest troska o swoje życie duchowe. We wzrastaniu
         id: 'r2-l42-q1',
         question: 'Jak brzmi 1. Przykazanie Kościelne?',
         options: [
-          'Pamiętaj o dniu świętym',
+          'Pamiętaj o dniu świętym podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Przynajmniej raz w roku przystąpić do spowiedzi',
           'Czcij ojca swego i matkę swoją',
           'W niedziele i święta nakazane uczestniczyć we Mszy Świętej i powstrzymać się od prac niekoniecznych'
@@ -430,7 +430,7 @@ Pan Jezus wskazuje, jak ważna jest troska o swoje życie duchowe. We wzrastaniu
         options: [
           'Co miesiąc w piątek',
           'Przynajmniej raz w roku (Komunię w okresie wielkanocnym)',
-          'Co pięć lat',
+          'Co pięć lat na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Tylko w dzieciństwie'
         ],
         correctAnswer: 1,
@@ -507,7 +507,7 @@ Duch Święty pociesza nas, oświeca i prowadzi. Obdarza nas **siedmioma darami*
           'Pocieszycielem i Duchem Prawdy',
           'Królem narodów',
           'Aniołem światłości',
-          'Sędzią sprawiedliwym'
+          'Sędzią sprawiedliwym w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Jezus obiecał Apostołom: „Ojciec da wam innego Pocieszyciela – Ducha Prawdy”.'
@@ -516,7 +516,7 @@ Duch Święty pociesza nas, oświeca i prowadzi. Obdarza nas **siedmioma darami*
         id: 'r2-l48-q2',
         question: 'Ile darów przynosi Duch Święty wspierający chrześcijanina?',
         options: [
-          'Dwanaście darów',
+          'Dwanaście darów w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Dziesięć darów',
           'Siedem darów Ducha Świętego (m.in. mądrość, rozum, męstwo)',
           'Trzy dary'
@@ -588,7 +588,7 @@ Teraz mieszkają w niebie i są bardzo szczęśliwi. Pan Bóg zachęca nas, aby�
         options: [
           '2 listopada',
           '1 listopada',
-          '25 grudnia',
+          '25 grudnia podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           '15 sierpnia'
         ],
         correctAnswer: 1,
@@ -601,7 +601,7 @@ Teraz mieszkają w niebie i są bardzo szczęśliwi. Pan Bóg zachęca nas, aby�
           'Tylko starożytni męczennicy',
           'Każdy człowiek, który kocha Boga i wypełnia Jego naukę w swoim życiu',
           'Tylko dawne królówki',
-          'Tylko biskupi i papieże'
+          'Tylko biskupi i papieże w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 1,
         explanation: 'Powołanie do świętości jest powszechne – Bóg wzywa każdego z nas do miłości i nieba.'
@@ -684,7 +684,7 @@ Kościół modli się o to wraz z Maryją podczas Mszy Świętej, nazywanej **Ro
         id: 'r2-l59-q2',
         question: 'Ile świec umieszcza się tradycyjnie na wieńcu adwentowym?',
         options: [
-          '7 świec',
+          '7 świec podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           '2 świece',
           '12 świec',
           '4 świece (na 4 niedziele Adwentu)'
@@ -772,7 +772,7 @@ Odnawiamy przyjaźń i miłość z Panem Bogiem poprzez udział w rekolekcjach o
         options: [
           '40 dni (na pamiątkę postu Jezusa na pustyni)',
           '7 dni',
-          '50 dni',
+          '50 dni w relacjach z rówieśnikami, nauczycielami i rodzicami',
           '12 dni'
         ],
         correctAnswer: 0,
@@ -854,7 +854,7 @@ Zmartwychwstanie Jezusa jest najważniejszą prawdą i podstawą naszej wiary or
           'Pracy w ogrodzie',
           'Połowu ryb',
           'Zmartwychwstania Pana Jezusa',
-          'Wjazdu do Betlejem'
+          'Wjazdu do Betlejem w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Niedziela jest Dniem Pańskim na pamiątkę zmartwychwstania Chrystusa w pierwszy dzień tygodnia.'

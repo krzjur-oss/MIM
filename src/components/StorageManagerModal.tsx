@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import {
   HardDrive,
   CheckCircle2,
@@ -51,13 +51,14 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
   const [showItemDetails, setShowItemDetails] = useState(false);
   const [deviceProfile] = useState(() => detectDeviceProfile());
 
-  const refreshMetrics = () => {
-    setMetrics(getStorageMetrics());
+  const refreshMetrics = async () => {
+    const res = await getStorageMetrics();
+    setMetrics(res);
   };
 
   useEffect(() => {
     if (isOpen) {
-      refreshMetrics();
+      void refreshMetrics();
     }
   }, [isOpen]);
 
@@ -140,11 +141,11 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
               <div className="flex items-center gap-2">
                 <Database className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 <span className="font-bold text-slate-800 dark:text-slate-200 text-xs">
-                  Szybka pamięć podręczna przeglądarki (DOM Storage)
+                  Szybka pamięć podręczna (localStorage)
                 </span>
               </div>
               <span className="font-extrabold text-xs text-slate-700 dark:text-slate-300">
-                {metrics?.formattedUsed} / {metrics?.formattedQuota} ({percent}%)
+                {metrics?.formattedLocalStorageUsed || metrics?.formattedUsed} / 5.0 MB ({percent}%)
               </span>
             </div>
 
@@ -162,11 +163,27 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
               />
             </div>
 
-            <div className="flex justify-between items-center text-[11px]">
+            {/* IndexedDB & Device Quota Details */}
+            <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                <span>
+                  Baza danych <strong>IndexedDB</strong>: <strong>{metrics?.formattedIdbUsed || '0 KB'}</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                <HardDrive className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <span>
+                  Limit magazynu urządzenia: <strong>{metrics?.formattedDeviceQuota || 'Zarządzany przez przeglądarkę'}</strong>
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center text-[11px] pt-1">
               <div className="flex items-center gap-1.5">
                 {isDanger ? (
                   <span className="text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1">
-                    <AlertTriangle className="w-3.5 h-3.5" /> Ryzyko błędu: Pamięć bliska przepełnienia
+                    <AlertTriangle className="w-3.5 h-3.5" /> Ryzyko błędu: Pamięć localStorage bliska limitu
                   </span>
                 ) : isWarning ? (
                   <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
@@ -174,14 +191,11 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
                   </span>
                 ) : (
                   <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Stan optymalny — bezpieczny zapas pamięci
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Stan optymalny — bazy w IndexedDB
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1 text-slate-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
-                <span>IndexedDB: {metrics?.hasIndexedDB ? 'Dostępna (do 1 GB)' : 'Niedostępna'}</span>
-              </div>
+              <span className="text-slate-400 text-[10px]">PWA 100% Offline</span>
             </div>
           </div>
 

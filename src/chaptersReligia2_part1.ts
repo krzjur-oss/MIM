@@ -79,7 +79,7 @@ Bóg z miłości powołał świat do istnienia. Stworzył człowieka – mężcz
         id: 'r2-l01-q2',
         question: 'Czym Bóg obdarzył człowieka jako najdoskonalsze stworzenie?',
         options: [
-          'Skrzydłami do latania',
+          'Skrzydłami do latania podczas wspólnotowych spotkań modlitewnych w parafii',
           'Niezwykłą siłą fizyczną i szybkością',
           'Brakem potrzeby odpoczynku',
           'Rozumem, wolną wolą i duszą nieśmiertelną'
@@ -157,7 +157,7 @@ Pan Bóg pragnie dobra każdego człowieka. Nie przestaje go kochać, nawet wted
         options: [
           'Na kłótni ze zwierzętami',
           'Na nieposłuszeństwie względem Pana Boga',
-          'Na lenistwie w rajskim ogrodzie',
+          'Na lenistwie w rajskim ogrodzie w ramach osobistego rozwoju duchowego i moralnego',
           'Na braku umiejętności budowania domu'
         ],
         correctAnswer: 1,
@@ -170,7 +170,7 @@ Pan Bóg pragnie dobra każdego człowieka. Nie przestaje go kochać, nawet wted
           'Że zniszczy cały świat',
           'Że stworzy nowych aniołów',
           'Że ześle na ziemię Zbawiciela – swojego Syna',
-          'Że zapomni o ludziach'
+          'Że zapomni o ludziach zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Bóg z miłości obiecał przysłać Zbawiciela, który odkupi grzechy ludzi i przywróci im łączność z Bogiem.'
@@ -239,7 +239,7 @@ Jan Chrzciciel zachęca nas do dobrego postępowania i zerwania z grzechem. Wypr
         id: 'r2-l04-q1',
         question: 'Kim był św. Jan Chrzciciel?',
         options: [
-          'Królem Izraela',
+          'Królem Izraela podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Prorokiem i wysłannikiem Bożym przygotowującym ludzi na przyjście Zbawiciela',
           'Rzymskim żołnierzem',
           'Uczonym w Piśmie z Jerozolimy'
@@ -253,7 +253,7 @@ Jan Chrzciciel zachęca nas do dobrego postępowania i zerwania z grzechem. Wypr
         options: [
           'Nawracanie się, zerwanie z grzechem i życie w prawdzie i miłości',
           'Sprzątanie kościoła przed świętami',
-          'Budowanie prawdziwych dróg z kamienia',
+          'Budowanie prawdziwych dróg z kamienia na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Bieganie po pustyni'
         ],
         correctAnswer: 0,
@@ -339,7 +339,7 @@ Anioł Gabriel został posłany przez Pana Boga, aby powiedzieć Maryi, że zost
           '„Chcę jeszcze przemyśleć tę decyzję”',
           '„Oto Ja służebnica Pańska, niech mi się stanie według twego słowa!”',
           '„Nie jestem na to przygotowana”',
-          '„Proszę poszukać kogoś innego”'
+          '„Proszę poszukać kogoś innego” w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 1,
         explanation: 'Maryja wypowiedziała pełne zaufania słowa wypowiadające posłuszeństwo woli Bożej: „Oto Ja służebnica Pańska...”.'
@@ -419,7 +419,7 @@ Jest to wielka tajemnica naszej wiary i wypełnienie obietnic danych przez Pana 
         id: 'r2-l06-q2',
         question: 'Dlaczego Syn Boży stał się człowiekiem?',
         options: [
-          'Aby uczyć ludzi rzemiosła',
+          'Aby uczyć ludzi rzemiosła w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Aby stać się ziemskim władcą politycznym',
           'Dla zbawienia ludzi i odkupienia naszych grzechów',
           'Aby budować wielkie pałace'
@@ -490,7 +490,7 @@ Pan Jezus, który jest naszym Najlepszym Przyjacielem, zaprasza nas do przyjaźn
         question: 'Kogo Pan Jezus nazywa swoimi przyjaciółmi?',
         options: [
           'Tylko bogatych ludzi',
-          'Tych, którzy nigdy nie popełniają błędów',
+          'Tych, którzy nigdy nie popełniają błędów podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Tych, którzy wypełniają Jego przykazania i miłują się wzajemnie',
           'Tylko dorosłych królów'
         ],
@@ -504,7 +504,7 @@ Pan Jezus, który jest naszym Najlepszym Przyjacielem, zaprasza nas do przyjaźn
           'Pomaga tylko wybranym bogatym kolegom',
           'Myśli tylko o sobie',
           'Jest dobry, pomocny i okazuje im miłość',
-          'Unika pomagania potrzebującym'
+          'Unika pomagania potrzebującym w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 2,
         explanation: 'Przyjaciel Jezusa naśladuje Jego miłość, pomagając bliźnim i dzieląc się życzliwością.'
@@ -575,7 +575,7 @@ Pan Jezus nauczał o królestwie Bożym w przypowieściach, aby ci, którzy przy
         id: 'r2-l09-q1',
         question: 'Czym są przypowieści, którymi posługiwał się Pan Jezus?',
         options: [
-          'Zmyślonymi bajkami o zwierzętach',
+          'Zmyślonymi bajkami o zwierzętach podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Przepisami prawnymi rzymskimi',
           'Opowiadaniami z życia codziennego ułatwiającymi zrozumienie nauki o Bogu',
           'Trudnymi zagadkami bez odpowiedzi'
@@ -663,7 +663,7 @@ Jezus dokonał pierwszego cudu, zamieniając wodę w wino. Pan Jezus pomógł m�
         options: [
           'Na weselu w Kanie Galilejskiej',
           'Nad rzeką Jordan',
-          'W świątyni w Jerozolimie',
+          'W świątyni w Jerozolimie w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'W Betlejem'
         ],
         correctAnswer: 0,
@@ -675,7 +675,7 @@ Jezus dokonał pierwszego cudu, zamieniając wodę w wino. Pan Jezus pomógł m�
         options: [
           'Apostoł Piotr',
           'Starosta weselny',
-          'Pan młody',
+          'Pan młody w codziennym życiu rodzinnym i szkolnym',
           'Maryja, Matka Jezusa'
         ],
         correctAnswer: 3,
@@ -744,7 +744,7 @@ Pan Jezus, który jest dobry i miłosierny, widząc ufność i wiarę trędowaty
         id: 'r2-l11-q1',
         question: 'Ilu uzdrowionych trędowatych wróciło do Jezusa, aby Mu podziękować za cud?',
         options: [
-          'Wszyscy dziesięciu',
+          'Wszyscy dziesięciu podczas wspólnotowych spotkań modlitewnych w parafii',
           'Żaden z nich nie wrócił',
           'Tylko jeden (Samarytanin)',
           'Pięciu trędowatych'
@@ -758,7 +758,7 @@ Pan Jezus, który jest dobry i miłosierny, widząc ufność i wiarę trędowaty
         options: [
           'Uzdrowienie i zbawienie duszy dzięki jego wierze',
           'Nowe ubranie',
-          'Domek nad rzeką',
+          'Domek nad rzeką w ramach osobistego rozwoju duchowego i moralnego',
           'Cenne prezenty'
         ],
         correctAnswer: 0,
@@ -827,7 +827,7 @@ Szymon, choć był pełen obaw, zaufał Panu Jezusowi. Wypłynął na jezioro i 
           '„Jestem zbyt zmęczony, by znowu płynąć”',
           '„Trzeba poczekać na następy wieczór”',
           '„Mistrzu, całą noc pracowaliśmy i niceśmy nie ułowili. Lecz na Twoje słowo zarzucę sieci”',
-          '„Sieci są zniszczone i nie nadają się do użytku”'
+          '„Sieci są zniszczone i nie nadają się do użytku” zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Szymon okazał zaufanie i posłuszeństwo słowu Jezusa mimo ludzkiego zmęczenia i zniechęcenia.'
@@ -836,7 +836,7 @@ Szymon, choć był pełen obaw, zaufał Panu Jezusowi. Wypłynął na jezioro i 
         id: 'r2-l13-q2',
         question: 'Co oznacza wezwanie Jezusa: „Wypłyń na głębię”?',
         options: [
-          'Nakaz nauki pływania wpław',
+          'Nakaz nauki pływania wpław podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Ostrzeżenie przed burzą na jeziorze',
           'Zakaz podchodzenia do brzegu',
           'Wezwanie do odwagi, zaufania Bogu i głębokiej wiary'

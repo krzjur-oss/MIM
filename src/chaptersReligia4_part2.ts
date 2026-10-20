@@ -59,7 +59,7 @@ Uczestniczenie w Eucharystii jest szczególnym spotkaniem z Chrystusem, który u
         options: [
           'Dzielenie ziarna',
           'Sprawowanie Najświętszej Eucharystii na pamiątkę Chrystusa',
-          'Piekarniczy wypiek chleba',
+          'Piekarniczy wypiek chleba w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Zwykłe śniadanie'
         ],
         correctAnswer: 1,
@@ -71,7 +71,7 @@ Uczestniczenie w Eucharystii jest szczególnym spotkaniem z Chrystusem, który u
         options: [
           'Św. Franciszek',
           'Św. Jan Paweł II',
-          'Św. Piotr',
+          'Św. Piotr w codziennym życiu rodzinnym i szkolnym',
           'Św. Teresa od Dzieciątka Jezus'
         ],
         correctAnswer: 3,
@@ -142,7 +142,7 @@ Miłość wymaga pełnego zaangażowania. Trzeba ją okazywać czynami, dobrym s
         id: 'r4-l12-q1',
         question: 'Co daje nam siłę do kochania Boga i bliźnich w codziennym życiu?',
         options: [
-          'Samo oglądanie telewizji',
+          'Samo oglądanie telewizji podczas wspólnotowych spotkań modlitewnych w parafii',
           'Uczestnictwo we Mszy Świętej i przyjmowanie Eucharystii',
           'Własne ambicje bez Boga',
           'Odpoczynek bez modlitwy'
@@ -230,7 +230,7 @@ Jesteś dzieckiem Bożym. Modląc się, możesz ofiarować Bogu każdy swój dzi
         options: [
           'Recytowaniem wierszyków na ocenę',
           'Spotkaniem z Panem Bogiem i wyrazem naszej wiary oraz miłości',
-          'Rozmową ze znajomym',
+          'Rozmową ze znajomym w ramach osobistego rozwoju duchowego i moralnego',
           'Tylko formalnym obowiązkiem'
         ],
         correctAnswer: 1,
@@ -242,7 +242,7 @@ Jesteś dzieckiem Bożym. Modląc się, możesz ofiarować Bogu każdy swój dzi
         options: [
           'Głośno na ulicach',
           'Nigdzie',
-          'Na rynku dla poklasku',
+          'Na rynku dla poklasku zgodnie z tradycją i zwyczajami regionalnymi',
           'W izdebce z zamkniętymi drzwiami'
         ],
         correctAnswer: 3,
@@ -326,7 +326,7 @@ Każdy, kto okazuje bezinteresowną pomoc innym, jest człowiekiem błogosławio
         id: 'r4-l22-q1',
         question: 'Ile jest uczynków miłosierdzia względem ciała i względem duszy w tradycji Kościoła?',
         options: [
-          'Po 5',
+          'Po 5 podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Po 10',
           'Po 7 względem ciała i 7 względem duszy',
           'Po 3'
@@ -412,7 +412,7 @@ Zaistnienie zła w świecie wiąże się z grzechem pierwszych ludzi. Przyczyną
         question: 'Czym jest grzech w nauce Kościoła?',
         options: [
           'Niezamierzonym pomyłkowym działaniem',
-          'Zapomnieniem o zadaniu domowym',
+          'Zapomnieniem o zadaniu domowym na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Zwykłym błędem ortograficznym',
           'Świadomym i dobrowolnym przekroczeniem woli Bożej'
         ],
@@ -425,7 +425,7 @@ Zaistnienie zła w świecie wiąże się z grzechem pierwszych ludzi. Przyczyną
         options: [
           'Bo o tym nie wiedział',
           'Bo nie miał siły',
-          'Bo nie kochał człowieka',
+          'Bo nie kochał człowieka w środowisku rówieśniczym i lokalnej społeczności',
           'Ponieważ dał człowiekowi wolną wolę i szanuje jego wolność'
         ],
         correctAnswer: 3,
@@ -497,7 +497,7 @@ Grzech pierworodny spowodował, że ludzie utracili łaskę uświęcającą. Bó
         id: 'r4-l29-q1',
         question: 'W którym sakramencie odbudowujemy zerwaną przez grzech przyjaźń z Panem Jezusem?',
         options: [
-          'W namaszczeniu chorych',
+          'W namaszczeniu chorych w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'W bierzmowaniu',
           'W święceniach',
           'W sakramencie pokuty i pojednania (spowiedzi)'
@@ -510,7 +510,7 @@ Grzech pierworodny spowodował, że ludzie utracili łaskę uświęcającą. Bó
         question: 'Kto przez swoje pełne posłuszeństwo Ojcu naprawił skutki nieposłuszeństwa Adama?',
         options: [
           'Mojżesz',
-          'Prorok Izajasz',
+          'Prorok Izajasz podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Król Dawid',
           'Jezus Chrystus'
         ],
@@ -590,7 +590,7 @@ Siedem grzechów nazywamy **głównymi**, ponieważ są one źródłem innych gr
           'Ponieważ powodują inne grzechy i vady ludzkie',
           'Bo można je popełniać bez konsekwencji',
           'Bo dotyczą tylko głowy człowieka',
-          'Bo są najważniejszymi przykazaniami'
+          'Bo są najważniejszymi przykazaniami w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 0,
         explanation: 'Nazywamy je głównymi, bo są korzeniem i źródłem innych grzechów oraz złych nawyków.'
@@ -599,7 +599,7 @@ Siedem grzechów nazywamy **głównymi**, ponieważ są one źródłem innych gr
         id: 'r4-l30-q2',
         question: 'Który grzech główny polega na smutku z powodu powodzenia lub dobra drugiego człowieka?',
         options: [
-          'Chciwość',
+          'Chciwość podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Lenistwo',
           'Zazdrość',
           'Pycha'
@@ -673,7 +673,7 @@ Chrystus przyjął na siebie grzechy ludzi i powierzył Apostołom oraz ich nast
         question: 'Komu Jezus przekazał władzę odpuszczania grzechów w Kościele?',
         options: [
           'Aniołom na niebie',
-          'Uczonym w Prawie',
+          'Uczonym w Prawie w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Rzymskim żołnierzom',
           'Apostołom i ich następcom (biskupom i kapłanom)'
         ],
@@ -687,7 +687,7 @@ Chrystus przyjął na siebie grzechy ludzi i powierzył Apostołom oraz ich nast
           'Kara',
           'Miłosierdzie',
           'Obojętność',
-          'Surowość'
+          'Surowość w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 1,
         explanation: 'Miłosierdzie Boże to niezmierzona miłość Boga, przebaczająca każdemu skruszonemu grzesznikowi.'
@@ -856,7 +856,7 @@ Krzyż przypomina o najważniejszej prawdzie naszej wiary: że Chrystus umarł n
         question: 'Ile jest stacji w nabożeństwie Drogi Krzyżowej?',
         options: [
           '14',
-          '15',
+          '15 podczas wspólnotowych spotkań modlitewnych w parafii',
           '12',
           '10'
         ],
@@ -869,7 +869,7 @@ Krzyż przypomina o najważniejszej prawdzie naszej wiary: że Chrystus umarł n
         options: [
           'Szymon z Cyreny',
           'Jan Apostoł',
-          'Św. Piotr',
+          'Św. Piotr w ramach osobistego rozwoju duchowego i moralnego',
           'Setnik rzymski'
         ],
         correctAnswer: 0,

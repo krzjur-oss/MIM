@@ -83,7 +83,9 @@ import {
   optimizeStorage,
   normalizeChapter,
   normalizeProgress,
-  normalizeStudent
+  normalizeStudent,
+  mergeWithDefaults,
+  sortChapters
 } from './storage';
 import DrawingOverlay from './components/DrawingOverlay';
 import { detectDeviceProfile, applyBoardModeDOM } from './utils/devicePerformance';
@@ -160,56 +162,7 @@ const getGroupOrder = (groupName: string): number => {
   return 999;
 };
 
-const sortChapters = (list: Chapter[]): Chapter[] => {
-  return [...list].sort((a, b) => {
-    // 1. Keep intro-multibook always first
-    if (a.id === 'intro-multibook') return -1;
-    if (b.id === 'intro-multibook') return 1;
-
-    // 2. Sort by subject (Wstęp/Podręcznik first)
-    const subA = a.subject || '';
-    const subB = b.subject || '';
-    if (subA !== subB) {
-      if (subA === 'Podręcznik / Instrukcja') return -1;
-      if (subB === 'Podręcznik / Instrukcja') return 1;
-      return subA.localeCompare(subB);
-    }
-
-    // 3. Sort by school type
-    const typeA = a.schoolType || '';
-    const typeB = b.schoolType || '';
-    if (typeA !== typeB) {
-      return typeA.localeCompare(typeB);
-    }
-
-    // 4. Sort by grade
-    const gradeA = a.grade || '';
-    const gradeB = b.grade || '';
-    if (gradeA !== gradeB) {
-      return gradeA.localeCompare(gradeB);
-    }
-
-    // 5. Sort by chapter group (Roman numerals or name)
-    const grA = a.chapterGroup || '';
-    const grB = b.chapterGroup || '';
-    if (grA !== grB) {
-      const ordA = getGroupOrder(grA);
-      const ordB = getGroupOrder(grB);
-      if (ordA !== ordB) {
-        return ordA - ordB;
-      }
-      return grA.localeCompare(grB);
-    }
-
-    // 6. Sort by lesson number inside the group
-    if (a.lessonNumber !== undefined && b.lessonNumber !== undefined) {
-      return a.lessonNumber - b.lessonNumber;
-    }
-
-    // Keep relative order
-    return 0;
-  });
-};
+// sortChapters is imported from ./storage
 
 export interface LevelGroupInfo {
   key: string;
@@ -396,6 +349,9 @@ export default function App() {
   // Storage Manager Modal state (for Android interactive screens and quota management)
   const [isStorageModalOpen, setIsStorageModalOpen] = useState(false);
 
+  // Stan gotowości magazynu IndexedDB (zapobiega przedwczesnemu nadpisywaniu baz danych)
+  const [storageReady, setStorageReady] = useState(false);
+
   // 1. Chapters database state
   const [chapters, setChaptersInternal] = useState<Chapter[]>(() => {
     const validated = safeGet<Chapter[]>('multibook_chapters', [], (raw) => {
@@ -406,33 +362,7 @@ export default function App() {
       return normalized.length > 0 ? normalized : null;
     });
 
-    if (validated.length > 0) {
-      // Sync with DEFAULT_CHAPTERS while strictly preserving user edits
-      const synced = [...validated];
-      DEFAULT_CHAPTERS.forEach((defaultCh) => {
-        const index = synced.findIndex((c) => c.id === defaultCh.id);
-        if (index === -1) {
-          synced.push(defaultCh);
-        } else {
-          // If chapter was edited by user, retain user's content and metadata
-          if (synced[index].userEdited) {
-            synced[index] = {
-              ...defaultCh,
-              ...synced[index],
-              userEdited: true,
-            };
-          } else {
-            // Not edited by user, update to latest version from defaultChapters
-            synced[index] = {
-              ...synced[index],
-              ...defaultCh,
-            };
-          }
-        }
-      });
-      return sortChapters(synced);
-    }
-    return sortChapters(DEFAULT_CHAPTERS);
+    return mergeWithDefaults(validated);
   });
 
   const setChapters = (val: Chapter[] | ((prev: Chapter[]) => Chapter[])) => {
@@ -446,10 +376,11 @@ export default function App() {
     }
   };
 
-  // Save chapters to LocalStorage when changed
+  // Save chapters to IndexedDB when changed (tylko po zakończeniu hydratacji)
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_chapters', chapters);
-  }, [chapters]);
+  }, [chapters, storageReady]);
 
   // 2. Active Chapter Selection State with guaranteed fallback to DEFAULT_CHAPTERS[0]
   const [currentChapterId, setCurrentChapterId] = useState<string>(() => {
@@ -710,8 +641,9 @@ export default function App() {
 
   // Save progress to LocalStorage when changed
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_progress', progress);
-  }, [progress]);
+  }, [progress, storageReady]);
 
   // 3.2 Debounced Personal Notes State and Handlers
   const [localNoteText, setLocalNoteText] = useState('');
@@ -1378,8 +1310,9 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_class_chapters', classChapters);
-  }, [classChapters]);
+  }, [classChapters, storageReady]);
 
   const [teacherActiveSubTab, setTeacherActiveSubTab] = useState<'students' | 'curriculum' | 'stats'>('students');
   const [selectedTeacherClass, setSelectedTeacherClass] = useState<string>('');
@@ -1427,8 +1360,9 @@ export default function App() {
 
   // Save custom gallery images to LocalStorage
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_chapter_gallery_images', chapterGalleryImages);
-  }, [chapterGalleryImages]);
+  }, [chapterGalleryImages, storageReady]);
 
   // Selective Export Backup Modal states
   const [isExportBackupModalOpen, setIsExportBackupModalOpen] = useState(false);
@@ -1612,17 +1546,20 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_students', students);
-  }, [students]);
+  }, [students, storageReady]);
 
   // Save teacher classes and realizations to LocalStorage
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_teacher_classes', teacherClasses);
-  }, [teacherClasses]);
+  }, [teacherClasses, storageReady]);
 
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_realizations', realizations);
-  }, [realizations]);
+  }, [realizations, storageReady]);
 
   // Teacher Panel State variables
   const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
@@ -3609,89 +3546,107 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (!storageReady) return;
     safeSet('multibook_quiz_answers', quizAnswers);
-  }, [quizAnswers]);
+  }, [quizAnswers, storageReady]);
 
-  // Cicha automatyczna migracja do bazy IndexedDB i pełna synchronizacja stanu przy uruchomieniu
+  // Selected student for assigning quiz score in classroom reader
+  const [selectedStudentForQuiz, setSelectedStudentForQuiz] = useState<string>('');
+
+  // Cicha automatyczna migracja do bazy IndexedDB i równoległa hydratacja stanu z Promise.all
   useEffect(() => {
     let isMounted = true;
 
-    silentMigrateToIndexedDB().then(async () => {
-      if (!isMounted) return;
-
+    const hydrateFromStorage = async () => {
       try {
-        // 1. Rozdziały i lekcje
-        const idbCh = await idbGet<Chapter[]>('multibook_chapters');
-        if (idbCh && Array.isArray(idbCh) && idbCh.length > 0 && isMounted) {
-          setChaptersInternal((prev) => {
-            const valid = idbCh.map(normalizeChapter).filter((c): c is Chapter => c !== null);
-            if (valid.length > 0) {
-              const merged = [...valid];
-              DEFAULT_CHAPTERS.forEach((def) => {
-                if (!merged.some((m) => m.id === def.id)) {
-                  merged.push(def);
-                }
-              });
-              return sortChapters(merged);
-            }
-            return prev;
+        await silentMigrateToIndexedDB();
+
+        // Równoległy odczyt wszystkich magazynów z IndexedDB
+        const [
+          idbCh,
+          idbGall,
+          idbProg,
+          idbStuds,
+          idbClasses,
+          idbRealiz,
+          idbClassCh,
+          idbQuiz
+        ] = await Promise.all([
+          idbGet<Chapter[]>('multibook_chapters'),
+          idbGet<Record<string, string[]>>('multibook_chapter_gallery_images'),
+          idbGet<StudentProgress>('multibook_progress'),
+          idbGet<Student[]>('multibook_students'),
+          idbGet<string[]>('multibook_teacher_classes'),
+          idbGet<any[]>('multibook_realizations'),
+          idbGet<Record<string, string[]>>('multibook_class_chapters'),
+          idbGet<Record<string, any>>('multibook_quiz_answers'),
+        ]);
+
+        if (!isMounted) return;
+
+        // 1. Rozdziały i lekcje (jednolita funkcja mergeWithDefaults)
+        let resolvedChapters: Chapter[] | null = null;
+        if (idbCh && Array.isArray(idbCh) && idbCh.length > 0) {
+          const valid = idbCh.map(normalizeChapter).filter((c): c is Chapter => c !== null);
+          if (valid.length > 0) {
+            resolvedChapters = mergeWithDefaults(valid);
+          }
+        }
+        if (!resolvedChapters) {
+          const localRaw = safeGet<Chapter[]>('multibook_chapters', [], (raw) => {
+            if (!Array.isArray(raw)) return null;
+            const norm = raw.map(normalizeChapter).filter((c): c is Chapter => c !== null);
+            return norm.length > 0 ? norm : null;
           });
+          resolvedChapters = mergeWithDefaults(localRaw);
         }
 
-        // 2. Galeria ilustracji i plansz
-        const idbGall = await idbGet<Record<string, string[]>>('multibook_chapter_gallery_images');
-        if (idbGall && typeof idbGall === 'object' && Object.keys(idbGall).length > 0 && isMounted) {
-          setChapterGalleryImages((prev) => ({ ...idbGall, ...prev }));
+        // Spójne ustawienie stanu po odczycie
+        setChaptersInternal(resolvedChapters);
+        if (resolvedChapters.length > 0) {
+          setCurrentChapterId((prev) => (resolvedChapters!.some((c) => c.id === prev) ? prev : resolvedChapters![0].id));
         }
 
-        // 3. Postępy ucznia i notatki
-        const idbProg = await idbGet<StudentProgress>('multibook_progress');
-        if (idbProg && isMounted) {
-          const norm = normalizeProgress(idbProg);
-          setProgress((prev) => ({
-            completedChapters: Array.from(new Set([...prev.completedChapters, ...norm.completedChapters])),
-            bookmarkedChapters: Array.from(new Set([...prev.bookmarkedChapters, ...norm.bookmarkedChapters])),
-            chapterNotes: { ...norm.chapterNotes, ...prev.chapterNotes },
-            quizAttempts: { ...norm.quizAttempts, ...prev.quizAttempts },
-          }));
+        if (idbGall && typeof idbGall === 'object') {
+          setChapterGalleryImages(idbGall);
         }
 
-        // 4. Profile uczniów
-        const idbStuds = await idbGet<Student[]>('multibook_students');
-        if (idbStuds && Array.isArray(idbStuds) && idbStuds.length > 0 && isMounted) {
+        if (idbProg) {
+          setProgress(normalizeProgress(idbProg));
+        }
+
+        if (idbStuds && Array.isArray(idbStuds)) {
           const valid = idbStuds.map(normalizeStudent).filter((s): s is Student => s !== null);
           if (valid.length > 0) {
             setStudents(valid);
           }
         }
 
-        // 5. Klasy nauczyciela
-        const idbClasses = await idbGet<string[]>('multibook_teacher_classes');
-        if (idbClasses && Array.isArray(idbClasses) && idbClasses.length > 0 && isMounted) {
+        if (idbClasses && Array.isArray(idbClasses)) {
           setTeacherClasses(idbClasses);
         }
 
-        // 6. Dziennik zrealizowanych lekcji
-        const idbRealiz = await idbGet<any[]>('multibook_realizations');
-        if (idbRealiz && Array.isArray(idbRealiz) && idbRealiz.length > 0 && isMounted) {
+        if (idbRealiz && Array.isArray(idbRealiz)) {
           setRealizations(idbRealiz);
         }
 
-        // 7. Przypisania rozdziałów do klas
-        const idbClassCh = await idbGet<Record<string, string[]>>('multibook_class_chapters');
-        if (idbClassCh && typeof idbClassCh === 'object' && isMounted) {
-          setClassChapters((prev) => ({ ...idbClassCh, ...prev }));
+        if (idbClassCh && typeof idbClassCh === 'object') {
+          setClassChapters(idbClassCh);
         }
 
-        // 8. Historia odpowiedzi w quizach
-        const idbQuiz = await idbGet<Record<string, any>>('multibook_quiz_answers');
-        if (idbQuiz && typeof idbQuiz === 'object' && isMounted) {
-          setQuizAnswers((prev) => ({ ...idbQuiz, ...prev }));
+        if (idbQuiz && typeof idbQuiz === 'object') {
+          setQuizAnswers(idbQuiz);
         }
       } catch (err) {
-        console.warn('[storage] Błąd synchronizacji IndexedDB przy starcie:', err);
+        console.warn('[storage] Błąd równoległej synchronizacji IndexedDB przy starcie:', err);
+      } finally {
+        if (isMounted) {
+          setStorageReady(true);
+        }
       }
-    });
+    };
+
+    hydrateFromStorage();
 
     return () => {
       isMounted = false;
@@ -4135,15 +4090,21 @@ export default function App() {
 
     try {
       const dataStr = JSON.stringify(backupData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
       const filename = `multibook_backup_${new Date().toISOString().slice(0, 10)}.json`;
 
       const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('href', url);
       linkElement.setAttribute('download', filename);
       document.body.appendChild(linkElement);
       linkElement.click();
-      document.body.removeChild(linkElement);
+      setTimeout(() => {
+        if (linkElement.parentNode) {
+          linkElement.parentNode.removeChild(linkElement);
+        }
+        URL.revokeObjectURL(url);
+      }, 1000);
 
       showToast('Kopia bezpieczeństwa z wybranymi danymi została pobrana!', 'success');
       setIsExportBackupModalOpen(false);
@@ -4730,6 +4691,28 @@ export default function App() {
       ? '"OpenDyslexicRegular", "OpenDyslexic", sans-serif' 
       : 'system-ui, -apple-system, sans-serif'
   };
+
+  // Ekran bezpiecznego ładowania podczas hydratacji z IndexedDB
+  if (!storageReady) {
+    return (
+      <div
+        id="multibook-loading-screen"
+        className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center select-none"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="w-16 h-16 rounded-3xl bg-emerald-600/10 dark:bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4 animate-pulse shadow-sm">
+          <BookOpen className="w-8 h-8" />
+        </div>
+        <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+          Ładowanie Cyfrowego Multibooka...
+        </h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+          Bezpieczna synchronizacja bazy lekcji i danych offline...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div id="multibook-app-root" className={`min-h-screen flex flex-col font-sans transition-all duration-300 ${getThemeClasses()}`}>
@@ -5328,11 +5311,16 @@ export default function App() {
           <div className={`border-b px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 backdrop-blur-md transition-all duration-300 ${activeThemeConfig.headerBg}`}>
             
             {/* Subject name of active class */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className={`p-1 px-2.5 text-[10px] font-extrabold rounded-lg uppercase tracking-wider ${getSubjectThemeColors(activeChapter?.subject || '', theme).bgLight}`}>
                 {activeChapter?.subject || 'Brak'}
               </span>
               <span className="text-[11px] text-slate-600 dark:text-slate-400">• Czas nauki: {activeChapter?.estimatedReadTime || 0} min.</span>
+              {progress.quizAttempts?.[activeChapter?.id] && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 flex items-center gap-1 shadow-2xs">
+                  <span>🎯 Wynik quizu: {progress.quizAttempts[activeChapter.id].correct}/{progress.quizAttempts[activeChapter.id].total}</span>
+                </span>
+              )}
             </div>
 
             {/* Custom display adjustments widgets */}
@@ -5872,31 +5860,30 @@ export default function App() {
                                           };
                                         });
 
-                                        // Persist quiz attempts into progress
-                                        setProgress((prevProg) => {
-                                          const prevChapAnswers = quizAnswers[activeChapter.id] || {};
-                                          const updatedChapAnswers = {
-                                            ...prevChapAnswers,
-                                            [q.id]: { chosenIdx: oIndex, isCorrect: isCorr, showFeedback: true }
-                                          };
-                                          const answeredKeys = Object.keys(updatedChapAnswers);
+                                        // Persist quiz attempts into progress TYLKO po odpowiedzi na wszystkie pytania
+                                        const prevChapAnswers = quizAnswers[activeChapter.id] || {};
+                                        const updatedChapAnswers = {
+                                          ...prevChapAnswers,
+                                          [q.id]: { chosenIdx: oIndex, isCorrect: isCorr, showFeedback: true }
+                                        };
+                                        const totalCount = activeChapter.quizzes?.length || 0;
+                                        const answeredKeys = Object.keys(updatedChapAnswers);
+
+                                        if (totalCount > 0 && answeredKeys.length === totalCount) {
                                           const correctCount = answeredKeys.filter((k) => updatedChapAnswers[k]?.isCorrect).length;
-                                          const totalCount = activeChapter.quizzes?.length || answeredKeys.length;
 
-                                          const updatedAttempts = {
-                                            ...(prevProg.quizAttempts || {}),
-                                            [activeChapter.id]: {
-                                              correct: correctCount,
-                                              total: totalCount,
-                                              timestamp: Date.now()
-                                            }
-                                          };
-
-                                          return {
+                                          setProgress((prevProg) => ({
                                             ...prevProg,
-                                            quizAttempts: updatedAttempts
-                                          };
-                                        });
+                                            quizAttempts: {
+                                              ...(prevProg.quizAttempts || {}),
+                                              [activeChapter.id]: {
+                                                correct: correctCount,
+                                                total: totalCount,
+                                                timestamp: Date.now()
+                                              }
+                                            }
+                                          }));
+                                        }
                                       }}
                                       className={`p-3 text-left border rounded-xl font-medium text-xs transition-colors transition-transform cursor-pointer focus:outline-hidden ${optionCardClasses}`}
                                     >
@@ -5943,33 +5930,104 @@ export default function App() {
                         })}
                       </div>
 
-                      {/* Display total quiz score if completed */}
-                      {Object.keys(quizAnswers[activeChapter.id] || {}).length === activeChapter.quizzes.length && (
-                        <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between text-white gap-4 mt-6 animate-in zoom-in duration-200">
-                          <div>
-                            <h4 className="font-bold text-sm">Gratulacje! Zadania ukończone! 🏆</h4>
-                            <p className="text-[11px] text-emerald-100 mt-0.5">Odpowiedziałeś na wszystkie pytania z tej lekcji.</p>
+                      {/* Display total quiz score if completed with student assignment */}
+                      {Object.keys(quizAnswers[activeChapter.id] || {}).length === activeChapter.quizzes.length && (() => {
+                        const curAnswers = quizAnswers[activeChapter.id] || {};
+                        const correctCount = Object.values(curAnswers).filter((a) => a.isCorrect).length;
+                        const totalCount = activeChapter.quizzes.length;
+                        const pct = Math.round((correctCount / totalCount) * 100);
+
+                        return (
+                          <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 p-5 rounded-2xl flex flex-col gap-4 text-white mt-6 animate-in zoom-in duration-200">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                              <div>
+                                <h4 className="font-bold text-sm flex items-center gap-2">
+                                  <span>Gratulacje! Zadania ukończone! 🏆</span>
+                                  <span className="bg-emerald-900/80 px-2.5 py-0.5 rounded-full text-xs font-mono font-extrabold text-emerald-200 border border-emerald-500/40">
+                                    Wynik: {correctCount}/{totalCount} ({pct}%)
+                                  </span>
+                                </h4>
+                                <p className="text-[11px] text-emerald-100 mt-1">
+                                  Odpowiedziałeś na wszystkie {totalCount} pytania z tej lekcji. Wynik zapisano w postępach nauki.
+                                </p>
+                              </div>
+                              <button
+                                id="reset-active-chapter-quiz"
+                                onClick={() => {
+                                  setQuizAnswers((prev) => {
+                                    const copied = { ...prev };
+                                    delete copied[activeChapter.id];
+                                    return copied;
+                                  });
+                                  setProgress((prevProg) => {
+                                    const copiedAttempts = { ...(prevProg.quizAttempts || {}) };
+                                    delete copiedAttempts[activeChapter.id];
+                                    return { ...prevProg, quizAttempts: copiedAttempts };
+                                  });
+                                }}
+                                className="bg-white text-emerald-800 hover:bg-slate-50 font-bold text-xs p-2 px-3.5 rounded-xl shrink-0 cursor-pointer transition-colors shadow-xs"
+                              >
+                                Rozwiąż ponownie
+                              </button>
+                            </div>
+
+                            {/* Opcjonalne przypisanie wyniku do wybranego ucznia w panelu nauczyciela */}
+                            {students.length > 0 && (
+                              <div className="pt-3 border-t border-emerald-600/50 flex flex-wrap items-center gap-2.5 text-xs">
+                                <span className="text-emerald-100 font-medium">
+                                  📋 Przypisz ten wynik do ucznia (opcjonalnie):
+                                </span>
+                                <select
+                                  aria-label="Wybierz ucznia do przypisania wyniku quizu"
+                                  value={selectedStudentForQuiz}
+                                  onChange={(e) => setSelectedStudentForQuiz(e.target.value)}
+                                  className="bg-emerald-900/90 text-white border border-emerald-500/60 rounded-xl px-2.5 py-1.5 text-xs font-medium cursor-pointer focus:outline-hidden"
+                                >
+                                  <option value="">-- Wybierz ucznia z listy --</option>
+                                  {students.map((st) => (
+                                    <option key={st.id} value={st.id}>
+                                      {st.name} ({st.className})
+                                    </option>
+                                  ))}
+                                </select>
+                                <button
+                                  type="button"
+                                  disabled={!selectedStudentForQuiz}
+                                  onClick={() => {
+                                    if (!selectedStudentForQuiz) return;
+                                    const st = students.find((s) => s.id === selectedStudentForQuiz);
+                                    setStudents((prev) =>
+                                      prev.map((s) =>
+                                        s.id === selectedStudentForQuiz
+                                          ? {
+                                              ...s,
+                                              quizAttempts: {
+                                                ...(s.quizAttempts || {}),
+                                                [activeChapter.id]: {
+                                                  correct: correctCount,
+                                                  total: totalCount,
+                                                  timestamp: Date.now(),
+                                                },
+                                              },
+                                            }
+                                          : s
+                                      )
+                                    );
+                                    showToast(
+                                      `Przypisano wynik ${correctCount}/${totalCount} dla ucznia ${st?.name || ''}!`,
+                                      'success'
+                                    );
+                                    setSelectedStudentForQuiz('');
+                                  }}
+                                  className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:hover:bg-emerald-500 text-white rounded-xl font-bold text-xs transition cursor-pointer shadow-xs"
+                                >
+                                  Zapisz w profilu ucznia
+                                </button>
+                              </div>
+                            )}
                           </div>
-                          <button
-                            id="reset-active-chapter-quiz"
-                            onClick={() => {
-                              setQuizAnswers((prev) => {
-                                const copied = { ...prev };
-                                delete copied[activeChapter.id];
-                                return copied;
-                              });
-                              setProgress((prevProg) => {
-                                const copiedAttempts = { ...(prevProg.quizAttempts || {}) };
-                                delete copiedAttempts[activeChapter.id];
-                                return { ...prevProg, quizAttempts: copiedAttempts };
-                              });
-                            }}
-                            className="bg-white text-emerald-800 hover:bg-slate-50 font-bold text-xs p-2 px-3.5 rounded-xl shrink-0 cursor-pointer transition-colors"
-                          >
-                            Rozwiąż ponownie
-                          </button>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   )}
 
@@ -6303,7 +6361,7 @@ export default function App() {
                           >
                             <img 
                               src={imgUrl} 
-                              alt="Lekcja" 
+                              alt={`Ilustracja dołączona do notatek tematu: ${activeChapter.title}`} 
                               referrerPolicy="no-referrer"
                               className="w-full h-full object-cover transition-transform group-hover:scale-105" 
                             />
@@ -6381,7 +6439,7 @@ export default function App() {
                             >
                               <img 
                                 src={url} 
-                                alt="Detected" 
+                                alt={`Wykryta ilustracja z notatek lekcji: ${activeChapter.title}`} 
                                 referrerPolicy="no-referrer"
                                 className="w-full h-full object-cover" 
                               />
@@ -6945,6 +7003,7 @@ export default function App() {
               </button>
               <button
                 type="button"
+                aria-label="Zamknij podgląd zdjęcia"
                 className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg cursor-pointer transition-all"
                 onClick={() => setSelectedLightboxImage(null)}
               >
@@ -6952,6 +7011,9 @@ export default function App() {
               </button>
             </div>
             <motion.div 
+              role="dialog"
+              aria-modal="true"
+              aria-label="Pełnoekranowy podgląd grafiki"
               initial={{ scale: 0.95, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
@@ -6961,7 +7023,7 @@ export default function App() {
             >
               <img 
                 src={selectedLightboxImage} 
-                alt="Lightbox Podgląd" 
+                alt="Pełnoekranowy podgląd ilustracji edukacyjnej" 
                 referrerPolicy="no-referrer"
                 className="max-w-full max-h-[80vh] rounded-xl border border-slate-700/50 object-contain shadow-2xl select-all" 
               />
@@ -8221,7 +8283,7 @@ export default function App() {
                           <span>Prywatność RODO Offline</span>
                         </span>
                         <p className="text-[11px] text-blue-800/80 dark:text-blue-400/80 leading-snug">
-                          Żadne dane nie opuszczają Twojej przeglądarki. Wszystko zapisywane jest w localStorage.
+                          Żadne dane nie opuszczają Twojej przeglądarki. Wszystko zapisywane jest lokalnie (IndexedDB oraz localStorage).
                         </p>
                       </div>
 
@@ -8294,10 +8356,11 @@ export default function App() {
                         <section className="space-y-1.5">
                           <h4 className="font-bold text-sm text-slate-900 dark:text-white">§ 5. Dane i polityka prywatności (RODO / GDPR)</h4>
                           <p>1. Aplikacja <strong>nie wymaga rejestracji ani logowania</strong> i nie przesyła jakichkolwiek danych osobowych na zewnętrzne serwery.</p>
-                          <p>2. <strong>Całkowita lokalność danych:</strong> Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki, listy klas i imiona uczniów, historia realizacji w kalendarzu, wyniki quizów, załączone zdjęcia oraz rysunki) są przechowywane <strong>wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej (localStorage)</strong> i nigdy nie opuszczają Twojego komputera lub tabletu.</p>
+                          <p>2. <strong>Całkowita lokalność danych:</strong> Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki, listy klas i imiona uczniów, historia realizacji w kalendarzu, wyniki quizów, załączone zdjęcia oraz rysunki) są przechowywane <strong>wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej (baza IndexedDB oraz localStorage)</strong> i nigdy nie opuszczają Twojego komputera lub tabletu.</p>
                           <p>3. <strong>Administrator danych:</strong> Administratorem danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor nie ma technicznego ani fizycznego dostępu do tych danych.</p>
                           <p>4. <strong>Brak śledzenia i ciasteczek:</strong> Aplikacja nie używa plików cookie do śledzenia, zewnętrznych systemów analitycznych ani pikseli reklamowych.</p>
-                          <p>5. Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.</p>
+                          <p>5. <strong>Zasoby zewnętrzne (Galeria obrazów edukacyjnych):</strong> Aplikacja w pełni funkcjonuje w trybie offline. W przypadku korzystania z opcjonalnych propozycji fotografii edukacyjnych (np. ilustracje z serwisu Unsplash w brudnopisie) przy aktywnym połączeniu z internetem, adres IP użytkownika jest widoczny dla dostawcy obrazów w celu technicznego pobrania pliku graficznego.</p>
+                          <p>6. Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.</p>
                         </section>
 
                         <section className="space-y-1.5">

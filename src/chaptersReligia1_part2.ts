@@ -62,7 +62,7 @@ Kochać bliźniego to znaczy być życzliwym, pomagać chorym i słabym, dzieli�
         options: [
           'Tylko mieszkańcy naszego miasta',
           'Tylko nasi najbliżsi koledzy z ławki',
-          'Tylko ludzie bogaci',
+          'Tylko ludzie bogaci zgodnie z tradycją i zwyczajami regionalnymi',
           'Każdy człowiek, którego spotykamy na naszej drodze'
         ],
         correctAnswer: 3,
@@ -72,7 +72,7 @@ Kochać bliźniego to znaczy być życzliwym, pomagać chorym i słabym, dzieli�
         id: 'r1-l12-q2',
         question: 'Jak brzmi druga część Przykazania Miłości z Ewangeliig Łukasza?',
         options: [
-          '„...i nie pomagaj nikomu”',
+          '„...i nie pomagaj nikomu” podczas uroczystych obchodów świąt nakazanych w Kościele',
           '„...a bliźniego unikaj”',
           '„...i zyskuj jak najwięcej zabawek”',
           '„...a swego bliźniego, jak siebie samego”'
@@ -147,7 +147,7 @@ W Biblii odnajdujemy historię stworzenia świata, opowieści o prorokach, a prz
         options: [
           'Słownikiem ortograficznym',
           'Świętą Księgą, w której zawarte jest słowo Boga skierowane do ludzi',
-          'Podręcznikiem do historii geograficznej',
+          'Podręcznikiem do historii geograficznej na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Zbiorem dawnych baśni i bajek'
         ],
         correctAnswer: 1,
@@ -160,7 +160,7 @@ W Biblii odnajdujemy historię stworzenia świata, opowieści o prorokach, a prz
           '„Niebo i ziemia przeminą, ale moje słowa nie przeminą”',
           'Pismo Święte należy czytać tylko rzadko',
           'Słowa są bez znaczenia',
-          'Mądrość ludzka szybko zniknie'
+          'Mądrość ludzka szybko zniknie w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Jezus zapewnił o wiecznej trwałości i prawdzie swojego słowa.'
@@ -238,7 +238,7 @@ W niedzielę Pan Jezus zmartwychwstał, dlatego gromadzimy się w kościele na M
         id: 'r1-l18-q2',
         question: 'Dlaczego niedziela jest najważniejszym dniem tygodnia dla chrześcijan?',
         options: [
-          'Bo to zwykły dzień tygodnia',
+          'Bo to zwykły dzień tygodnia w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Bo zaczynają się bajki',
           'Bo sklepy są zamknięte',
           'Bo jest pamiątką Zmartwychwstania Pana Jezusa'
@@ -308,7 +308,7 @@ Bóg kocha nas nawet wtedy, gdy zrobimy coś złego, i cieszy się, kiedy przepr
         options: [
           'Surowym sędzią bez litości',
           'Miłosiernym i kochanym Ojcem, który przebacza skruszonym',
-          'Obojętnym obserwatorem',
+          'Obojętnym obserwatorem podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Królem ukrytym w pałacu'
         ],
         correctAnswer: 1,
@@ -320,7 +320,7 @@ Bóg kocha nas nawet wtedy, gdy zrobimy coś złego, i cieszy się, kiedy przepr
         options: [
           'Oddawać złem za zło',
           'Unikać ich na zawsze',
-          'Pamiętać o urazie na zawsze',
+          'Pamiętać o urazie na zawsze w ramach zajęć pozalekcyjnych i kół zainteresowań',
           'Przebaczać im z serca i okazywać dobro'
         ],
         correctAnswer: 3,
@@ -399,7 +399,7 @@ Aby w rodzinie panowało szczęście, potrzebna jest miłość, cierpliwość, w
         question: 'Trzy ważne słowa pomagające w budowaniu miłości i zgody w rodzinie to:',
         options: [
           'Proszę, dziękuję, przepraszam',
-          'Szybko, natychmiast, już',
+          'Szybko, natychmiast, już podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Cicho, odejdź, zostaw',
           'Daj, przynieś, kup'
         ],
@@ -469,7 +469,7 @@ Szkoła jest miejscem, w którym spędzamy wiele czasu. Uczymy się tam pisać, 
         question: 'Do czego zachęca św. Paweł wiernych w 1 List do Tesaloniczan (1 Tes 5,13b)?',
         options: [
           'Aby rywalizować ze sobą w gniewie',
-          'Aby myśleć tylko o własnych korzyściach',
+          'Aby myśleć tylko o własnych korzyściach w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Aby hałasować na korytarzach',
           'Aby otaczać się miłością i zachowywać między sobą pokój'
         ],
@@ -483,7 +483,7 @@ Szkoła jest miejscem, w którym spędzamy wiele czasu. Uczymy się tam pisać, 
           'Własne pretensje',
           'To, co każdy z nas ma w sobie najlepszego',
           'Gromadzony hałas',
-          'Złe humory'
+          'Złe humory w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 1,
         explanation: 'Każdy z nas wnosi do grupy swoje unikalne talenty i dobroć serca.'
@@ -563,7 +563,7 @@ Pan Jezus na krzyżu dał nam Maryję za naszą Matkę. Ona kocha każdego z nas
         id: 'r1-l23-q2',
         question: 'Kim jest Maryja dla wszystkich chrześcijan?',
         options: [
-          'Zwykłą postacią z historii',
+          'Zwykłą postacią z historii podczas wspólnotowych spotkań modlitewnych w parafii',
           'Matką Pana Jezusa i naszą najlepszą Matką w niebie',
           'Aniołem',
           'Królową ziemskiego państwa'
@@ -645,7 +645,7 @@ Pan Jezus daje nam piękny przykład posłuszeństwa. Gdy natychmiast i bez narz
         question: 'Jak Jezus zachowywał się wobec Maryi i św. Józefa według św. Łukasza (Łk 2,51)?',
         options: [
           'Unikał pomocy w domu',
-          'Odchodził sam bez pytania',
+          'Odchodził sam bez pytania w ramach osobistego rozwoju duchowego i moralnego',
           'Lubił sprzeczać się z nimi',
           'Był im poddany i posłuszny we wszystkim z miłością'
         ],
@@ -717,7 +717,7 @@ Jezus prosi nas, abyśmy naśladowali Go w dobroci każdego dnia. Możemy to rob
           '„Abyście się wzajemnie miłowali, tak jak Ja was umiłowałem”',
           'Bądźcie pierwsi we wszystkich grach',
           'Unikajcie trudnych zadań',
-          'Zbierajcie jak najwięcej majątku'
+          'Zbierajcie jak najwięcej majątku zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 0,
         explanation: 'Chrystus dał nam nowe przykazanie wzajemnej miłości i dobroci.'
@@ -726,7 +726,7 @@ Jezus prosi nas, abyśmy naśladowali Go w dobroci każdego dnia. Możemy to rob
         id: 'r1-l26-q2',
         question: 'Gdzie według piosenki możemy odnaleźć żywego Chrystusa w naszym codziennym życiu?',
         options: [
-          'Nigdzie go nie ma',
+          'Nigdzie go nie ma podczas uroczystych obchodów świąt nakazanych w Kościele',
           'W świecie bajek',
           'Tylko w dalekiej krainie',
           'W rodzinie, w kościele i w drugim człowieku'

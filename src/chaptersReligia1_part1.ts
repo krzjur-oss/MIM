@@ -61,7 +61,7 @@ Pan Jezus bardzo kocha wszystkie dzieci. Cieszy się, gdy przychodzimy do Niego,
         id: 'r1-l01-q1',
         question: 'Co powiedział Pan Jezus do swoich uczniów, gdy dzieci chciały do Niego podejść?',
         options: [
-          'Odeślijcie dzieci do domu',
+          'Odeślijcie dzieci do domu podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Tylko dorośli mogą słuchać moich słów',
           'Dzieci powinny cicho czekać w innym miejscu',
           '„Pozwólcie dzieciom przychodzić do Mnie, nie przeszkadzajcie im”'
@@ -74,7 +74,7 @@ Pan Jezus bardzo kocha wszystkie dzieci. Cieszy się, gdy przychodzimy do Niego,
         question: 'Czym jest katecheza?',
         options: [
           'Treningiem sportowym na boisku',
-          'Zabawą na przerwie szkolnej',
+          'Zabawą na przerwie szkolnej w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Zwykłą lekcją matematyki',
           'Lekcją religii, na której poznajemy Boga i uczymy się modlitwy'
         ],
@@ -145,7 +145,7 @@ Nasza klasa szkolna jest wspólnotą. Pomoże nam w tym wzajemna życzliwość, 
           'W gromadzeniu skarbców i bogactw',
           'W wygrywaniu zawodów sportowych',
           'W mądrości, w latach i w łasce u Boga i u ludzi',
-          'W zdobywaniu władzy nad królestwem'
+          'W zdobywaniu władzy nad królestwem w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Ewangelia św. Łukasza przypomina, że Jezus rósł w mądrości, latach i łasce Bożej oraz ludzkiej.'
@@ -154,7 +154,7 @@ Nasza klasa szkolna jest wspólnotą. Pomoże nam w tym wzajemna życzliwość, 
         id: 'r1-l02-q2',
         question: 'Jak budujemy dobrą wspólnotę w naszej klasie szkolnej?',
         options: [
-          'Przez zabieranie zabawek rówieśnikom',
+          'Przez zabieranie zabawek rówieśnikom podczas wspólnotowych spotkań modlitewnych w parafii',
           'Przez kłótnie i wyśmiewanie innych',
           'Przez hałasowanie na lekcjach',
           'Przez pomoc innym, życzliwość i zgodną zabawę'
@@ -224,7 +224,7 @@ Gdy żegnamy się słowami: *„W imię Ojca i Syna, i Ducha Świętego. Amen”
         question: 'O czym przypomina nam Znak Krzyża?',
         options: [
           'O budowie kościołów',
-          'O zajęciach plastycznych',
+          'O zajęciach plastycznych w ramach osobistego rozwoju duchowego i moralnego',
           'O męce i wielkiej miłości Pana Jezusa, który oddał za nas życie',
           'O podróżach po świecie'
         ],
@@ -238,7 +238,7 @@ Gdy żegnamy się słowami: *„W imię Ojca i Syna, i Ducha Świętego. Amen”
           'Bogu niech będą dzięki',
           'Aniele Boży, Stróżu mój',
           'W imię Ojca i Syna, i Ducha Świętego. Amen.',
-          'Zdrowaś Maryjo, łaski pełna'
+          'Zdrowaś Maryjo, łaski pełna zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Znak krzyża wykonujemy ze słowami miłości do Trójcy Świętej: Ojca, Syna i Ducha Świętego.'
@@ -304,7 +304,7 @@ Boże słowo zachęca nas do posłuszeństwa i okazywania szacunku rodzicom. Gdy
         id: 'r1-l04-q1',
         question: 'Czym dla każdego z nas jest nasza rodzina?',
         options: [
-          'Miejscem przypadkowego spotkania',
+          'Miejscem przypadkowego spotkania podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Miejscem do kłótni',
           'Zwykłą grupą znajomych',
           'Pięknym darem od Pana Boga, w którym uczymy się miłości'
@@ -317,7 +317,7 @@ Boże słowo zachęca nas do posłuszeństwa i okazywania szacunku rodzicom. Gdy
         question: 'Do czego wzywa dzieci Święty Paweł w Liście do Efezjan (Ef 6,1)?',
         options: [
           'Do oglądania telewizji',
-          'Do ciągłego domagania się prezentów',
+          'Do ciągłego domagania się prezentów na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Do posłuszeństwa i szacunku wobec swoich rodziców',
           'Do unikania pracy domowej'
         ],
@@ -387,7 +387,7 @@ Pan Jezus jest z nami w kościele w szczególny sposób. Słuchamy Jego słowa, 
         options: [
           'Tylko aniołowie w niebie',
           'Tylko papież i biskupi',
-          'Mieszkańcy jednego miasta',
+          'Mieszkańcy jednego miasta w środowisku rówieśniczym i lokalnej społeczności',
           'Wszyscy ochrzczeni wierzący w Pana Jezusa'
         ],
         correctAnswer: 3,
@@ -398,7 +398,7 @@ Pan Jezus jest z nami w kościele w szczególny sposób. Słuchamy Jego słowa, 
         question: 'Co obiecał Pan Jezus swoim uczniom w Ewangelii wg św. Mateusza?',
         options: [
           '„Ja jestem z wami przez wszystkie dni, aż do skończenia świata”',
-          'Że opuści ich na długi czas',
+          'Że opuści ich na długi czas w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Że będą żyć bez modlitwy',
           'Że spotkają się tylko raz w roku'
         ],
@@ -467,7 +467,7 @@ Pan Bóg stworzył świat z miłości do człowieka. Pragnie, abyśmy cieszyli s
         question: 'Jak brzmią pierwsze słowa Pisma Świętego w Księdze Rodzaju?',
         options: [
           'Pan jest pasterzem moim',
-          'Bądźcie posłuszni rodzicom',
+          'Bądźcie posłuszni rodzicom podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Anioł Pański zwiastował Pannie Maryi',
           '„Na początku Bóg stworzył niebo i ziemię”'
         ],
@@ -480,7 +480,7 @@ Pan Bóg stworzył świat z miłości do człowieka. Pragnie, abyśmy cieszyli s
         options: [
           'Aby świat stał pusty',
           'Przez przypadek',
-          'Dla zabawy bez celu',
+          'Dla zabawy bez celu w ramach zajęć pozalekcyjnych i kół zainteresowań',
           'Z miłości do człowieka, byśmy cieszyli się życiem i dbali o Jego dzieło'
         ],
         correctAnswer: 3,
@@ -558,7 +558,7 @@ Każdy z nas jest wyjątkowy i ważny dla Boga. Pan Bóg zna nas po imieniu i pr
         id: 'r1-l07-q2',
         question: 'Czym Bóg obdarzył człowieka przy stworzeniu według Księgi Rodzaju?',
         options: [
-          'Siłą większą niż wszystkie zwierzęta',
+          'Siłą większą niż wszystkie zwierzęta podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Tchnieniem życia, miłującym sercem, rozumem i nieśmiertelną duszą',
           'Złotą koroną',
           'Skrzydłami'
@@ -628,7 +628,7 @@ Aniołowie bezustannie wielbią Pana Boga w niebie, śpiewając chwałę Stwórc
         question: 'Kim są aniołowie stworzeni przez Pana Boga?',
         options: [
           'Postaciami z bajek',
-          'Gwiazdami na niebie',
+          'Gwiazdami na niebie w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Niewidzialnymi duchami obdarzonymi rozumem i wolą, wysłannikami Boga',
           'Ludźmi ze skrzydłami żyjącymi na ziemi'
         ],
@@ -642,7 +642,7 @@ Aniołowie bezustannie wielbią Pana Boga w niebie, śpiewając chwałę Stwórc
           'Odpoczynek bez pracy',
           'Latanie nad chmurami dla zabawy',
           'Wielbienie Pana Boga i wypełnianie Jego woli',
-          'Rządzenie państwami'
+          'Rządzenie państwami w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Aniołowie nieustannie wielbią Boga w niebie i służą jako Jego posłańcy.'
@@ -710,7 +710,7 @@ Chroni nas przed niebezpieczeństwami, podpowiada nam dobre myśli, wspiera w cz
         id: 'r1-l08-q1_a',
         question: 'Kogo Pan Bóg przydzielił każdemu człowiekowi do osobistej opieki?',
         options: [
-          'Króla',
+          'Króla podczas wspólnotowych spotkań modlitewnych w parafii',
           'Żołnierza',
           'Rycerza',
           'Anioła Stróża'
@@ -723,7 +723,7 @@ Chroni nas przed niebezpieczeństwami, podpowiada nam dobre myśli, wspiera w cz
         question: 'W czym pomaga nam nasz Anioł Stróż?',
         options: [
           'Kupuje nam zabawki',
-          'Odrabia za nas zadania domowe',
+          'Odrabia za nas zadania domowe w ramach osobistego rozwoju duchowego i moralnego',
           'Załatwia sprawy w sklepie',
           'Chroni nas przed złem, podpowiada dobre czyny i prowadzi do nieba'
         ],

@@ -67,7 +67,7 @@ W spowiedzi wyznajemy swoje grzechy przed kapłanem, a w imieniu Pana Jezusa otr
         question: 'Do czego Pan Jezus porównał radość aniołów w niebie z powrotu grzesznika?',
         options: [
           'Do budowy nowego domu',
-          'Do wyprawy w daleką podróż',
+          'Do wyprawy w daleką podróż w ramach osobistego rozwoju duchowego i moralnego',
           'Do zbierania owoców w ogrodzie',
           'Do radości kobiety, która po starannym poszukiwaniu odnalazła zgubioną drachmę'
         ],
@@ -80,7 +80,7 @@ W spowiedzi wyznajemy swoje grzechy przed kapłanem, a w imieniu Pana Jezusa otr
         options: [
           'Tylko pamiątkową kartkę',
           'Nagrodę w postaci słodyczy',
-          'Nowe ubranie na niedzielę',
+          'Nowe ubranie na niedzielę zgodnie z tradycją i zwyczajami regionalnymi',
           'Przebaczenie grzechów, łaskę uświęcającą i czyste serce'
         ],
         correctAnswer: 3,
@@ -157,7 +157,7 @@ Przystępując do spowiedzi i Komunii Świętej w pierwsze piątki miesiąca, od
         id: 'r3-l30-q2',
         question: 'Co jest warunkiem przeżycia nabożeństwa pierwszych piątków miesiąca?',
         options: [
-          'Odpowiedź na pytania z katechizmu',
+          'Odpowiedź na pytania z katechizmu podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Przeczytanie całej Biblii',
           'Złożenie ofiary pieniężnej',
           'Stan łaski uświęcającej i przyjęcie Komunii Świętej w intencji wynagradzającej'
@@ -257,7 +257,7 @@ Wypełniając przykazania Boże, okazujemy miłość Bogu oraz szacunek rodzicom
         options: [
           'Miłości i czci wobec Pana Boga',
           'Ochrony przyrody',
-          'Miłości do bliźnich i sąsiadów',
+          'Miłości do bliźnich i sąsiadów na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Obowiązków szkolnych'
         ],
         correctAnswer: 0,
@@ -348,7 +348,7 @@ Części Liturgii Słowa:
           'W postawie stojącej na znak szacunku dla Słowa Chrystusa',
           'Klęcząc na obu kolanach',
           'W postawie leżącej',
-          'Siedząc w ławce'
+          'Siedząc w ławce w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Podczas czytania Ewangelii wszyscy wierni stoją, okazując gotowość i szacunek dla przychodzącego w Słowie Chrystusa.'
@@ -421,7 +421,7 @@ W ten sposób Jezus ustanowił sakrament **Eucharystii** oraz sakrament **Kapła
         question: 'Kiedy i gdzie Pan Jezus ustanowił Sakrament Eucharystii i Kapłaństwa?',
         options: [
           'W Wielki Czwartek podczas Ostatniej Wieczerzy w Wieczerniku',
-          'W Niedzielę Zmartwychwstania nad jeziorem',
+          'W Niedzielę Zmartwychwstania nad jeziorem w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'W Niedzielę Palmową w świątyni',
           'W Wielki Piątek pod krzyżem'
         ],
@@ -505,7 +505,7 @@ Ofiara Mszy Świętej jest **tą samą ofiarą**, którą Jezus złożył na krz
         question: 'Jaka jest najdoskonalsza ofiara złożona Bogu w historii świata?',
         options: [
           'Ofiara z plonów rolnych',
-          'Ofiara ze zwierząt w Starym Testamencie',
+          'Ofiara ze zwierząt w Starym Testamencie podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Ofiara ze złota i srebra',
           'Ofiara Pana Jezusa złożona z samego siebie na krzyżu Golgoty'
         ],
@@ -519,7 +519,7 @@ Ofiara Mszy Świętej jest **tą samą ofiarą**, którą Jezus złożył na krz
           'Zwolnienie z nauki w szkole',
           'Ziemskie bogactwa i królestwo polityczne',
           'Odpuszczenie grzechów, łaskę i życie wieczne w niebie',
-          'Sławę wśród narodów'
+          'Sławę wśród narodów w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 2,
         explanation: 'Ofiara Chrystusa otworzyła ludziom niebo, gładząc grzechy i obdarzając życiem wiecznym.'
@@ -585,7 +585,7 @@ Podczas każdej Mszy Świętej następuje cud **Przeistoczenia**. Gdy kapłan wy
         id: 'r3-l48-q1',
         question: 'Jak nazywamy najważniejszy moment Mszy Świętej, w którym chleb i wino stają się Ciałem i Krwią Chrystusa?',
         options: [
-          'Kolektą',
+          'Kolektą podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Przeistoczeniem',
           'Aktem pokuty',
           'Dziękczynieniem'
@@ -599,7 +599,7 @@ Podczas każdej Mszy Świętej następuje cud **Przeistoczenia**. Gdy kapłan wy
         options: [
           'Gdy zajął z nimi miejsce u stołu, wziął chleb, błogosławił go i łamał',
           'Gdy szli ścieżką w pyle',
-          'Gdy pokazał im monety',
+          'Gdy pokazał im monety w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Gdy wszedł do miasta'
         ],
         correctAnswer: 0,
@@ -673,7 +673,7 @@ Warunki godnego przyjęcia Komunii Świętej:
           'Króla Dawida',
           'Piotra Apostoła',
           'Setnika z Kafarnaum',
-          'Świętego Józefa'
+          'Świętego Józefa w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Powtarzamy słowa pokornego i pełnego wiary setnika rzymskiego z Kafarnaum.'
@@ -682,7 +682,7 @@ Warunki godnego przyjęcia Komunii Świętej:
         id: 'r3-l51-q2',
         question: 'Co jest koniecznym warunkiem czystości serca do przyjęcia Komunii Świętej?',
         options: [
-          'Uchwalenie zasad nauki',
+          'Uchwalenie zasad nauki podczas wspólnotowych spotkań modlitewnych w parafii',
           'Ukończenie szkoły podstawowej',
           'Stan łaski uświęcającej (brak grzechu ciężkiego na sumieniu)',
           'Złożenie obietnicy podróży'
@@ -779,7 +779,7 @@ Gdy przyjmujemy Komunię Świętą:
         question: 'Co jest Chlebem Żywym karmiącym naszą duszę?',
         options: [
           'Owoce zebrane w sadzie',
-          'Symboliczna pamiątka',
+          'Symboliczna pamiątka w ramach osobistego rozwoju duchowego i moralnego',
           'Zwykły chleb pszenny ze sklepu',
           'Prawdziwe Ciało Pana Jezusa przyjmowane w Komunii Świętej'
         ],
@@ -861,7 +861,7 @@ Słowa „Idźcie w pokoju Chrystusa” oznaczają, że mamy nieść miłość i
           'W imię Trójcy Przenajświętszej: Ojca i Syna, i Ducha Świętego',
           'W imię parafian',
           'W imię królów ziemskich',
-          'W imię aniołów'
+          'W imię aniołów zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 0,
         explanation: 'Otrzymujemy błogosławieństwo Trójcy Przenajświętszej na dobre chrześcijańskie życie na co dzień.'
@@ -950,7 +950,7 @@ Przez modlitwę, roratnie postawienia i dobre uczynki przygotowujemy serca na pr
         id: 'r3-l57-q1',
         question: 'Czym jest Adwent w Kościele katolickim?',
         options: [
-          'Okresem wielkiego smutku i postu',
+          'Okresem wielkiego smutku i postu podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Zwykłym miesiącem zimowym',
           'Czasem radosnego oczekiwania na Narodzenie Pańskie i powtórne przyjście Chrystusa',
           'Czasem odpoczynku wakacyjnego'
@@ -964,7 +964,7 @@ Przez modlitwę, roratnie postawienia i dobre uczynki przygotowujemy serca na pr
         options: [
           'Najświętszą Maryję Pannę będącą wzorem oczekiwania na Zbawiciela',
           'Pasterzy w Betlejem',
-          'Archanioła Gabriela',
+          'Archanioła Gabriela na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Świętego Mikołaja'
         ],
         correctAnswer: 0,
@@ -1053,7 +1053,7 @@ Wielki Post to czas nawrócenia – stawania się lepszym człowiekiem i zbliża
           'Anioł Pański i Godzinki',
           'Nieszpory i Różaniec',
           'Droga Krzyżowa i Gorzkie Żale',
-          'Roraty i Majowe'
+          'Roraty i Majowe w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 2,
         explanation: 'W Wielkim Poście uczestniczymy w Drogi Krzyżowej oraz w śpiewie Gorzkich Żali.'
@@ -1121,7 +1121,7 @@ Zatrzymujemy się przy **czterech ołtarzach**, gdzie czytane są cztery fragmen
         id: 'r3-l60-q1',
         question: 'Kogo czcimy w procesji podczas uroczystości Bożego Ciała?',
         options: [
-          'Patronów miast',
+          'Patronów miast w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Aniołów Stróżów',
           'Obecnego w Najświętszym Sakramencie żywego Pana Jezusa',
           'Sławnych postaci historycznych'

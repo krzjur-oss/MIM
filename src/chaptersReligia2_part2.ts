@@ -67,7 +67,7 @@ Modlić się – to myśleć o Bogu z miłością, spotkać się z Nim i rozmawi
         question: 'Czym jest modlitwa chrześcijańska?',
         options: [
           'Głośnym czytaniem starych podręczników',
-          'Recytowaniem trudnych formułek bez myślenia',
+          'Recytowaniem trudnych formułek bez myślenia na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Rozmową z Panem Bogiem pełną miłości, jak z najlepszym przyjacielem',
           'Obowiązkiem zarezerwowanym tylko dla księży'
         ],
@@ -81,7 +81,7 @@ Modlić się – to myśleć o Bogu z miłością, spotkać się z Nim i rozmawi
           'Że wysłucha tylko modlitw w niedzielę',
           '„Gdzie są dwaj albo trzej zebrani w imię moje, tam jestem pośród nich”',
           'Że modlitwa wspólna jest mniej ważna niż osobista',
-          'Że wysłucha tylko dorosłych'
+          'Że wysłucha tylko dorosłych w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 1,
         explanation: 'Jezus żyje i jest specjalnie obecny wśród tych, którzy gromadzą się na modlitwie w Jego imię.'
@@ -162,7 +162,7 @@ Umarł na krzyżu za grzechy wszystkich ludzi dla ich zbawienia. Pan Jezus dał 
         id: 'r2-l16-q2',
         question: 'Dlaczego Pan Jezus oddał swoje życie na krzyżu?',
         options: [
-          'Aby pokazać swoją ziemską wyższość',
+          'Aby pokazać swoją ziemską wyższość w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Bo nie miał siły uciekać przed żołnierzami',
           'Z miłości do nas, za grzechy wszystkich ludzi i dla naszego zbawienia',
           'Przez przypadek w wyniku zamieszek'
@@ -247,7 +247,7 @@ Pan Jezus stał się Człowiekiem dla naszego zbawienia. Swoją śmiercią i zma
         question: 'Co jest najważniejszym świętem chrześcijańskim i podstawą naszej wiary?',
         options: [
           'Święto Trzech Króli',
-          'Święto Mikołaja',
+          'Święto Mikołaja podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Wielkanoc – Uroczystość Zmartwychwstania Pańskiego',
           'Dożynki'
         ],
@@ -324,7 +324,7 @@ Pan Jezus dał moc Ducha Świętego Apostołom, aby mogli odpuszczać grzechy. D
           'Podczas wjazdu do Jerozolimy',
           'W dniu zmartwychwstania, ukazując się Apostołom w Wieczerniku',
           'Podczas chrztu w Jordanie',
-          'Na weselu w Kanie'
+          'Na weselu w Kanie w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 1,
         explanation: 'Zmartwychwstały Jezus tchnął na Apostołów Ducha Świętego i dał im władzę odpuszczania grzechów.'
@@ -333,7 +333,7 @@ Pan Jezus dał moc Ducha Świętego Apostołom, aby mogli odpuszczać grzechy. D
         id: 'r2-l18-q2',
         question: 'Przez kogo Pan Jezus przebacza nam dzisiaj grzechy w Kościele?',
         options: [
-          'Przez aniołów na niebie',
+          'Przez aniołów na niebie podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Przez samodzielne wpisy w pamiętniku',
           'Przez kapłanów w sakramencie pokuty i pojednania',
           'Przez królów i władców'
@@ -403,7 +403,7 @@ Pan Jezus wyjaśnił, co może stać się z Bożym słowem, które słyszymy. S�
         question: 'Co w Przypowieści o siewcy symbolizuje żyzna ziemia, na którą padło ziarno?',
         options: [
           'Człowieka leniwego i obojętnego',
-          'Duży ogród warzywny',
+          'Duży ogród warzywny w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Człowieka o otwartym sercu, który słucha słowa Bożego i wciela je w życie',
           'Górska skałę bez roślin'
         ],
@@ -416,7 +416,7 @@ Pan Jezus wyjaśnił, co może stać się z Bożym słowem, które słyszymy. S�
         options: [
           'W wiadomościach prasowych',
           'Tylko w telewizorze',
-          'W bajkach animowanych',
+          'W bajkach animowanych w codziennym życiu rodzinnym i szkolnym',
           'Podczas Mszy Świętej w kościele oraz na lekcji religii z Pisma Świętego'
         ],
         correctAnswer: 3,
@@ -494,7 +494,7 @@ Pan Jezus porównuje siebie do winnego krzewu, a nas do latorośli. Jesteśmy z�
         id: 'r2-l22-q1',
         question: 'Ile jest sakramentów świętych ustanowionych przez Pana Jezusa w Kościele?',
         options: [
-          '10 sakramentów',
+          '10 sakramentów podczas wspólnotowych spotkań modlitewnych w parafii',
           '3 sakramenty',
           '7 sakramentów świętych',
           '12 sakramentów'
@@ -507,7 +507,7 @@ Pan Jezus porównuje siebie do winnego krzewu, a nas do latorośli. Jesteśmy z�
         question: 'Do czego Pan Jezus porównał siebie i swoich uczniów w Ewangelii wg św. Jana?',
         options: [
           'Do drzewa dębowego i liści',
-          'Do słońca i gwiazd',
+          'Do słońca i gwiazd w ramach osobistego rozwoju duchowego i moralnego',
           'Do krzewu winnego i jego latorośli (gałązek)',
           'Do rzeki i wody'
         ],
@@ -588,7 +588,7 @@ Podczas Mszy Świętej wyznajemy: *„Głosimy śmierć Twoją, Panie Jezu, wyzn
           'Po znajomości języków obcych',
           'Po pięknych strojach',
           'Po dobrych uczynkach spełnianych wobec bliźnich („Mnieście uczynili”)',
-          'Po ilości zgromadzonych majątków'
+          'Po ilości zgromadzonych majątków zgodnie z tradycją i zwyczajami regionalnymi'
         ],
         correctAnswer: 2,
         explanation: 'Jezus powiedział, że to, co uczyniliśmy jednemu z najmniejszych naszych braci, zrobiliśmy samemu Chrystusowi.'
@@ -654,7 +654,7 @@ Pan Jezus jest naszym Dobrym Pasterzem. Oddał za nas życie na krzyżu dla nasz
         id: 'r2-l26-q1',
         question: 'Kogo Pan Jezus nazywa w Ewangelii swoim stadem owiec?',
         options: [
-          'Mieszkańców Rzymu',
+          'Mieszkańców Rzymu podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Tylko starożytnych rybaków',
           'Wszystkich ludzi, którzy słuchają Jego głosu i idą za Nim',
           'Aniołów w niebie'
@@ -667,7 +667,7 @@ Pan Jezus jest naszym Dobrym Pasterzem. Oddał za nas życie na krzyżu dla nasz
         question: 'Co uczynił Dobry Pasterz – Jezus dla ochrony i zbawienia swoich owiec?',
         options: [
           'Zamknął je w ogrodzeniu',
-          'Uciekł przed wilkami',
+          'Uciekł przed wilkami na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Odszedł w dalekie kraje',
           'Oddał za nie swoje życie na krzyżu'
         ],
@@ -752,7 +752,7 @@ Pan Jezus, wypowiadając słowa „Paś owce moje”, uczynił Piotra swoim zast
           'Następcą św. Piotra, Ojcem Świętym i pasterzem całego Kościoła',
           'Zwykłym nauczycielem historii',
           'Przewodniczącym chóru',
-          'Władcą politycznym jednego miasta'
+          'Władcą politycznym jednego miasta w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Papież kontynuuje misję św. Piotra, przewodząc i służąc wspólnocie wiernych na całym świecie.'
@@ -819,7 +819,7 @@ Gdy Duch Święty zstąpił na Apostołów, poczuli w sobie siłę i odwagę ora
         id: 'r2-l29-q1',
         question: 'W jakich widzialnych znakach Duch Święty zstąpił na Apostołów w dniu Pięćdziesiątnicy?',
         options: [
-          'Trzęsienie ziemi i mgła',
+          'Trzęsienie ziemi i mgła w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Szum gwałtownego wiatru oraz języki ognia nad głowami',
           'Śnieżyca i błyskawice',
           'Słoneczna tęcza na niebie'
@@ -832,7 +832,7 @@ Gdy Duch Święty zstąpił na Apostołów, poczuli w sobie siłę i odwagę ora
         question: 'Co sprawiło zstąpienie Ducha Świętego w sercach strwożonych dotąd Apostołów?',
         options: [
           'Sprawiło, że ukryli się na stałe',
-          'Skłoniło ich do powrotu do dawnych zajęć rybackich',
+          'Skłoniło ich do powrotu do dawnych zajęć rybackich podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Dodało im odwagi, mądrości i siły do odważnego głoszenia Ewangelii światu',
           'Zatrzymało ich w Wieczerniku'
         ],

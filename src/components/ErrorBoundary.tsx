@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { idbGet, HEAVY_STORAGE_KEYS } from '../storage';
 
 interface Props {
   children: ReactNode;
@@ -26,7 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('[ErrorBoundary] Przechwycono nieobsłużony błąd React:', error, errorInfo);
   }
 
-  private handleDownloadBackup = (): void => {
+  private handleDownloadBackup = async (): Promise<boolean> => {
     try {
       const backupData: Record<string, unknown> = {
         exportDate: new Date().toISOString(),
@@ -34,6 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
         appVersion: '1.3'
       };
 
+      // 1. Czytaj z localStorage
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith('multibook_')) {
@@ -44,6 +46,20 @@ export class ErrorBoundary extends Component<Props, State> {
           }
         }
       }
+
+      // 2. Czytaj asynchronicznie z bazy IndexedDB dla HEAVY_STORAGE_KEYS
+      await Promise.all(
+        HEAVY_STORAGE_KEYS.map(async (key) => {
+          try {
+            const val = await idbGet(key);
+            if (val !== null && val !== undefined) {
+              backupData[key] = val;
+            }
+          } catch (err) {
+            console.warn(`[ErrorBoundary] Błąd odczytu ${key} z IndexedDB:`, err);
+          }
+        })
+      );
 
       const jsonStr = JSON.stringify(backupData, null, 2);
       const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
@@ -57,14 +73,23 @@ export class ErrorBoundary extends Component<Props, State> {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 1000);
+      return true;
     } catch (e) {
       alert('Nie udało się wyeksportować kopii awaryjnej: ' + String(e));
+      return false;
     }
   };
 
-  private handleResetApp = (): void => {
+  private handleResetApp = async (): Promise<void> => {
+    const wantsBackup = window.confirm(
+      'UWAGA: Przed zresetowaniem programu zalecamy pobranie kopii zapasowej swoich danych.\n\nCzy chcesz teraz pobrać kopię awaryjną na dysk przed wyczyszczeniem bazy?'
+    );
+    if (wantsBackup) {
+      await this.handleDownloadBackup();
+    }
+
     const confirmed = window.confirm(
-      'Czy na pewno chcesz zresetować aplikację do ustawień fabrycznych?\n\nZostaną wyczyszczone lokalne dane programu. Jeśli chcesz zachować swoje notatki i lekcje, najpierw pobierz kopię zapasową.'
+      'Czy na pewno chcesz bezpowrotnie usunąć wszystkie dane z pamięci podręcznej i bazy IndexedDB?\n\nProgram zostanie przywrócony do stanu początkowego.'
     );
     if (!confirmed) return;
 
@@ -78,7 +103,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
       keysToRemove.forEach((k) => localStorage.removeItem(k));
 
-      // Also attempt IndexedDB cleanup
+      // Usunięcie bazy IndexedDB
       if (typeof window !== 'undefined' && window.indexedDB) {
         window.indexedDB.deleteDatabase('mim_multibook_idb');
       }

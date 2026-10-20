@@ -9,7 +9,10 @@ const CORE_ASSETS = /* __CORE_ASSETS_START__ */ [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ] /* __CORE_ASSETS_END__ */;
 
 // Secondary curriculum chunks, vendor libraries, and modular components.
@@ -71,14 +74,31 @@ self.addEventListener('fetch', (event) => {
   // Only handle standard GET requests (excluding non-GET, websockets, etc.)
   if (event.request.method !== 'GET') return;
 
+  // SPA navigation fallback to index.html when offline
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(async () => {
+        const cache = await caches.open(CACHE_NAME);
+        return (
+          (await cache.match('./index.html')) ||
+          (await cache.match('/index.html')) ||
+          (await cache.match('./')) ||
+          new Response('Multibook Offline', {
+            headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          })
+        );
+      })
+    );
+    return;
+  }
+
   const url = new URL(event.request.url);
 
-  // We cache assets on our same platform origin, Google Fonts, and external Unsplash photos
+  // We cache assets on our same platform origin and external Unsplash photos (Google Fonts are bundled locally)
   const isSameOrigin = url.origin === self.location.origin;
-  const isGoogleFont = url.origin.includes('fonts.googleapis.com') || url.origin.includes('fonts.gstatic.com');
   const isUnsplashImg = url.origin.includes('images.unsplash.com');
 
-  if (isSameOrigin || isGoogleFont || isUnsplashImg) {
+  if (isSameOrigin || isUnsplashImg) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
         return cache.match(event.request).then((cachedResponse) => {

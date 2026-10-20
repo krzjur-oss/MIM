@@ -62,7 +62,7 @@ Jezus modlił się nawet na krzyżu, przepraszając i prosząc o przebaczenie dl
         options: [
           '„Ojcze, przebacz im, bo nie wiedzą, co czynią”',
           'O pomoc od aniołów',
-          'O ukaranie wrogów',
+          'O ukaranie wrogów na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'O zabranie go w tym momencie z krzyża'
         ],
         correctAnswer: 0,
@@ -74,7 +74,7 @@ Jezus modlił się nawet na krzyżu, przepraszając i prosząc o przebaczenie dl
         options: [
           'Aniele Boży',
           'Aktu strzelistego',
-          'Pod Twoją obronę',
+          'Pod Twoją obronę w środowisku rówieśniczym i lokalnej społeczności',
           'Modlitwy Pańskiej – „Ojcze nasz”'
         ],
         correctAnswer: 3,
@@ -142,7 +142,7 @@ Godność dziecka Bożego to wielki dar i wyróżnienie. Oznacza to, że jesteś
         question: 'Na czyj obraz i podobieństwo Bóg stworzył człowieka według Księgi Rodzaju?',
         options: [
           'Na swój obraz i podobieństwo Boże',
-          'Na obraz królów ziemi',
+          'Na obraz królów ziemi w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Na obraz aniołów',
           'Na obraz przyrody'
         ],
@@ -154,7 +154,7 @@ Godność dziecka Bożego to wielki dar i wyróżnienie. Oznacza to, że jesteś
         question: 'W jakim sakramencie stajemy się włączonymi do rodziny Dziećmi Bożymi?',
         options: [
           'W sakramencie namaszczenia',
-          'W sakramencie bierzmowania',
+          'W sakramencie bierzmowania podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'W sakramencie małżeństwa',
           'W sakramencie chrztu świętego'
         ],
@@ -224,7 +224,7 @@ Jezus uczy nas, jak kochać naszą mamę na ziemi. Dziękujemy mamie za trud opi
         options: [
           'Mówił, że nie ma dla Niej czasu',
           'Wymagał ciągłej obsługi',
-          'Rzadko z Nią rozmawiał',
+          'Rzadko z Nią rozmawiał w ramach zajęć pozalekcyjnych i kół zainteresowań',
           'Kochał Ją, szanował i był Jej posłuszny we wszystkim'
         ],
         correctAnswer: 3,
@@ -235,7 +235,7 @@ Jezus uczy nas, jak kochać naszą mamę na ziemi. Dziękujemy mamie za trud opi
         question: 'Czwarte Przykazanie Boże nakazuje nam:',
         options: [
           'Czcić ojca swego i matkę swoją',
-          'Szanować tylko kolegów',
+          'Szanować tylko kolegów podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Nie kraść',
           'Pamiętać o dniu świętym'
         ],
@@ -304,7 +304,7 @@ Nasi ojcowie naśladują Świętego Józefa, pracując dla rodziny, chroniąc do
         question: 'Kto był przybranym ojcem i opiekunem Pana Jezusa na ziemi?',
         options: [
           'Święty Jan',
-          'Święty Piotr',
+          'Święty Piotr w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Święty Józef z Nazaretu',
           'Król Dawid'
         ],
@@ -318,7 +318,7 @@ Nasi ojcowie naśladują Świętego Józefa, pracując dla rodziny, chroniąc do
           'Ukrył się u sąsiadów w Betlejem',
           'Został na miejscu',
           'Wziął Dziecię i Jego Matkę w nocy i uciekł do Egiptu',
-          'Odszedł sam na pustynię'
+          'Odszedł sam na pustynię w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 2,
         explanation: 'Święty Józef natychmiast uciekł z Rodziną do Egiptu, chroniąc życie Dzieciątka.'
@@ -387,7 +387,7 @@ Obietnica nieba dla przyjaciół Boga:
         id: 'r1-l37-q1',
         question: 'Kto może zostać świętym według słów znanej piosenki religijnej?',
         options: [
-          'Tylko dorośli po 80. roku życia',
+          'Tylko dorośli po 80. roku życia podczas wspólnotowych spotkań modlitewnych w parafii',
           'Tylko aniołowie',
           'Każdy człowiek: mały, duży, bogaty czy biedny, który kocha Boga i bliźniego',
           'Tylko starożytni królowie'
@@ -401,7 +401,7 @@ Obietnica nieba dla przyjaciół Boga:
         options: [
           '„W domu Ojca mego jest mieszkań wiele”',
           'Że wejdą tam tylko wybrani rycerze',
-          'Że niebo jest daleko i niedostępne',
+          'Że niebo jest daleko i niedostępne w ramach osobistego rozwoju duchowego i moralnego',
           'Że w niebie zabraknie miejsca'
         ],
         correctAnswer: 0,
@@ -472,7 +472,7 @@ Najważniejsza dla zmarłych jest jednak nasza modlitwa. Prosimy w niej miłosie
         options: [
           'Głośny płacz bez nadziei',
           'Duże ilości plastiku',
-          'Droga biżuteria',
+          'Droga biżuteria zgodnie z tradycją i zwyczajami regionalnymi',
           'Nasza szczerza modlitwa i zamówiona Msza Święta'
         ],
         correctAnswer: 3,
@@ -483,7 +483,7 @@ Najważniejsza dla zmarłych jest jednak nasza modlitwa. Prosimy w niej miłosie
         question: 'Co Pan Jezus obiecał w Ewangelii wg św. Jana tym, którzy w Niego wierzą?',
         options: [
           '„Kto we Mnie wierzy, choćby i umarł, żyć będzie”',
-          'Że nie ma zmartwychwstania',
+          'Że nie ma zmartwychwstania podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Że śmierć jest końcem wszystkiego',
           'Że zmarli zostaną zapomniani'
         ],
@@ -552,7 +552,7 @@ Adwent uczy nas czujności, dobrych uczynków i modlitewnego przygotowania czyst
         question: 'Czym jest okres Adwentu?',
         options: [
           'Czasem wolnym od lekcji',
-          'Zwykłym miesiącem zimowym',
+          'Zwykłym miesiącem zimowym na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'Czasem radosnego oczekiwania i przygotowania na narodzenie Pana Jezusa',
           'Czasem smutku i płaczu'
         ],
@@ -636,7 +636,7 @@ Zaczynamy od odczytania Ewangelii św. Łukasza o narodzeniu Jezusa, wspólnej m
           'Znakiem miłości, przebaczenia, pokoju i jedności w rodzinie',
           'Zwykłą przekąską przed kolacją',
           'Pamiątką po wakacjach',
-          'Ozdobą stołową'
+          'Ozdobą stołową w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Łamanie się opłatkiem wyraża chęć przebaczenia win, miłość i składanie dobrych życzeń.'
@@ -645,7 +645,7 @@ Zaczynamy od odczytania Ewangelii św. Łukasza o narodzeniu Jezusa, wspólnej m
         id: 'r1-l42-q2',
         question: 'Co położono na dnie żłóbka, w którym narodził się Jezus w Betlejem?',
         options: [
-          'Koce wełniane',
+          'Koce wełniane w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Sianko i pieluszki',
           'Złote poduszki',
           'Marmurowe płyty'
@@ -715,7 +715,7 @@ Pierwszymi, którzy oddali Mu pokłon, byli ubodzy pasterze oraz Mędrcy ze Wsch
         question: 'Gdzie narodził się Pan Jezus według relacji Ewangelii?',
         options: [
           'Na łodzi na jeziorze',
-          'W świątyni jerozolimskiej',
+          'W świątyni jerozolimskiej podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'W Betlejem w stajence i został położony w żłobie',
           'W wielkim pałacu w Rzymie'
         ],
@@ -729,7 +729,7 @@ Pierwszymi, którzy oddali Mu pokłon, byli ubodzy pasterze oraz Mędrcy ze Wsch
           'Pasterze pilnujący swoich stada nocą',
           'Kupcy z targowiska',
           'Faryzeusze',
-          'Rzymscy żołnierze'
+          'Rzymscy żołnierze w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 0,
         explanation: 'Anioł objawił pasterzom nowinę o narodzeniu Zbawiciela i pospieszyli do żłóbka.'
@@ -876,7 +876,7 @@ Zmartwychwstanie Chrystusa daje nam wielką nadzieję na życie wieczne w niebie
         id: 'r1-l54-q1',
         question: 'Którego dnia po ukrzyżowaniu Pan Jezus powstał z martwych?',
         options: [
-          'Dziesiątego dnia',
+          'Dziesiątego dnia podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Siódmego dnia',
           'Trzeciego dnia (w Niedzielę Wielkanocną)',
           'Po roku'
@@ -890,7 +890,7 @@ Zmartwychwstanie Chrystusa daje nam wielką nadzieję na życie wieczne w niebie
         options: [
           'Przepraszam za winy',
           'Chwalcie Pana! / Chwała Bogu!',
-          'Dzień dobry',
+          'Dzień dobry w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Do widzenia'
         ],
         correctAnswer: 1,
@@ -962,7 +962,7 @@ Bóg nie idzie na wakacje od nas – On jest przy nas w górach, nad morzem, na 
         options: [
           'Że do kościoła chodzi się tylko w trakcie nauki',
           'Aby zapomnieć o modlitwie na dwa miesiące',
-          'Żeby nie pomagać nikomu',
+          'Żeby nie pomagać nikomu w codziennym życiu rodzinnym i szkolnym',
           'O codziennej modlitwie, niedzielnej Mszy Świętej i dbałości o bezpieczeństwo'
         ],
         correctAnswer: 3,

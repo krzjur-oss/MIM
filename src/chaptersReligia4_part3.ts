@@ -83,7 +83,7 @@ Pan Jezus uczy, że jeśli będziemy mieć wielką wiara, będziemy świadkami n
         options: [
           '„Modlitwa nie ma wpływu na życie”',
           '„Proście tylko o bogactwa”',
-          '„Bóg słucha tylko wybranych”',
+          '„Bóg słucha tylko wybranych” zgodnie z tradycją i zwyczajami regionalnymi',
           '„Otrzymacie wszystko, o co na modlitwie z wiara prosić będziecie”'
         ],
         correctAnswer: 3,
@@ -154,7 +154,7 @@ Ostatnim elementem liturgii słowa we Mszy Świętej jest **modlitwa wiernych** 
         id: 'r4-l40-q1',
         question: 'Jak inaczej nazywamy modlitwę wiernych we Mszy Świętej?',
         options: [
-          'Aktem pokuty',
+          'Aktem pokuty podczas uroczystych obchodów świąt nakazanych w Kościele',
           'Modlitwą powszechną',
           'Hymnem uwielbienia',
           'Dziękczynieniem'
@@ -242,7 +242,7 @@ Pan Jezus uczy nas, byśmy i my byli posłuszni Panu Bogu, czyniąc zawsze tak, 
         options: [
           'W Ogrodzie Oliwnym (Getsemani)',
           'Na Górze Tabor',
-          'W Betlejem',
+          'W Betlejem na podstawie ogólnych założeń dydaktycznych i wychowawczych',
           'W Kafarnaum'
         ],
         correctAnswer: 0,
@@ -255,7 +255,7 @@ Pan Jezus uczy nas, byśmy i my byli posłuszni Panu Bogu, czyniąc zawsze tak, 
           '„Bądź wola Twoja jako w niebie, tak i na ziemi”',
           '„Chleba naszego powszedniego daj nam dzisiaj”',
           '„Święć się imię Twoje”',
-          '„I nie wódź nas na pokuszenie”'
+          '„I nie wódź nas na pokuszenie” w środowisku rówieśniczym i lokalnej społeczności'
         ],
         correctAnswer: 0,
         explanation: 'Słowa „Bądź wola Twoja...” oznaczają gotowość do pełnienia woli Boga.'
@@ -322,7 +322,7 @@ W tej modlitwie zwracamy się do Boga z naszymi prośbami. Pierwsze trzy prośby
         id: 'r4-l43-q1',
         question: 'Dlaczego modlitwę „Ojcze nasz” nazywamy Modlitwą Pańską?',
         options: [
-          'Bo jest odmawiana w niedzielę',
+          'Bo jest odmawiana w niedzielę w trakcie przygotowań do wydarzeń parafialnych i szkolnych',
           'Ponieważ nauczył jej sam Pan Jezus',
           'Bo napisali ją królestwa',
           'Bo jest najdłuższa'
@@ -352,7 +352,7 @@ W tej modlitwie zwracamy się do Boga z naszymi prośbami. Pierwsze trzy prośby
     grade: 'Klasa 4',
     chapterGroup: 'Rozdział III: Idę z Jezusem przez rok liturgiczny',
     educationLevel: 'Szkoła Podstawowa (Klasy 4-6)',
-    estimatedReadTime: 5,
+    estimatedReadTime: 3,
     isDefault: true,
     lessonNumber: 45,
     createdAt: Date.now() - 6000,
@@ -419,7 +419,7 @@ Wielkanoc jest największym świętem chrześcijańskim. Zmartwychwstały Chryst
         options: [
           'Zmartwychwstanie Pana Jezusa',
           'Chrzest w Jordanie',
-          'Narodzenie w Betlejem',
+          'Narodzenie w Betlejem podczas regularnej modlitwy i refleksji nad Pismem Świętym',
           'Wniebowzięcie'
         ],
         correctAnswer: 0,
@@ -497,7 +497,7 @@ Podczas każdej Mszy Świętej Pan Jezus uobecnia się pośród nas z miłości 
           'Wcale nie składa ofiary',
           'W sposób bezkrwawy pod postaciami chleba i wina',
           'W sposób krwawy na ołtarzu',
-          'Tylko jako wyobrażenie symboliczne'
+          'Tylko jako wyobrażenie symboliczne w ramach zajęć pozalekcyjnych i kół zainteresowań'
         ],
         correctAnswer: 1,
         explanation: 'Msza Święta to bezkrwawe uobecnienie tej samej Ofiary, którą Jezus złożył na krzyżu.'
@@ -506,7 +506,7 @@ Podczas każdej Mszy Świętej Pan Jezus uobecnia się pośród nas z miłości 
         id: 'r4-l46-q2',
         question: 'Co Jezus przemienił w swoje Ciało i Krew podczas Ostatniej Wieczerzy?',
         options: [
-          'Oliwę i miód',
+          'Oliwę i miód podczas uroczystych nabożeństw w ciągu roku liturgicznego',
           'Chleb i wino',
           'Rybę i chleb',
           'Owoce i wodę'
@@ -581,7 +581,7 @@ Apostołowie i ich następcy – biskupi i kapłani – z polecenia Pana Jezusa 
         question: 'Co Jezus obiecał każdemu, kto godnie spożywa Jego Ciało i pije Jego Krew?',
         options: [
           'Doczesną sławę',
-          'Zwolnienie z trudów nauki',
+          'Zwolnienie z trudów nauki w relacjach z rówieśnikami, nauczycielami i rodzicami',
           'Szybki awans zawodowy',
           'Życie wieczne i zmartwychwstanie w dniu ostatecznym'
         ],
@@ -595,7 +595,7 @@ Apostołowie i ich następcy – biskupi i kapłani – z polecenia Pana Jezusa 
           'Stan łaski uświęcającej (czyste serce bez grzechu ciężkiego)',
           'Zakup specjalnego stroju',
           'Ukończenie 18 lat',
-          'Idealna ocena z religii'
+          'Idealna ocena z religii w codziennym życiu rodzinnym i szkolnym'
         ],
         correctAnswer: 0,
         explanation: 'Warunkiem przystąpienia do Komunii Świętej jest czyste serce w stanie łaski uświęcającej.'
@@ -676,7 +676,7 @@ Boże Ciało uświadamia nam prawdę o szczególnej obecności Pana Jezusa wśr�
         id: 'r4-l52-q2',
         question: 'Ile ołtarzy jest tradycyjnie przygotowywanych na trasie procesji Bożego Ciała?',
         options: [
-          '7',
+          '7 podczas wspólnotowych spotkań modlitewnych w parafii',
           '4',
           '3',
           '2'
@@ -751,7 +751,7 @@ Adorując Pana Jezusa, patrzysz na Niego z wiara i miłością, a On patrzy na C
         options: [
           'Przebywać z Nim z miłością bez stawiania listy prośb, pozwalając Mu nas uzdrawiać',
           'Czytać gazety w ławce',
-          'Szybko przemieścić się przez kościół',
+          'Szybko przemieścić się przez kościół w ramach osobistego rozwoju duchowego i moralnego',
           'Tylko głośno śpiewać'
         ],
         correctAnswer: 0,

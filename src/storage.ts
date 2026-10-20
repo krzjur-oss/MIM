@@ -1,4 +1,5 @@
 import { Chapter, StudentProgress, Student, QuizQuestion } from './types';
+import { DEFAULT_CHAPTERS } from './defaultChapters';
 
 // ============================================================================
 // Storage Error Listener Registry (e.g. QuotaExceededError Toast)
@@ -35,7 +36,7 @@ const isQuotaExceeded = (e: unknown): boolean => {
 };
 
 // ============================================================================
-// IndexedDB Persistence Layer (for chapters and gallery images)
+// IndexedDB Persistence Layer (for chapters and educational databases)
 // ============================================================================
 const DB_NAME = 'mim_multibook_idb';
 const DB_VERSION = 1;
@@ -43,38 +44,70 @@ const STORE_NAME = 'keyval';
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
-const getIDB = (): Promise<IDBDatabase> => {
+export const resetIDB = (): void => {
+  dbPromise = null;
+};
+
+export const getIDB = (): Promise<IDBDatabase> => {
   if (dbPromise) return dbPromise;
   if (typeof window === 'undefined' || !window.indexedDB) {
     return Promise.reject(new Error('IndexedDB not supported in this environment'));
   }
   dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
-    const req = window.indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    try {
+      const req = window.indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => {
+        dbPromise = null;
+        reject(req.error || new Error('Failed to open IndexedDB'));
+      };
+    } catch (err) {
+      dbPromise = null;
+      reject(err);
+    }
   });
   return dbPromise;
 };
 
-export const idbSet = async (key: string, value: unknown): Promise<void> => {
-  try {
-    const db = await getIDB();
-    await new Promise<void>((resolve, reject) => {
+export const idbSet = async (key: string, value: unknown): Promise<boolean> => {
+  const db = await getIDB();
+  return new Promise<boolean>((resolve, reject) => {
+    try {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const store = tx.objectStore(STORE_NAME);
       const req = store.put(value, key);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
-    });
-  } catch (e) {
-    console.warn('[storage] IndexedDB put warning for key:', key, e);
-  }
+
+      let reqOk = false;
+      req.onsuccess = () => {
+        reqOk = true;
+      };
+      req.onerror = () => {
+        reject(req.error || new Error(`IndexedDB put failed for key: ${key}`));
+      };
+
+      tx.oncomplete = () => {
+        if (reqOk) {
+          resolve(true);
+        } else {
+          reject(new Error(`Transaction completed without put success for key: ${key}`));
+        }
+      };
+      tx.onerror = () => {
+        reject(tx.error || new Error(`IndexedDB transaction error for key: ${key}`));
+      };
+      tx.onabort = () => {
+        reject(tx.error || new Error(`IndexedDB transaction aborted for key: ${key}`));
+      };
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 export const idbGet = async <T>(key: string): Promise<T | null> => {
@@ -93,18 +126,21 @@ export const idbGet = async <T>(key: string): Promise<T | null> => {
   }
 };
 
-export const idbDelete = async (key: string): Promise<void> => {
+export const idbDelete = async (key: string): Promise<boolean> => {
   try {
     const db = await getIDB();
-    await new Promise<void>((resolve, reject) => {
+    return await new Promise<boolean>((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const store = tx.objectStore(STORE_NAME);
       const req = store.delete(key);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
+      req.onsuccess = () => {};
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
     });
   } catch (e) {
     console.warn('[storage] IndexedDB delete warning for key:', key, e);
+    return false;
   }
 };
 
@@ -128,6 +164,12 @@ export interface StorageMetrics {
   hasQuotaExceeded: boolean;
   items: StorageItemMetric[];
   hasIndexedDB: boolean;
+  localStorageUsedBytes: number;
+  formattedLocalStorageUsed: string;
+  idbUsedBytes: number;
+  formattedIdbUsed: string;
+  deviceQuotaBytes: number;
+  formattedDeviceQuota: string;
 }
 
 const FRIENDLY_KEY_LABELS: Record<string, string> = {
@@ -143,6 +185,7 @@ const FRIENDLY_KEY_LABELS: Record<string, string> = {
   multibook_fontsize: 'Rozmiar czcionki czytnika',
   multibook_lineheight: 'Interlinia czytnika',
   multibook_reading_mode: 'Tryb skupienia / czytania',
+  multibook_board_mode: 'Tryb Tablicy Szkolnej (Classroom)',
   multibook_terms_and_license_accepted_v1: 'Zgoda licencyjna i regulamin',
 };
 
@@ -152,53 +195,39 @@ export const formatBytes = (bytes: number): string => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
 
-export const getStorageMetrics = (): StorageMetrics => {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return {
-      usedBytes: 0,
-      formattedUsed: '0 KB',
-      estimatedQuotaBytes: 5 * 1024 * 1024,
-      formattedQuota: '5.0 MB',
-      usagePercent: 0,
-      isNearQuota: false,
-      hasQuotaExceeded: false,
-      items: [],
-      hasIndexedDB: typeof window !== 'undefined' && !!window.indexedDB,
-    };
-  }
-
-  let totalChars = 0;
+export const getStorageMetricsSync = (): StorageMetrics => {
+  let localStorageUsedBytes = 0;
   const items: StorageItemMetric[] = [];
 
-  try {
-    for (let i = 0; i < window.localStorage.length; i++) {
-      const key = window.localStorage.key(i);
-      if (!key) continue;
-      const val = window.localStorage.getItem(key) || '';
-      // In JS strings, each UTF-16 character occupies 2 bytes in browser storage memory
-      const itemBytes = (key.length + val.length) * 2;
-      totalChars += key.length + val.length;
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const key = window.localStorage.key(i);
+        if (!key) continue;
+        const val = window.localStorage.getItem(key) || '';
+        const itemBytes = (key.length + val.length) * 2;
+        localStorageUsedBytes += itemBytes;
 
-      items.push({
-        key,
-        label: FRIENDLY_KEY_LABELS[key] || key,
-        bytes: itemBytes,
-        formatted: formatBytes(itemBytes),
-      });
+        items.push({
+          key,
+          label: FRIENDLY_KEY_LABELS[key] || key,
+          bytes: itemBytes,
+          formatted: formatBytes(itemBytes),
+        });
+      }
+    } catch (e) {
+      console.warn('[storage] Błąd odczytu statystyk localStorage:', e);
     }
-  } catch (e) {
-    console.warn('[storage] Błąd odczytu statystyk localStorage:', e);
   }
 
   items.sort((a, b) => b.bytes - a.bytes);
 
-  const usedBytes = totalChars * 2;
   const estimatedQuotaBytes = 5 * 1024 * 1024; // 5 MB typical DOMStorage limit on Android
-  const usagePercent = Math.min(100, Math.round((usedBytes / estimatedQuotaBytes) * 100));
+  const usagePercent = Math.min(100, Math.round((localStorageUsedBytes / estimatedQuotaBytes) * 100));
 
   return {
-    usedBytes,
-    formattedUsed: formatBytes(usedBytes),
+    usedBytes: localStorageUsedBytes,
+    formattedUsed: formatBytes(localStorageUsedBytes),
     estimatedQuotaBytes,
     formattedQuota: '5.0 MB',
     usagePercent,
@@ -206,7 +235,44 @@ export const getStorageMetrics = (): StorageMetrics => {
     hasQuotaExceeded: usagePercent >= 98,
     items,
     hasIndexedDB: typeof window !== 'undefined' && !!window.indexedDB,
+    localStorageUsedBytes,
+    formattedLocalStorageUsed: formatBytes(localStorageUsedBytes),
+    idbUsedBytes: 0,
+    formattedIdbUsed: '0 KB',
+    deviceQuotaBytes: 100 * 1024 * 1024,
+    formattedDeviceQuota: '100 MB',
   };
+};
+
+export const getStorageMetrics = async (): Promise<StorageMetrics> => {
+  const sync = getStorageMetricsSync();
+
+  if (typeof navigator !== 'undefined' && navigator.storage && typeof navigator.storage.estimate === 'function') {
+    try {
+      const estimate = await navigator.storage.estimate();
+      const quota = typeof estimate.quota === 'number' ? estimate.quota : sync.deviceQuotaBytes;
+      let idbBytes = 0;
+
+      const details = (estimate as unknown as { usageDetails?: { indexedDB?: number } }).usageDetails;
+      if (details && typeof details.indexedDB === 'number') {
+        idbBytes = details.indexedDB;
+      } else if (typeof estimate.usage === 'number') {
+        idbBytes = Math.max(0, estimate.usage - sync.localStorageUsedBytes);
+      }
+
+      return {
+        ...sync,
+        idbUsedBytes: idbBytes,
+        formattedIdbUsed: formatBytes(idbBytes),
+        deviceQuotaBytes: quota,
+        formattedDeviceQuota: formatBytes(quota),
+      };
+    } catch (e) {
+      console.warn('[storage] Błąd navigator.storage.estimate():', e);
+    }
+  }
+
+  return sync;
 };
 
 // ============================================================================
@@ -290,36 +356,82 @@ export const idbSetDebounced = (key: string, value: unknown, delayMs: number = 3
   if (existing) {
     clearTimeout(existing.timer);
   }
-  const timer = setTimeout(() => {
+  const timer = setTimeout(async () => {
     pendingIDBWrites.delete(key);
-    idbSet(key, value).catch((err) => {
+    try {
+      await idbSet(key, value);
+      // Usuń kopię z localStorage WYŁĄCZNIE po udanym zapisie do IndexedDB
+      if (typeof window !== 'undefined' && window.localStorage?.getItem(key)) {
+        try {
+          window.localStorage.removeItem(key);
+        } catch {}
+      }
+    } catch (err) {
       console.warn(`[storage] Błąd debounced zapisu IndexedDB dla "${key}":`, err);
-    });
+      const isQuota = isQuotaExceeded(err);
+      const msg = isQuota
+        ? 'Przekroczono limit pamięci urządzenia (QuotaExceededError). Zwolnij miejsce w pamięci przeglądarki.'
+        : `Błąd zapisu bazy danych IndexedDB (${key}): ${err instanceof Error ? err.message : String(err)}`;
+      notifyStorageError(msg);
+    }
   }, delayMs);
   pendingIDBWrites.set(key, { timer, value });
 };
 
 export const flushPendingWrites = async (): Promise<void> => {
-  const promises: Promise<void>[] = [];
-  pendingIDBWrites.forEach((item, key) => {
-    clearTimeout(item.timer);
-    promises.push(idbSet(key, item.value));
-  });
+  const entries = Array.from(pendingIDBWrites.entries());
   pendingIDBWrites.clear();
-  await Promise.all(promises);
+  await Promise.all(
+    entries.map(async ([key, item]) => {
+      clearTimeout(item.timer);
+      try {
+        await idbSet(key, item.value);
+        if (typeof window !== 'undefined' && window.localStorage?.getItem(key)) {
+          try {
+            window.localStorage.removeItem(key);
+          } catch {}
+        }
+      } catch (err) {
+        console.warn(`[storage] Błąd flush zapisu IndexedDB dla "${key}":`, err);
+        const msg = isQuotaExceeded(err)
+          ? 'Przekroczono limit pamięci urządzenia (QuotaExceededError).'
+          : `Błąd zapisu bazy danych (${key}): ${err instanceof Error ? err.message : String(err)}`;
+        notifyStorageError(msg);
+      }
+    })
+  );
 };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
     void flushPendingWrites();
   });
+  window.addEventListener('pagehide', () => {
+    void flushPendingWrites();
+  });
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        void flushPendingWrites();
+      }
+    });
+  }
+
+  // Wywołaj navigator.storage.persist() przy starcie dla trwałego zachowania danych
+  if (typeof navigator !== 'undefined' && navigator.storage && typeof navigator.storage.persist === 'function') {
+    navigator.storage.persist().then((persisted) => {
+      console.info(`[storage] Trwałość magazynu (storage.persist): ${persisted ? 'uzyskana' : 'standardowa'}`);
+    }).catch((err) => {
+      console.warn('[storage] Błąd navigator.storage.persist():', err);
+    });
+  }
 }
 
 /**
  * Główna funkcja zapisu danych:
- * - Ciężkie bazy danych (rozdziały, postępy, zdjęcia, quizy, uczniowie) zapisuje bezpośrednio do IndexedDB (100% offline, brak limitu 5MB).
- * - Stosuje buforowanie zapisu (debouncing), by odciążyć pamięć flash i procesor na tabletach/tablicach.
- * - Usuwa je jednocześnie z localStorage, aby wyeliminować błędy QuotaExceededError na ekranach Android i tabletach.
+ * - Ciężkie bazy danych (rozdziały, postępy, zdjęcia, quizy, uczniowie) zapisuje do IndexedDB.
+ * - Nie usuwa kopii z localStorage, dopóki zapis do IndexedDB nie zakończył się sukcesem.
+ * - Błędy IndexedDB zgłasza przez notifyStorageError.
  * - Lekkie ustawienia interfejsu (motyw, rozmiar czcionki) zapisuje w localStorage dla natychmiastowego startu bez migotania.
  */
 export const safeSet = <T>(key: string, value: T): boolean => {
@@ -330,15 +442,7 @@ export const safeSet = <T>(key: string, value: T): boolean => {
   // 1. Obszerne zbiory danych edukacyjnych -> buforowany zapis do IndexedDB
   if (isHeavyKey(key)) {
     idbSetDebounced(key, value, 250);
-
-    // Uwalniamy ciasny localStorage z ciężkich danych
-    if (window.localStorage) {
-      try {
-        if (window.localStorage.getItem(key)) {
-          window.localStorage.removeItem(key);
-        }
-      } catch {}
-    }
+    // Kopia z localStorage zostanie usunięta dopiero po potwierdzonym sukcesie w idbSetDebounced!
     return true;
   }
 
@@ -384,6 +488,7 @@ export const safeSet = <T>(key: string, value: T): boolean => {
       }
     } else {
       console.error(`[storage] Błąd zapisu klucza "${key}" do localStorage:`, e);
+      notifyStorageError(`Błąd zapisu ustawień "${key}": ${e instanceof Error ? e.message : String(e)}`);
     }
     return false;
   }
@@ -403,8 +508,9 @@ export const safeRemove = (key: string): void => {
 
 /**
  * Cicha automatyczna migracja przy uruchomieniu (dla ekranów interaktywnych Android i tabletów):
- * Przenosi dotychczasowe dane z ciasnego localStorage (limit 5MB) do bazy IndexedDB (brak limitu)
- * i natychmiast czyści stary localStorage, trwale eliminując komunikaty o przepełnionej pamięci.
+ * Przenosi dotychczasowe dane z ciasnego localStorage do bazy IndexedDB.
+ * Usuwa klucz z localStorage WYŁĄCZNIE po udanym zapisie i odczycie kontrolnym (idbGet + porównanie JSON).
+ * Przy porażce zostawia dane w localStorage i pokazuje ostrzeżenie.
  */
 export const silentMigrateToIndexedDB = async (): Promise<{
   migrated: boolean;
@@ -423,16 +529,37 @@ export const silentMigrateToIndexedDB = async (): Promise<{
       const raw = window.localStorage.getItem(key);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Bezpiecznie zapisz w IndexedDB
-        await idbSet(key, parsed);
-        // Zwolnij z localStorage
+        // 1. Zapisz w IndexedDB
+        const writeSuccess = await idbSet(key, parsed);
+        if (!writeSuccess) {
+          throw new Error(`idbSet returned false dla klucza "${key}"`);
+        }
+
+        // 2. Odczyt kontrolny z IndexedDB
+        const readBack = await idbGet(key);
+        if (readBack === null || readBack === undefined) {
+          throw new Error(`Odczyt kontrolny z IndexedDB zwrócił pustą wartość dla "${key}"`);
+        }
+
+        // 3. Porównanie sumy kontrolnej JSON
+        const originalJson = JSON.stringify(parsed);
+        const readBackJson = JSON.stringify(readBack);
+        if (originalJson !== readBackJson) {
+          throw new Error(`Niezgodność danych kontrolnych po zapisie do IndexedDB dla "${key}"`);
+        }
+
+        // 4. Sukces: usuń z localStorage WYŁĄCZNIE po pełnej weryfikacji
         window.localStorage.removeItem(key);
         totalFreedChars += key.length + raw.length;
         keysMigrated.push(key);
-        console.info(`[storage-migration] Pomyślnie zmigrowano "${key}" do IndexedDB i zwolniono localStorage.`);
+        console.info(`[storage-migration] Pomyślnie i bezpiecznie zmigrowano "${key}" do IndexedDB.`);
       }
     } catch (e) {
       console.warn(`[storage-migration] Błąd podczas migracji klucza "${key}":`, e);
+      // Przy porażce zostaw dane w localStorage i powiadom użytkownika
+      notifyStorageError(
+        `Ostrzeżenie: Błąd migracji bazy dla "${key}". Dane zachowano bezpiecznie w pamięci podręcznej.`
+      );
     }
   }
 
@@ -447,6 +574,126 @@ export const silentMigrateToIndexedDB = async (): Promise<{
     freedBytes,
     keysMigrated,
   };
+};
+
+const ROMAN_NUMERALS: Record<string, number> = {
+  I: 1,
+  II: 2,
+  III: 3,
+  IV: 4,
+  V: 5,
+  VI: 6,
+  VII: 7,
+  VIII: 8,
+  IX: 9,
+  X: 10,
+};
+
+const getGroupOrder = (groupName: string): number => {
+  if (!groupName) return 999;
+  if (groupName === 'Wprowadzenie') return -1;
+  if (groupName.startsWith('Rozdział ')) {
+    const match = groupName.match(/^Rozdział\s+([I|V|X]+)/i);
+    if (match && match[1]) {
+      const roman = match[1].toUpperCase();
+      if (ROMAN_NUMERALS[roman] !== undefined) {
+        return ROMAN_NUMERALS[roman];
+      }
+    }
+  }
+  return 999;
+};
+
+// ============================================================================
+// Rozdziały i synchronizacja z domyślnym zbiorem DEFAULT_CHAPTERS
+// ============================================================================
+export const sortChapters = (list: Chapter[]): Chapter[] => {
+  return [...list].sort((a, b) => {
+    // 1. Wstęp zawsze pierwszy
+    if (a.id === 'intro-multibook') return -1;
+    if (b.id === 'intro-multibook') return 1;
+
+    // 2. Przedmiot
+    const subA = a.subject || '';
+    const subB = b.subject || '';
+    if (subA !== subB) {
+      if (subA === 'Podręcznik / Instrukcja') return -1;
+      if (subB === 'Podręcznik / Instrukcja') return 1;
+      return subA.localeCompare(subB);
+    }
+
+    // 3. Typ szkoły
+    const typeA = a.schoolType || '';
+    const typeB = b.schoolType || '';
+    if (typeA !== typeB) {
+      return typeA.localeCompare(typeB);
+    }
+
+    // 4. Klasa
+    const gradeA = a.grade || '';
+    const gradeB = b.grade || '';
+    if (gradeA !== gradeB) {
+      return gradeA.localeCompare(gradeB);
+    }
+
+    // 5. Grupa rozdziału
+    const grA = a.chapterGroup || '';
+    const grB = b.chapterGroup || '';
+    if (grA !== grB) {
+      const ordA = getGroupOrder(grA);
+      const ordB = getGroupOrder(grB);
+      if (ordA !== ordB) {
+        return ordA - ordB;
+      }
+      return grA.localeCompare(grB);
+    }
+
+    // 6. Numer lekcji
+    if (a.lessonNumber !== undefined && b.lessonNumber !== undefined) {
+      return a.lessonNumber - b.lessonNumber;
+    }
+
+    return (a.title || '').localeCompare(b.title || '');
+  });
+};
+
+/**
+ * Jednolita funkcja synchronizacji bazy rozdziałów z DEFAULT_CHAPTERS:
+ * Nadpisuje nieedytowane lekcje domyślne najnowszą wersją, zachowuje lekcje edytowane przez użytkownika (userEdited: true)
+ * oraz wszelkie własne rozdziały dodane przez nauczyciela.
+ */
+export const mergeWithDefaults = (
+  storedChapters: Chapter[],
+  defaults: Chapter[] = DEFAULT_CHAPTERS
+): Chapter[] => {
+  if (!storedChapters || storedChapters.length === 0) {
+    return sortChapters(defaults);
+  }
+
+  const synced = [...storedChapters];
+  defaults.forEach((defaultCh) => {
+    const index = synced.findIndex((c) => c.id === defaultCh.id);
+    if (index === -1) {
+      synced.push(defaultCh);
+    } else {
+      // Jeśli lekcja była edytowana przez użytkownika, zachowaj jego treść i metadane
+      if (synced[index].userEdited) {
+        synced[index] = {
+          ...defaultCh,
+          ...synced[index],
+          userEdited: true,
+        };
+      } else {
+        // Nieedytowana przez użytkownika — zaktualizuj do najnowszej wersji z pliku kodowego
+        synced[index] = {
+          ...synced[index],
+          ...defaultCh,
+        };
+      }
+    }
+  });
+
+  return sortChapters(synced);
 };
 
 /**
