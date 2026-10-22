@@ -25,6 +25,7 @@ import {
   StorageMetrics,
 } from '../storage';
 import { detectDeviceProfile } from '../utils/devicePerformance';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface StorageManagerModalProps {
   isOpen: boolean;
@@ -50,6 +51,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
   const [showAndroidGuide, setShowAndroidGuide] = useState(true);
   const [showItemDetails, setShowItemDetails] = useState(false);
   const [deviceProfile] = useState(() => detectDeviceProfile());
+  const trapRef = useFocusTrap<HTMLDivElement>({ isOpen, onEscape: onClose });
 
   const refreshMetrics = async () => {
     const res = await getStorageMetrics();
@@ -100,6 +102,11 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <motion.div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="storage-manager-modal-title"
+        tabIndex={-1}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
@@ -112,7 +119,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
               <HardDrive className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 id="storage-manager-modal-title" className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                 Zarządzanie Pamięcią i Ekranami Android
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
                   Tablice & Tablety
@@ -126,6 +133,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Zamknij okno zarządzania pamięcią"
             className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             title="Zamknij"
           >
@@ -245,6 +253,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
             <button
               type="button"
               onClick={handleOptimize}
+              aria-label="Zoptymalizuj pamięć i przenieś dane do IndexedDB"
               disabled={isOptimizing}
               className="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs active:scale-95 disabled:opacity-50"
               title="Przenieś duże bazy lekcji i zdjęć do IndexedDB, aby zwolnić pamięć podręczną"
@@ -256,6 +265,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
             <button
               type="button"
               onClick={onExportBackup}
+              aria-label="Pobierz kopię zapasową do pliku JSON"
               className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs active:scale-95"
               title="Pobierz kopię wszystkich danych do pliku JSON na pendrive lub dysk"
             >
@@ -266,6 +276,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
             <button
               type="button"
               onClick={handleClearQuizHistory}
+              aria-label="Wyczyść zaznaczone odpowiedzi w quizach"
               className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border border-slate-200 dark:border-slate-700"
               title="Wyczyść zaznaczone odpowiedzi w quizach przed nową lekcją"
             >
@@ -276,6 +287,7 @@ export const StorageManagerModal: React.FC<StorageManagerModalProps> = ({
             <button
               type="button"
               onClick={onResetFactory}
+              aria-label="Przywróć stan początkowy aplikacji"
               className="py-2.5 px-3 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-700 dark:text-rose-300 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border border-rose-200 dark:border-rose-800"
               title="Przywróć stan początkowy aplikacji"
             >

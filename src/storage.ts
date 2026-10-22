@@ -322,30 +322,76 @@ export const safeGet = <T>(
   }
 };
 
+const lastNotificationTimes = new Map<string, number>();
+
+export const notifyStorageErrorThrottled = (
+  errorType: string,
+  message: string,
+  intervalMs: number = 30000
+): void => {
+  const now = Date.now();
+  const lastTime = lastNotificationTimes.get(errorType) || 0;
+  if (now - lastTime >= intervalMs) {
+    lastNotificationTimes.set(errorType, now);
+    notifyStorageError(message);
+  }
+};
+
 /**
- * Asynchroniczny odczyt danych: sprawdza najpierw wysokopojemną bazę IndexedDB,
- * a w przypadku jej braku (np. przed migracją) sięga po fallback do localStorage.
+ * Asynchroniczny odczyt danych: sprawdza IndexedDB oraz localStorage,
+ * porównuje znaczniki czasu zapisu i wybiera nowszą wersję danych (ochrona przed utratą po awarii IDB).
  */
 export const safeGetAsync = async <T>(
   key: string,
   defaultValue: T,
   validator?: (val: unknown) => T | null
 ): Promise<T> => {
+  let idbVal: T | null = null;
+  let idbTs = 0;
+  let lsVal: T | null = null;
+  let lsTs = 0;
+
   try {
-    const idbVal = await idbGet<T>(key);
-    if (idbVal !== null && idbVal !== undefined) {
-      if (validator) {
-        const validated = validator(idbVal);
-        if (validated !== null) return validated;
-      } else {
-        return idbVal;
-      }
-    }
+    idbVal = await idbGet<T>(key);
+    const tsFromIDB = await idbGet<number>(`_ts_idb_${key}`).catch(() => 0);
+    if (typeof tsFromIDB === 'number') idbTs = tsFromIDB;
   } catch (e) {
     console.warn(`[storage] Ostrzeżenie przy asynchronicznym odczycie IndexedDB dla "${key}":`, e);
   }
 
-  return safeGet(key, defaultValue, validator);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      if (raw !== null && raw !== undefined) {
+        lsVal = JSON.parse(raw);
+        const rawTs = window.localStorage.getItem(`_ts_ls_${key}`);
+        if (rawTs) lsTs = parseInt(rawTs, 10) || 0;
+      }
+    } catch (e) {
+      console.warn(`[storage] Ostrzeżenie przy odczycie localStorage dla "${key}":`, e);
+    }
+  }
+
+  // Jeśli oba źródła istnieją, wybierz to z nowszym znacznikiem czasu
+  let chosenVal: T | null = null;
+  if (idbVal !== null && lsVal !== null) {
+    chosenVal = lsTs > idbTs ? lsVal : idbVal;
+  } else if (idbVal !== null) {
+    chosenVal = idbVal;
+  } else if (lsVal !== null) {
+    chosenVal = lsVal;
+  }
+
+  if (chosenVal !== null) {
+    if (validator) {
+      const validated = validator(chosenVal);
+      if (validated !== null) return validated;
+    } else {
+      return chosenVal;
+    }
+  }
+
+  return defaultValue;
 };
 
 // Debounced write queue for high-frequency state changes (e.g. typing, drawing, rapid progress updates)
@@ -360,19 +406,33 @@ export const idbSetDebounced = (key: string, value: unknown, delayMs: number = 3
     pendingIDBWrites.delete(key);
     try {
       await idbSet(key, value);
+      await idbSet(`_ts_idb_${key}`, Date.now()).catch(() => {});
       // Usuń kopię z localStorage WYŁĄCZNIE po udanym zapisie do IndexedDB
       if (typeof window !== 'undefined' && window.localStorage?.getItem(key)) {
         try {
           window.localStorage.removeItem(key);
+          window.localStorage.removeItem(`_emergency_${key}`);
+          window.localStorage.removeItem(`_ts_ls_${key}`);
         } catch {}
       }
     } catch (err) {
       console.warn(`[storage] Błąd debounced zapisu IndexedDB dla "${key}":`, err);
+      // Awaryjny zapis kopii w localStorage (jeśli zmieści się w pamięci)
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+          window.localStorage.setItem(`_emergency_${key}`, 'true');
+          window.localStorage.setItem(`_ts_ls_${key}`, String(Date.now()));
+        } catch (lsErr) {
+          console.warn(`[storage] Awaryjny zapis kopii do localStorage dla "${key}" nie powiódł się:`, lsErr);
+        }
+      }
       const isQuota = isQuotaExceeded(err);
+      const errorType = isQuota ? 'quota_exceeded' : `idb_err_${key}`;
       const msg = isQuota
         ? 'Przekroczono limit pamięci urządzenia (QuotaExceededError). Zwolnij miejsce w pamięci przeglądarki.'
         : `Błąd zapisu bazy danych IndexedDB (${key}): ${err instanceof Error ? err.message : String(err)}`;
-      notifyStorageError(msg);
+      notifyStorageErrorThrottled(errorType, msg, 30000);
     }
   }, delayMs);
   pendingIDBWrites.set(key, { timer, value });
@@ -386,17 +446,29 @@ export const flushPendingWrites = async (): Promise<void> => {
       clearTimeout(item.timer);
       try {
         await idbSet(key, item.value);
+        await idbSet(`_ts_idb_${key}`, Date.now()).catch(() => {});
         if (typeof window !== 'undefined' && window.localStorage?.getItem(key)) {
           try {
             window.localStorage.removeItem(key);
+            window.localStorage.removeItem(`_emergency_${key}`);
+            window.localStorage.removeItem(`_ts_ls_${key}`);
           } catch {}
         }
       } catch (err) {
         console.warn(`[storage] Błąd flush zapisu IndexedDB dla "${key}":`, err);
-        const msg = isQuotaExceeded(err)
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(item.value));
+            window.localStorage.setItem(`_emergency_${key}`, 'true');
+            window.localStorage.setItem(`_ts_ls_${key}`, String(Date.now()));
+          } catch {}
+        }
+        const isQuota = isQuotaExceeded(err);
+        const errorType = isQuota ? 'quota_exceeded' : `idb_err_${key}`;
+        const msg = isQuota
           ? 'Przekroczono limit pamięci urządzenia (QuotaExceededError).'
           : `Błąd zapisu bazy danych (${key}): ${err instanceof Error ? err.message : String(err)}`;
-        notifyStorageError(msg);
+        notifyStorageErrorThrottled(errorType, msg, 30000);
       }
     })
   );
@@ -929,3 +1001,67 @@ export const normalizeStudent = (raw: unknown): Student | null => {
     teacherRemarks
   };
 };
+
+export interface LessonRealization {
+  className: string;
+  chapterId: string;
+  timestamp: number;
+}
+
+/**
+ * Normalizuje pojedynczy wpis realizacji lekcji w kalendarzu.
+ */
+export const normalizeRealization = (raw: unknown): LessonRealization | null => {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const className = typeof r.className === 'string' && r.className.trim() ? r.className.trim() : null;
+  const chapterId = typeof r.chapterId === 'string' && r.chapterId.trim() ? r.chapterId.trim() : null;
+  const timestamp = typeof r.timestamp === 'number' && Number.isFinite(r.timestamp) && r.timestamp > 0 ? r.timestamp : null;
+  if (!className || !chapterId || !timestamp) return null;
+  return { className, chapterId, timestamp };
+};
+
+/**
+ * Normalizuje tablicę realizacji lekcji w kalendarzu.
+ */
+export const normalizeRealizations = (raw: unknown): LessonRealization[] => {
+  if (!Array.isArray(raw)) return [];
+  return raw.map(normalizeRealization).filter((r): r is LessonRealization => r !== null);
+};
+
+/**
+ * Normalizuje mapę przypisania rozdziałów do klas (klasa -> lista ID lekcji).
+ */
+export const normalizeClassChapters = (raw: unknown): Record<string, string[]> => {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  const result: Record<string, string[]> = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    const cleanKey = typeof k === 'string' ? k.trim() : '';
+    if (!cleanKey) continue;
+    if (Array.isArray(v)) {
+      result[cleanKey] = v
+        .filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+        .map((item) => item.trim());
+    }
+  }
+  return result;
+};
+
+/**
+ * Normalizuje galerię zdjęć użytkownika (ID rozdziału -> lista URL zdjęć).
+ */
+export const normalizeGallery = (raw: unknown): Record<string, string[]> => {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  const result: Record<string, string[]> = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    const cleanKey = typeof k === 'string' ? k.trim() : '';
+    if (!cleanKey) continue;
+    if (Array.isArray(v)) {
+      result[cleanKey] = v
+        .filter((url): url is string => typeof url === 'string' && url.trim().length > 0)
+        .map((url) => url.trim());
+    }
+  }
+  return result;
+};
+

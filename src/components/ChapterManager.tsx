@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Chapter, QuizQuestion, EDUCATION_LEVELS, SCHOOL_TYPES, GRADES, isChapterProtected } from '../types';
-import { ALL_RELIGIA_CHAPTERS } from '../defaultChapters';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import {
   Upload,
   Plus,
@@ -50,6 +50,8 @@ export default function ChapterManager({
   showToast,
   showConfirm,
 }: ChapterManagerProps) {
+  const trapRef = useFocusTrap<HTMLDivElement>({ isOpen: true, onEscape: onClose });
+
   const notify = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
     if (showToast) {
       showToast(msg, type);
@@ -407,17 +409,23 @@ export default function ChapterManager({
   const handleRestoreReligiaBackup = () => {
     ask(
       'Czy na pewno chcesz odblokować i przywrócić wszystkie materiały z przedmiotu Religia na tym urządzeniu?',
-      () => {
-        const existingIds = new Set(allChapters.map((c) => c.id));
-        const toAdd = ALL_RELIGIA_CHAPTERS.filter((c) => !existingIds.has(c.id));
-        if (toAdd.length === 0) {
-          notify('Treści z przedmiotu Religia są już w pełni odblokowane!', 'info');
-          return;
+      async () => {
+        try {
+          const { ALL_RELIGIA_CHAPTERS } = await import('../religiaData');
+          const existingIds = new Set(allChapters.map((c) => c.id));
+          const toAdd = ALL_RELIGIA_CHAPTERS.filter((c) => !existingIds.has(c.id));
+          if (toAdd.length === 0) {
+            notify('Treści z przedmiotu Religia są już w pełni odblokowane!', 'info');
+            return;
+          }
+          const merged = [...allChapters, ...toAdd];
+          onImportAll(merged);
+          notify(`Pomyślnie odblokowano ${toAdd.length} lekcji Religii z kopii zapasowej!`, 'success');
+          onClose();
+        } catch (err) {
+          console.error('[ChapterManager] Błąd dynamicznego importu religii:', err);
+          notify('Wystąpił błąd podczas ładowania danych religii.', 'error');
         }
-        const merged = [...allChapters, ...toAdd];
-        onImportAll(merged);
-        notify(`Pomyślnie odblokowano ${toAdd.length} lekcji Religii z kopii zapasowej!`, 'success');
-        onClose();
       },
       'Przywracanie Religii z Kopii Zapasowej'
     );
@@ -572,6 +580,11 @@ export default function ChapterManager({
       className="fixed inset-0 bg-stone-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto"
     >
       <motion.div
+        ref={trapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="manager-title"
+        tabIndex={-1}
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
@@ -592,6 +605,7 @@ export default function ChapterManager({
           <button
             id="close-manager-btn"
             type="button"
+            aria-label="Zamknij panel zarządzania"
             onClick={onClose}
             className="p-1.5 px-3 text-sm font-semibold rounded-xl text-[#5A5450] hover:bg-stone-200/60 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition-colors flex items-center gap-1"
           >
@@ -1519,6 +1533,7 @@ export default function ChapterManager({
                           <button
                             id={`trash-imported-${index}`}
                             type="button"
+                            aria-label={`Usuń zaimportowany rozdział ${index + 1}`}
                             onClick={() => setImportedChapters(importedChapters.filter((_, idx) => idx !== index))}
                             className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer"
                             title="Usuń"

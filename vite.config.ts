@@ -31,17 +31,33 @@ function pwaPrecachePlugin(): Plugin {
       const distSwPath = path.join(distDir, 'sw.js');
       if (!fs.existsSync(distSwPath)) return;
 
-      // Collect all compiled chunk files from dist/assets
+      // Collect all compiled chunk files from dist/assets recursively and strictly as files
       const assetsDir = path.join(distDir, 'assets');
       const assetFiles: string[] = [];
-      if (fs.existsSync(assetsDir)) {
-        const files = fs.readdirSync(assetsDir);
-        for (const file of files) {
-          if (!file.endsWith('.map')) {
-            assetFiles.push(`./assets/${file}`);
+
+      function collectFilesRecursively(currentDir: string) {
+        if (!fs.existsSync(currentDir)) return;
+        const entries = fs.readdirSync(currentDir);
+        for (const entry of entries) {
+          if (entry.startsWith('.') || entry === '.DS_Store' || entry.endsWith('.map')) {
+            continue;
+          }
+          const fullPath = path.join(currentDir, entry);
+          try {
+            const stat = fs.statSync(fullPath);
+            if (stat.isDirectory()) {
+              collectFilesRecursively(fullPath);
+            } else if (stat.isFile()) {
+              const rel = path.relative(distDir, fullPath).split(path.sep).join('/');
+              assetFiles.push(`./${rel}`);
+            }
+          } catch {
+            // ignore unreadable entries
           }
         }
       }
+
+      collectFilesRecursively(assetsDir);
 
       // Split assets into critical CORE_ASSETS and non-critical CONTENT_ASSETS
       const coreAssets: string[] = [
@@ -58,7 +74,10 @@ function pwaPrecachePlugin(): Plugin {
           basename.startsWith('vendor-') ||
           basename.startsWith('curriculum-') ||
           basename.startsWith('component-') ||
-          basename.startsWith('default-chapters');
+          basename.startsWith('default-chapters') ||
+          basename.startsWith('StorageManagerModal') ||
+          basename.endsWith('.woff') ||
+          basename.endsWith('.woff2');
 
         if (isSecondary) {
           contentAssets.push(file);
@@ -67,10 +86,25 @@ function pwaPrecachePlugin(): Plugin {
         }
       }
 
+      // Security check: verify that every CORE_ASSETS entry exists in dist and is a file
+      for (const asset of coreAssets) {
+        const targetPath = asset === './'
+          ? path.join(distDir, 'index.html')
+          : path.join(distDir, asset.replace(/^\.\//, ''));
+
+        if (!fs.existsSync(targetPath)) {
+          throw new Error(`[PWA Precache Error] CORE_ASSETS wpis nie istnieje w dist: "${asset}" (sprawdzana ścieżka: ${targetPath})`);
+        }
+        const stat = fs.statSync(targetPath);
+        if (!stat.isFile()) {
+          throw new Error(`[PWA Precache Error] CORE_ASSETS wpis jest katalogiem, a nie plikiem: "${asset}"`);
+        }
+      }
+
       // Compute content-based build hash from output assets
       const hash = crypto.createHash('sha256');
       for (const asset of assetFiles) {
-        const fullPath = path.join(assetsDir, path.basename(asset));
+        const fullPath = path.join(distDir, asset.replace(/^\.\//, ''));
         try {
           hash.update(fs.readFileSync(fullPath));
         } catch {
@@ -172,6 +206,7 @@ export default defineConfig(() => {
             }
 
             if (
+              id.includes('religiaData') ||
               id.includes('chaptersReligia7') ||
               id.includes('chaptersReligia8')
             ) {

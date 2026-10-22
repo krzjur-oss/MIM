@@ -84,11 +84,16 @@ import {
   normalizeChapter,
   normalizeProgress,
   normalizeStudent,
+  normalizeRealization,
+  normalizeRealizations,
+  normalizeClassChapters,
+  normalizeGallery,
   mergeWithDefaults,
   sortChapters
 } from './storage';
 import DrawingOverlay from './components/DrawingOverlay';
 import { detectDeviceProfile, applyBoardModeDOM } from './utils/devicePerformance';
+import { useFocusTrap } from './hooks/useFocusTrap';
 
 const ChapterManager = lazy(() => import('./components/ChapterManager'));
 const StorageManagerModal = lazy(() =>
@@ -1270,16 +1275,7 @@ export default function App() {
     return safeGet(
       'multibook_realizations',
       [],
-      (raw) => {
-        if (!Array.isArray(raw)) return null;
-        return raw.filter(
-          (r) =>
-            r &&
-            typeof r.className === 'string' &&
-            typeof r.chapterId === 'string' &&
-            typeof r.timestamp === 'number'
-        );
-      }
+      normalizeRealizations
     );
   });
 
@@ -1296,16 +1292,7 @@ export default function App() {
         });
         return defaults;
       })(),
-      (raw) => {
-        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-        const res: Record<string, string[]> = {};
-        for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-          if (typeof k === 'string' && Array.isArray(v)) {
-            res[k] = v.filter((item): item is string => typeof item === 'string');
-          }
-        }
-        return res;
-      }
+      normalizeClassChapters
     );
   });
 
@@ -1343,16 +1330,7 @@ export default function App() {
 
   // State variables for our custom chapter notes photo gallery & link pasting
   const [chapterGalleryImages, setChapterGalleryImages] = useState<Record<string, string[]>>(() => {
-    return safeGet<Record<string, string[]>>('multibook_chapter_gallery_images', {}, (raw) => {
-      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-      const res: Record<string, string[]> = {};
-      for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-        if (typeof k === 'string' && Array.isArray(v)) {
-          res[k] = v.filter((item): item is string => typeof item === 'string');
-        }
-      }
-      return res;
-    });
+    return safeGet<Record<string, string[]>>('multibook_chapter_gallery_images', {}, normalizeGallery);
   });
 
   const [newImageUrlInput, setNewImageUrlInput] = useState('');
@@ -3607,8 +3585,8 @@ export default function App() {
           setCurrentChapterId((prev) => (resolvedChapters!.some((c) => c.id === prev) ? prev : resolvedChapters![0].id));
         }
 
-        if (idbGall && typeof idbGall === 'object') {
-          setChapterGalleryImages(idbGall);
+        if (idbGall) {
+          setChapterGalleryImages(normalizeGallery(idbGall));
         }
 
         if (idbProg) {
@@ -3626,12 +3604,12 @@ export default function App() {
           setTeacherClasses(idbClasses);
         }
 
-        if (idbRealiz && Array.isArray(idbRealiz)) {
-          setRealizations(idbRealiz);
+        if (idbRealiz) {
+          setRealizations(normalizeRealizations(idbRealiz));
         }
 
-        if (idbClassCh && typeof idbClassCh === 'object') {
-          setClassChapters(idbClassCh);
+        if (idbClassCh) {
+          setClassChapters(normalizeClassChapters(idbClassCh));
         }
 
         if (idbQuiz && typeof idbQuiz === 'object') {
@@ -4245,26 +4223,25 @@ export default function App() {
           setTeacherClasses(cleanClasses.sort((a, b) => a.localeCompare(b, 'pl', { numeric: true, sensitivity: 'base' })));
         }
       }
-      if (data.classChapters && typeof data.classChapters === 'object') {
+      if (data.classChapters) {
+        const cleanClassChapters = normalizeClassChapters(data.classChapters);
         if (isMerge) {
           setClassChapters((prev) => {
             const merged = { ...prev };
-            Object.keys(data.classChapters!).forEach((cls) => {
-              merged[cls] = Array.from(new Set([...(merged[cls] || []), ...(data.classChapters![cls] || [])]));
+            Object.keys(cleanClassChapters).forEach((cls) => {
+              merged[cls] = Array.from(new Set([...(merged[cls] || []), ...(cleanClassChapters[cls] || [])]));
             });
             return merged;
           });
         } else {
-          setClassChapters(data.classChapters);
+          setClassChapters(cleanClassChapters);
         }
       }
       restoredSummary.push('Klasy i przypisania');
     }
 
-    if (importCategories.realizations && Array.isArray(data.realizations)) {
-      const validRealizations = data.realizations.filter(
-        (r) => r && typeof r.className === 'string' && typeof r.chapterId === 'string' && typeof r.timestamp === 'number'
-      );
+    if (importCategories.realizations && data.realizations) {
+      const validRealizations = normalizeRealizations(data.realizations);
       if (isMerge) {
         setRealizations((prev) => {
           const makeKey = (r: any) => `${r.className}_${r.chapterId}_${r.timestamp}`;
@@ -4295,16 +4272,17 @@ export default function App() {
     }
 
     if (importCategories.chapterGalleryImages && data.chapterGalleryImages) {
+      const cleanGallery = normalizeGallery(data.chapterGalleryImages);
       if (isMerge) {
         setChapterGalleryImages((prev) => {
           const merged = { ...prev };
-          Object.keys(data.chapterGalleryImages!).forEach((chapId) => {
-            merged[chapId] = Array.from(new Set([...(merged[chapId] || []), ...(data.chapterGalleryImages![chapId] || [])]));
+          Object.keys(cleanGallery).forEach((chapId) => {
+            merged[chapId] = Array.from(new Set([...(merged[chapId] || []), ...(cleanGallery[chapId] || [])]));
           });
           return merged;
         });
       } else {
-        setChapterGalleryImages(data.chapterGalleryImages);
+        setChapterGalleryImages(cleanGallery);
       }
       restoredSummary.push('Galeria zdjęć');
     }
@@ -4716,6 +4694,13 @@ export default function App() {
 
   return (
     <div id="multibook-app-root" className={`min-h-screen flex flex-col font-sans transition-all duration-300 ${getThemeClasses()}`}>
+      {/* Accessibility Skip Link */}
+      <a
+        href="#multibook-content-viewport"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-emerald-700 focus:text-white focus:rounded-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-white font-bold text-xs"
+      >
+        Przejdź do treści
+      </a>
       
       {/* Top Humble Header */}
       {!isReadingMode && (
@@ -4723,6 +4708,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <button
               id="mobile-sidebar-toggle-btn"
+              aria-label="Przełącz spis treści"
               onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
               className="p-1 px-2.5 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-white rounded-lg text-sm lg:hidden cursor-pointer font-semibold transition-all"
             >
@@ -4744,6 +4730,7 @@ export default function App() {
           <div className="flex items-center gap-1.5 sm:gap-3">
             <button
               id="global-whiteboard-toggle-btn"
+              aria-label={isDrawingModeActive ? "Wyłącz szkicownik na żywo" : "Włącz szkicownik na żywo"}
               onClick={() => setIsDrawingModeActive(!isDrawingModeActive)}
               className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 border transition-all cursor-pointer ${
                 isDrawingModeActive
@@ -4757,6 +4744,7 @@ export default function App() {
 
             <button
               id="teacher-panel-toggle-btn"
+              aria-label="Panel Nauczyciela"
               onClick={() => {
                 setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
                 setIsMobileSidebarOpen(false);
@@ -4773,6 +4761,7 @@ export default function App() {
 
             <button
               id="student-notes-toggle-btn"
+              aria-label="Dziennik i Notatki"
               onClick={() => setIsNotesOpen(!isNotesOpen)}
               className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all ${
                 isNotesOpen
@@ -4786,6 +4775,7 @@ export default function App() {
 
             <button
               id="terms-license-header-btn"
+              aria-label="Regulamin i Licencja WLPE"
               onClick={() => {
                 setTermsTab('terms');
                 setIsTermsModalOpen(true);
@@ -4804,6 +4794,7 @@ export default function App() {
 
             <button
               id="clean-reset-db-btn"
+              aria-label="Przywróć domyślne działy"
               onClick={handleResetToDefault}
               className="p-1 px-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer transition-colors"
               title="Przywróć domyślne działy"
@@ -4847,6 +4838,7 @@ export default function App() {
             {/* Toggle View Mode button in sidebar */}
             <button
               id="sidebar-view-mode-toggle"
+              aria-label={activeMainTab === "lessons" ? "Przełącz na panel nauczyciela" : "Powrót do spisu lekcji"}
               onClick={() => {
                 setActiveMainTab(activeMainTab === 'lessons' ? 'teacher-panel' : 'lessons');
                 setIsMobileSidebarOpen(false);
@@ -4979,7 +4971,8 @@ export default function App() {
                   onClick={handleCollapseAll}
                   className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors cursor-pointer px-1 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
                   title="Zwiń wszystkie działy i klasy"
-                >
+                
+                aria-label="Zwiń wszystkie działy i klasy">
                   Zwiń wsz.
                 </button>
                 <span>|</span>
@@ -4989,7 +4982,8 @@ export default function App() {
                   onClick={handleExpandAll}
                   className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors cursor-pointer px-1 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
                   title="Rozwiń wszystkie działy i klasy"
-                >
+                
+                aria-label="Rozwiń wszystkie działy i klasy">
                   Rozwiń wsz.
                 </button>
               </div>
@@ -5112,6 +5106,9 @@ export default function App() {
                                                 <div
                                                   key={ch.id}
                                                   id={`chapter-card-${ch.id}`}
+                                                  role="button"
+                                                  tabIndex={0}
+                                                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentChapterId(ch.id); setIsMobileSidebarOpen(false); setIsDrawingModeActive(false); } }}
                                                   onClick={() => {
                                                     setCurrentChapterId(ch.id);
                                                     setIsMobileSidebarOpen(false);
@@ -5222,7 +5219,7 @@ export default function App() {
                   onClick={handleExportDatabase}
                   className="flex-1 py-1.5 px-2 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-[9.5px] font-extrabold cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-95 shadow-3xs border border-rose-500/60 dark:border-rose-400/60 hover:border-rose-400 dark:hover:border-rose-300 ring-1 ring-rose-500/20"
                   title="Pobierz backup wszystkich danych (postępy, notatki, rozdziały) do pliku JSON"
-                >
+                 aria-label="Pobierz backup wszystkich danych (postępy, notatki, rozdziały) do pliku JSON">
                   <Download className="w-3 h-3 shrink-0" />
                   <span>Eksport</span>
                 </button>
@@ -5333,7 +5330,8 @@ export default function App() {
                 {/* Font-size buttons */}
                 <button
                   id="font-size-dec-btn"
-                  onClick={() => setFontSize(Math.max(80, fontSize - 5))}
+                  aria-label="Zmniejsz tekst"
+              onClick={() => setFontSize(Math.max(80, fontSize - 5))}
                   className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md text-xs font-bold leading-none cursor-pointer hover:bg-slate-50"
                   title="Zmniejsz tekst"
                 >
@@ -5344,7 +5342,8 @@ export default function App() {
                 </span>
                 <button
                   id="font-size-inc-btn"
-                  onClick={() => setFontSize(Math.min(145, fontSize + 5))}
+                  aria-label="Powiększ tekst"
+              onClick={() => setFontSize(Math.min(145, fontSize + 5))}
                   className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md text-xs font-bold leading-none cursor-pointer hover:bg-slate-50"
                   title="Powiększ tekst"
                 >
@@ -5356,7 +5355,8 @@ export default function App() {
               <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[10px] font-bold">
                 <button
                   id="lineheight-norm-btn"
-                  onClick={() => setLineHeight('normal')}
+                  aria-label="Interlinia: wąska"
+              onClick={() => setLineHeight('normal')}
                   className={`px-1.5 py-1 rounded-md cursor pointer transition-all ${
                     lineHeight === 'normal' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
                   }`}
@@ -5366,7 +5366,8 @@ export default function App() {
                 </button>
                 <button
                   id="lineheight-relax-btn"
-                  onClick={() => setLineHeight('relaxed')}
+                  aria-label="Interlinia: normalna"
+              onClick={() => setLineHeight('relaxed')}
                   className={`px-1.5 py-1 rounded-md cursor pointer transition-all ${
                     lineHeight === 'relaxed' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
                   }`}
@@ -5376,7 +5377,8 @@ export default function App() {
                 </button>
                 <button
                   id="lineheight-loose-btn"
-                  onClick={() => setLineHeight('loose')}
+                  aria-label="Interlinia: szeroka"
+              onClick={() => setLineHeight('loose')}
                   className={`px-1.5 py-1 rounded-md cursor-pointer transition-all ${
                     lineHeight === 'loose' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white' : 'text-slate-500'
                   }`}
@@ -5424,6 +5426,7 @@ export default function App() {
               {/* Fullscreen focus mode toggle */}
               <button
                 id="toggle-fullscreen-focus-btn"
+                aria-label={isContentFullscreen ? "Opuść pełny ekran" : "Włącz pełny ekran"}
                 onClick={toggleFullscreen}
                 className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   isContentFullscreen
@@ -5450,6 +5453,7 @@ export default function App() {
               {/* Reading Mode Toggle */}
               <button
                 id="toggle-reading-mode-btn"
+                aria-label={isReadingMode ? "Wyłącz tryb czytania" : "Włącz tryb czytania"}
                 onClick={() => setIsReadingMode(!isReadingMode)}
                 className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   isReadingMode
@@ -5467,6 +5471,7 @@ export default function App() {
               {/* Classroom Board Mode Toggle (Optymalizacja Android & GPU) */}
               <button
                 id="toggle-board-mode-btn"
+                aria-label={isBoardMode ? "Wyłącz tryb tablicy szkolnej" : "Włącz tryb tablicy szkolnej"}
                 onClick={() => setIsBoardMode(!isBoardMode)}
                 className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                   isBoardMode
@@ -5488,7 +5493,8 @@ export default function App() {
               {/* Storage & Android Screen Optimizer */}
               <button
                 id="header-storage-manager-btn"
-                onClick={() => setIsStorageModalOpen(true)}
+                aria-label="Pamięć urządzenia i optymalizacja dla ekranów Android"
+              onClick={() => setIsStorageModalOpen(true)}
                 className={`px-2.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${activeThemeConfig.galleryPresetBtn}`}
                 title="Pamięć urządzenia i optymalizacja dla ekranów interaktywnych Android / tabletów"
               >
@@ -5563,7 +5569,8 @@ export default function App() {
                           {/* Edit current chapter button */}
                           <button
                             id="chapter-edit-active-btn"
-                            onClick={() => {
+                            aria-label="Edytuj treść lub quiz tego tematu"
+              onClick={() => {
                               setEditingChapter(activeChapter);
                               setIsCreatorOpen(true);
                             }}
@@ -5579,7 +5586,8 @@ export default function App() {
                       {/* Bookmark chapter toggler */}
                       <button
                         id="chapter-bookmark-toggle-btn"
-                        onClick={() => handleToggleBookmark(activeChapter.id)}
+                        aria-label={progress.bookmarkedChapters.includes(activeChapter.id) ? "Usuń z zakładek" : "Zapisz do zakładek"}
+              onClick={() => handleToggleBookmark(activeChapter.id)}
                         className={`p-2 rounded-xl border transition-all cursor-pointer ${
                           progress.bookmarkedChapters.includes(activeChapter.id)
                             ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-100 dark:shadow-none'
@@ -5593,7 +5601,8 @@ export default function App() {
                       {/* Completed/Mark-as-done chapter */}
                       <button
                         id="chapter-complete-toggle-btn"
-                        onClick={() => handleToggleCompleted(activeChapter.id)}
+                        aria-label={progress.completedChapters.includes(activeChapter.id) ? "Oznacz jako nieukończone" : "Oznacz jako ukończone"}
+              onClick={() => handleToggleCompleted(activeChapter.id)}
                         className={`px-3 py-2 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                           progress.completedChapters.includes(activeChapter.id)
                             ? `${getSubjectThemeColors(activeChapter.subject, theme).accentBg} shadow-md`
@@ -5617,6 +5626,7 @@ export default function App() {
                       {!isChapterProtected(activeChapter) && (
                         <button
                           id="chapter-delete-active-btn"
+                          aria-label="Usuń tę lekcję"
                           onClick={(e) => handleDeleteChapter(activeChapter.id, e)}
                           className="p-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-500 hover:text-white hover:bg-rose-500 dark:hover:bg-rose-600 transition-all cursor-pointer"
                           title="Usuń tę lekcję"
@@ -5701,6 +5711,7 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => handleToggleSectionSpeech(section.id, section.plainText)}
+                              aria-label={speakingSectionId === section.id ? "Zatrzymaj lektora dla tej sekcji" : "Odsłuchaj tę sekcję z lektorem"}
                               className={`p-1.5 px-2.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-3xs cursor-pointer border ${
                                 isThisSpeaking
                                   ? isSpeakingPaused
@@ -5730,7 +5741,7 @@ export default function App() {
                                 onClick={handleStopSectionSpeech}
                                 className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-3xs cursor-pointer border border-rose-100 dark:border-rose-950/40"
                                 title="Zatrzymaj lektora"
-                              >
+                               aria-label="Zatrzymaj lektora">
                                 <VolumeX className="w-3 h-3" />
                               </button>
                             )}
@@ -6044,7 +6055,8 @@ export default function App() {
                         <button
                           id="prev-chapter-btn-bottom"
                           type="button"
-                          onClick={() => {
+                          aria-label="Poprzednia lekcja"
+              onClick={() => {
                             const idx = activeCategoryChapters.findIndex((c) => c.id === activeChapter.id);
                             setCurrentChapterId(activeCategoryChapters[idx - 1].id);
                             setIsDrawingModeActive(false);
@@ -6100,7 +6112,8 @@ export default function App() {
                         <button
                           id="next-chapter-btn-bottom"
                           type="button"
-                          onClick={() => {
+                          aria-label="Następna lekcja"
+              onClick={() => {
                             const idx = activeCategoryChapters.findIndex((c) => c.id === activeChapter.id);
                             setCurrentChapterId(activeCategoryChapters[idx + 1].id);
                             setIsDrawingModeActive(false);
@@ -6126,7 +6139,8 @@ export default function App() {
                       <button
                         id="chapter-quick-edit-bottom-btn"
                         type="button"
-                        onClick={() => {
+                        aria-label="Edytuj ten temat"
+              onClick={() => {
                           setEditingChapter(activeChapter);
                           setIsCreatorOpen(true);
                         }}
@@ -6210,7 +6224,8 @@ export default function App() {
               </div>
               <button
                 id="close-notes-drawer-btn"
-                onClick={() => setIsNotesOpen(false)}
+                aria-label="Ukryj panel boczny"
+              onClick={() => setIsNotesOpen(false)}
                 className={`text-[10px] font-extrabold p-1 px-2.5 rounded-lg cursor-pointer transition-all ${activeThemeConfig.galleryPresetBtn}`}
               >
                 Ukryj
@@ -6221,7 +6236,8 @@ export default function App() {
             <div className={`flex p-1 rounded-xl shrink-0 transition-all duration-300 ${activeThemeConfig.tabGroupBg}`}>
               <button
                 id="drawer-tab-notes-btn"
-                onClick={() => setRightDrawerTab('notes')}
+                aria-label="Zakładka Notatnik i Realizacja"
+              onClick={() => setRightDrawerTab('notes')}
                 className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
                   rightDrawerTab === 'notes'
                     ? activeThemeConfig.tabActive
@@ -6232,7 +6248,8 @@ export default function App() {
               </button>
               <button
                 id="drawer-tab-classes-btn"
-                onClick={() => setRightDrawerTab('classes')}
+                aria-label="Zakładka Klasy i Statystyki"
+              onClick={() => setRightDrawerTab('classes')}
                 className={`flex-1 py-1.5 px-2.5 text-[10.5px] font-bold rounded-lg cursor-pointer transition-all ${
                   rightDrawerTab === 'classes'
                     ? activeThemeConfig.tabActive
@@ -6265,7 +6282,8 @@ export default function App() {
                       
                       <button
                         id="toggle-fullscreen-notes-btn"
-                        onClick={() => setIsNotesFullscreen(true)}
+                        aria-label="Rozwiń notatki do pełnego ekranu"
+              onClick={() => setIsNotesFullscreen(true)}
                         className={`p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer`}
                         title="Rozwiń do pełnego ekranu (Focus Mode)"
                       >
@@ -6506,7 +6524,7 @@ export default function App() {
                       onClick={handleDownloadNotes}
                       className="flex-1 p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold"
                       title="Pobierz notatki jako plik Markdown (.md)"
-                    >
+                     aria-label="Pobierz notatki jako plik Markdown (.md)">
                       <Download className="w-3.5 h-3.5" />
                       <span>Plik .md</span>
                     </button>
@@ -6514,7 +6532,7 @@ export default function App() {
                       onClick={handleDownloadNotesPDF}
                       className="flex-1 p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 dark:border-emerald-950/40 dark:hover:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold"
                       title="Wydrukuj podsumowanie lekcji lub zapisz jako PDF"
-                    >
+                     aria-label="Wydrukuj podsumowanie lekcji lub zapisz jako PDF">
                       <Printer className="w-3.5 h-3.5" />
                       <span>Drukuj / PDF</span>
                     </button>
@@ -7119,6 +7137,7 @@ export default function App() {
             </div>
             <button
               onClick={() => setToast(null)}
+              aria-label="Zamknij powiadomienie"
               className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-0.5 hover:bg-slate-50 dark:hover:bg-slate-800/80 rounded-lg cursor-pointer transition-colors shrink-0"
             >
               <X className="w-3.5 h-3.5" />
@@ -7130,7 +7149,7 @@ export default function App() {
       {/* Dynamic Custom Confirm Modal Dialog */}
       <AnimatePresence>
         {confirmModal && (
-          <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs" style={{ zIndex: 9998 }}>
+          <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs" style={{ zIndex: 9998 }} role="alertdialog" aria-modal="true" aria-labelledby="confirm-modal-title">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -7142,7 +7161,7 @@ export default function App() {
                   <AlertCircle className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className={`font-serif font-bold text-base transition-colors duration-300 ${activeThemeConfig.h1}`}>
+                  <h3 id="confirm-modal-title" className={`font-serif font-bold text-base transition-colors duration-300 ${activeThemeConfig.h1}`}>
                     {confirmModal.title}
                   </h3>
                   <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 pr-1">
@@ -7177,6 +7196,9 @@ export default function App() {
       <AnimatePresence>
         {isNotesFullscreen && activeChapter && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="fullscreen-notes-title"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -7189,7 +7211,7 @@ export default function App() {
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className={`font-serif font-bold text-lg leading-tight transition-colors duration-300 ${activeThemeConfig.h1}`}>
+                  <h2 id="fullscreen-notes-title" className={`font-serif font-bold text-lg leading-tight transition-colors duration-300 ${activeThemeConfig.h1}`}>
                     {activeChapter.title} — Pełnoekranowy Notatnik 📝
                   </h2>
                   <p className="text-xs text-slate-500 mt-0.5">
@@ -7230,7 +7252,7 @@ export default function App() {
                   onClick={handleDownloadNotes}
                   className={`p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-350 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
                   title="Pobierz notatki jako plik .md"
-                >
+                 aria-label="Pobierz notatki jako plik .md">
                   <Download className="w-4 h-4" />
                   <span className="hidden sm:inline">Pobierz .md</span>
                 </button>
@@ -7240,7 +7262,7 @@ export default function App() {
                   onClick={handleDownloadNotesPDF}
                   className={`p-2.5 rounded-xl border border-emerald-200 hover:bg-emerald-50 dark:border-emerald-950/40 dark:hover:bg-emerald-950/20 text-emerald-700 dark:text-emerald-450 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold`}
                   title="Wydrukuj podsumowanie lekcji lub pobierz jako PDF"
-                >
+                 aria-label="Wydrukuj podsumowanie lekcji lub pobierz jako PDF">
                   <Printer className="w-4 h-4" />
                   <span className="hidden sm:inline">Drukuj / PDF</span>
                 </button>
@@ -7271,6 +7293,7 @@ export default function App() {
                 {/* Close fullscreen button */}
                 <button
                   id="close-fullscreen-notes-btn"
+                  aria-label="Zminimalizuj notatki pełnoekranowe"
                   onClick={() => setIsNotesFullscreen(false)}
                   className={`px-4 py-2.5 bg-slate-950 hover:bg-slate-900 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-extrabold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all shadow-sm`}
                 >
@@ -7428,7 +7451,7 @@ export default function App() {
       {/* EXPORT BACKUP SELECTIVE MODAL */}
       <AnimatePresence>
         {isExportBackupModalOpen && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="export-backup-modal-title">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -7442,7 +7465,7 @@ export default function App() {
                     <Download className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                    <h3 id="export-backup-modal-title" className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                       Wyeksportuj Kopię Zapasową (Backup)
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -7453,6 +7476,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setIsExportBackupModalOpen(false)}
+                  aria-label="Zamknij okno eksportu"
                   className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
@@ -7501,6 +7525,9 @@ export default function App() {
               <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 my-1">
                 {/* 1. Chapters */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, chapters: !prev.chapters })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, chapters: !prev.chapters }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.chapters 
@@ -7551,6 +7578,9 @@ export default function App() {
 
                 {/* 2. Progress */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, progress: !prev.progress })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, progress: !prev.progress }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.progress 
@@ -7580,6 +7610,9 @@ export default function App() {
 
                 {/* 3. Teacher Classes */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.teacherClasses 
@@ -7612,6 +7645,9 @@ export default function App() {
 
                 {/* 4. Realizations */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, realizations: !prev.realizations })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, realizations: !prev.realizations }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.realizations 
@@ -7644,6 +7680,9 @@ export default function App() {
 
                 {/* 5. Students */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, students: !prev.students })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, students: !prev.students }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.students 
@@ -7676,6 +7715,9 @@ export default function App() {
 
                 {/* 6. Chapter Gallery Images */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.chapterGalleryImages 
@@ -7705,6 +7747,9 @@ export default function App() {
 
                 {/* 7. Settings */}
                 <div 
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExportCategories(prev => ({ ...prev, settings: !prev.settings })); } }}
                   onClick={() => setExportCategories(prev => ({ ...prev, settings: !prev.settings }))}
                   className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                     exportCategories.settings 
@@ -7769,7 +7814,7 @@ export default function App() {
       {/* IMPORT BACKUP SELECTIVE MODAL */}
       <AnimatePresence>
         {isImportBackupModalOpen && pendingBackupImportData && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="import-backup-modal-title">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -7783,7 +7828,7 @@ export default function App() {
                     <Upload className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                    <h3 id="import-backup-modal-title" className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                       Importuj Wybrane Dane z Kopii Zapasowej
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -7797,6 +7842,7 @@ export default function App() {
                     setIsImportBackupModalOpen(false);
                     setPendingBackupImportData(null);
                   }}
+                  aria-label="Zamknij okno importu"
                   className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
@@ -7860,6 +7906,9 @@ export default function App() {
                 {/* 1. Chapters */}
                 {Array.isArray(pendingBackupImportData.chapters) && pendingBackupImportData.chapters.length > 0 && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, chapters: !prev.chapters })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, chapters: !prev.chapters }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.chapters 
@@ -7894,6 +7943,9 @@ export default function App() {
                 {/* 2. Progress */}
                 {pendingBackupImportData.progress && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, progress: !prev.progress })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, progress: !prev.progress }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.progress 
@@ -7928,6 +7980,9 @@ export default function App() {
                 {/* 3. Teacher Classes */}
                 {Array.isArray(pendingBackupImportData.teacherClasses) && pendingBackupImportData.teacherClasses.length > 0 && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, teacherClasses: !prev.teacherClasses }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.teacherClasses 
@@ -7962,6 +8017,9 @@ export default function App() {
                 {/* 4. Realizations */}
                 {Array.isArray(pendingBackupImportData.realizations) && pendingBackupImportData.realizations.length > 0 && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, realizations: !prev.realizations })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, realizations: !prev.realizations }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.realizations 
@@ -7996,6 +8054,9 @@ export default function App() {
                 {/* 5. Students */}
                 {Array.isArray(pendingBackupImportData.students) && pendingBackupImportData.students.length > 0 && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, students: !prev.students })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, students: !prev.students }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.students 
@@ -8030,6 +8091,9 @@ export default function App() {
                 {/* 6. Chapter Gallery Images */}
                 {pendingBackupImportData.chapterGalleryImages && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, chapterGalleryImages: !prev.chapterGalleryImages }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.chapterGalleryImages 
@@ -8061,6 +8125,9 @@ export default function App() {
                 {/* 7. Settings */}
                 {(pendingBackupImportData.theme || pendingBackupImportData.fontSize || pendingBackupImportData.lineHeight || typeof pendingBackupImportData.isReadingMode === 'boolean') && (
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImportCategories(prev => ({ ...prev, settings: !prev.settings })); } }}
                     onClick={() => setImportCategories(prev => ({ ...prev, settings: !prev.settings }))}
                     className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
                       importCategories.settings 
@@ -8166,6 +8233,9 @@ export default function App() {
         {(isTermsModalOpen || !hasAcceptedTerms) && (
           <div 
             id="terms-license-modal-backdrop" 
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="terms-license-modal-title"
             className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => {
               if (hasAcceptedTerms) {
@@ -8189,7 +8259,7 @@ export default function App() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h2 className={`font-serif font-extrabold text-base sm:text-lg tracking-tight ${activeThemeConfig.h1}`}>
+                      <h2 id="terms-license-modal-title" className={`font-serif font-extrabold text-base sm:text-lg tracking-tight ${activeThemeConfig.h1}`}>
                         {!hasAcceptedTerms ? 'Regulamin & Licencja (Wymagana Akceptacja)' : 'Regulamin, Prywatność & Licencja WLPE'}
                       </h2>
                       <span className="px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800">
@@ -8211,6 +8281,7 @@ export default function App() {
                   <button
                     type="button"
                     id="close-terms-modal-btn"
+                    aria-label="Zamknij okno regulaminu"
                     onClick={() => setIsTermsModalOpen(false)}
                     className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     title="Zamknij okno"
@@ -8359,7 +8430,7 @@ export default function App() {
                           <p>2. <strong>Całkowita lokalność danych:</strong> Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki, listy klas i imiona uczniów, historia realizacji w kalendarzu, wyniki quizów, załączone zdjęcia oraz rysunki) są przechowywane <strong>wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej (baza IndexedDB oraz localStorage)</strong> i nigdy nie opuszczają Twojego komputera lub tabletu.</p>
                           <p>3. <strong>Administrator danych:</strong> Administratorem danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor nie ma technicznego ani fizycznego dostępu do tych danych.</p>
                           <p>4. <strong>Brak śledzenia i ciasteczek:</strong> Aplikacja nie używa plików cookie do śledzenia, zewnętrznych systemów analitycznych ani pikseli reklamowych.</p>
-                          <p>5. <strong>Zasoby zewnętrzne (Galeria obrazów edukacyjnych):</strong> Aplikacja w pełni funkcjonuje w trybie offline. W przypadku korzystania z opcjonalnych propozycji fotografii edukacyjnych (np. ilustracje z serwisu Unsplash w brudnopisie) przy aktywnym połączeniu z internetem, adres IP użytkownika jest widoczny dla dostawcy obrazów w celu technicznego pobrania pliku graficznego.</p>
+                          <p>5. <strong>Zasoby zewnętrzne (Galeria obrazów edukacyjnych):</strong> Aplikacja w pełni funkcjonuje w trybie offline. W przypadku korzystania z opcjonalnych propozycji fotografii edukacyjnych (np. ilustracje z serwisu Unsplash w brudnopisie) przy aktywnym połączeniu z internetem, dostawca obrazów widzi adres IP urządzenia podczas pobierania miniatur.</p>
                           <p>6. Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.</p>
                         </section>
 

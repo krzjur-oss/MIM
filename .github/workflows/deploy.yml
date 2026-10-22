@@ -36,10 +36,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm ci
 
       - name: Type check TypeScript
         run: npx tsc --noEmit
+
+      - name: Run unit test suite
+        run: npm test
 
       - name: Validate educational data
         run: npm run validate
@@ -49,6 +52,9 @@ jobs:
 
       - name: Build production app
         run: npm run build
+
+      - name: Verify Service Worker precache integrity
+        run: npm run check-sw
 
       - name: Upload static files artifact
         uses: actions/upload-pages-artifact@v3

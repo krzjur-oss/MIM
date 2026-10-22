@@ -1,5 +1,18 @@
-import { DEFAULT_CHAPTERS, ALL_RELIGIA_CHAPTERS } from '../src/defaultChapters';
+import fs from 'fs';
+import path from 'path';
+import { DEFAULT_CHAPTERS } from '../src/defaultChapters';
+import { ALL_RELIGIA_CHAPTERS } from '../src/religiaData';
 import { Chapter, QuizQuestion } from '../src/types';
+
+let approvedGaps: Record<string, string[]> = {};
+try {
+  const gapsPath = path.resolve(process.cwd(), 'scripts/approved-gaps.json');
+  if (fs.existsSync(gapsPath)) {
+    approvedGaps = JSON.parse(fs.readFileSync(gapsPath, 'utf8'));
+  }
+} catch {
+  approvedGaps = {};
+}
 
 interface ValidationError {
   type: 'chapter' | 'quiz' | 'sequence' | 'level';
@@ -131,7 +144,7 @@ export function validateData(): { isValid: boolean; errors: ValidationError[]; w
         }
       }
 
-      // Sprawdzanie ciągłości lessonNumber w obrębie klasy (luki zgłaszane jako ostrzeżenie)
+      // Sprawdzanie ciągłości lessonNumber w obrębie klasy (nowe luki zgłaszane jako ostrzeżenie)
       const sortedLessons = [...group]
         .filter((c) => typeof c.lessonNumber === 'number')
         .sort((a, b) => (a.lessonNumber as number) - (b.lessonNumber as number));
@@ -140,11 +153,17 @@ export function validateData(): { isValid: boolean; errors: ValidationError[]; w
         const prevNum = sortedLessons[i - 1].lessonNumber as number;
         const currNum = sortedLessons[i].lessonNumber as number;
         if (currNum > prevNum + 1) {
-          warnings.push({
-            type: 'sequence',
-            id: sortedLessons[i].id,
-            message: `Luka w numeracji lekcji w [${key}]: przeskok z lekcji ${prevNum} do ${currNum} (zamierzone luki programowe opisane w docs/NUMERACJA.md)`
-          });
+          const gapPattern = `${prevNum}->${currNum}`;
+          const approvedList = approvedGaps[key] || [];
+          const isApproved = approvedList.some((entry) => entry.startsWith(gapPattern));
+
+          if (!isApproved) {
+            warnings.push({
+              type: 'sequence',
+              id: sortedLessons[i].id,
+              message: `Nowa / niezatwierdzona luka w numeracji lekcji w [${key}]: przeskok z lekcji ${prevNum} do ${currNum} dla "${sortedLessons[i].title}" (brak w scripts/approved-gaps.json)`
+            });
+          }
         }
       }
     }
