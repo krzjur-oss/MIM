@@ -1,116 +1,106 @@
-# Kompleksowy Plan Optymalizacji Wydajności i Płynności Programu
+# Uporządkowanie Przycisków Aplikacji w Menu Narzędzi (Hamburger)
 
-Plan wdrożenia zaawansowanych optymalizacji wydajnościowych programu, ukierunkowany na płynność działania na ekranach interaktywnych z systemem Android (Clevertouch, Promethean, SMART Board, ViewSonic), tabletach oraz komputerach szkolnych.
+Plan reorganizacji interfejsu i przycisków Cyfrowego Multibooka: odciążenie nagłówka i paska czytnika, zachowanie kluczowych akcji bezpośrednich w nagłówku oraz konsolidacja wszystkich narzędzi dydaktycznych, ustawień czytnika, motywów WCAG AAA, operacji na danych i opcji systemowych w zorganizowanym, wysuwanym menu hamburger w prawym rogu ekranu.
 
-## User Review & Critical Decisions
+---
+
+### Decyzje uzgodnione z użytkownikiem
 
 > [!IMPORTANT]
-> **Decyzje uzgodnione z użytkownikiem:**
-> - **Kluczowe filary**: 
->   1. Płynność działania na szkolnych tablicach i tabletach z Androidem.
->   2. Szybkość uruchamiania programu i błyskawiczne otwieranie lekcji.
->   3. Oszczędzanie pamięci RAM i redukcja obciążenia procesora (CPU/GPU).
-> - **Profil interfejsu**: Inteligentne, automatyczne wykrywanie urządzeń dotykowych i ekranów Android z czytelnym przełącznikiem **„Tryb Tablicy Szkolnej”** (Classroom Board Mode) na górnym pasku i w menu podręcznym.
+> Na podstawie odpowiedzi z Fazy 1 ustalono następującą architekturę:
+> - **Forma menu**: Główne akcje robocze w nagłówku, a reszta zebrana w dedykowanym **menu hamburger w prawym rogu nagłówka**.
+> - **Zakres konsolidacji**: Pełna konsolidacja – w menu znajdą się zarówno narzędzia pomocnicze, opcje bazy danych, jak i **ustawienia czytnika (rozmiar czcionki, interlinia, motywy kolorystyczne)**, co uwolni czytnik od clutteru.
+> - **Układ wewnętrzny**: Podział na 4 sekcje tematyczne:
+>   1. **Narzędzia** (Tablica, Dziennik i Notatki, Tryb Pełnoekranowy, Quiz)
+>   2. **Czytnik i Dostępność** (Skalowanie czcionki, Interlinia, Przełącznik motywów WCAG AAA)
+>   3. **Dane i Lekcje** (Tworzenie lekcji, Edycja, Kopia zapasowa Eksport/Import, Menedżer pamięci)
+>   4. **System i Pomoc** (Regulamin i Licencja WLPE, Reset bazy do stanu fabrycznego, Informacje PWA)
 
 ---
 
-## 1. Filar I: Płynność na ekranach Android i „Tryb Tablicy Szkolnej”
-
-### Wyzwania na monitorach interaktywnych
-Większość szkolnych monitorów interaktywnych (Clevertouch, SMART, Promethean, myViewBoard) działa w oparciu o układ SoC z systemem Android i przeglądarkę Chromium WebView. Układy te posiadają ograniczoną moc GPU przy jednoczesnej konieczności wyświetlania obrazu w rozdzielczości Full HD lub 4K. Najczęstszą przyczyną spowolnień są:
-- Ciężkie filtry rozmycia tła CSS (`backdrop-filter: blur(...)`) pod menu i oknami dialogowymi.
-- Złożone cienie wielowarstwowe (`box-shadow`) przeliczane przy każdym przewijaniu.
-- Brak sprzętowej akceleracji warstw renderowania.
-
-### Planowane rozwiązania:
-1. **Automatyczne wykrywanie środowiska**:
-   - Skrypt startowy analizuje `navigator.userAgent` (Android, CrOS, Linux arm), `navigator.maxTouchPoints > 0` oraz rozdzielczość ekranu.
-   - Gdy wykryty zostanie monitor interaktywny lub tablet Android, aplikacja automatycznie proponuje lub aktywuje zoptymalizowany profil wydajnościowy.
-2. **Przełącznik „Tryb Tablicy” (High-Performance Board Mode)**:
-   - Szybki przełącznik w nagłówku programu (obok powiększenia czcionki i motywu).
-   - Pozwala nauczycielowi jednym kliknięciem wymusić maksymalną płynność lub pełne efekty wizualne.
-3. **Optymalizacje CSS dla Trybu Tablicy**:
-   - Zastąpienie kosztownego `backdrop-blur` jednolitymi, eleganckimi tłami o wysokim kontraście (`bg-slate-900/95` lub `bg-white/95`).
-   - Włączenie sprzętowej akceleracji GPU (`transform: translateZ(0)` oraz `will-change: transform`) na głównym obszarze przewijania czytnika.
-   - Izolacja renderowania sekcji lekcji za pomocą reguły `contain: content`, dzięki czemu przeglądarka nie przelicza całego drzewa DOM podczas scrollowania.
-4. **Ergonomia dotyku na dużych ekranach**:
-   - Zapewnienie stref dotyku (hitbox) o minimalnym rozmiarze 44–48 px, ułatwiających obsługę rysikiem lub palcem z odległości.
-
----
-
-## 2. Filar II: Szybkość Uruchamiania i Błyskawiczne Otwieranie Lekcji
-
-### Zidentyfikowane wąskie gardła:
-- Wszystkie komponenty pomocnicze (np. edytor lekcji `ChapterManager`, panel pamięci `StorageManagerModal`, panel rysowania `DrawingOverlay`, moduły statystyk) ładowane są do pamięci natychmiast na starcie, powiększając początkowy pakiet JS.
-- Wyszukiwarka w spisie treści (ponad 250 lekcji) przeszukuje pełną treść artykułów synchronicznie przy każdym wciśnięciu klawisza, co na klawiaturze ekranowej Androida powoduje zacięcia.
-
-### Planowane rozwiązania:
-1. **Code-Splitting i Lazy Loading ciężkich modułów**:
-   - Wdrożenie `React.lazy()` oraz lekkiego `Suspense` dla okien modalnych: edytora bazy lekcji, panelu pamięci masowej oraz zaawansowanych raportów klasowych.
-   - Moduły te ładują się w ułamku sekundy dopiero w momencie ich otwarcia przez nauczyciela, skracając czas pierwszego malowania ekranu (First Contentful Paint) o ponad 40%.
-2. **Optymalizacja Wyszukiwarki (Deferred & Debounced Search)**:
-   - Zastosowanie `useDeferredValue` dla zapytania wyszukiwania. Wpisywanie znaków na ekranie dotykowym nie blokuje wątku głównego.
-   - Indeksowanie nagłówków i tytułów – przeszukiwanie wstępnie znormalizowanych tokenów zamiast wielokrotnego wywoływania `.toLowerCase()` na setkach stron tekstu podczas każdego naciśnięcia klawisza.
-3. **Płynne renderowanie spisu lekcji (Memoization)**:
-   - Zastosowanie `React.memo` na elementach listy rozdziałów i spisu treści (TOC), dzięki czemu zmiana jednej lekcji nie powoduje odświeżenia całego drzewa 250 pozycji.
-
----
-
-## 3. Filar III: Oszczędzanie Pamięci RAM i Płynność Tablicy do Rysowania
-
-### Wyzwania pamięciowe i dotykowe:
-- Wielogodzinna praca w klasie bez przeładowania strony potrafi gromadzić w pamięci RAM nieużywane obiekty graficzne i pociągnięcia pędzla.
-- Rysowanie na tablicy interaktywnej wymaga zerowego opóźnienia (low input-to-screen latency).
-
-### Planowane rozwiązania:
-1. **Optymalizacja narzędzia rysowania (`DrawingOverlay`)**:
-   - Przepisanie pętli rysowania na `requestAnimationFrame` – synchronizacja odświeżania linii z częstotliwością odświeżania matrycy ekranu (60Hz / 120Hz).
-   - Wsparcie dla `PointerEvents` z `touch-action: none` i obsługą zdarzeń scalonych (`getCoalescedEvents()`), co zapewnia idealnie gładkie pismo bez schodkowania i zacięć przy szybkich ruchach pisaka.
-2. **Buforowanie zapisu do bazy IndexedDB (Debounced Persistence)**:
-   - Zmiana notatek, postępów czy rysunków jest buforowana i zapisywana do pamięci IndexedDB z opóźnieniem (np. 400 ms od zakończenia rysowania lub edycji), zamiast setek operacji zapisu dyskowego na sekundę.
-   - Znacząco redukuje to obciążenie pamięci flash w urządzeniach szkolnych.
-3. **Higiena pamięci RAM (Garbage Collection)**:
-   - Automatyczne zwalnianie obiektów `URL.revokeObjectURL()` dla zaimportowanych obrazów.
-   - Czyszczenie buforów Canvas przy zamykaniu tablicy lub zmianie lekcji.
-
----
-
-## 4. Architektura i Konfiguracja Trybu Tablicy
+## 1. Architektura Interfejsu i Rozmieszczenie Elementów
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Multibook Performance Orchestrator                   │
-│   (Wykrywanie urządzenia: Android / Tablet / Monitor Interaktywny)     │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-              ┌────────────────────┴────────────────────┐
-              ▼                                         ▼
-   [Tryb Standardowy (PC/Mac)]             [Tryb Tablicy (Board Mode)]
-   - Płynne efekty szkła (blur)            - Solidne, czyste tła (brak blur)
-   - Pełne animacje Framer Motion          - Sprzętowa akceleracja CSS (GPU)
-   - Standardowe rozmiary kontrolek        - Duże przyciski dotykowe (min. 44px)
-                                           - Niskolatencyjny canvas rAF
-                                           - Odroczone wyszukiwanie (Deferred)
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  [Spis treści] 📖 Interaktywny Multibook        [Panel Nauczyciela] [Tablica] [☰ Menu] │
+└──────────────────────────────────────────────────────────────────────────────────┘
+                                                                           │
+                                                                           ▼
+                                                ┌──────────────────────────────────┐
+                                                │ ☰ Menu Narzędzi i Ustawień  [✕]  │
+                                                ├──────────────────────────────────┤
+                                                │ 🛠️ NARZĘDZIA DYDAKTYCZNE         │
+                                                │ • Dziennik i notatki lekcyjne    │
+                                                │ • Tryb pełnoekranowy skupienia   │
+                                                │ • Szkicownik / Tablica interakt. │
+                                                │ • Quiz sprawdzający wiedzę       │
+                                                ├──────────────────────────────────┤
+                                                │ 👁️ CZYTNIK I DOSTĘPNOŚĆ          │
+                                                │ • Rozmiar tekstu: [A-] 105% [A+] │
+                                                │ • Interlinia: Normalna / Szeroka │
+                                                │ • Paleta WCAG AAA (6 próbek)     │
+                                                ├──────────────────────────────────┤
+                                                │ 💾 DANE I KOPIA ZAPASOWA         │
+                                                │ • Dodaj nową lekcję              │
+                                                │ • Edytuj bieżący rozdział        │
+                                                │ • Eksport kopii zapasowej (JSON) │
+                                                │ • Import kopii zapasowej (JSON)  │
+                                                │ • Menedżer pamięci podręcznej    │
+                                                ├──────────────────────────────────┤
+                                                │ ⚙️ SYSTEM I LICENCJA             │
+                                                │ • Regulamin i Wolna Licencja     │
+                                                │ • Przywróć domyślne działy       │
+                                                └──────────────────────────────────┘
 ```
 
+### Podział odpowiedzialności:
+1. **Nagłówek główny (`<header>`)**:
+   - Lewa strona: Przycisk mobilnego spisu treści (widoczny na małych ekranach) + logo i nazwa programu.
+   - Prawa strona:
+     - Główny przycisk perspektywy: **Panel Nauczyciela 🏫 / Widok Lekcji 📖**.
+     - Szybki włącznik tablicy: **Tablica-Szkicownik ✏️** (z aktywnym statusem).
+     - Przycisk menu: **Menu Narzędzi ☰** (ikona `Menu` / `X` z etykietą dostępności).
+2. **Pasek czytnika lekcji**:
+   - Skupia się na czytaniu: odtwarzacz lektora głosowego (Audio TTS: Play/Pause/Stop) oraz szybki przycisk otwarcia quizu do lekcji.
+   - Usunięcie przeładowania dziesiątkami drobnych przycisków konfiguracyjnych.
+3. **Wysuwany panel / Drawer Menu Narzędzi**:
+   - Elegancki boczny panel wysuwany z prawej krawędzi (z półprzezroczystym tłem `backdrop-blur`).
+   - Podział na 4 czytelne karty z ikonami i opisami.
+   - Zgodność z klawiaturą (fokus po otwarciu, zamykanie klawiszem Escape, pułapka fokusu).
+
 ---
 
-## 5. Plan wdrożenia krok po kroku
+## 2. Projekt Graficzny i Wytyczne Dostępności
 
-| Krok | Zakres prac | Cel |
-|---|---|---|
-| **Krok 1** | Moduł detekcji urządzenia i stan `boardMode` w `App.tsx` | Automatyczne wykrycie ekranu Android/dotykowego z opcją ręcznego przełączania w nagłówku. |
-| **Krok 2** | Klasy CSS o zerowym koszcie GPU (High-Performance Theme) | Usunięcie ciężkich rozmyć `backdrop-blur` w trybie tablicy, włączenie sprzętowej akceleracji. |
-| **Krok 3** | Optymalizacja wyszukiwarki i spisu treści | Wdrożenie `useDeferredValue` oraz memoizacji pozycji lekcji dla eliminacji lagów przy pisaniu. |
-| **Krok 4** | Optymalizacja canvasu rysowania `DrawingOverlay` | Wdrożenie `requestAnimationFrame`, obsługa zdarzeń wskaźnika i buforowanie zapisu. |
-| **Krok 5** | Debouncing operacji zapisu IndexedDB | Zmniejszenie liczby operacji wejścia/wyjścia na dysk flash w `storage.ts`. |
-| **Krok 6** | Weryfikacja, testy kompilacji i diagnostyka | Sprawdzenie działania, kompilacji TypeScript (`npm run build`) i responsywności. |
+- **WCAG 2.2 AAA & Dostępność**:
+  - `role="dialog"`, `aria-modal="true"`, `aria-labelledby="tools-menu-title"`.
+  - Wszystkie przyciski posiadają unikalne `id`, czytelne `aria-label` oraz minimalną wysokość dotykową $\ge 44\text{px}$.
+  - Obsługa klawisza `Escape` zamykająca menu.
+  - Zgodność ze wszystkimi motywami barwnymi (kolory tła i tekstu bazują na tokenach `--bg-surface`, `--text-primary`, `--border-subtle`).
+- **Mikrointerakcje i płynność**:
+  - Płynne wejście i wyjście panelu menu (`transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1)`).
+  - Wskaźniki aktywnego motywu i rozmiaru czcionki z natychmiastowym podglądem na żywo.
 
 ---
 
-## 6. Weryfikacja i Metryki Sukcesu
+## 3. Plan Wdrożenia Krok po Kroku
 
-- **Szybkość reakcji dotyku**: Płynne rysowanie bez widocznego opóźnienia pod końcówką rysika.
-- **Wyszukiwanie**: Brak zawieszania interfejsu podczas dynamicznego filtrowania 250 lekcji na klawiaturze ekranowej.
-- **Brak przepełnienia RAM**: Stabilna praca przez wiele godzin lekcyjnych bez resetowania karty przeglądarki.
-- **Czystość kodu**: Zero błędów kompilacji TypeScript i pełna kompatybilność offline.
+### Krok 1: Komponent `ToolsDrawerMenu.tsx`
+- Utworzenie wydzielonego, przetestowanego komponentu `src/components/ToolsDrawerMenu.tsx`.
+- Przekazanie do komponentu niezbędnych handlerów (zarządzanie motywem, czcionką, notatkami, kopią, tablicą, edycją).
+- Wdrożenie 4 sekcji: Narzędzia, Czytnik, Dane, System.
+- Integracja `useFocusTrap` oraz nasłuchiwanie `Escape`.
+
+### Krok 2: Refaktoryzacja nagłówka i paska czytnika w `src/App.tsx`
+- Dodanie stanu `isToolsMenuOpen` w `App.tsx`.
+- Wstawienie przycisku `Menu Narzędzi (Hamburger)` w prawym rogu nagłówka.
+- Usunięcie nadmiarowych przycisków z nagłówka i paska czytnika (przeniesienie ich logiki do menu).
+- Podłączenie komponentu `ToolsDrawerMenu`.
+
+### Krok 3: Weryfikacja i Testy
+- `npx tsc --noEmit` – brak błędów typowania.
+- `npm run build` – pomyślne budowanie produkcyjne.
+- `npm run validate` – walidacja integralności bazy danych.
+- `npm test` – testy jednostkowe Vitest.
+- `npm run check-sw` – integralność Service Workera offline.
+- `npm run lint` – zgodność ze standardami kodu.

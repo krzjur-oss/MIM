@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Sepia Theme (Ciepły Pergamin / Długie Czytanie) - WCAG AAA Contrast
+   ========================================================================== */
+
+[data-theme="sepia"] {
+  /* Canvas & Structural Surfaces - Warm Paper Palette */
+  --bg-canvas: #f4ecdf;
+  --bg-surface: #fbf7ee;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #eee3d1;
+  --bg-surface-active: #e3d4bd;
+  --bg-surface-card: #fdfaf3;
+  --bg-surface-secondary: #f0e6d6;
+
+  /* Warm Ink Typography */
+  --text-primary: #29211b;        /* Dark espresso ink - Contrast ~10.8:1 (AAA) */
+  --text-secondary: #4a3e35;      /* Medium walnut ink - Contrast ~7.5:1 (AAA) */
+  --text-muted: #736356;          /* Muted warm earth - Contrast ~4.8:1 (AA) */
+  --text-kicker: #3b2f25;
+  --text-heading-h1: #241c16;
+  --text-heading-h2: #78350f;     /* Warm amber brown */
+  --text-heading-h3: #4a3e35;
+
+  /* Borders & Dividers */
+  --border-subtle: #dfd0bb;
+  --border-strong: #cabaa3;
+  --border-focus: #92400e;
+
+  /* Warm Amber Accent & CTAs */
+  --accent-primary: #92400e;      /* Warm amber 800 */
+  --accent-hover: #78350f;
+  --accent-contrast: #ffffff;
+  --accent-subtle: rgba(146, 64, 14, 0.1);
+  --accent-border: #fcd34d;
+
+  /* Interactive Elements */
+  --tab-group-bg: #eee3d1;
+  --tab-active-bg: #fbf7ee;
+  --tab-active-text: #29211b;
+  --tab-inactive-text: #5e4f44;
+
+  /* Reader / Article Highlights */
+  --reader-blockquote-bg: rgba(180, 83, 9, 0.08);
+  --reader-blockquote-border: #b45309;
+  --reader-strong-color: #78350f;
+  --reader-strong-bg: rgba(180, 83, 9, 0.14);
+  --reader-code-bg: #eee3d1;
+  --reader-code-border: #dfd0bb;
+}

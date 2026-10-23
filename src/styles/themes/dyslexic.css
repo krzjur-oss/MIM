@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Dyslexic Theme (Optymalizacja Czytania i Dysleksji) - WCAG AAA Contrast
+   ========================================================================== */
+
+[data-theme="dyslexic"] {
+  /* Anti-Glare Cream Canvas & High-Legibility Surfaces */
+  --bg-canvas: #fffde8;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #faf4d2;
+  --bg-surface-active: #f3e9b6;
+  --bg-surface-card: #ffffff;
+  --bg-surface-secondary: #fdf8da;
+
+  /* Solid Deep Charcoal Ink (Non-Glare High Contrast) */
+  --text-primary: #141414;        /* Solid ink - Contrast ~16.5:1 (AAA) */
+  --text-secondary: #262626;      /* Contrast ~13.8:1 (AAA) */
+  --text-muted: #525252;          /* Contrast ~7.2:1 (AAA) */
+  --text-kicker: #000000;
+  --text-heading-h1: #0f2916;     /* Deep forest dark */
+  --text-heading-h2: #14421b;
+  --text-heading-h3: #1f2937;
+
+  /* Enhanced High-Contrast Structural Outlines */
+  --border-subtle: #e6dcab;
+  --border-strong: #cfc185;
+  --border-focus: #14421b;
+
+  /* Focused Forest Accent */
+  --accent-primary: #166534;      /* Green 800 */
+  --accent-hover: #14532d;
+  --accent-contrast: #ffffff;
+  --accent-subtle: rgba(22, 101, 52, 0.12);
+  --accent-border: #86efac;
+
+  /* Interactive Elements */
+  --tab-group-bg: #faf4d2;
+  --tab-active-bg: #ffffff;
+  --tab-active-text: #141414;
+  --tab-inactive-text: #404040;
+
+  /* Reader / Article Highlights */
+  --reader-blockquote-bg: rgba(245, 158, 11, 0.1);
+  --reader-blockquote-border: #b45309;
+  --reader-strong-color: #052e16;
+  --reader-strong-bg: rgba(22, 101, 52, 0.15);
+  --reader-code-bg: #faf4d2;
+  --reader-code-border: #e6dcab;
+}

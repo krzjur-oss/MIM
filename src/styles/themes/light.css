@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Light Theme (Dzienny / Podręcznik Klasyczny) - WCAG AAA Contrast
+   ========================================================================== */
+
+[data-theme="light"],
+:root:not([data-theme]) {
+  /* Canvas & Structural Surfaces */
+  --bg-canvas: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --bg-surface-active: #e2e8f0;
+  --bg-surface-card: #ffffff;
+  --bg-surface-secondary: #f8fafc;
+
+  /* High Contrast Typography */
+  --text-primary: #0f172a;        /* Contrast ~15.4:1 on white (AAA) */
+  --text-secondary: #334155;      /* Contrast ~9.8:1 on white (AAA) */
+  --text-muted: #64748b;          /* Contrast ~4.6:1 on white (AA) */
+  --text-kicker: #1e293b;
+  --text-heading-h1: #1e3a2f;     /* Distinct deep forest green tone */
+  --text-heading-h2: #065f46;
+  --text-heading-h3: #334155;
+
+  /* Borders & Dividers */
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-focus: #047857;
+
+  /* Primary Accent & CTAs */
+  --accent-primary: #047857;      /* Emerald 700 */
+  --accent-hover: #065f46;
+  --accent-contrast: #ffffff;
+  --accent-subtle: #ecfdf5;
+  --accent-border: #a7f3d0;
+
+  /* Interactive Elements */
+  --tab-group-bg: #f1f5f9;
+  --tab-active-bg: #ffffff;
+  --tab-active-text: #0f172a;
+  --tab-inactive-text: #475569;
+
+  /* Reader / Article Highlights */
+  --reader-blockquote-bg: rgba(236, 253, 245, 0.4);
+  --reader-blockquote-border: #059669;
+  --reader-strong-color: #064e3b;
+  --reader-strong-bg: rgba(5, 150, 105, 0.12);
+  --reader-code-bg: #f1f5f9;
+  --reader-code-border: #e2e8f0;
+}

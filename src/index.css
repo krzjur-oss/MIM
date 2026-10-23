@@ -32,6 +32,7 @@
 }
 
 @import "tailwindcss";
+@import "./styles/themes/index.css";
 
 @theme {
   --font-serif: "Playfair Display", Georgia, serif;
@@ -39,6 +40,18 @@
   --font-mono: "JetBrains Mono", monospace;
   --font-dyslexic: "OpenDyslexicRegular", "OpenDyslexic", sans-serif;
 }
+
+/* Semantic Theme Helpers */
+.bg-canvas { background-color: var(--bg-canvas); }
+.bg-surface { background-color: var(--bg-surface); }
+.bg-surface-elevated { background-color: var(--bg-surface-elevated); }
+.bg-surface-subtle { background-color: var(--bg-surface-subtle); }
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+.border-theme-subtle { border-color: var(--border-subtle); }
+.border-theme-strong { border-color: var(--border-strong); }
+
 
 /* Custom classes for Natural Tones look */
 .font-serif {

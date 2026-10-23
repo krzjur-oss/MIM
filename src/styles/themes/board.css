@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Board Theme (Tablica Kredowa & Ekran Interaktywny) - Ultra Contrast WCAG AAA
+   ========================================================================== */
+
+[data-theme="board"] {
+  /* Canvas & Structural Surfaces - Chalkboard Green Palette */
+  --bg-canvas: #041f14;
+  --bg-surface: #06281a;
+  --bg-surface-elevated: #0a3623;
+  --bg-surface-subtle: #082f1f;
+  --bg-surface-active: #0f4830;
+  --bg-surface-card: #083020;
+  --bg-surface-secondary: #052317;
+
+  /* Ultra Contrast Chalk-Style Typography */
+  --text-primary: #ffffff;        /* Crisp chalk white - Contrast ~17.8:1 (AAA) */
+  --text-secondary: #d1fae5;      /* Mint chalk - Contrast ~13.5:1 (AAA) */
+  --text-muted: #a7f3d0;          /* Soft mint - Contrast ~10.2:1 (AAA) */
+  --text-kicker: #6ee7b7;
+  --text-heading-h1: #ffffff;
+  --text-heading-h2: #6ee7b7;
+  --text-heading-h3: #a7f3d0;
+
+  /* Distinct High-Visibility Borders for Classroom Projectors */
+  --border-subtle: #124d33;
+  --border-strong: #1b6343;
+  --border-focus: #34d399;
+
+  /* Primary Accent & Interactive Controls */
+  --accent-primary: #10b981;      /* Bright chalk mint */
+  --accent-hover: #34d399;
+  --accent-contrast: #021a10;
+  --accent-subtle: rgba(52, 211, 153, 0.18);
+  --accent-border: #34d399;
+
+  /* Interactive Elements */
+  --tab-group-bg: #052417;
+  --tab-active-bg: #0e422c;
+  --tab-active-text: #ffffff;
+  --tab-inactive-text: #a7f3d0;
+
+  /* Reader / Article Highlights */
+  --reader-blockquote-bg: rgba(16, 185, 129, 0.15);
+  --reader-blockquote-border: #34d399;
+  --reader-strong-color: #ffffff;
+  --reader-strong-bg: rgba(52, 211, 153, 0.25);
+  --reader-code-bg: #052417;
+  --reader-code-border: #134e34;
+}

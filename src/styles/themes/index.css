@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Themes Master Aggregator
+   ========================================================================== */
+
+@import "./tokens.css";
+@import "./light.css";
+@import "./dark.css";
+@import "./board.css";
+@import "./sepia.css";
+@import "./nordic.css";
+@import "./dyslexic.css";

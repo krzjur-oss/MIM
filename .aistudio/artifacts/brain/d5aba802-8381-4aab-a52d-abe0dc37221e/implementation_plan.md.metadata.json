@@ -1,6 +1,6 @@
 {
-  "summary": "Kompleksowy plan optymalizacji wydajności, płynności oraz zużycia pamięci RAM programu na ekranach interaktywnych Android i tabletach. Obejmuje automatyczne wykrywanie ekranu z przełącznikiem Trybu Tablicy, odciążenie GPU, optymalizację wyszukiwarki lekcji i płynne rysowanie bez opóźnień.",
-  "updatedAt": "2026-10-18T11:34:23.664351613Z",
-  "requestFeedback": true,
-  "userFacing": true
+  "summary":  "Plan uporządkowania przycisków w aplikacji: wdrożenie eleganckiego menu hamburger w prawym rogu nagłówka z pełną konsolidacją narzędzi, ustawień czcionki i motywów podzielonych na 4 sekcje tematyczne (Narzędzia, Czytnik, Dane, System).",
+  "updatedAt":  "2026-10-23T17:38:47.264110267Z",
+  "requestFeedback":  true,
+  "userFacing":  true
 }

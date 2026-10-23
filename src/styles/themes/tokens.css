@@ -1,0 +1,37 @@
+/* ==========================================================================
+   Base Theme Tokens & Smooth Transition Contract
+   ========================================================================== */
+
+:root {
+  --theme-transition-duration: 240ms;
+  --theme-transition-timing: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-transition: background-color var(--theme-transition-duration) var(--theme-transition-timing),
+                      color var(--theme-transition-duration) var(--theme-transition-timing),
+                      border-color var(--theme-transition-duration) var(--theme-transition-timing),
+                      box-shadow var(--theme-transition-duration) var(--theme-transition-timing);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --theme-transition: none !important;
+  }
+}
+
+/* Apply smooth transitions to key structural surfaces */
+html,
+body,
+#root,
+#multibook-reader-scroll-viewport,
+header,
+aside,
+main,
+article,
+div[role="dialog"] {
+  transition: var(--theme-transition);
+}
+
+/* Universal high-visibility focus ring compliant with WCAG AAA */
+:focus-visible {
+  outline: 2px solid var(--accent-primary, #047857) !important;
+  outline-offset: 2px !important;
+}

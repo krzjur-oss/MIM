@@ -33,7 +33,7 @@ export interface QuizQuestion {
   explanation?: string;
 }
 
-export type ThemeType = 'light' | 'sepia' | 'blue' | 'dark' | 'dyslexic';
+export type ThemeType = 'light' | 'sepia' | 'blue' | 'dark' | 'dyslexic' | 'board';
 
 export interface StudentProgress {
   completedChapters: string[];

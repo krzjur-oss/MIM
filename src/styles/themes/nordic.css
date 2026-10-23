@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Nordic Theme (Arktyczny Błękit & Stal) - WCAG AAA Contrast
+   ========================================================================== */
+
+[data-theme="nordic"],
+[data-theme="blue"] {
+  /* Canvas & Structural Surfaces - Arctic Frost Palette */
+  --bg-canvas: #0b1320;
+  --bg-surface: #101c2e;
+  --bg-surface-elevated: #182840;
+  --bg-surface-subtle: #142236;
+  --bg-surface-active: #203554;
+  --bg-surface-card: #142238;
+  --bg-surface-secondary: #0d1728;
+
+  /* Cool Clear Typography */
+  --text-primary: #f0f6fc;        /* Ice white - Contrast ~15.9:1 (AAA) */
+  --text-secondary: #cbd7e6;      /* Cool frost - Contrast ~11.2:1 (AAA) */
+  --text-muted: #8ea3bf;          /* Glacier blue - Contrast ~5.8:1 (AA) */
+  --text-kicker: #e2ebf5;
+  --text-heading-h1: #f8fafc;
+  --text-heading-h2: #38bdf8;     /* Sky cyan */
+  --text-heading-h3: #93c5fd;
+
+  /* Borders & Dividers */
+  --border-subtle: #1e3352;
+  --border-strong: #2c4972;
+  --border-focus: #38bdf8;
+
+  /* Cyan & Cobalt Accent & CTAs */
+  --accent-primary: #0284c7;      /* Sky 600 */
+  --accent-hover: #0369a1;
+  --accent-contrast: #ffffff;
+  --accent-subtle: rgba(2, 132, 199, 0.16);
+  --accent-border: #38bdf8;
+
+  /* Interactive Elements */
+  --tab-group-bg: #142236;
+  --tab-active-bg: #182840;
+  --tab-active-text: #f0f6fc;
+  --tab-inactive-text: #8ea3bf;
+
+  /* Reader / Article Highlights */
+  --reader-blockquote-bg: rgba(2, 132, 199, 0.1);
+  --reader-blockquote-border: #38bdf8;
+  --reader-strong-color: #7dd3fc;
+  --reader-strong-bg: rgba(2, 132, 199, 0.2);
+  --reader-code-bg: #142236;
+  --reader-code-border: #1e3352;
+}
