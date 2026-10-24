@@ -1,14 +1,14 @@
 # Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny”
 
-**Wersja 1.3 · obowiązuje od 2026 r.**
+**Wersja 1.4 · obowiązuje od 2026 r.**
 
 ---
 
 ## § 1. Postanowienia ogólne
 
-1. Niniejszy Regulamin określa zasady korzystania z aplikacji **„Cyfrowy Multibook Edukacyjny”** (dalej: „Aplikacja”), dostępnej w wersji online oraz pracującej w trybie offline w przeglądarce internetowej.
+1. Niniejszy Regulamin określa zasady korzystania z aplikacji **„Cyfrowy Multibook Edukacyjny”** (dalej: „Aplikacja”), dostępnej w wersji online (PWA) oraz pracującej w pełnym trybie offline w przeglądarce internetowej.
 2. Właścicielem, twórcą i jedynym autorem Aplikacji jest **mgr Krzysztof Jureczek** (dalej: „Autor”).
-3. Aplikacja dystrybuowana jest na warunkach **Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE** (pełna treść w pliku `LICENSE.md` oraz w oknie licencji w programie). Regulamin i Licencja stanowią spójną całość i obowiązują łącznie.
+3. Aplikacja dystrybuowana jest na warunkach **Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE** (pełna treść w pliku `LICENSE.md` oraz w menu bocznym w programie). Regulamin i Licencja stanowią spójną całość i obowiązują łącznie.
 4. Uruchomienie lub korzystanie z Aplikacji oznacza pełną akceptację niniejszego Regulaminu oraz Licencji WLPE.
 
 ---
@@ -34,7 +34,7 @@ Wszelkie inne zastosowania, w tym w szczególności komercyjne, odpłatne lub w 
 
 ## § 4. Prawa autorskie i warunki licencyjne
 
-Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Szkicownik na Żywo, generator sprawdzianów, koło fortuny, kalendarz realizacji), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie na podstawie ustawy o prawie autorskim i prawach pokrewnych.
+Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Boczna Szuflada Narzędziowa, Szkicownik na Żywo, Tryb Tablicy Szkolnej, generator sprawdzianów, terminarz realizacji, czytnik TTS), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie na podstawie ustawy o prawie autorskim i prawach pokrewnych.
 
 | Zakres | Szczegółowe zasady |
 | :--- | :--- |
@@ -48,10 +48,10 @@ Szczegółowe warunki określa plik `LICENSE.md`. W sprawach zgody na niestandar
 ## § 5. Dane i polityka prywatności (RODO / GDPR / Pełna ochrona offline)
 
 1. Aplikacja **nie wymaga rejestracji, tworzenia kont ani logowania** i nie przesyła jakichkolwiek danych na zewnętrzne serwery.
-2. **Całkowita lokalność danych**: Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki do tematów, listy klas i imiona uczniów, historia realizacji lekcji w kalendarzu, wyniki quizów, załączone grafiki oraz rysunki ze szkicownika) są przechowywane **wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej** (baza danych `IndexedDB` dla lekcji i notatek oraz `localStorage` dla szybkich preferencji wyglądu) i nigdy nie opuszczają Twojego komputera lub tabletu.
+2. **Całkowita lokalność danych**: Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki do tematów, listy klas i imiona uczniów, historia realizacji lekcji w kalendarzu, wyniki quizów, załączone grafiki oraz rysunki ze szkicownika) są przechowywane **wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej** (baza danych `IndexedDB` dla lekcji i notatek oraz `localStorage` dla szybkich preferencji wyglądu) i nigdy nie opuszczają Twojego komputera, telefonu lub tabletu.
 3. **Administrator danych**: W rozumieniu przepisów RODO/GDPR administratorem ewentualnych danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor Aplikacji nie posiada technicznego ani fizycznego dostępu do tych danych.
 4. **Brak śledzenia i ciasteczek**: Aplikacja nie używa marketingowych ani śledzących plików cookies, nie korzysta z zewnętrznych skryptów analitycznych (typu Google Analytics czy Facebook Pixel) ani nie profiluje użytkowników.
-5. **Kontrola nad danymi**: Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON (kopia zapasowa) lub trwale je usunąć, korzystając z wbudowanej funkcji resetu lub czyszcząc pamięć podręczną przeglądarki.
+5. **Kontrola nad danymi**: Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON (kopia zapasowa) lub trwale je usunąć, korzystając z wbudowanej funkcji resetu bazy lub czyszcząc pamięć podręczną w Menedżerze Pamięci Podręcznej.
 6. **Zasoby zewnętrzne (Galeria obrazów edukacyjnych)**: Aplikacja w pełni funkcjonuje w trybie offline. Wbudowane opcjonalne propozycje edukacyjnych fotografii (np. ilustracje z serwisu Unsplash w brudnopisie) pobierają miniatury bezpośrednio z domen dostawcy wyłącznie w momencie aktywnego połączenia z siecią internetową. W takim przypadku dostawca obrazów widzi adres IP urządzenia podczas pobierania miniatur.
 
 ---
@@ -60,13 +60,13 @@ Szczegółowe warunki określa plik `LICENSE.md`. W sprawach zgody na niestandar
 
 1. Aplikacja udostępniana jest w stanie „takim, jakim jest” (*as is*), bez jakichkolwiek gwarancji prawidłowości, niezawodności czy ciągłości działania.
 2. Autor nie ponosi odpowiedzialności za ewentualną utratę danych (np. wskutek awarii przeglądarki lub wyczyszczenia pamięci podręcznej systemu), błędy w treściach edukacyjnych ani szkody powstałe w wyniku korzystania z Aplikacji.
-3. Zaleca się regularne pobieranie kopii zapasowej danych za pomocą wbudowanego przycisku **„💾 Eksport kopii zapasowej”**.
+3. Zaleca się regularne pobieranie kopii zapasowej danych za pomocą wbudowanego narzędzia **„Eksport kopii zapasowej JSON”** w menu bocznym lub dolnym panelu spisu treści.
 
 ---
 
 ## § 7. Zmiany Regulaminu
 
-Autor zastrzega sobie prawo do wprowadzania aktualizacji Aplikacji oraz modyfikacji niniejszego Regulaminu. Aktualna treść Regulaminu jest zawsze dostępna w menu programu.
+Autor zastrzega sobie prawo do wprowadzania aktualizacji Aplikacji oraz modyfikacji niniejszego Regulaminu. Aktualna treść Regulaminu jest zawsze dostępna w menu programu (sekcja *System i Pomoc*).
 
 ---
 

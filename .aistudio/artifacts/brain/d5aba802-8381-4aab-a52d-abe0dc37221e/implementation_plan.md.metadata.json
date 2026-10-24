@@ -1,6 +1,6 @@
 {
-  "summary":  "Plan uporządkowania przycisków w aplikacji: wdrożenie eleganckiego menu hamburger w prawym rogu nagłówka z pełną konsolidacją narzędzi, ustawień czcionki i motywów podzielonych na 4 sekcje tematyczne (Narzędzia, Czytnik, Dane, System).",
-  "updatedAt":  "2026-10-23T17:38:47.264110267Z",
+  "summary":  "Plan kompleksowej aktualizacji informacji o programie, instrukcji obslugi, plikow README, Regulaminu i Licencji WLPE oraz wewnetrznych lekcji wprowadzajacych, z podniesieniem wersji do v1.4 i pelnym opisem nowych funkcji (menu hamburger, 6 motywow WCAG AAA, IndexedDB, PWA offline).",
+  "updatedAt":  "2026-10-24T07:51:34.769721836Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

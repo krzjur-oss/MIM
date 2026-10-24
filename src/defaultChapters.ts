@@ -9,13 +9,13 @@ const BASE_CHAPTERS: Chapter[] = [
     grade: 'Ogólny',
     chapterGroup: 'Wprowadzenie',
     educationLevel: 'Ogólny',
-    estimatedReadTime: 3,
+    estimatedReadTime: 4,
     isDefault: true,
     lessonNumber: 1,
     createdAt: Date.now() - 7000,
-    content: `# Witaj w Cyfrowym Multibooku Edukacyjnym! 👋
+    content: `# Witaj w Cyfrowym Multibooku Edukacyjnym v1.4! 👋
 
-Ten program to **nowoczesny, interaktywny podręcznik i zeszyt ćwiczeń**, zaprojektowany z myślą o dydaktyce stacjonarnej w klasie oraz samodzielnej nauce w domu. Aplikacja działa w **100% w Twojej przeglądarce i nie wymaga stałego połączenia z Internetem** po jednokrotnym otwarciu.
+Ten program to **nowoczesny, interaktywny podręcznik i zeszyt ćwiczeń**, zaprojektowany z myślą o dydaktyce stacjonarnej w klasie (monitory interaktywne, rzutniki, laptopy) oraz samodzielnej nauce w domu. Aplikacja działa w **100% w Twojej przeglądarce i nie wymaga stałego połączenia z Internetem** po jednokrotnym otwarciu (Progresywna Aplikacja Internetowa PWA).
 
 ---
 
@@ -24,53 +24,55 @@ Ten program to **nowoczesny, interaktywny podręcznik i zeszyt ćwiczeń**, zapr
 | Funkcja | Co zyskujesz? | Dla kogo? |
 | :--- | :--- | :--- |
 | **Hierarchiczny układ** | Przejrzysty podział na etapy (np. Szkoła Podstawowa), klasy (1–8) i działy tematyczne | Nauczyciel i Uczeń |
-| **Szkicownik na Żywo** 🖌️ | Rysowanie, zakreślanie i wskaźnik laserowy bezpośrednio na treści lekcji | Tablice interaktywne i rzutniki |
-| **Panel Nauczyciela** 👨‍🏫 | Zarządzanie klasami, terminarz, rejestr zrealizowanych lekcji i generator kartkówek | Nauczyciele i wychowawcy |
+| **Menu Główne ☰** | Szuflada narzędziowa dzieląca funkcje na 4 strefy: Narzędzia, Czytnik, Dane i System | Szybki dostęp |
+| **Szkicownik na Żywo** 🖌️ | Rysowanie, zakreślanie, laser i reflektor bezpośrednio na treści lekcji | Tablice interaktywne |
+| **Tryb Tablicy Szkolnej** 🖥️ | Sprzętowa akceleracja renderowania zoptymalizowana dla ekranów Android | Klasy multimedialne |
+| **Panel Nauczyciela** 👨‍🏫 | Zarządzanie klasami, terminarz z eksportem .ics, szczęśliwy numerek i generator testów | Nauczyciele |
 | **Interaktywne Quizy** ⚡ | Natychmiastowa weryfikacja wiedzy z wyjaśnieniem poprawnych odpowiedzi | Uczniowie i powtórki |
-| **Notatki i Galeria** 📝🖼️ | Osobisty brudnopis z wklejaniem zdjęć oraz eksportem do pliku PDF/HTML | Każdy użytkownik |
-| **Dostępność i Lektor** 👓🔊 | Tryb dyslektyczny (OpenDyslexic), synteza mowy (TTS) i 5 motywów barwnych | Wyrównywanie szans |
+| **Notatki i Galeria** 📝🖼️ | Osobisty brudnopis z wklejaniem zdjęć, zapisem w IndexedDB oraz drukiem do PDF | Każdy użytkownik |
+| **Dostępność i Lektor** 👓🔊 | Czcionka OpenDyslexic, synteza mowy (TTS) i 6 motywów barwnych WCAG AAA | Wyrównywanie szans |
 
 ---
 
-### 🗺️ Spis Treści Przewodnika po Aplikacji:
-W tym dziale (**Wprowadzenie**) znajdziesz kompletne instrukcje krok po kroku do każdej funkcji programu:
+### 🗺️ Spis Treści Przewodnika po Aplikacji (Dział Wprowadzenie):
+
 1. **Lekcja 1**: Wstęp do Interaktywnego Multibooka *(bieżący temat)*
-2. **Lekcja 2**: **Jak utworzyć i edytować własną lekcję ✍️** – przewodnik po kreatorze lekcji, formatowaniu Markdown i quizach
-3. **Lekcja 3**: **Panel Nauczyciela i Organizacja Pracy 👨‍🏫** – zarządzanie klasami, terminarz, koło fortuny i generator testów
-4. **Lekcja 4**: **Szkicownik na Żywo i Tryb Tablicy 🖌️** – narzędzia rysowania, zakreślacz, reflektor i wskaźnik
-5. **Lekcja 5**: **Notatki, Galeria Obrazów i Eksport do PDF 📝** – prowadzenie brudnopisu i generowanie dokumentów
-6. **Lekcja 6**: **Kopie Zapasowe, Import i Eksport Bazy 💾** – bezpieczne przechowywanie danych offline
-7. **Lekcja 7**: **Ułatwienia Dostępności, Lektor TTS i Motywy 👓** – personalizacja czcionek, kolorów i głosu lektora
-8. **Lekcja 8**: **Regulamin i Polityka Prywatności (RODO / Offline) 📜** – zasady darmowego użytku prywatnego i edukacyjnego
-9. **Lekcja 9**: **Licencja Użytkowania (Wolna Licencja Prywatno-Edukacyjna) ⚖️** – warunki licencji WLPE, prawa autorskie i ograniczenia
+2. **Lekcja 2**: **Jak tworzyć i edytować lekcje ✍️** – przewodnik po kreatorze lekcji, formatowaniu Markdown i quizach
+3. **Lekcja 3**: **Panel Nauczyciela i Organizacja Pracy 👨‍🏫** – zarządzanie klasami, terminarz, generator .ics i testy A4
+4. **Lekcja 4**: **Szkicownik na Żywo i Narzędzia Tablicowe 🖌️** – pisak, zakreślacz, figury, reflektor oraz Tryb Tablicy Szkolnej
+5. **Lekcja 5**: **Notatki, Galeria Obrazów i Eksport do PDF 📝** – brudnopis offline z automatycznym zapisem w IndexedDB
+6. **Lekcja 6**: **Baza IndexedDB, Kopia Zapasowa i Diagnostyka 💾** – architektura bazy offline, import i eksport JSON
+7. **Lekcja 7**: **Dostępność WCAG AAA, 6 Motywów i Czytnik 👁️** – 6 palet kolorystycznych, lektor TTS i OpenDyslexic
+8. **Lekcja 8**: **Regulamin Serwisu i Ochrona Danych (RODO) 📜** – zasady darmowego użytku prywatnego i szkolnego
+9. **Lekcja 9**: **Wolna Licencja Prywatno-Edukacyjna (WLPE) ⚖️** – warunki licencji WLPE v1.4, ochrona praw autorskich
 
 ---
 
-> 💡 **Wskazówka:** Przejdź do kolejnych tematów za pomocą dolnych przycisków nawigacji lub klikając w kropki postępu na dole ekranu!`,
+> 💡 **Wskazówka:** Do wszystkich funkcji programu możesz w każdej chwili dotrzeć przez przycisk **„Menu ☰”** w prawym górnym rogu ekranu!`,
     quizzes: [
       {
         id: 'intro-q1',
-        question: 'Gdzie są zapisywane Twoje prywatne notatki i nowo dodane rozdziały w tym Multibooku?',
+        question: 'Gdzie są bezpiecznie zapisywane Twoje prywatne notatki i lekcje w Multibooku v1.4?',
         options: [
-          'W bazie danych wymagającej logowania i hasła',
-          'Są jednorazowe i znikają po zamknięciu karty',
-          'Lokalnie w pamięci Twojej przeglądarki (LocalStorage) – działają w 100% offline',
-          'Na zewnętrznym serwerze w chmurze'
+          'Na zewnętrznym serwerze chmurowym wymagającym konta',
+          'Są jednorazowe i znikają natychmiast po zamknięciu karty',
+          'Lokalnie w bazie IndexedDB przeglądarki (100% offline)',
+          'W centralnym rejestrze szkolnym wymagającym logowania'
         ],
         correctAnswer: 2,
-        explanation: 'Wszystkie materiały, notatki i zrealizowane lekcje są bezpiecznie zapisywane w pamięci lokalnej Twojego urządzenia, co gwarantuje pełną prywatność i działanie bez internetu.'
+        explanation: 'Wszystkie materiały, notatki i zrealizowane lekcje są bezpiecznie zapisywane w lokalnej bazie IndexedDB Twojego urządzenia, co gwarantuje pełną prywatność i działanie bez internetu.'
       },
       {
         id: 'intro-q2',
-        question: 'Która funkcja ułatwia pracę na lekcji z tablicą interaktywną lub rzutnikiem?',
+        question: 'Który moduł ułatwia pracę na lekcji z tablicą interaktywną lub monitorem dotykowym?',
         options: [
-          'Szkicownik na Żywo pozwalający pisać, zakreślać i rysować bezpośrednio na treści podręcznika',
-          'Tylko czytanie statycznego tekstu',
-          'Wyłącznie import plików PDF',
-          'Odtwarzacz plików MP3'
+          'Szkicownik na Żywo oraz zoptymalizowany Tryb Tablicy Szkolnej',
+          'Statyczny czytnik tekstu bez możliwości rysowania i notatek',
+          'Wyłącznie moduł generowania plików dźwiękowych w formacie MP3',
+          'Instalator zewnętrznych wtyczek komercyjnych do przeglądarki'
         ],
         correctAnswer: 0,
-        explanation: 'Szkicownik na Żywo pozwala na nanoszenie odręcznych notatek, zakreśleń neonowych i figur bezpośrednio na wyświetlaną stronę w czasie rzeczywistym.'
+        explanation: 'Szkicownik na Żywo pozwala na nanoszenie odręcznych notatek, zakreśleń neonowych i figur, a Tryb Tablicy Szkolnej optymalizuje wydajność ekranów dotykowych.'
       }
     ]
   },
@@ -95,9 +97,10 @@ Multibook pozwala każdemu nauczycielowi oraz uczniowi na **tworzenie autorskich
 ### 🚀 Krok 1: Otwarcie Kreatora Lekcji
 
 Do modułu tworzenia i edycji lekcji możesz przejść na kilka wygodnych sposobów:
-1. **Z lewego paska bocznego**: kliknij przycisk **„+ Dodaj lekcję”** na samej górze spisu treści.
-2. **Z poziomu dowolnego tematu**: kliknij przycisk **„Edytuj temat”** w górnym nagłówku strony lub na dole pod treścią lekcji.
-3. **Z listy tematów w menu**: najedź myszką na dowolny temat w spisie i kliknij ikonę ołówka ✏️.
+1. **Z Menu Głównego ☰**: otwórz szufladę w prawym rogu, przejdź do sekcji **„3. Dane i Lekcje”** i kliknij **„➕ Utwórz nową lekcję”**.
+2. **Z lewego paska bocznego**: kliknij przycisk **„+ Dodaj lekcję”** na samej górze spisu treści.
+3. **Z poziomu dowolnego tematu**: kliknij przycisk **„Edytuj temat”** w górnym nagłówku strony lub na dole pod treścią lekcji.
+4. **Z listy tematów w menu**: najedź myszką na dowolny temat w spisie i kliknij ikonę ołówka ✏️.
 
 ---
 
@@ -139,35 +142,35 @@ Każda lekcja może posiadać własny **test sprawdzający wiedzę**:
 
 ---
 
-### 💾 Krok 5: Zapisanie i Edycja
+### 💾 Krok 5: Zapisanie w Bazie IndexedDB
 
 * Kliknij **„Zapisz temat w multibooku”**.
-* Twój nowy temat pojawi się natychmiast w odpowiednim dziale i klasie.
-* Możesz do niego wrócić w dowolnym momencie i zaktualizować tekst, dopisać nowe pytania lub zmienić dział!`,
+* Twój nowy temat pojawi się natychmiast w odpowiednim dziale i klasie, utrwalony w asynchronicznej bazie IndexedDB.
+* Możesz do niego wrócić w dowolnym momencie i zaktualizować tekst, dopisać nowe pytania lub wyeksportować kopię zapasową!`,
     quizzes: [
       {
         id: 'guide-create-q1',
         question: 'W jaki sposób możesz pogrubić fragment tekstu w treści lekcji Markdown?',
         options: [
-          'Wpisując tekst wielkimi literami',
+          'Wpisując tekst wyłącznie wielkimi literami w nagłówku',
           'Otaczając tekst podwójnymi gwiazdkami: **tekst**',
-          'Otaczając tekst nawiasami kwadratowymi [tekst]',
-          'Wpisując <pogrubienie>tekst</pogrubienie>'
+          'Otaczając tekst potrójnymi nawiasami kwadratowymi',
+          'Wpisując specjalny znacznik html typu <pogrubienie>'
         ],
         correctAnswer: 1,
         explanation: 'W standardzie Markdown pogrubienie tekstu uzyskujemy poprzez otoczenie go dwoma gwiazdkami z każdej strony: **ważny tekst**.'
       },
       {
         id: 'guide-create-q2',
-        question: 'Czy po zapisaniu nowej lekcji można ją później modyfikować i edytować?',
+        question: 'Gdzie w menu znajdziesz skrót do utworzenia nowej lekcji?',
         options: [
-          'Tak, klikając przycisk „Edytuj temat” w nagłówku, stopce lub na liście tematów',
-          'Tylko jeśli usuniemy plik z dysku komputera',
-          'Tylko przez kontakt z administratorem serwera',
-          'Nie, lekcje są jednorazowe i nie można ich zmieniać'
+          'W Menu ☰ w sekcji 3. Dane i Lekcje oraz na górze spisu treści',
+          'Tylko na zewnętrznej stronie internetowej producenta',
+          'W ustawieniach dźwięku syntezatora mowy lektora',
+          'Funkcja tworzenia lekcji wymaga instalacji dodatku'
         ],
         correctAnswer: 0,
-        explanation: 'Wszystkie tematy – zarówno autorskie, jak i domyślne – można w dowolnej chwili otworzyć w edytorze, zmienić treść, dodać pytania testowe lub zaktualizować dział.'
+        explanation: 'Kreator lekcji jest dostępny zarówno w Menu Głównym ☰ w sekcji Dane i Lekcje, jak i za pomocą przycisku na górze spisu treści.'
       }
     ]
   },
@@ -185,26 +188,27 @@ Każda lekcja może posiadać własny **test sprawdzający wiedzę**:
     createdAt: Date.now() - 5000,
     content: `# Panel Nauczyciela i Organizacja Pracy 👨‍🏫
 
-Panel Nauczyciela to dedykowane centrum dowodzenia stworzone specjalnie dla pedagogów i katechetów. Umożliwia sprawne prowadzenie zajęć, ewidencję postępów dydaktycznych oraz generowanie materiałów do druku.
+Panel Nauczyciela to dedykowane centrum dowodzenia stworzone specjalnie dla pedagogów i katechetów. Umożliwia sprawne prowadzenie zajęć, ewidencję postępów dydaktycznych oraz generowanie materiałów do druku i terminarza.
 
 ---
 
 ### 🚪 Jak otworzyć Panel Nauczyciela?
-Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** znajdujący się w prawym górnym pasku nawigacyjnym lub przełącz prawą zakładkę boczną na widok klas.
+Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** w nagłówku lub otwórz **Menu Główne ☰** w prawym rogu i wybierz pierwszą pozycję w sekcji **„1. Narzędzia dydaktyczne”**.
 
 ---
 
 ### 📋 Główne Moduły Panelu Nauczyciela:
 
 #### 1. Zarządzanie Klasami i Uczniami 👥
-*   **Tworzenie oddziałów**: Dodawaj klasy, które uczysz (np. *Klasa 4A*, *Klasa 7B*, *Kółko Biblijne*).
+*   **Tworzenie oddziałów**: Dodawaj klasy, które uczysz (np. *Klasa 4A*, *Klasa 7B*, *Kółko Dydaktyczne*).
 *   **Lista uczniów**: Wpisz imiona i nazwiska uczniów w danej klasie.
 *   **Generator grup i par**: Jednym kliknięciem podziel obecnych uczniów na zrównoważone grupy robocze lub pary do ćwiczeń!
 
-#### 2. Dziennik Realizacji Lekcji i Kalendarz 📅
+#### 2. Dziennik Realizacji Lekcji i Terminarz 📅
 *   **Odznaczanie tematów**: Po przeprowadzeniu lekcji kliknij **„Oznacz jako zrealizowaną w klasie”**.
 *   **Kalendarz dydaktyczny**: System automatycznie zaznacza dni na osi czasu, w których odbyły się zajęcia.
-*   **Historia chronologiczna**: Przeglądaj dokładną historię zrealizowanego materiału dla każdego oddziału z możliwością wycofania (przycisk *Cofnij*).
+*   **Eksport do kalendarza (.ics)**: Pobierz gotowy plik iCalendar do zaimportowania w Google Calendar, Outlooku lub smartfonie!
+*   **Historia chronologiczna**: Przeglądaj historię materiału dla każdego oddziału z możliwością wycofania (przycisk *Cofnij*).
 
 #### 3. Koło Fortuny i „Szczęśliwy Numerek” 🎲
 *   **Losowanie ucznia**: Narzędzie do sprawiedliwego i bezstresowego wyboru ucznia do odpowiedzi lub wykonania zadania przy tablicy.
@@ -228,24 +232,24 @@ Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** znajdujący się w praw
         question: 'Do czego służy funkcja Dziennika Realizacji w Panelu Nauczyciela?',
         options: [
           'Do automatycznego pisania notatek za uczniów',
-          'Do wysyłania e-maili do dyrekcji',
-          'Do ewidencjonowania dat i tematów lekcji przeprowadzonych w poszczególnych klasach',
-          'Do blokowania uczniom dostępu do Internetu'
+          'Do ewidencjonowania dat i tematów lekcji zrealizowanych w klasach',
+          'Do wysyłania e-maili reklamowych do rodziców',
+          'Do blokowania uczniom dostępu do przeglądarki'
         ],
-        correctAnswer: 2,
-        explanation: 'Dziennik Realizacji pozwala przypisywać ukończone tematy do poszczególnych oddziałów klasowych i śledzić ich realizację w kalendarzu dydaktycznym.'
+        correctAnswer: 1,
+        explanation: 'Dziennik Realizacji pozwala przypisywać ukończone tematy do poszczególnych oddziałów klasowych, śledzić ich realizację w kalendarzu i eksportować pliki .ics.'
       },
       {
         id: 'guide-teacher-q2',
         question: 'W jakiej formie Kreator Sprawdzianów przygotowuje materiały testowe?',
         options: [
-          'Jako prezentację wideo',
-          'Tylko jako surowy plik tekstowy bez formatowania',
-          'Tylko jako dźwięk MP3',
-          'Jako sformatowany arkusz A4 do bezpośredniego druku oraz plik PDF (wersja dla ucznia i klucz dla nauczyciela)'
+          'Jako prezentację multimedialną w formacie wideo',
+          'Tylko jako niesformatowany plik tekstowy bez pytań',
+          'Jako gotowy arkusz A4 do druku oraz plik PDF z osobnym kluczem odpowiedzi',
+          'Tylko jako plik audio do odsłuchania przez lektora'
         ],
-        correctAnswer: 3,
-        explanation: 'Kreator generuje profesjonalny, gotowy do druku arkusz testowy z nagłówkiem szkolnym, miejscem na podpis i punktację oraz osobnym kluczem odpowiedzi.'
+        correctAnswer: 2,
+        explanation: 'Kreator generuje profesjonalny, gotowy do druku arkusz testowy z nagłówkiem szkolnym, miejscem na podpis i punktację oraz osobnym kluczem odpowiedzi dla nauczyciela.'
       }
     ]
   },
@@ -263,23 +267,24 @@ Kliknij przycisk **„👨‍🏫 Panel Nauczyciela”** znajdujący się w praw
     createdAt: Date.now() - 4000,
     content: `# Szkicownik na Żywo i Tryb Tablicy 🖌️
 
-Moduł **Szkicownika na Żywo** zamienia Twoją przeglądarkę w pełnoprawną **tablicę interaktywną**. Narzędzie zostało zoptymalizowane pod kątem rzutników multimedialnych, monitorów dotykowych (np. Promethean, SMART Board) oraz obsługi rysikiem i myszą.
+Moduł **Szkicownika na Żywo** zamienia Twoją przeglądarkę w pełnoprawną **tablicę interaktywną**. Narzędzie zostało zoptymalizowane pod kątem rzutników multimedialnych, monitorów dotykowych (np. Promethean, SMART Board, myBoard, Newline) oraz obsługi rysikiem i myszą.
 
 ---
 
-### 🕹️ Jak uruchomić Szkicownik?
-Kliknij przycisk **„🖌️ Szkicownik”** w górnym pasku narzędzi. Na ekranie pojawi się podręczny, pływający przybornik malarski.
+### 🕹️ Jak uruchomić Szkicownik i Tryb Tablicy?
+* Kliknij przycisk **„🖌️ Szkicownik”** w górnym pasku narzędzi lub otwórz **Menu Główne ☰** i wybierz Szkicownik w sekcji *1. Narzędzia dydaktyczne*.
+* W Menu Głównym znajdziesz również przełącznik **„Tryb Tablicy Szkolnej”** – specjalny tryb optymalizujący wydajność GPU na tablicach i monitorach z systemem Android.
 
 ---
 
 ### 🎨 Dwa Tryby Pracy Tablicy:
 
 1. **Tryb Nakładki (Rysowanie po podręczniku)**:
-   Pozwala zakreślać kluczowe pojęcia, dopisywać uwagi na marginesach i rysować strzałki bezpośrednio na czytanym tekście lekcji. Tekst pod spodem pozostaje w pełni widoczny!
+   Pozwala zakreślać kluczowe pojęcia, dopisywać uwagi na marginesach i rysować strzałki bezpośrednio na czytanym tekście lekcji. Tekst pod spodem pozostaje w pełni czytelny i interaktywny!
 2. **Tryb Czystej Tablicy (Whiteboard)**:
    Jednym kliknięciem przełącz tło na:
    *   **Klasyczną Białą Tablicę** (czysty biały arkusz)
-   *   **Tablicę Kredową** (ciemnozielone tło)
+   *   **Tablicę Kredową** (ciemnozielone tło szkolne)
    *   **Papier w Kratkę** (do geometrii, matematyki i wykresów)
    *   **Papier w Linie** (do ćwiczeń kaligraficznych i językowych)
 
@@ -287,7 +292,7 @@ Kliknij przycisk **„🖌️ Szkicownik”** w górnym pasku narzędzi. Na ekra
 
 ### 🛠️ Przybornik Narzędzi Dydaktycznych:
 
-*   **Pędzel / Pisak**: precyzyjne odręczne rysowanie i pisanie notatek.
+*   **Pędzel / Pisak**: precyzyjne odręczne rysowanie i pisanie notatek z regulacją grubości i koloru.
 *   **Neonowy Zakreślacz**: półprzezroczysty marker do podkreślania ważnych fragmentów w tekście.
 *   **Linia Prosta i Strzałki**: idealne do tworzenia schematów, osi czasu i powiązań przyczynowo-skutkowych.
 *   **Figury Geometryczne**: szybkie wstawianie idealnych prostokątów, elips i kół.
@@ -305,24 +310,24 @@ Wszystkie notatki naniesione na tablicy możesz w każdej chwili **zapisać jako
         question: 'Do czego służy funkcja Reflektora (Spotlight) w szkicowniku?',
         options: [
           'Do zmiany koloru czcionki w całym podręczniku',
-          'Do wyłączania monitora',
           'Do przyciemnienia tła i wyróżnienia pojedynczego fragmentu lekcji kręgiem światła',
-          'Do automatycznego czytania tekstu'
+          'Do wyłączania monitora podczas przerw międzylekcyjnych',
+          'Do automatycznego czytania tekstu przez syntezator'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Reflektor pozwala skupić wzrok klasy na kluczowym fragmencie ilustracji lub tekstu poprzez przyciemnienie pozostałej części ekranu.'
       },
       {
         id: 'guide-board-q2',
-        question: 'Jakie tła są dostępne w trybie Czystej Tablicy?',
+        question: 'Czym charakteryzuje się Tryb Tablicy Szkolnej w Multibooku v1.4?',
         options: [
-          'Brak możliwości korzystania z czystej tablicy',
-          'Tylko tapeta ze zdjęciem',
-          'Tylko czarne tło bez opcji zmiany',
-          'Biała tablica, zielona tablica kredowa, papier w kratkę oraz papier w linie'
+          'Wymaga płatnej subskrypcji i logowania na serwerze',
+          'Blokuje możliwość pisania notatek na ekranie dotykowym',
+          'Optymalizuje renderowanie i płynność graficzną dla monitorów dotykowych i rzutników',
+          'Działa wyłącznie na telefonach komórkowych bez ekranu dotykowego'
         ],
-        correctAnswer: 3,
-        explanation: 'Multibook oferuje różnorodne tła tablicowe dopasowane do specyfiki różnych przedmiotów szkolnych (w tym kratkę i linie).'
+        correctAnswer: 2,
+        explanation: 'Tryb Tablicy Szkolnej zapewnia optymalizację GPU, eliminując opóźnienia i skoki klatek na szkolnych monitorach dotykowych i tablicach z systemem Android.'
       }
     ]
   },
@@ -340,16 +345,16 @@ Wszystkie notatki naniesione na tablicy możesz w każdej chwili **zapisać jako
     createdAt: Date.now() - 3000,
     content: `# Notatki, Galeria Obrazów i Eksport do PDF 📝
 
-Każdy temat w Multibooku posiada **indywidualny zeszyt notatek ucznia i nauczyciela**, który zapisuje się automatycznie w czasie rzeczywistym.
+Każdy temat w Multibooku posiada **indywidualny zeszyt notatek ucznia i nauczyciela**, który zapisuje się automatycznie w czasie rzeczywistym w bezpiecznej bazie IndexedDB.
 
 ---
 
 ### 📖 Prowadzenie Notatek do Lekcji
 
-1. Otwórz prawy panel boczny i wybierz zakładkę **„📝 Notatki”**.
+1. Otwórz prawy panel boczny i wybierz zakładkę **„📝 Notatki”** lub skorzystaj ze skrótu w **Menu Głównym ☰** (*1. Narzędzia dydaktyczne* -> *Notatki do lekcji*).
 2. Wpisuj własne przemyślenia, punkty do zapamiętania, definicje lub odpowiedzi na zadania domowe.
-3. Notatki wspierają pełne formatowanie Markdown (listy, pogrubienia, nagłówki).
-4. **Automatyczny zapis**: nic nie przepada – treść jest na bieżąco utrwalana w pamięci przeglądarki.
+3. Notatki wspierają pełne formatowanie Markdown (listy, pogrubienia, nagłówki, tabele).
+4. **Automatyczny zapis w IndexedDB**: treść jest na bieżąco utrwalana w pamięci przeglądarki bez ryzyka przepełnienia limitów pamięci.
 
 ---
 
@@ -376,33 +381,33 @@ Kliknij ikonę gwiazdki **„Dodaj do zakładek”** w nagłówku aktywnej lekcj
     quizzes: [
       {
         id: 'guide-notes-q1',
-        question: 'Czy po wyjściu z aplikacji lub zamknięciu przeglądarki Twoje notatki zostaną utracone?',
+        question: 'W jakiej technologii Multibook v1.4 automatycznie zapisuje Twoje notatki?',
         options: [
-          'Tylko jeśli klikniemy specjalny przycisk w chmurze',
-          'Tak, trzeba je za każdym razem zapisywać ręcznie na pendrive',
-          'Zostaną skasowane po 10 minutach bezczynności',
-          'Nie, notatki zapisują się automatycznie w pamięci lokalnej i będą dostępne po ponownym otwarciu'
+          'W zewnętrznym dysku sieciowym FTP',
+          'W asynchronicznej bazie IndexedDB działającej w 100% lokalnie i offline',
+          'W tymczasowych ciasteczkach sesyjnych wygasających po minucie',
+          'Na publicznym serwerze chmurowym'
         ],
-        correctAnswer: 3,
-        explanation: 'System automatycznego zapisu dba o natychmiastowe utrwalanie każdej wpisanej litery w bezpiecznej pamięci lokalnej Twojej przeglądarki.'
+        correctAnswer: 1,
+        explanation: 'Multibook v1.4 wykorzystuje nowoczesną bazę IndexedDB, gwarantującą wysoką pojemność, asynchroniczny zapis i pełną prywatność offline.'
       },
       {
         id: 'guide-notes-q2',
         question: 'W jaki sposób możesz powiększyć ilustrację dołączoną do notatek?',
         options: [
-          'Nie można powiększać ilustracji',
-          'Należy wydrukować ją na papierze',
-          'Przez zmianę rozdzielczości ekranu w systemie Windows',
-          'Klikając na miniaturę obrazka, co otworzy pełnoekranowy podgląd Lightbox'
+          'Nie ma technicznej możliwości powiększania ilustracji',
+          'Przez zmianę rozdzielczości ekranu w ustawieniach systemu',
+          'Klikając na miniaturę obrazka, co otworzy pełnoekranowy podgląd Lightbox',
+          'Należy najpierw wydrukować dokument na drukarce'
         ],
-        correctAnswer: 3,
+        correctAnswer: 2,
         explanation: 'Kliknięcie w dowolny obrazek otwiera elegancki, wyśrodkowany podgląd Lightbox z możliwością powiększenia i skopiowania odnośnika.'
       }
     ]
   },
   {
     id: 'guide-backup-and-sync',
-    title: 'Kopie Zapasowe, Import i Eksport Bazy 💾',
+    title: 'Baza IndexedDB, Kopia Zapasowa i Diagnostyka 💾',
     subject: 'Podręcznik / Instrukcja',
     schoolType: 'Ogólny / Pozostałe',
     grade: 'Ogólny',
@@ -412,18 +417,27 @@ Kliknij ikonę gwiazdki **„Dodaj do zakładek”** w nagłówku aktywnej lekcj
     isDefault: true,
     lessonNumber: 6,
     createdAt: Date.now() - 2000,
-    content: `# Kopie Zapasowe, Import i Eksport Bazy 💾
+    content: `# Baza IndexedDB, Kopia Zapasowa i Diagnostyka 💾
 
 Multibook daje Ci **100% kontroli nad Twoimi danymi**. Wszystkie dodane tematy, notatki, struktury klas i historia realizacji mogą być łatwo wyeksportowane do jednego bezpiecznego pliku lub przeniesione na inny komputer.
 
 ---
 
+### 🗄️ Nowoczesna Baza IndexedDB w Wersji 1.4
+
+W wersji 1.4 aplikacja wykorzystuje **asynchroniczną bazę IndexedDB** jako główny magazyn danych:
+*   **Wysoka pojemność**: koniec z 5-megabajtowymi ograniczeniami dawnego LocalStorage – baza pomieści tysiące lekcji, bogate notatki i obrazy.
+*   **Płynność działania**: zapis odbywa się w tle bez blokowania animacji i interfejsu.
+*   **Bezpieczna migracja**: przy pierwszym uruchomieniu v1.4 dane z LocalStorage są automatycznie i bezstratnie przenoszone do IndexedDB.
+
+---
+
 ### 📦 Eksport Pełnej Kopii Zapasowej (Backup JSON)
 
-1. W menu bocznym kliknij przycisk **„💾 Kopia zapasowa”** lub przejdź do Centrum Zarządzania zakładki *Import / Eksport*.
+1. Otwórz **Menu Główne ☰** w prawym rogu i przejdź do sekcji **„3. Dane i Lekcje”** -> **„💾 Kopia zapasowa bazy JSON”** (lub kliknij przycisk w menu bocznym).
 2. Możesz wyeksportować **Wszystkie przedmioty** lub przefiltrować bazę do konkretnego przedmiotu (np. tylko *Religia* lub *Biologia*).
 3. Kliknij **„Pobierz kopię zapasową (.json)”**.
-4. Plik zostanie natychmiast zapisany w Twoim folderze Pobrane. Możesz zachować go na dysku, pendrive lub przesłać innemu nauczycielowi!
+4. Plik zostanie natychmiast zapisany w folderze Pobrane. Możesz przenieść go na pendrive lub przesłać innemu nauczycielowi!
 
 ---
 
@@ -431,7 +445,7 @@ Multibook daje Ci **100% kontroli nad Twoimi danymi**. Wszystkie dodane tematy, 
 
 Gdy otworzysz plik kopii zapasowej w programie, otrzymasz przejrzyste okno selekcji:
 *   **Wyszukiwanie i Filtrowanie**: możesz łatwo przejrzeć zawartość pliku przed wgraniem.
-*   **Wybór lekcji**: zaznacz tylko te tematy, które chcesz dodać (np. zaznacz tylko nowe rozdziały).
+*   **Wybór lekcji**: zaznacz tylko te tematy, które chcesz dodać (np. wybrane nowe rozdziały).
 *   **Tryb Scalania (Merge)**: dodaje nowe lekcje i aktualizuje istniejące – Twoje obecne dane nie zostaną skasowane!
 *   **Tryb Zastąpienia (Replace)**: czyści obecną bazę i zastępuje ją w 100% zawartością pliku.
 
@@ -440,44 +454,44 @@ Gdy otworzysz plik kopii zapasowej w programie, otrzymasz przejrzyste okno selek
 ### 📄 Przeciąganie Plików Markdown (.md i .txt)
 
 Jeśli posiadasz własne scenariusze lekcji przygotowane w programach Word lub Notatnik:
-1. Zapisz plik w formacie tekstowym '.txt' lub Markdown '.md'.
+1. Zapisz plik w formacie tekstowym \`.txt\` lub Markdown \`.md\`.
 2. Otwórz Centrum Zarządzania i przeciągnij pliki myszką (Drag & Drop) na wyznaczone pole.
 3. Multibook automatycznie wyodrębni tytuł, oszacuje czas czytania i utworzy z nich nowe tematy lekcji!
 
 ---
 
 ### 🔄 Odblokowanie Pełnego Programu Religii
-W oknie kopii zapasowej znajduje się specjalny przycisk **„Odblokuj kompletny program Religii (Klasy 1–8)”**, który jednym kliknięciem wgrywa ponad 400 szczegółowo opracowanych jednostek lekcyjnych wraz z quizami i podziałem na działy.`,
+W oknie kopii zapasowej znajduje się dedykowany przycisk **„Odblokuj kompletny program Religii (Klasy 1–8)”**, który jednym kliknięciem wgrywa ponad 400 szczegółowo opracowanych jednostek lekcyjnych wraz z quizami i podziałem na działy.`,
     quizzes: [
       {
         id: 'guide-backup-q1',
         question: 'Czym różni się tryb „Scalania (Merge)” od trybu „Zastąpienia (Replace)” podczas importu?',
         options: [
-          'Scalanie usuwa wszystkie pytania quizowe',
-          'Zastąpienie działa tylko na telefonach komórkowych',
-          'Nie ma żadnej różnicy',
-          'Scalanie dodaje nowe tematy bez kasowania Twoich dotychczasowych lekcji, a Zastąpienie nadpisuje całą bazę'
+          'Scalanie usuwa wszystkie pytania quizowe z bazy',
+          'Zastąpienie działa wyłącznie na urządzeniach mobilnych',
+          'Scalanie dodaje nowe tematy bez kasowania dotychczasowych lekcji, a Zastąpienie nadpisuje bazę',
+          'Oba tryby działają dokładnie tak samo bez różnic'
         ],
-        correctAnswer: 3,
+        correctAnswer: 2,
         explanation: 'Tryb scalania (Merge) jest bezpieczny: dodaje brakujące lekcje i aktualizuje zmodyfikowane, nie usuwając pozostałych tematów.'
       },
       {
         id: 'guide-backup-q2',
-        question: 'Czy kopię zapasową Multibooka (.json) można wgrać na innym komputerze w szkole?',
+        question: 'Jaką główną zaletę zapewnia baza IndexedDB wprowadzona w Multibooku v1.4?',
         options: [
-          'Tylko przez kabel USB podłączony do obu komputerów jednocześnie',
-          'Tak, wystarczy przenieść plik .json i zaimportować go w przeglądarce na dowolnym komputerze',
-          'Nie, plik działa tylko na jednym urządzeniu',
-          'Tylko po wykupieniu specjalnej licencji'
+          'Wysoką pojemność offline, asynchroniczny zapis i brak ograniczeń rozmiaru dawnego LocalStorage',
+          'Wymusza codzienne łączenie się z internetem',
+          'Wysyła dane użytkownika na serwery reklamowe',
+          'Ogranicza liczbę notatek do maksymalnie dziesięciu'
         ],
-        correctAnswer: 1,
-        explanation: 'Plik JSON jest w pełni przenośny – możesz łatwo przekazać swoje przygotowane lekcje kolegom z pracy lub załadować je na komputerze w klasie.'
+        correctAnswer: 0,
+        explanation: 'IndexedDB eliminuje limit 5 MB charakterystyczny dla LocalStorage, umożliwiając przechowywanie obszernych materiałów dydaktycznych, notatek i grafik bez spowalniania interfejsu.'
       }
     ]
   },
   {
     id: 'guide-accessibility-and-themes',
-    title: 'Ułatwienia Dostępności, Lektor TTS i Motywy 👓',
+    title: 'Dostępność WCAG AAA, 6 Motywów i Czytnik 👁️',
     subject: 'Podręcznik / Instrukcja',
     schoolType: 'Ogólny / Pozostałe',
     grade: 'Ogólny',
@@ -487,27 +501,28 @@ W oknie kopii zapasowej znajduje się specjalny przycisk **„Odblokuj kompletny
     isDefault: true,
     lessonNumber: 7,
     createdAt: Date.now() - 1000,
-    content: `# Ułatwienia Dostępności, Lektor TTS i Motywy 👓
+    content: `# Dostępność WCAG AAA, 6 Motywów i Czytnik 👁️
 
-Edukacja włączająca i komfort pracy wzrokowej to fundament nowoczesnej szkoły. Multibook został wyposażony w zaawansowane narzędzia wspierające uczniów ze specjalnymi potrzebami edukacyjnymi (SPE), w tym z dysleksją i problemami ze wzrokiem.
+Edukacja włączająca i komfort pracy wzrokowej to fundament nowoczesnej szkoły. Multibook v1.4 został wyposażony w zaawansowane narzędzia wspierające uczniów ze specjalnymi potrzebami edukacyjnymi (SPE), w tym z dysleksją i problemami ze wzrokiem.
 
 ---
 
-### 🎨 5 Dopracowanych Motywów Kolorystycznych
+### 🎨 6 Dopracowanych Motywów Kolorystycznych WCAG AAA
 
-W górnym panelu personalizacji możesz wybrać motyw najlepiej pasujący do warunków oświetleniowych w sali:
+W nowym menu personalizacji lub w **Menu Głównym ☰** (*sekcja 2. Czytnik i widok*) możesz wybrać motyw dopasowany do sali lekcyjnej:
 1. **Jasny (Szkolny)**: klasyczna, wysoka przejrzystość na ciepłym papierowym tle.
 2. **Ciemny (Dark Mode)**: ochrona wzroku i redukcja zmęczenia przy słabym świetle.
 3. **Ciepła Sepia (Papier książkowy)**: łagodne, kremowo-bursztynowe tony przypominające tradycyjną książkę.
-4. **Pastelowy Błękit**: kojące chłodne barwy sprzyjające skupieniu.
+4. **Pastelowy Błękit**: kojące chłodne barwy sprzyjające skupieniu i redukcji stresu.
 5. **Specjalny Motyw Dyslektyczny**: żółtawo-kremowe tło o zoptymalizowanym kontraście niepowodującym olśnień.
+6. **Tablica Szkolna (Maksymalny Kontrast AAA)**: głęboka szkolna czerń i szmaragdowa zieleń z krystalicznie białym i złotym tekstem, stworzona z myślą o rzutnikach, tablicach interaktywnych oraz uczniach słabowidzących.
 
 ---
 
 ### 📖 Czcionka OpenDyslexic i Regulacja Tekstu
 
 *   **Krój OpenDyslexic**: specjalnie zaprojektowana czcionka z dociążoną podstawą liter. Zapobiega wrażeniu „obracania się”, „falowania” i przestawiania znaków w percepcji wzrokowej osób z dysleksją.
-*   **Regulacja wielkości czcionki**: płynne skalowanie od 80% do 160% (tekst widoczny nawet z ostatnich ławek).
+*   **Regulacja wielkości czcionki**: płynne skalowanie od 80% do 160% (tekst czytelny nawet z ostatnich ławek).
 *   **Wysokość linii (Interlinia)**: wybór między interlinią *standardową*, *zwiększoną* i *szeroką*, co ułatwia śledzenie wersów linijka po linijce.
 
 ---
@@ -528,27 +543,27 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
     quizzes: [
       {
         id: 'guide-access-q1',
-        question: 'W jaki sposób czcionka OpenDyslexic pomaga osobom ze specyficznymi trudnościami w czytaniu?',
+        question: 'W jaki sposób czcionka OpenDyslexic pomaga osobom z trudnościami w czytaniu?',
         options: [
-          'Zmniejsza kontrast tekstu do zera',
-          'Ukrywa trudne słowa',
-          'Posiada pogrubione dolne krawędzie liter, co ułatwia orientację przestrzenną znaków i zapobiega ich obracaniu w percepcji wzrokowej',
-          'Zmienia język tekstu na łacinę'
+          'Zmniejsza kontrast tekstu do minimalnego poziomu',
+          'Posiada dociążone dolne krawędzie liter, co ułatwia orientację znaków w percepcji wzrokowej',
+          'Ukrywa przed uczniem trudne słowa słownikowe',
+          'Tłumaczy automatycznie cały tekst na język obcy'
         ],
-        correctAnswer: 2,
+        correctAnswer: 1,
         explanation: 'Krój OpenDyslexic wykorzystuje asymetrię i dociążenie dolnej części liter, dzięki czemu mózg łatwiej identyfikuje właściwy kierunek i kształt znaku.'
       },
       {
         id: 'guide-access-q2',
-        question: 'Czy w Multibooku można odsłuchać pojedynczy akapit tekstu zamiast całej lekcji?',
+        question: 'Ile motywów kolorystycznych WCAG AAA oferuje Multibook w wersji 1.4?',
         options: [
-          'Nie, lektor zawsze czyta od początku do końca',
-          'Tak, klikając ikonę głośniczka znajdującą się przy wybranym fragmencie tekstu',
-          'Tylko w trybie ciemnym',
-          'Tylko jeśli nagramy własny plik audio'
+          'Tylko jeden standardowy motyw biały',
+          'Dwa motywy: jasny i ciemny',
+          'Sześć dopracowanych motywów, w tym nową Tablicę Szkolną o maksymalnym kontraście AAA',
+          'Ponad sto losowych motywów graficznych'
         ],
-        correctAnswer: 1,
-        explanation: 'Każda sekcja i akapit posiada własny przycisk lektora, umożliwiający odsłuchanie dokładnie tego fragmentu, który aktualnie omawiamy.'
+        correctAnswer: 2,
+        explanation: 'W wersji 1.4 dostępnych jest 6 motywów: Jasny, Ciemny, Sepia, Błękit, Dyslektyczny oraz Tablica Szkolna (Maksymalny Kontrast AAA).'
       }
     ]
   },
@@ -567,7 +582,7 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
     createdAt: Date.now() - 800,
     content: `# Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny” 📜
 
-**Wersja 1.3 · obowiązuje od 2026 r.**
+**Wersja 1.4 · obowiązuje od 2026 r.**
 
 ---
 
@@ -575,13 +590,13 @@ Multibook potrafi czytać treść lekcji na głos czystym, naturalnym polskim g�
 *   **Twórca i właściciel praw**: mgr Krzysztof Jureczek (*kjureczek@proton.me*, *github.com/krzjur-oss*).
 *   **Licencja**: Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE.
 *   **Darmowy użytek**: 100% bezpłatny do **użytku prywatnego** oraz do **użytku edukacyjnego** w szkołach i placówkach oświatowych.
-*   **Prywatność i RODO**: Program nie przesyła żadnych danych do sieci – wszystkie notatki, klasy i plany są zapisywane **wyłącznie lokalnie w pamięci Twojego urządzenia** (localStorage).
+*   **Prywatność i RODO**: Program nie przesyła żadnych danych do sieci – wszystkie notatki, klasy i plany są zapisywane **wyłącznie lokalnie w pamięci Twojego urządzenia** (baza IndexedDB oraz localStorage).
 
 ---
 
 ## § 1. Postanowienia ogólne
 
-1. Niniejszy Regulamin określa zasady korzystania z aplikacji **„Cyfrowy Multibook Edukacyjny”** (dalej: „Aplikacja”), dostępnej w wersji online oraz pracującej w trybie offline w przeglądarce internetowej.
+1. Niniejszy Regulamin określa zasady korzystania z aplikacji **„Cyfrowy Multibook Edukacyjny”** (dalej: „Aplikacja”), dostępnej w wersji online oraz pracującej w trybie offline w przeglądarce internetowej (jako PWA).
 2. Właścicielem, twórcą i jedynym autorem Aplikacji jest **mgr Krzysztof Jureczek** (dalej: „Autor”).
 3. Aplikacja dystrybuowana jest na warunkach **Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE** (pełna treść w pliku LICENSE.md oraz w oknie licencji programu). Regulamin i Licencja stanowią całość i obowiązują łącznie.
 4. Korzystanie z Aplikacji oznacza pełną akceptację niniejszego Regulaminu oraz Licencji WLPE.
@@ -609,7 +624,7 @@ Wszelkie inne zastosowania, w tym w szczególności komercyjne, odpłatne lub w 
 
 ## § 4. Prawa autorskie i warunki licencyjne
 
-Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Szkicownik na Żywo, generator sprawdzianów, koło fortuny, kalendarz realizacji), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie prawnoautorskiej.
+Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, moduły interaktywne (Szkicownik na Żywo, generator sprawdzianów, terminarz, koło fortuny, kalendarz realizacji), treści lekcji, pytania quizowe oraz dokumentacja — należą wyłącznie do Autora i podlegają ochronie prawnoautorskiej.
 
 | Zakres | Szczegółowe zasady |
 | :--- | :--- |
@@ -621,7 +636,7 @@ Wszelkie prawa do Aplikacji — w tym kod źródłowy, interfejs graficzny, modu
 ## § 5. Dane i polityka prywatności (RODO / Pełna ochrona offline)
 
 1. Aplikacja **nie wymaga rejestracji, tworzenia kont ani logowania** i nie przesyła jakichkolwiek danych na zewnętrzne serwery.
-2. **Całkowita lokalność danych**: Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki do tematów, listy klas i imiona uczniów, historia realizacji lekcji w kalendarzu, wyniki quizów, załączone grafiki oraz rysunki ze szkicownika) są przechowywane **wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej** (localStorage) i nigdy nie opuszczają Twojego urządzenia.
+2. **Całkowita lokalność danych**: Wszelkie dane wprowadzane do Aplikacji (w tym: autorskie lekcje, notatki do tematów, listy klas i imiona uczniów, historia realizacji lekcji w kalendarzu, wyniki quizów, załączone grafiki oraz rysunki ze szkicownika) są przechowywane **wyłącznie lokalnie w pamięci Twojej przeglądarki internetowej** (baza IndexedDB oraz localStorage) i nigdy nie opuszczają Twojego urządzenia.
 3. **Administrator danych**: W rozumieniu przepisów RODO administratorem ewentualnych danych wprowadzanych do programu (np. imiona uczniów w klasie) jest wyłącznie sam Użytkownik końcowy (nauczyciel, placówka oświatowa) — Autor nie ma technicznego dostępu do tych danych.
 4. **Brak śledzenia**: Aplikacja nie używa marketingowych plików cookies, nie korzysta ze skryptów śledzących (typu Google Analytics) ani nie profiluje użytkowników.
 5. **Kontrola nad danymi**: Użytkownik może w każdej chwili wyeksportować swoje dane do pliku JSON (kopia zapasowa) lub trwale je usunąć, czyszcząc pamięć podręczną przeglądarki.
@@ -647,7 +662,7 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
         question: 'Dla jakich celów aplikacja Cyfrowy Multibook Edukacyjny jest całkowicie bezpłatna?',
         options: [
           'Wymaga comiesięcznej opłaty subskrypcyjnej',
-          'Do darmowego użytku prywatnego oraz edukacyjnego (w szkołach, przedszkolach, uczelniach i placówkach oświatowych)',
+          'Do darmowego użytku prywatnego oraz edukacyjnego w placówkach oświatowych',
           'Tylko przez pierwsze 7 dni okresu próbnego',
           'Tylko do celów komercyjnych w płatnych firmach'
         ],
@@ -656,15 +671,15 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
       },
       {
         id: 'guide-terms-q2',
-        question: 'Czy dane uczniów i notatki wprowadzane do programu są przesyłane na serwery zewnętrzne?',
+        question: 'Czy dane uczniów i notatki wprowadzane do programu są wysyłane na serwery zewnętrzne?',
         options: [
-          'Tylko w weekendy',
-          'Nie, wszystkie dane są przechowywane w 100% lokalnie w pamięci przeglądarki (localStorage) i nigdy nie opuszczają urządzenia użytkownika',
-          'Są wysyłane pocztą e-mail do producenta',
+          'Tylko w weekendy w celach statystycznych',
+          'Nie, wszystkie dane są przechowywane w 100% lokalnie w pamięci przeglądarki (IndexedDB i localStorage)',
+          'Są wysyłane pocztą elektroniczną do producenta',
           'Tak, trafiają do zagranicznej bazy danych'
         ],
         correctAnswer: 1,
-        explanation: 'Aplikacja działa w trybie pełnego poszanowania prywatności (RODO offline) – wszelkie dane pozostają wyłącznie na Twoim urządzeniu.'
+        explanation: 'Aplikacja działa w trybie pełnego poszanowania prywatności (RODO offline) – wszelkie dane pozostają wyłącznie na Twoim urządzeniu w lokalnej bazie IndexedDB i pamięci przeglądarki.'
       }
     ]
   },
@@ -684,7 +699,7 @@ W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy p
     content: `# LICENCJA UŻYTKOWANIA OPROGRAMOWANIA ⚖️
 ## Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE
 
-### Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.3 i wyższe)
+### Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.4 i wyższe)
 
 **Właściciel praw autorskich i twórca:**
 **mgr Krzysztof Jureczek**
@@ -702,7 +717,7 @@ Niniejsza licencja ma na celu zabezpieczenie niekomercyjnego charakteru projektu
 
 ### § 1. DEFINICJE
 
-1. **Oprogramowanie** – aplikacja „Cyfrowy Multibook Edukacyjny” wraz z całym kodem źródłowym, interfejsem, skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, zasobami multimedialnymi oraz dokumentacją.
+1. **Oprogramowanie** – aplikacja „Cyfrowy Multibook Edukacyjny” (wersja 1.4 i wyższe) wraz z całym kodem źródłowym, interfejsem, skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, zasobami multimedialnymi oraz dokumentacją.
 2. **Autor / Licencjodawca** – mgr Krzysztof Jureczek, jedyny twórca i wyłączny dysponent autorskich praw majątkowych i osobistych do Oprogramowania.
 3. **Użytkownik / Licencjobiorca** – każda osoba fizyczna korzystająca z Oprogramowania w celach prywatnych / własnych, a także każda szkoła (podstawowa, ponadpodstawowa), przedszkole, uczelnia wyższa, świetlica lub inna placówka oświatowo-wychowawcza, opiekuńcza i terapeutyczna korzystająca z Oprogramowania w celach dydaktycznych.
 
@@ -714,7 +729,7 @@ Autor udziela Użytkownikowi bezpłatnej, niewyłącznej, nieprzenoszalnej i ogr
 
 1. **Użytek prywatny** – instalowanie, otwieranie i uruchamianie Oprogramowania przez osoby fizyczne na własny, niekomercyjny użytek, w tym w celach samokształceniowych, powtórkowych i poznawczych.
 2. **Użytek edukacyjny** – bezpłatne wykorzystanie Oprogramowania w placówkach oświatowych (przedszkola, szkoły podstawowe, licea, technika, szkoły branżowe, uczelnie wyższe, świetlice szkolne, biblioteki, ogniska wychowawcze, poradnie psychologiczno-pedagogiczne oraz placówki terapeutyczne) w ramach zajęć dydaktycznych, lekcji, wykładów, kół zainteresowań, katechezy oraz warsztatów.
-3. **Instalacja lokalna i tryb offline** – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.
+3. **Instalacja lokalna i tryb offline (PWA)** – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.
 4. **Prezentacje niekomercyjne** – publiczne demonstrowanie działania Oprogramowania na konferencjach metodycznych, lekcjach otwartych, szkoleniach nauczycieli i spotkaniach popularyzujących nowoczesne technologie w edukacji, pod warunkiem wyraźnego wskazania autorstwa.
 
 ---

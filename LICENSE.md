@@ -1,7 +1,7 @@
 # LICENCJA UŻYTKOWANIA OPROGRAMOWANIA
 ## Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE
 
-### Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.3 i wyższe)
+### Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.4 i wyższe)
 
 **Właściciel praw autorskich i twórca:**
 **mgr Krzysztof Jureczek**
@@ -19,7 +19,7 @@ Niniejsza licencja ma na celu zabezpieczenie niekomercyjnego charakteru projektu
 
 ### § 1. DEFINICJE
 
-1. **Oprogramowanie** – aplikacja „Cyfrowy Multibook Edukacyjny” wraz z całym kodem źródłowym, interfejsem, skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, zasobami multimedialnymi oraz dokumentacją.
+1. **Oprogramowanie** – aplikacja „Cyfrowy Multibook Edukacyjny” (wersja 1.4 i wyższe) wraz z całym kodem źródłowym, interfejsem graficznym, modułami narzędziowymi (Boczna Szuflada Narzędziowa, Szkicownik na Żywo, Tryb Tablicy Szkolnej, Panel Nauczyciela), skompilowanymi plikami, materiałami metodycznymi, pytaniami quizowymi, grafiką, arkuszami stylów CSS, zasobami multimedialnymi oraz dokumentacją.
 2. **Autor / Licencjodawca** – mgr Krzysztof Jureczek, jedyny twórca i wyłączny dysponent autorskich praw majątkowych i osobistych do Oprogramowania.
 3. **Użytkownik / Licencjobiorca** – każda osoba fizyczna korzystająca z Oprogramowania w celach prywatnych / własnych, a także każda szkoła (podstawowa, ponadpodstawowa), przedszkole, uczelnia wyższa, świetlica lub inna placówka oświatowo-wychowawcza, opiekuńcza i terapeutyczna korzystająca z Oprogramowania w celach dydaktycznych.
 
@@ -31,7 +31,7 @@ Autor udziela Użytkownikowi bezpłatnej, niewyłącznej, nieprzenoszalnej i ogr
 
 1. **Użytek prywatny** – instalowanie, otwieranie i uruchamianie Oprogramowania przez osoby fizyczne na własny, niekomercyjny użytek, w tym w celach samokształceniowych, powtórkowych i poznawczych.
 2. **Użytek edukacyjny** – bezpłatne wykorzystanie Oprogramowania w placówkach oświatowych (przedszkola, szkoły podstawowe, licea, technika, szkoły branżowe, uczelnie wyższe, świetlice szkolne, biblioteki, ogniska wychowawcze, poradnie psychologiczno-pedagogiczne oraz placówki terapeutyczne) w ramach zajęć dydaktycznych, lekcji, wykładów, kół zainteresowań, katechezy oraz warsztatów.
-3. **Instalacja lokalna i tryb offline** – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.
+3. **Instalacja lokalna i tryb offline (PWA)** – uruchamianie, buforowanie i przechowywanie Oprogramowania w pamięci urządzeń własnych Użytkownika lub pracowni komputerowych placówki w celach pracy bez dostępu do sieci Internet.
 4. **Prezentacje niekomercyjne** – publiczne demonstrowanie działania Oprogramowania na konferencjach metodycznych, lekcjach otwartych, szkoleniach nauczycieli i spotkaniach popularyzujących nowoczesne technologie w edukacji, pod warunkiem wyraźnego wskazania autorstwa.
 
 ---
@@ -74,5 +74,5 @@ Naruszenie któregokolwiek z postanowień niniejszej licencji skutkuje jej natyc
 W sprawach nieuregulowanych niniejszą licencją zastosowanie mają przepisy prawa Rzeczypospolitej Polskiej, w szczególności ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych (Dz.U. z 2022 r. poz. 2509 ze zm.) oraz Kodeksu cywilnego. Wszelkie spory rozstrzyga rzeczowo właściwy sąd powszechny dla miejsca zamieszkania Autora.
 
 ---
-*Obowiązuje od: 2026 r.*
+*Obowiązuje od: 2026 r. (Wersja 1.4)*
 *Autor i Licencjodawca: mgr Krzysztof Jureczek*

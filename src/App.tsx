@@ -1413,7 +1413,7 @@ export default function App() {
   const handleAcceptTermsAndLicense = () => {
     safeSet('multibook_terms_and_license_accepted_v1', {
       acceptedAt: new Date().toISOString(),
-      version: '1.3',
+      version: '1.4',
       author: 'mgr Krzysztof Jureczek'
     });
     setHasAcceptedTerms(true);
@@ -4042,7 +4042,7 @@ export default function App() {
   // Execute export with chosen categories and subject filter
   const handleConfirmExportBackup = () => {
     const backupData: Record<string, any> = {
-      version: '1.3',
+      version: '1.4',
       exportedAt: new Date().toISOString(),
     };
 
@@ -5112,7 +5112,7 @@ export default function App() {
               </button>
             </div>
             <div className="flex justify-between items-center px-1">
-              <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.3</p>
+              <p className="font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest text-[8px]">Interaktywny Multibook v1.4</p>
               <p className="text-[8px] text-slate-400 dark:text-slate-500">Wydanie offline</p>
             </div>
 
@@ -8204,7 +8204,7 @@ export default function App() {
                           Regulamin i Polityka Prywatności aplikacji „Cyfrowy Multibook Edukacyjny”
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                          Wersja 1.3 · Obowiązuje od 2026 r.
+                          Wersja 1.4 · Obowiązuje od 2026 r.
                         </p>
                       </div>
 
@@ -8299,7 +8299,7 @@ export default function App() {
                         Wolna Licencja Prywatno-Edukacyjna (Zastrzeżona) — WLPE
                       </h3>
                       <p className="text-xs text-emerald-100 opacity-90">
-                        Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.3 i wyższe) • Właściciel praw i twórca: mgr Krzysztof Jureczek
+                        Projekt: Cyfrowy Multibook Edukacyjny (wersja 1.4 i wyższe) • Właściciel praw i twórca: mgr Krzysztof Jureczek
                       </p>
                     </div>
 

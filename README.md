@@ -1,64 +1,74 @@
-# Interaktywny Multibook Edukacyjny 📖🎨
+# Interaktywny Multibook Edukacyjny 📖🎨 (Wersja 1.4)
 
-Nowoczesny, interaktywny podręcznik cyfrowy oraz zeszyt ćwiczeń zaprojektowany z myślą o efektywnej nauce stacjonarnej, zdalnej oraz offline. Aplikacja umożliwia dynamiczną prezentację treści lekcyjnych, rysowanie bezpośrednio po ekranie, prowadzenie notatek z galerią grafik oraz pełne śledzenie postępów.
+Nowoczesny, interaktywny podręcznik cyfrowy oraz wieloaspektowy zeszyt ćwiczeń zaprojektowany z myślą o efektywnej dydaktyce stacjonarnej w klasie (na tablicach interaktywnych i monitorach dotykowych) oraz samodzielnej nauce w domu i w podróży.
 
-Działa w całości w przeglądarce i nie wymaga zewnętrznego zaplecza serwerowego (wykorzystuje lokalną bazę `IndexedDB` dla rozdziałów i notatek oraz `localStorage` dla preferencji), dzięki czemu pracuje w 100% offline.
+Aplikacja funkcjonuje w całości w przeglądarce internetowej (Progressive Web App – PWA) i nie wymaga zewnętrznego zaplecza serwerowego. Wykorzystuje lokalną, trwałą bazę danych **`IndexedDB`** (dla pełnych treści lekcji, notatek, rysunków i rejestru zajęć) oraz **`localStorage`** (dla preferencji interfejsu), zapewniając **100% prywatności oraz pełną funkcjonalność offline**.
 
 ---
 
-## 🌟 Główne Funkcje Aplikacji
+## 🌟 Główne Funkcje i Narzędzia (Wersja 1.4)
 
-### 1. Strukturyzacja Treści (Szkoły, Klasy, Przedmioty)
-* Filtrowanie i hierarchiczne grupowanie materiałów według typów szkół (np. Szkoła Podstawowa, Liceum) oraz klas (Klasa 1, Klasa 7).
-* Automatyczny podział lekcji na **Rozdziały nadrzędne** i konkretne **Tematy lekcyjne**.
+### 1. Boczna Szuflada Narzędziowa (Hamburger Tools Drawer) ☰
+W prawym górnym rogu nagłówka umieszczono skonsolidowane, wysuwane menu narzędziowe (`global-tools-menu-btn`). Zapewnia ono błyskawiczny dostęp do wszystkich funkcji programu bez zaśmiecania widoku lekcji:
+*   **Strefa 1: Narzędzia dydaktyczne** – włączanie Tablicy-Szkicownika na żywo, otwieranie Dziennika i Notatek ucznia, tryb pełnoekranowy (Focus) oraz bezpośredni skrót do quizu sprawdzającego.
+*   **Strefa 2: Czytnik i Dostępność** – płynne skalowanie czcionki (A- / 105% / A+), trzystopniowa interlinia (*Zwykła*, *Luźna*, *Szeroka*) oraz 6 palet barwnych o wysokim kontraście WCAG AAA z miniaturowymi próbkami.
+*   **Strefa 3: Dane i Lekcje** – dodawanie nowej lekcji, edycja bieżącego tematu, eksport kopii zapasowej JSON, selektywny import oraz Menedżer pamięci podręcznej i optymalizacji ekranów Android.
+*   **Strefa 4: System i Pomoc** – oficjalny Regulamin i Licencja WLPE, przywracanie domyślnych działów oraz karta stanu offline PWA.
+*   **Dostępność**: Pełna obsługa klawiatury (`Escape`, pułapka fokusu `useFocusTrap`) i duże cele dotykowe ($\ge 44\text{px}$) zoptymalizowane pod palce i rysiki.
 
-### 2. Szkicownik na Żywo (Wirtualna Tablica) 🖌️
-* Możliwość rysowania, pisania, podkreślania oraz zakreślania bezpośrednio na tekście podręcznika.
-* Narzędzie idealnie przystosowane do pracy z rzutnikami i tablicami interaktywnymi w salach lekcyjnych.
-* Łatwe włączanie/wyłączanie nakładki rysowania jednym kliknięciem.
+### 2. Szkicownik na Żywo (Wirtualna Tablica) & Tryb Tablicy Szkolnej 🖌️📺
+*   **Szkicownik na treści**: Rysowanie, zakreślanie neonowym markerem, wprowadzanie figur geometrycznych, strzałek oraz wskaźnika laserowego bezpośrednio na tekście otwartej lekcji.
+*   **Tryb Czystej Tablicy**: Przełączanie tła na białą tablicę, tablicę kredową, papier w kratkę lub papier w linie.
+*   **Tryb Tablicy Szkolnej (Classroom Board Mode)**: Opcja dedykowana dla monitorów dotykowych (Promethean, SMART Board, myViewBoard, Android TV). Wyłącza obciążające procesor filtry rozmycia tła (`backdrop-blur`), optymalizuje akcelerację GPU i gwarantuje stabilne 60 FPS.
 
-### 3. Zaawansowane Notatki i Przedmiotowa Galeria Obrazów 📝🖼️
-* Każda lekcja posiada własny autozapisywalny brudnopis/notatnik.
-* Wbudowane galerie dostosowane do przedmiotu (np. biologia – mikroskop, geografia – mapy, matematyka – wzory) z oznaczeniem zasobów wymagających połączenia internetowego (w przypadku pobierania miniatur z Unsplash, adres IP użytkownika jest widoczny dla dostawcy obrazów w celu obsługi pobrania pliku graficznego).
-* Automatyczne wykrywanie linków graficznych w notatkach z obsługą powiększania w oknie modalnym (Lightbox) oraz kopiowania adresów URL.
+### 3. Sześć Motywów Barwnych WCAG AAA i Modularne Style CSS 🎨
+System wizualny opiera się na dedykowanych plikach CSS ze zmiennymi (`src/styles/themes/*.css`):
+1.  **Jasny (Szkolny WCAG AAA)** (`light.css`): Maksymalna czytelność i naturalny papierowy kontrast.
+2.  **Ciemny (Dark Mode WCAG AAA)** (`dark.css`): Ochrona wzroku przy zaciemnionych salach lekcyjnych.
+3.  **Tablica Szkolna (Maksymalny Kontrast AAA)** (`board.css`): Głęboka zieleń szkolnej tablicy kredowej (`#041f14`) ze śnieżnobiałym i szmaragdowym tekstem o współczynniku kontrastu przekraczającym 14:1.
+4.  **Ciepły Pergamin (Sepia)** (`sepia.css`): Ciepłe, bursztynowe tony eliminujące niebieskie światło.
+5.  **Pastelowy Błękit (Nordic)** (`blue.css`): Uspokajający, arktyczny błękit sprzyjający skupieniu.
+6.  **Motyw Dyslektyczny** (`dyslexic.css`): Specjalistyczny krój **OpenDyslexic** z asymetrycznie dociążoną podstawą liter zapobiegający wrażeniu obracania się znaków w percepcji wzrokowej.
 
-### 4. Dynamiczne Dopasowanie Kolorystyki Przedmiotowej 🎨 *(Nowość!)*
-* Kolory aktywnych kropel postępu, tła plakietek przedmiotowych, aktywnej karty lekcji oraz przycisków akcji zmieniają się automatycznie w zależności od nauczanego przedmiotu:
-  * **Biologia**: Świeża zieleń (`Emerald`)
-  * **Religia**: Ciepły, stonowany bursztyn (`Amber`)
-  * **Geografia / Astronomia / Kosmos**: Głęboki błękit i indygo (`Indigo`)
-  * **Matematyka / Fizyka / Chemia**: Energetyczna czerwień/róż (`Rose`)
-  * **Pozostałe**: Elegancki i minimalistyczny szary/grafit (`Slate`)
+### 4. Uporządkowany Pasek Czytnika 📖
+*   Kompaktowy pasek narzędziowy lekcji z plakietką przedmiotu, szacowanym czasem nauki i wynikiem quizu.
+*   Szybki przycisk `Czytnik & Motyw` (pokazujący bieżący rozmiar czcionki i otwierający szufladę ustawień).
+*   Bezpośrednie przełączniki: **Pełny ekran**, **Tryb Czytania** (czyszczący nagłówki z dekoracyjnych emotikonów) oraz **Tryb Tablicy Szkolnej**.
+*   Wbudowany lektor mowy (Text-To-Speech) z polską syntezą mowy dla całych lekcji oraz poszczególnych akapitów.
 
-### 5. Zarządzanie Lekcjami (Dodawanie i Usuwanie) 🗑️ *(Nowość!)*
-* Elastyczne dodawanie własnych lekcji wraz z rozdziałem, tematem, treścią w formacie Markdown oraz pytaniami testowymi.
-* Możliwość **całkowitego usunięcia dowolnej lekcji** (zarówno domyślnej, jak i utworzonej przez użytkownika) bezpośrednio z listy rozdziałów w menu bocznym lub z dolnego paska aktywnej lekcji.
+### 5. Zaawansowane Notatki, Galeria Multimediów i Eksport PDF 📝🖼️
+*   Autozapisywalny notatnik dla każdej lekcji z pełnym wsparciem formatowania Markdown.
+*   Przedmiotowe galerie fotografii z podglądem pełnoekranowym (Lightbox) oraz możliwością przeciągania plików grafik (Drag & Drop).
+*   Generowanie gotowych, sformatowanych dokumentów do druku (PDF / HTML z oficjalnym nagłówkiem szkolnym) oraz pobieranie plików Markdown `.md`.
 
-### 6. Śledzenie Postępów i Rejestr Lekcji (Kalendarz) 📅🟢
-* Interaktywny pasek kropek na dole ekranu pokazujący postęp w podręczniku z tooltipami podglądu tytułu lekcji.
-* Panel klas z interaktywnym kalendarzem zrealizowanych lekcji, pełną chronologiczną historią realizacji oraz możliwością cofania statusów.
+### 6. Panel Nauczyciela, Kalendarz Realizacji i Generator `.ics` 👨‍🏫📅
+*   Zarządzanie oddziałami klasowymi i listami uczniów.
+*   Ewidencja zrealizowanych lekcji z osią czasu i kalendarzem dydaktycznym.
+*   **Generator Harmonogramu Lekcji**: automatyczne rozplanowanie tematów na cały rok szkolny z możliwością eksportu do uniwersalnego formatu kalendarza `.ics`.
+*   **Kreator Sprawdzianów i Kartkówek**: natychmiastowe generowanie arkuszy testowych A4 dla ucznia wraz z kluczem odpowiedzi dla nauczyciela.
 
-### 7. Pełna Personalizacja Wyglądu ⚙️
-* Pięć motywów kolorystycznych: **Jasny**, **Ciemny**, **Ciepły Sepia**, **Pastelowy Niebieski** oraz **Motyw Dyslektyczny** (ułatwiający czytanie dzięki czcionce *OpenDyslexic*).
-* Regulacja rozmiaru czcionki oraz wysokości linii (interlinii) bezpośrednio z panelu ustawień tekstu.
+### 7. Trwała Baza Danych IndexedDB i Bezpieczeństwo Danych 🔒
+*   Hybrydowy mechanizm pamięci z automatyczną migracją danych z `localStorage` do asynchronicznej bazy `IndexedDB`.
+*   Równoległe odczytywanie zasobów przy starcie programu (`Promise.all`) gwarantujące błyskawiczne uruchamianie aplikacji.
+*   Menedżer pamięci podręcznej pozwalający kontrolować zajętość miejsca na dysku urządzenia.
+*   Wielopoziomowy selektywny eksport i import kopii bezpieczeństwa w formacie JSON (tryb scalania *Merge* lub nadpisywania *Replace*).
 
 ---
 
 ## 🛠️ Technologie i Biblioteki
 
-Aplikacja została zbudowana przy użyciu najnowocześniejszych standardów webowych:
-
-* **React 19** (z TypeScript)
-* **Vite** – ultraszybki bundler i środowisko deweloperskie
-* **Tailwind CSS 4** – nowoczesne, responsywne style użytkowe
-* **Lucide React** – spójny zestaw pięknych ikon wektorowych
-* **Motion** – płynne animacje i przejścia interfejsu
-* **React Markdown** – dynamiczne i czytelne renderowanie sformatowanych tekstów lekcji
-* **IndexedDB & LocalStorage** – hybrydowy, odporny na awarie magazyn danych offline
+*   **React 19** (TypeScript)
+*   **Vite** – środowisko wykonawcze i bundler
+*   **Tailwind CSS 4** – nowoczesny silnik stylów z dedykowanymi arkuszami motywów CSS
+*   **IndexedDB** (`fake-indexeddb` w testach) – lokalna asynchroniczna baza danych
+*   **Lucide React** – ikony wektorowe
+*   **Motion** – płynne animacje elementów interfejsu
+*   **React Markdown** – semantyczne renderowanie formatowanego tekstu lekcji
+*   **Service Worker & PWA** – pełne buforowanie zasobów i działanie bez dostępu do Internetu
 
 ---
 
-## 🚀 Jak uruchomić projekt lokalnie?
+## 🚀 Uruchomienie Projektu Lokalnie
 
 1. **Sklonuj repozytorium:**
    ```bash
@@ -75,18 +85,15 @@ Aplikacja została zbudowana przy użyciu najnowocześniejszych standardów webo
    ```bash
    npm run dev
    ```
-   Aplikacja będzie dostępna pod adresem `http://localhost:3000` (lub innym wskazanym w terminalu).
+   Aplikacja uruchomi się pod adresem `http://localhost:3000`.
 
-4. **Budowanie produkcyjne:**
+4. **Kompilacja i weryfikacja kodu:**
    ```bash
-   npm run build
-   ```
-   Skompilowane pliki statyczne zostaną zapisane w katalogu `/dist`.
-
-5. **Testy i walidacja danych:**
-   ```bash
-   npm test
-   npm run validate
+   npm run lint        # Sprawdzenie typów TypeScript i reguł ESLint
+   npm test            # Uruchomienie 16 testów jednostkowych bazy danych
+   npm run validate    # Weryfikacja spójności 251 lekcji i 502 quizów
+   npm run check-sw    # Sprawdzenie manifestu pamięci podręcznej Service Workera
+   npm run build       # Produkcyjna kompilacja do katalogu /dist
    ```
 
 ---
@@ -96,28 +103,61 @@ Aplikacja została zbudowana przy użyciu najnowocześniejszych standardów webo
 ```
 ├── src/
 │   ├── components/
-│   │   ├── ChapterManager.tsx      # Modal do dodawania/zarządzania lekcjami i eksportu
-│   │   ├── DrawingOverlay.tsx      # Moduł interaktywnej tablicy (szkicownika)
-│   │   ├── ErrorBoundary.tsx       # Obsługa błędów renderowania z możliwością resetu i pobrania kopii
-│   │   └── StorageManagerModal.tsx # Zarządzanie magazynem IndexedDB i localStorage ze statystykami
-│   ├── App.tsx                     # Główny komponent z logiką widoków, filtrowaniem i stanem
-│   ├── storage.ts                  # Warstwa trwałego magazynu (IndexedDB + localStorage fallback)
-│   ├── defaultChapters.ts          # Baza domyślnych lekcji startowych
-│   ├── types.ts                    # Definicje typów TypeScript i interfejsów struktur danych
-│   ├── main.tsx                    # Punkt wejścia aplikacji React
-│   └── index.css                   # Tailwind CSS oraz lokalne czcionki (@fontsource i OpenDyslexic)
-├── public/                         # PWA manifest, service worker i ikony
-├── scripts/                        # Narzędzia walidacji danych edukacyjnych i tasowania opcji
-├── tests/                          # Testy jednostkowe warstwy pamięci (Vitest)
-├── metadata.json                   # Konfiguracja uprawnień aplikacji
-├── tsconfig.json                   # Konfiguracja TypeScript
-└── vite.config.ts                  # Konfiguracja bundlera Vite
+│   │   ├── ToolsDrawerMenu.tsx     # Boczna szuflada narzędzi i ustawień (Hamburger Menu)
+│   │   ├── ChapterManager.tsx      # Kreator lekcji, pytań quizowych i import Markdown
+│   │   ├── DrawingOverlay.tsx      # Nakładka wirtualnej tablicy i szkicownika na żywo
+│   │   ├── StorageManagerModal.tsx # Zarządzanie bazą IndexedDB i optymalizacja Android
+│   │   └── ErrorBoundary.tsx       # Tarcza chroniąca przed awariami z opcją pobrania kopii
+│   ├── styles/
+│   │   └── themes/                 # Dedykowane tokeny kolorystyczne WCAG AAA:
+│   │       ├── light.css           # Motyw jasny szkolny
+│   │       ├── dark.css            # Motyw ciemny
+│   │       ├── board.css           # Tablica szkolna (zielona kreda, ultra kontrast)
+│   │       ├── sepia.css           # Ciepły pergamin
+│   │       ├── blue.css            # Arktyczny błękit
+│   │       └── dyslexic.css        # Zoptymalizowany pod dysleksję
+│   ├── App.tsx                     # Główny kontroler aplikacji, pasek czytnika, nawigacja
+│   ├── storage.ts                  # Silnik trwałego magazynu (IndexedDB + fallback)
+│   ├── defaultChapters.ts          # Baza lekcji startowych i wbudowane instrukcje
+│   ├── types.ts                    # Definicje struktur danych i interfejsów TypeScript
+│   ├── main.tsx                    # Główny punkt wejściowy aplikacji React
+│   └── index.css                   # Globalne reguły Tailwind i importy czcionek
+├── public/                         # Pliki PWA (manifest.json, sw.js, ikony)
+├── scripts/
+│   ├── validate-data.ts            # Skrypt walidacji spójności bazy edukacyjnej
+│   └── check-sw.ts                 # Skrypt weryfikacji pre-cache Service Workera
+├── tests/                          # Zestaw testów jednostkowych Vitest (16 testów)
+├── LICENSE.md                      # Wolna Licencja Prywatno-Edukacyjna (WLPE v1.4)
+├── REGULAMIN.md                    # Regulamin i Polityka Prywatności RODO offline (v1.4)
+├── metadata.json                   # Konfiguracja uprawnień i nazwy aplikacji
+└── tsconfig.json / vite.config.ts  # Konfiguracja środowiska TypeScript i Vite
 ```
 
 ---
 
-## 🔒 Bezpieczeństwo i Przechowywanie Danych
-Aplikacja przechowuje dane wyłącznie po stronie klienta za pomocą lokalnych baz `IndexedDB` (dla obszernych treści lekcji, notatek i szkiców) oraz `localStorage` (dla szybkich preferencji użytkownika). Żadne dane dotyczące notatek, postępów, zrealizowanych lekcji czy nowo dodanych materiałów nie są wysyłane na serwer zewnętrzny.
-W przypadku pobierania zewnętrznych miniatur grafik (np. z serwisu Unsplash) w celach demonstracyjnych, zapytanie sieciowe wysyłane jest bezpośrednio z przeglądarki użytkownika, przez co adres IP jest widoczny dla dostawcy pliku graficznego.
-Użytkownik może w każdej chwili wyeksportować pełną kopię bezpieczeństwa (plik `.json`) lub zaimportować ją na innym urządzeniu w ustawieniach systemu.
+## 📜 Licencja i Prawa Autorskie
 
+Aplikacja udostępniana jest na warunkach **Wolnej Licencji Prywatno-Edukacyjnej (Zastrzeżonej) — WLPE (Wersja 1.4, 2026 r.)**.
+
+*   **Dozwolony użytek (w 100% bezpłatny)**: Wykorzystanie do własnych celów prywatnych przez uczniów, rodziców i samouków oraz do celów dydaktycznych w placówkach oświatowych (szkoły podstawowe, ponadpodstawowe, przedszkola, uczelnie, świetlice).
+*   **Zakazy i ograniczenia**: Surowy zakaz komercjalizacji, sprzedaży, zamykania za płatnymi subskrypcjami, publikowania kopii kodu lub forkowania w celach komercyjnych bez pisemnej zgody Autora.
+*   **Autor i właściciel praw autorskich**: mgr Krzysztof Jureczek (`kjureczek@proton.me`, GitHub: `github.com/krzjur-oss`).
+*   Pełna treść licencji znajduje się w pliku `LICENSE.md`, a regulamin korzystania w pliku `REGULAMIN.md`.
+
+---
+
+## 📝 Dziennik Zmian (Changelog)
+
+### Wersja 1.4 (2026 r.)
+*   **Boczna Szuflada Narzędziowa (Hamburger Tools Drawer)**: Wprowadzono modularne menu boczne porządkujące wszystkie funkcje dydaktyczne, ustawienia czytnika, operacje na danych i status systemu.
+*   **Nowa Paleta Barwna „Tablica Szkolna” (WCAG AAA)**: Dodano profesjonalny, szmaragdowo-kredowy motyw o kontraście 14:1, perfekcyjny na tablice interaktywne i rzutniki.
+*   **Modułowa Architektura Stylów CSS**: Przeniesiono definicje kolorów do niezależnych plików `src/styles/themes/*.css` podłączonych przez atrybut `data-theme`.
+*   **Tryb Tablicy Szkolnej (Classroom Board Mode)**: Sprzętowa optymalizacja pod monitory interaktywne z systemem Android i tablety (eliminacja obciążających filtrów rozmycia, stałe 60 FPS).
+*   **Uporządkowanie Paska Czytnika**: Zredukowano natłok przycisków, wprowadzając szybki kontroler `Czytnik & Motyw` oraz skróty do trybów pełnoekranowych i tablicy.
+*   **Udoskonalenie PWA i Bazy IndexedDB**: Wzmocniono odporność na awarie pamięci, wprowadzono automatyczną synchronizację i skrypt weryfikujący `check-sw`.
+*   **Aktualizacja Dokumentacji i Instrukcji**: Zaktualizowano wszystkie rozdziały instruktażowe w programie oraz pliki prawne.
+
+### Wersja 1.3
+*   Wdrożenie hybrydowej bazy danych IndexedDB dla lekcji i notatek.
+*   Panel Nauczyciela z harmonogramem lekcji, terminarzem i generatorem sprawdzianów A4.
+*   Wsparcie dla lektora syntezy mowy TTS.
